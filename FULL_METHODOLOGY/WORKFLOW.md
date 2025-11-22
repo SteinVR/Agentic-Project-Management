@@ -137,10 +137,10 @@ modular execution, continuous feedback loops.
 
 This project is governed by the following principles. All agents must adhere to them.
 
-1.  **Spec-Driven**: The specification (`ARCHITECTURE.md`, `task.md`) is the single source of truth. Code is written to satisfy the specification.
+1.  **Spec-Driven (SDD)**: The specification (`ARCHITECTURE.md`, `task.md`) is the single source of truth. Code is written to satisfy the specification.
 2.  **Test-First (TDD)**: Tests are written *before* implementation code. Tests are the primary definition of "done".
 3.  **Immutable Tests**: Tests are a contract. If a test fails, the code is wrong, not the test. Tests may only be changed if the specification (`task.md`) changes.
-4.  **Modularity**: The project is divided into isolated functional blocks (Bounded Contexts). Agents must respect these boundaries to ensure low coupling.
+4.  **Modularity (DDD)**: The project is divided into isolated functional blocks (Bounded Contexts). Agents must respect these boundaries to ensure low coupling.
 5.  **Fail-Fast**: Feedback loops are designed to catch errors as early as possible, ideally before code is committed.
 6.  **Stateless Agents**: Agents should not rely on memory of previous interactions. All necessary context must be provided in the input files for a given task.
 

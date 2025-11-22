@@ -1,102 +1,102 @@
-# Lightweight Project Architecture: [Project Name]
+# Project Architecture: [Project Name]
 
-> **Note:** This document is a high-level guide for rapid prototyping. It defines the core rules and direction to ensure consistency and focus. It is not an exhaustive blueprint.
-
----
-
-## 1. Overview & Core Goal (MVP)
-
-> A brief, one-paragraph summary of the project. What is the core problem this prototype aims to solve?
-
-[Provide a high-level summary of the prototype's mission. For example: "This project is an MVP for a command-line task management tool. The core goal is to allow a user to add, list, and complete tasks directly from the terminal."]
+> Note: This document is the single source of truth for the project's logic, design, and behavior. It describes what we are building and how it works logically.
+> 
 
 ---
 
-## 2. High-Level Architecture
+## 1. Project Idea & Philosophy
 
-> This section describes the conceptual flow and interaction of the system's main components.
+> Context: Describe the core essence, need, and vision of the project. What problem does it solve? Why does it exist?
+> 
 
-The application operates as a command-line interface (CLI) tool. The execution flow is as follows:
-1.  The user runs the application via the main script (`main.py`).
-2.  The `Orchestrator` in `main.py` loads necessary settings from `config.py`.
-3.  It then parses the user's input (e.g., 'add', 'list') using a dedicated utility.
-4.  Based on the command, the `Orchestrator` calls the appropriate method in the core `Service` module (e.g., `TaskManager`), which contains all the business logic.
-5.  The `Service` performs the operation (e.g., adding a task to a list, reading from a file).
-6.  The result is returned to the `Orchestrator`, which then formats and prints the output to the user's console.
-
-### AI-Friendly Diagram (ASCII Flowchart)
-
-This diagram illustrates the flow of control and data within the application. It is the primary reference for component interaction.
-
-```
-     [ User (Terminal) ]
-             |
-             | 1. Executes command (e.g., `python main.py add "Buy milk"`)
-             v
-+---------------------------+
-|   main.py (Orchestrator)  |
-+---------------------------+
-| 2. Reads settings         |   +----------------+
-|--------------------------->|   config.py      |
-| 3. Parses user input      |   +----------------+
-|--------------------------->|   utils/parser.py  |
-| 4. Invokes business logic |   +----------------+
-|--------------------------->|   services/        |
-| 6. Formats output         |   | TaskManager.py |
-|<---------------------------|   +----------------+
-| 7. Prints to console      |
-v
-     [ User (Terminal) ]
-```
+[Example: "The project is an Agentic LLM Evaluation tool. The core need is to automate the tedious process of benchmarking different LLMs against specific business tasks using a multi-agent approach. The philosophy is 'Agent-driven Quality Assurance'."]
 
 ---
 
-## 3. Technology Stack
+## 2. Project Body (Form Factor)
 
-> The non-negotiable list of core technologies. All code must adhere to this stack.
-
--   **Language:** [e.g., Python 3.11]
--   **Key Libraries:** [e.g., Typer for CLI arguments, Pydantic for data models]
--   **Data Storage:** [e.g., JSON file (`tasks.json`)]
-
----
-
-## 4. Code Organization Pattern
-
-> The mandatory file and code structure within the `src/` directory. This pattern promotes a clear separation of concerns.
-
--   `main.py`: **The Entrypoint & Orchestrator.** This is the only file that should be directly executed. It is responsible for parsing command-line arguments, initializing services, and coordinating the overall application flow. It should contain minimal business logic.
-
--   `config.py`: **Configuration.** Stores all static configuration, constants, file paths (e.g., `DATABASE_FILE = "tasks.json"`), and settings.
-
--   `services/`: **Business Logic Directory.** This directory contains the core logic of the application, encapsulated in classes (the "reusable objects" you mentioned).
-    -   Example: `TaskManager.py` would contain a `TaskManager` class with methods like `add_task()`, `get_all_tasks()`, `complete_task()`.
-
--   `utils/`: **Utilities Directory.** Contains specific, reusable helper functions that are not part of the core business logic.
-    -   Example: `parser.py` for validating user input, or `formatter.py` for creating styled console output.
+> Context: In what form will the project be realized?
+> 
+- **Type:** [e.g., CLI Application / Python Script / Web Service / Telegram Bot]
+- **Interface:** [e.g., Terminal interaction via arguments / REST API / Interactive Chat]
 
 ---
 
-## 5. Core Data Models (Optional)
+## 3. User Workflow (Operational Principle)
+
+> Context: A step-by-step narrative of how the user interacts with the finished product. This defines the flow of the application.
+> 
+
+[Example Step-by-Step Description:
+
+1. **User Action:** User inputs a command (e.g., `/start_eval`).
+    - **System Reaction:** The system initializes the `TaskAnalyst` agent.
+    - **Outcome:** A specification file is generated.
+2. **User Action:** User reviews the spec and inputs `/generate_dataset`.
+    - **System Reaction:** The system initializes the `DatasetSpecialist` agent.
+    - **Outcome:** A JSON dataset is created or fetched.
+3. ... (Continue describing the flow)
+]
+
+---
+
+## 4. Technology Decisions
+
+> Context: The chosen stack, libraries, and tools.
+> 
+- **Language:** [e.g., Python 3.11]
+- **Core Libraries:** [e.g., LangChain, Pydantic, Typer]
+- **Storage:** [e.g., Local JSON files, SQLite]
+
+---
+
+## 5. Component Design (Logical Architecture)
+
+> Context: Description of the logical modules (Classes/Files) within the src/ folder. Do not use physical blocks; use logical separation (Classes, Interfaces).
+> 
+- **[Component/Class Name 1]**
+    - **Responsibility:** [What does this class do?]
+    - **Key Methods:** [e.g., `analyze_task()`, `generate_report()`]
+    - **Interactions:** [Which other components does it call?]
+- **[Component/Class Name 2]**
+    - **Responsibility:** ...
+
+---
+
+## 6. Code Organization Pattern
+
+> The mandatory file and code structure within the src/ directory. This pattern promotes a clear separation of concerns.
+> 
+
+[Example:
+
+- `main.py`: **The Entrypoint & Orchestrator.** This is the only file that should be directly executed. It is responsible for parsing command-line arguments, initializing services, and coordinating the overall application flow. It should contain minimal business logic.
+- `config.py`: **Configuration.** Stores all static configuration, constants, file paths (e.g., `DATABASE_FILE = "tasks.json"`), and settings.
+- `utils/`: **Utilities Directory.** Contains specific, reusable helper functions that are not part of the core business logic.
+    - Example: `parser.py` for validating user input, or `formatter.py` for creating styled console output.
+
+]
+
+---
+
+## 7. Core Data Models (Optional)(If implied in the project)
 
 > A brief description of the main data entities.
+> 
 
--   **[Model 1: e.g., Task]**
-    -   **Purpose:** Represents a single to-do item with an ID, title, and completion status. Will be modeled as a Pydantic class.
+[Example:
+
+- **[Model 1: e.g., Task]**
+- **Purpose:** Represents a single to-do item with an ID, title, and completion status. Will be modeled as a Pydantic class.
+
+]
 
 ---
 
-## 6. Key Conventions
+## 8. Key Conventions & Logging
 
-> A few simple rules to maintain code quality and consistency.
-
--   **Simplicity:** Always prefer the simplest solution and syntax that works.
--   **Clarity:** Variable and function names should be self-explanatory.
--   **Styling:** [e.g., All Python code must be formatted with Black and follow PEP 8.]
--   **Documentation:** Public functions and methods should have a simple docstring explaining their purpose, arguments, and return value.
--   **Logging:** The application MUST implement simple, human-readable text logging.
-    - **Location:** All logs must be written to a single file at `logs/prototype.log`. The `logs/` directory should be in the project root.
-    - **Format:** Each log entry must follow the format: `[YYYY-MM-DD HH:MM:SS] [LEVEL] - Message`.
-    - **Usage:**
-        - **INFO:** Log the start and successful completion of major user actions.
-        - **ERROR:** Log any exception or failure that occurs.
+- **Modularity:** Code must be logically separated into classes and modules within `src/`.
+- **Logging:** All significant events must be logged to `logs/prototype.log`.
+    - **Format:** `[YYYY-MM-DD HH:MM:SS] [LEVEL] - Message`
+- **Tools:** Reusable scripts created during development should be saved in `TOOLS/`.

@@ -26,7 +26,7 @@
 ## 3. Overall Architecture and Components
 
 ### Architecture
-> A view of the system's structure. Decompose the system into its logical modules. Describe the main components and how they interact.
+> A view of the system's structure. Decompose the system into its logical modules. Describe the main components and how they interact. The project should be divided into isolated functional blocks (Bounded Contexts).
 
 [e.g., "This project is a monolithic web application built with a Vue.js Single Page Application (SPA) frontend that communicates with a Python/FastAPI backend via a REST API. Data is persisted in a PostgreSQL database."]
 
@@ -89,19 +89,19 @@
 -   **Focused Changes:** Don't touch not related for the task code
 -   **Documentation:** Write clear, complete docstrings (using the project's specified format) for all public functions, methods, and classes. Do not use comments anywhere else.
 -   **Error Handling:** Implement robust error handling using try-except blocks for operations that can fail.
--   **Feedback:** Use Agent Feedback Protocol. !ONLY FOR TEAM LEAD OR SYSTEM ARCHITECT!
-  - **Logging:** All modules MUST implement structured, machine-readable (JSON) logging.
-    - **Location:** Logs for each block must be written to `PROJECT/BLOCK_NAME/logs/`.
-    - **Format:** Each log entry must be a JSON object containing at least these fields:
-      - `timestamp`: ISO 8601 format.
-      - `level`: One of `INFO`, `WARNING`, `ERROR`.
-      - `message`: A descriptive string of the event.
-      - `source_block`: The name of the block generating the log (e.g., "AuthService").
-      - `correlation_id`: A unique identifier (e.g., UUID) to trace a request across multiple blocks.
-    - **Usage:**
-      - **INFO:** For significant, successful events (e.g., user login, process completion).
-      - **WARNING:** For non-critical issues that should be noted (e.g., deprecated function call, configuration fallback).
-      - **ERROR:** For any failure, exception, or unexpected behavior that prevents an operation from completing.
+-   **Feedback:** Use Agent Feedback Protocol. _ONLY FOR TEAM LEAD OR SYSTEM ARCHITECT_
+- **Logging:** All modules MUST implement structured, machine-readable (JSON) logging.
+  - **Location:** Logs for each block must be written to `PROJECT/BLOCK_NAME/logs/`.
+  - **Format:** Each log entry must be a JSON object containing at least these fields:
+    - `timestamp`: ISO 8601 format.
+    - `level`: One of `INFO`, `WARNING`, `ERROR`.
+    - `message`: A descriptive string of the event.
+    - `source_block`: The name of the block generating the log (e.g., "AuthService").
+    - `correlation_id`: A unique identifier (e.g., UUID) to trace a request across multiple blocks.
+  - **Usage:**
+    - **INFO:** For significant, successful events (e.g., user login, process completion).
+    - **WARNING:** For non-critical issues that should be noted (e.g., deprecated function call, configuration fallback).
+    - **ERROR:** For any failure, exception, or unexpected behavior that prevents an operation from completing.
       
 ### Agent Feedback Protocol
 This protocol is the official method for inter-agent communication, primarily used by the Team Lead for reviews.
