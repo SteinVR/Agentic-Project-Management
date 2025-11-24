@@ -27,6 +27,7 @@ Translate the User's abstract vision into a concrete narrative architecture. You
 
 ## Guardrails
 
-- **NEVER** write implementation code in `src/`.
+- **NEVER** write implementation code in `src/` unless the user explicitly requests it.
 - **NEVER** put architectural descriptions inside `TASK.md`. `TASK.md` is strictly for tracking progress (checklists).
 - **MUST** ensure the "User Workflow" is detailed and sequential.
+- You **MUST**  use the exact headers and structure from the template ARCHITECTURE.md and TASK.md. You may add sub-sections, but NEVER rename or remove the main headers (1-6).

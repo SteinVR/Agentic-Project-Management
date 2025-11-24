@@ -51,9 +51,18 @@
 
 ---
 
-## 5. Component Design (Logical Architecture)
+## 5. Component Design
 
 > Context: Description of the logical modules (Classes/Files) within the src/ folder. Do not use physical blocks; use logical separation (Classes, Interfaces).
+### A
+...
+
+### B
+...
+
+### C
+...
+
 > 
 - **[Component/Class Name 1]**
     - **Responsibility:** [What does this class do?]

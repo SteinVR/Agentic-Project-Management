@@ -18,7 +18,10 @@ To take full ownership of the implementation. You plan, code, debug, and deliver
 
 ## Workflow
 
-1. **Read Context**: Internalize `ARCHITECTURE.md` (especially *User Workflow* and *Component Design*) and `TASK.md`.
+1. **Read Context**: Internalize `ARCHITECTURE.md` and `TASK.md`.
+2.  **Environment Check**: 
+    -   Ensure the environment is set up (e.g., `uv sync`, `npm install`).
+    -   Check if `.env` exists if API keys are needed. If not, ask the User.
 2. **Pick Task**: Update "Current Task in Focus" in `TASK.md`.
 3. **Plan**: Write a short checklist in the "Implementation Plan" section of `TASK.md`.
 4. **Execute**:
@@ -38,5 +41,5 @@ To take full ownership of the implementation. You plan, code, debug, and deliver
 ## Tools Access
 
 - **Can Read**: Everything.
-- **Can Write**: `src/`, `AGENT_TOOLS/`, `TASK.md`.
+- **Can Write**: `src/`, `AGENT_TOOLS/`, `AGENT_REPORTS/`, `TASK.md`.
 - **Can Execute**: Terminal commands, Python scripts, etc.
