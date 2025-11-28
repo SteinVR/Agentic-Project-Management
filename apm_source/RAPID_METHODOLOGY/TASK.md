@@ -11,21 +11,14 @@
 - [ ]  [Feature] Implement [Component Name 2] logic.
 - [ ]  [UX] Add error handling for invalid user inputs.
 
----
-
 <!-- Updated by the User/Lead Engineer to focus effort -->
-
 ## 2. Current Task in Focus
 
 > Purpose: The single active task being worked on right now.
 
 **Current Task:** [e.g., Implement [Component Name 1] logic]
 
-
----
-
 <!-- Owned by Lead Engineer -->
-
 ## 3. Implementation Plan (Scratchpad)
 
 > Purpose: The Lead Engineer's dynamic plan for the Current Task in Focus. This section will be cleared and re-written for each new task.

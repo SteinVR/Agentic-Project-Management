@@ -1,19 +1,6 @@
-<Context> 
-Краткий контекст проекта, описание архитектурного подхода к написанию кода 
-Неявная информация о остальных блоках, интерфейсов/контрактов для учета их в реализации.
-</Context>
-<Task>
-Описание подзадачи_1 проекта.
-</Task>
-<TO-DO>
-Подробности реализации подзадачи_1 - задача для Devoleper.
-</TO-DO>
-
-Пример промпта:
-# Task: [Block Name - e.g., User Authentication Service]
+# Task: {Block Name - e.g., User Authentication Service}
 **Status:** Pending | In Progress | Ready for Review
 
----
 
 <!-- Filled by System Architect -->
 ## 1. Business Context & User Stories
@@ -24,7 +11,6 @@
 -   **User Story 1:** As a new user, I want to be able to register an account with my email and password so that I can access the platform.
 -   **User Story 2:** As a returning user, I want to be able to log in with my credentials to access my personal data.
 
----
 
 <!-- Filled by System Architect -->
 ## 2. Acceptance Criteria (Contract for SDET)
@@ -37,7 +23,6 @@
 -   [ ] A successful registration must return a `201 Created` status and a user object without the password hash.
 -   [ ] The login endpoint must return a JWT token upon successful authentication.
 
----
 
 <!-- Filled by System Architect -->
 ## 3. Technical Plan & Constraints
@@ -54,7 +39,6 @@
 -   **Performance:**
     -   The login endpoint response time must be under 200ms.
 
----
 
 <!-- Filled by Software Engineer -->
 ## 4. Implementation Plan (TO-DO)
