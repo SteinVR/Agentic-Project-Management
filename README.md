@@ -1,12 +1,4 @@
-<div align="center">
-
-```
-    ___    ____  __  ___
-   /   |  / __ \/  |/  /
-  / /| | / /_/ / /|_/ / 
- / ___ |/ ____/ /  / /  
-/_/  |_/_/   /_/  /_/   
-```
+<div align="center">    
 
 # Agentic Project Management
 
@@ -27,8 +19,6 @@ APM (Agentic Project Management) is a methodology toolkit that brings structure 
 - **Agent Roles** - Pre-defined personas for LLM agents (Architect, Engineer, SDET, Principal)
 - **Cursor Commands** - Slash commands (`/apm-start`, `/apm-develop`, etc.) for seamless workflow
 - **Documentation Templates** - Structured specs, tasks, and reports
-
-> **Philosophy:** The specification is the single source of truth. Code is written to satisfy the specification, not the other way around.
 
 ---
 
