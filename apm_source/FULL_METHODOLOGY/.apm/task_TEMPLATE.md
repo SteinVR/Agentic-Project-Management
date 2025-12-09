@@ -10,7 +10,7 @@
 -   **Overall Goal:** This block is responsible for managing user registration, login, and session validation.
 -   **User Story 1:** As a new user, I want to be able to register an account with my email and password so that I can access the platform.
 -   **User Story 2:** As a returning user, I want to be able to log in with my credentials to access my personal data.
-
+Т
 
 <!-- Filled by System Architect -->
 ## 2. Acceptance Criteria (Contract for SDET)
