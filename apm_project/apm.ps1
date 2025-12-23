@@ -12,11 +12,20 @@
 
 param(
     [switch]$Help,
-    [switch]$Version
+    [switch]$Version,
+    # Non-interactive mode parameters for automated testing
+    [string]$ProjectName,
+    [string]$ProjectPath,
+    [ValidateSet("FULL", "RAPID", "")]
+    [string]$Methodology,
+    [switch]$SkipGitHub,
+    [switch]$SkipCursor,
+    [switch]$Force,
+    [switch]$NonInteractive
 )
 
 $ErrorActionPreference = 'Stop'
-$Script:Version = "1.0.0"
+$Script:AppVersion = "1.0.0"
 
 # ============================================================================
 # CONFIGURATION
@@ -37,7 +46,7 @@ function Show-Banner {
  / ___ |/ ____/ /  / /  
 /_/  |_/_/   /_/  /_/   
                         
-Agentic Project Management v$($Script:Version)
+Agentic Project Management v$($Script:AppVersion)
 Spec-Driven Development
 
 "@
@@ -364,8 +373,20 @@ APM (Agentic Project Management) - Project Configurator
 Usage: .\apm.ps1 [options]
 
 Options:
-    -Help       Show this help message
-    -Version    Show version information
+    -Help           Show this help message
+    -Version        Show version information
+
+Non-Interactive Mode (for automation/testing):
+    -ProjectName    Name of the project to create
+    -ProjectPath    Parent directory where project will be created
+    -Methodology    FULL or RAPID
+    -SkipGitHub     Skip GitHub repository creation
+    -SkipCursor     Skip opening Cursor IDE
+    -Force          Overwrite existing project without prompting
+    -NonInteractive Run without any user prompts
+
+Example:
+    .\apm.ps1 -ProjectName "my-app" -ProjectPath "C:\Projects" -Methodology RAPID -NonInteractive -SkipGitHub -SkipCursor
 
 This interactive wizard will guide you through creating a new APM project.
 "@
@@ -373,7 +394,7 @@ This interactive wizard will guide you through creating a new APM project.
     }
     
     if ($Version) {
-        Write-Host "APM v$($Script:Version)"
+        Write-Host "APM v$($Script:AppVersion)"
         return
     }
     
@@ -384,41 +405,83 @@ This interactive wizard will guide you through creating a new APM project.
         exit 1
     }
     
-    Clear-Host
-    Show-Banner
-    
-    # Step 1: Get project directory
-    Write-Step "Step 1: Project Location"
-    $directory = Read-DirectoryPath -Prompt "Parent directory for the project"
-    
-    # Step 2: Get project name
-    Write-Step "Step 2: Project Name"
-    $projectName = Read-ProjectName
-    
-    # Check if project already exists
-    $projectPath = Join-Path $directory $projectName
-    if (Test-Path $projectPath) {
-        Write-Error "A folder named '$projectName' already exists at this location."
-        $overwrite = Read-UserInput -Prompt "Overwrite? (y/n)" -Default "n"
-        if ($overwrite -ne 'y') {
+    # Check if running in non-interactive mode
+    if ($NonInteractive) {
+        # Validate required parameters for non-interactive mode
+        if ([string]::IsNullOrWhiteSpace($ProjectName)) {
+            Write-Error "-ProjectName is required in non-interactive mode"
+            exit 1
+        }
+        if ([string]::IsNullOrWhiteSpace($ProjectPath)) {
+            Write-Error "-ProjectPath is required in non-interactive mode"
+            exit 1
+        }
+        if ([string]::IsNullOrWhiteSpace($Methodology)) {
+            Write-Error "-Methodology is required in non-interactive mode"
+            exit 1
+        }
+        
+        # Resolve paths
+        if (-not (Test-Path $ProjectPath -PathType Container)) {
+            Write-Error "Project path does not exist: $ProjectPath"
+            exit 1
+        }
+        $directory = (Resolve-Path $ProjectPath).Path
+        $projectName = $ProjectName
+        $methodology = $Methodology
+        $githubEnabled = -not $SkipGitHub
+        $projectPath = Join-Path $directory $projectName
+        
+        Write-Info "Non-interactive mode: Creating $methodology project '$projectName'"
+        
+        # Check if project exists
+        if (Test-Path $projectPath) {
+            if ($Force) {
+                Write-Warning "Overwriting existing project: $projectPath"
+                Remove-Item -Path $projectPath -Recurse -Force
+            } else {
+                Write-Error "Project already exists: $projectPath. Use -Force to overwrite."
+                exit 1
+            }
+        }
+    } else {
+        # Interactive mode
+        Clear-Host
+        Show-Banner
+        
+        # Step 1: Get project directory
+        Write-Step "Step 1: Project Location"
+        $directory = Read-DirectoryPath -Prompt "Parent directory for the project"
+        
+        # Step 2: Get project name
+        Write-Step "Step 2: Project Name"
+        $projectName = Read-ProjectName
+        
+        # Check if project already exists
+        $projectPath = Join-Path $directory $projectName
+        if (Test-Path $projectPath) {
+            Write-Error "A folder named '$projectName' already exists at this location."
+            $overwrite = Read-UserInput -Prompt "Overwrite? (y/n)" -Default "n"
+            if ($overwrite -ne 'y') {
+                Write-Host "`nAborted." -ForegroundColor Yellow
+                exit 0
+            }
+            Remove-Item -Path $projectPath -Recurse -Force
+        }
+        
+        # Step 3: Select methodology
+        Write-Step "Step 3: Select Methodology"
+        $methodology = Select-Methodology
+        
+        # Step 4: GitHub integration
+        Write-Step "Step 4: GitHub Integration"
+        $githubEnabled = Confirm-GitHubIntegration
+        
+        # Show summary and confirm
+        if (-not (Show-Summary -ProjectPath $projectPath -ProjectName $projectName -Methodology $methodology -GitHubEnabled $githubEnabled)) {
             Write-Host "`nAborted." -ForegroundColor Yellow
             exit 0
         }
-        Remove-Item -Path $projectPath -Recurse -Force
-    }
-    
-    # Step 3: Select methodology
-    Write-Step "Step 3: Select Methodology"
-    $methodology = Select-Methodology
-    
-    # Step 4: GitHub integration
-    Write-Step "Step 4: GitHub Integration"
-    $githubEnabled = Confirm-GitHubIntegration
-    
-    # Show summary and confirm
-    if (-not (Show-Summary -ProjectPath $projectPath -ProjectName $projectName -Methodology $methodology -GitHubEnabled $githubEnabled)) {
-        Write-Host "`nAborted." -ForegroundColor Yellow
-        exit 0
     }
     
     # Create project
@@ -457,8 +520,12 @@ This interactive wizard will guide you through creating a new APM project.
     Write-Host "  3. The System Architect will guide you through the setup"
     Write-Host ""
     
-    # Offer to open Cursor
-    Open-Cursor -ProjectPath $projectPath
+    # Offer to open Cursor (skip in non-interactive mode or if SkipCursor is set)
+    if (-not $NonInteractive -and -not $SkipCursor) {
+        Open-Cursor -ProjectPath $projectPath
+    } elseif ($NonInteractive) {
+        Write-Info "Skipping Cursor launch (non-interactive mode)"
+    }
     
     Write-Host "`nHappy coding!" -ForegroundColor Cyan
 }

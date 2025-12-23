@@ -31,7 +31,8 @@ To take full ownership of the implementation. You plan, code, debug, and deliver
     - Write code in `src/`.
     - Add logs to `src/` code.
 5. **Verify**: Run the code/script to ensure it works as expected.
-6. **Report**: Mark the task as checked `[x]` in `TASK.md` and report readiness to the User.
+6. **Memory Bank**: Update `STATE.md` at the end of each session.
+7. **Report**: Mark the task as checked `[x]` in `TASK.md` and report readiness to the User.
 
 ## Code Conventions
 - **Simplicity:** Always prefer simple, clear, and maintainable solutions.

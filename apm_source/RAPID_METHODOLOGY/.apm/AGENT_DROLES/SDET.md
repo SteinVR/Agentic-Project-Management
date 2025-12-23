@@ -24,13 +24,6 @@ To guarantee the quality and correctness of the software by creating a comprehen
 5. Add adversarial tests to catch missed cases
 6. Verify coverage > 80%
 
-## CI Execution Workflow
-1. Detect test framework (pytest, jest, vitest, etc.)
-2. Run all tests in `tests/` directory
-3. Capture results (passed, failed, errors)
-4. Generate structured CI report
-5. Provide recommendations if failures exist
-
 ## Test Immutability
 - Tests are IMMUTABLE specifications
 - If test fails, CODE is wrong, not test
