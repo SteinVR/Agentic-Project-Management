@@ -6,6 +6,8 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![PowerShell](https://img.shields.io/badge/PowerShell-5.1+-blue.svg)](https://github.com/PowerShell/PowerShell)
+[![Bash](https://img.shields.io/badge/Bash-4.0+-green.svg)](https://www.gnu.org/software/bash/)
+[![Platform](https://img.shields.io/badge/Platform-Windows%20|%20Linux%20|%20macOS-lightgrey.svg)]()
 
 </div>
 
@@ -15,9 +17,10 @@
 
 APM (Agentic Project Management) is a methodology toolkit that brings structure and predictability to AI-assisted software development. It provides:
 
-- **CLI Configurator** - Interactive wizard to bootstrap new projects
+- **CLI Configurator** - Interactive wizard to bootstrap new projects (Windows, Linux, macOS)
 - **Agent Roles** - Pre-defined personas for LLM agents (Architect, Engineer, SDET, Principal)
-- **Cursor Commands** - Slash commands (`/apm-start`, `/apm-develop`, etc.) for seamless workflow
+- **Cursor Commands** - Slash commands for seamless workflow (`/apm-start`, `/apm-develop`, `/apm-ci`, etc.)
+- **Memory Bank** - Persistent project state across sessions (decisions, context, tech debt)
 - **Documentation Templates** - Structured specs, tasks, and reports
 
 ---
@@ -63,9 +66,13 @@ In FULL methodology, the workflow follows strict TDD:
 ```
 project/
 ├── .apm/
-│   ├── AGENT_DRULES/         # Agent role definitions
+│   ├── AGENT_DROLES/         # Agent role definitions
 │   ├── AGENT_REPORTS/        # Report templates
-│   └── AGENT_TOOLS/          # Auxiliary scripts
+│   ├── AGENT_TOOLS/          # Auxiliary scripts
+│   └── MEMORY/               # Memory Bank
+│       ├── STATE.md          # Project state tracking
+│       ├── DECISIONS.md      # Architecture decision log
+│       └── TECH_DEBT.md      # Technical debt tracker
 ├── .cursor/commands/         # Slash commands
 ├── {project-name}/
 │   ├── {Block-1}/
@@ -100,12 +107,14 @@ project/
 ├── .apm/
 │   ├── AGENT_DROLES/
 │   ├── AGENT_REPORTS/
-│   └── AGENT_TOOLS/
+│   ├── AGENT_TOOLS/
+│   └── STATE_TEMPLATE.md     # State tracking template
 ├── .cursor/commands/
 ├── src/                      # Unified source directory
 ├── tests/
 ├── logs/
 ├── external/
+├── STATE.md                  # Project state
 ├── ARCHITECTURE.md
 └── TASK.md
 ```
@@ -125,8 +134,20 @@ Less ceremony, faster iteration, same structured approach.
 
 ### 1. Run the Configurator
 
+**Windows (PowerShell):**
 ```powershell
+.\apm_project\apm.ps1
+```
+
+**Windows (Command Prompt):**
+```cmd
 .\apm_project\apm.bat
+```
+
+**Linux / macOS:**
+```bash
+chmod +x ./apm_project/apm.sh
+./apm_project/apm.sh
 ```
 
 The interactive wizard will guide you through:
@@ -166,12 +187,65 @@ The Lead Engineer picks up tasks and begins implementation.
 
 ## 💻 Commands
 
+### Core Commands
+
 | Command | Description |
 |---------|-------------|
 | `/apm-start` | Initialize project with System Architect (Vision Alignment) |
 | `/apm-develop` | Activate Lead Engineer for development |
+| `/apm-architect` | Activate System Architect for consultation or review |
+| `/apm-tester` | Activate SDET role for quality assurance |
 | `/apm-report` | Generate reports using templates (General, Test, E2E, Debug) |
 | `/apm-review` | Conduct architecture review and quality audit |
+
+### CI/CD Commands
+
+| Command | Description |
+|---------|-------------|
+| `/apm-ci` | Generate GitHub Actions CI workflow (tests, coverage) |
+| `/apm-cd` | Generate GitHub Actions CD workflow (staging deployment) - FULL only |
+
+### Memory Bank Commands
+
+| Command | Description |
+|---------|-------------|
+| `/apm-sync` | Sync Memory Bank - update STATE.md with current project state |
+
+### FULL Methodology Exclusive
+
+| Command | Description |
+|---------|-------------|
+| `/apm-principal` | Activate Principal Engineer for code review and validation |
+| `/apm-cd` | Setup CD workflow for staging deployment |
+
+---
+
+## 🧠 Memory Bank
+
+Memory Bank provides persistent context across agent sessions, solving the "context loss" problem in long-running projects.
+
+### Components
+
+**STATE.md** - Active project state
+- Current focus and blockers
+- Block status overview (FULL) or project status (RAPID)
+- Session history for continuity
+
+**DECISIONS.md** (FULL only) - Architecture Decision Records
+- Documented decisions with context and rationale
+- Impact tracking across blocks
+- Decision status (Proposed, Accepted, Deprecated)
+
+**TECH_DEBT.md** (FULL only) - Technical debt tracker
+- Prioritized list of known issues
+- Architecture deviations with justification
+- Resolved debt history
+
+### Sync Workflow
+
+Run `/apm-sync` periodically to:
+1. Scan recent changes in `src/`, `logs/`, and docs
+2. Update State of the project
 
 ---
 
@@ -191,6 +265,13 @@ Work tracking with:
 - Feature Backlog (checklist)
 - Current Task in Focus
 - Implementation Plan (scratchpad)
+
+### STATE.md
+Project state tracking:
+- Active Context (current focus, blockers)
+- Decision Log (RAPID) or reference to DECISIONS.md (FULL)
+- Known Issues / Tech Debt
+- Session History
 
 ### Report Templates
 - `GENERAL_REPORT_TEMPLATE.md` - Work summaries
