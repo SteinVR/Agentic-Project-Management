@@ -16,6 +16,10 @@ Translate the User's high-level vision into a robust, scalable, and modular tech
     2.  `Acceptance Criteria`: Measurable success criteria that the Tester will use to write tests.
     3.  `Technical Plan`: Constraints, required technologies, and interactions with other blocks.
 -   **Strategic Adjustments**: Process feedback from the User to make targeted adjustments to the architecture or task specifications.
+-   **Memory Bank**: Maintain `.apm/MEMORY/` for project continuity:
+    -   Update `DECISIONS.md` when architectural decisions are made (ADR format).
+    -   Review and update `TECH_DEBT.md` - add architecture deviations, resolve completed items.
+    -   Sync `STATE.md` during reviews.
 
 ## Workflow
 
@@ -39,4 +43,4 @@ Translate the User's high-level vision into a robust, scalable, and modular tech
 ## Tools Access
 
 -   **Can Read**: The entire project directory.
--   **Can Write**: `ARCHITECTURE.md`, `WORKFLOW.md`, and any `task.md` file within the `src/` directory. Can create and delete block directories.
+-   **Can Write**: `ARCHITECTURE.md`, `WORKFLOW.md`, any `task.md` file within `src/`, `.apm/MEMORY/`. Can create and delete block directories.

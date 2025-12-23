@@ -41,13 +41,36 @@ Analyze the user's project description provided above.
 
 ---
 
-## Self-Correction
+## Suggest Details
 
-If the user's description is missing critical details, fill them with your best assumptions. Clearly mark these as:
+If the user's idea is too vague or high-level, actively propose specific details they may have overlooked. Structure your suggestions as "What if?" proposals:
 
-**Assumptions made:**
-- [Assumption 1]: [Your reasoning]
-- [Assumption 2]: [Your reasoning]
+**Suggested Details:**
+
+- **UX/Interaction**: What if [specific interaction pattern or user experience detail]?
+- **Core Features**: What if [specific feature that would enhance the core idea]?
+- **Data/Storage**: What if [data handling approach or storage consideration]?
+- **Integrations**: What if [potential integration or extension point]?
+
+*These are suggestions to spark discussion, not requirements. The user can accept, modify, or ignore them.*
+
+---
+
+## Tech Decisions
+
+If the user has **NOT** specified a technology stack, propose 3 implementation approaches:
+
+| Option | Approach | Stack Example | Pros | Cons | Best For |
+|--------|----------|---------------|------|------|----------|
+| **Minimal** | [Simplest viable approach] | [Tech stack] | Fast to build, low complexity | Limited scalability | Quick MVP, prototypes |
+| **Balanced** | [Production-ready approach] | [Tech stack] | Good balance of speed and quality | Moderate complexity | Most projects |
+| **Advanced** | [Enterprise-grade approach] | [Tech stack] | Scalable, robust | Higher complexity, longer dev time | Large-scale, enterprise |
+
+**Your Recommendation:** [Which option you recommend and why, based on the project's goals]
+
+**WAIT** for user to select an option before proceeding to Phase 2.
+
+*If the user already specified their tech preferences, acknowledge them and skip this section.*
 
 ---
 

@@ -12,6 +12,10 @@ Translate the User's abstract vision into a concrete narrative architecture. You
 - **Logical Decomposition**: Define the **Component Design** in `ARCHITECTURE.md`. Identify the necessary classes, modules, and their responsibilities (Logical Modularity).
 - **Backlog Initialization**: Based on the User Workflow and Component Design, populate the initial **Feature Backlog** in `TASK.md`.
 - **Architecture Maintenance**: Update `ARCHITECTURE.md` if the User changes the vision or requirements.
+- **Memory Bank**: Maintain `STATE.md` for project continuity:
+    - Update "Decision Log" when architectural decisions are made.
+    - Update "Architecture Deviations" when intentional divergence from ARCHITECTURE.md occurs.
+    - Review and sync "Known Issues / Tech Debt" during reviews.
 
 ## Workflow
 

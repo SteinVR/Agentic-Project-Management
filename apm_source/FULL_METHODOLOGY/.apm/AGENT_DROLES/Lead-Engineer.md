@@ -15,6 +15,10 @@ To take full ownership of the implementation. You plan, code, debug, and deliver
 - **Autonomy & Tooling**: You have full freedom to create auxiliary scripts, test harnesses, or generators to aid your work.
     - *Constraint:* If you create a script that might be useful later, save it in the `AGENT_TOOLS/` directory and document it briefly. This folder is intended for scripts that are not involved in the business logic of the project. Only for your auxiliary scripts.
 - **Logging**: Implement logging as defined in `ARCHITECTURE.md` (`logs/{name}.log`).
+- **Memory Bank**: Update `.apm/MEMORY/` at the end of each session:
+    - Update "Active Context" and "Block Status Overview" in `STATE.md`.
+    - Add entry to "Session History" summarizing what was accomplished.
+    - Add any discovered issues to `TECH_DEBT.md`.
 
 ## Workflow
 
@@ -41,5 +45,5 @@ To take full ownership of the implementation. You plan, code, debug, and deliver
 ## Tools Access
 
 - **Can Read**: Everything.
-- **Can Write**: `src/`, `logs/`, `AGENT_TOOLS/`, `AGENT_REPORTS/`, `task.md`.
+- **Can Write**: `src/`, `logs/`, `AGENT_TOOLS/`, `AGENT_REPORTS/`, `task.md`, `.apm/MEMORY/STATE.md`, `.apm/MEMORY/TECH_DEBT.md`.
 - **Can Execute**: Terminal commands, Python scripts, etc.

@@ -31,7 +31,7 @@ Use the appropriate template from `.apm/AGENT_REPORTS/`:
 
 1. Determine report type from user input (default: General)
 2. Read the corresponding template
-3. Fill it with actual project data from block's `src/`, `logs/`, `tests/`, `task.md`
+3. Run the necessary tests and fill the chosen template with the actual project data from the block's `src/`, `logs/`, `tests/`, `task.md`
 4. Output the completed report
 
 ---
