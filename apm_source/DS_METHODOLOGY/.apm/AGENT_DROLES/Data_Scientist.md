@@ -25,26 +25,77 @@ Achieve the target metrics defined in `ARCHITECTURE.md` through a cycle of hypot
 2. **Select Hypothesis**: Pick a hypothesis from the backlog or propose a new one.
 3. **Plan Experiment**: Write a brief plan in "Experiment Plan" section of `TASK.md`.
 4. **Implement**:
-   - Exploration/prototyping: `notebooks/`
-   - Production-ready code: `src/`
+   - Create reusable functions in `src/` modules (data.py, features.py, models.py, etc.)
+   - Build experiment pipeline in `experiments/EXP-XXX/main_exp.py`
    - Always set random seeds for reproducibility
-5. **Execute**: Run training, log metrics to `logs/`.
+5. **Execute**: Run training using cell-by-cell execution, log metrics to `logs/`.
 6. **Evaluate**: Compare with baseline and previous experiments.
-7. **Document**: Create experiment report in `experiments/` folder.
+7. **Document**: Create experiment report in `experiments/EXP-XXX/REPORT.md`.
 8. **Update State**: 
    - Add row to "Experiment History" in `STATE.md`
    - Update "Best Model Tracker" if applicable
    - Mark hypothesis as tested in `TASK.md`
 9. **Iterate or Conclude**: If target not met, return to step 2.
 
+## Code Organization
+
+### Source Modules (`src/`)
+
+Write typed, reusable functions following DRY principle:
+
+```python
+# src/data.py
+def load_data(path: str) -> pd.DataFrame:
+    """Load and validate raw data."""
+    ...
+
+# src/features.py  
+def create_time_features(df: pd.DataFrame, date_col: str) -> pd.DataFrame:
+    """Extract time-based features from date column."""
+    ...
+
+# src/models.py
+def train_model(X: np.ndarray, y: np.ndarray, config: dict) -> BaseEstimator:
+    """Train model with given configuration."""
+    ...
+```
+
+### Pipeline Scripts (`main.py`, `main_exp.py`)
+
+Use cell-like separators for block execution:
+
+```python
+# %% [Setup] -----------------------------------------------
+import pandas as pd
+from src.data import load_data
+from src.features import create_features
+
+# %% [Load Data] -------------------------------------------
+df = load_data("data/raw/train.csv")
+print(f"Loaded {len(df)} rows")
+
+# %% [Feature Engineering] ---------------------------------
+df = create_features(df)
+
+# %% [Train Model] -----------------------------------------
+from src.models import train_model
+model = train_model(X_train, y_train, config)
+
+# %% [Evaluate] --------------------------------------------
+from src.evaluation import evaluate_model
+metrics = evaluate_model(model, X_val, y_val)
+print(f"Validation F1: {metrics['f1']:.4f}")
+```
+
 ## Code Conventions
 
 - **Reproducibility**: Always set and document random seeds. Save model with version info.
-- **Modularity**: Reusable code goes to `src/`. One-off analysis stays in `notebooks/`.
+- **Modularity**: Reusable code goes to `src/`. Experiment-specific logic stays in `main_exp.py`.
+- **Type Hints**: All functions must have type annotations.
 - **Naming**: 
-!!!  - Notebooks: `{number}_{description}.ipynb` (e.g., `03_feature_engineering.ipynb`)
+  - Modules: lowercase with underscores (`data.py`, `feature_engineering.py`)
   - Models: `model_{exp_id}_{metric}_{value}.pkl`
-  - Experiments: `EXP-{number}_{description}.md`
+  - Experiments: `EXP-{number}_{description}/`
 - **Validation**: Never touch the test set until final evaluation. Use validation set for all experiments.
 - **No Leakage**: Be vigilant about data leakage. Document any concerns.
 
@@ -58,7 +109,7 @@ Achieve the target metrics defined in `ARCHITECTURE.md` through a cycle of hypot
 ## Tools Access
 
 - **Can Read**: Everything.
-- **Can Write**: `src/`, `notebooks/`, `experiments/`, `models/`, `data/processed/`, `TASK.md`, `STATE.md`, `AGENT_TOOLS/`, `logs/`.
+- **Can Write**: `src/`, `experiments/`, `models/`, `data/processed/`, `main.py`, `config.py`, `TASK.md`, `STATE.md`, `AGENT_TOOLS/`, `logs/`.
 
 ## Guardrails
 

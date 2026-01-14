@@ -32,10 +32,13 @@
 
 ### Configuration
 
-```
-[Key configuration details - hyperparameters, settings, etc.]
-Random Seed: [value]
-Train/Val Split: [ratio]
+```python
+# From experiments/EXP-XXX/config.py
+RANDOM_SEED = [value]
+TRAIN_VAL_SPLIT = [ratio]
+MODEL_PARAMS = {
+    # key hyperparameters
+}
 ```
 
 ---
@@ -51,7 +54,7 @@ Train/Val Split: [ratio]
 
 ### Training Curves (if applicable)
 
-[Description or reference to logged plots]
+[Description or reference to logged plots in `logs/figures/`]
 
 ### Runtime
 
@@ -91,7 +94,8 @@ Train/Val Split: [ratio]
 | Artifact | Path | Description |
 |----------|------|-------------|
 | Model | `models/[filename]` | Trained model |
-| Notebook | `notebooks/[filename]` | Experiment notebook |
+| Experiment Script | `experiments/EXP-XXX/main_exp.py` | Experiment pipeline |
+| Config | `experiments/EXP-XXX/config.py` | Experiment parameters |
 | Logs | `logs/[filename]` | Training logs |
 
 ---

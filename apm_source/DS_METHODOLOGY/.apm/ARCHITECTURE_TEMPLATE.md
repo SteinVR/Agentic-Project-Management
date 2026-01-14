@@ -15,7 +15,7 @@
 | [Primary metric, e.g., F1-Score] | [Current/naive baseline] | [Target value] | [Why this target?] |
 | [Secondary metric, e.g., AUC-ROC] | [Baseline] | [Target] | [Rationale] |
 
-### Constraints (if consists)
+### Constraints (if applicable)
 
 - **Latency:** [e.g., Inference must be < 100ms]
 - **Interpretability:** [e.g., Model must be explainable for regulatory reasons]
@@ -33,7 +33,7 @@
 |--------|------|------|------------------|---------------|
 | [e.g., PostgreSQL DB] | [Tabular/Image/Text] | [Rows/Files] | [Daily/Static] | [SQL/API/File] |
 
-### Data Schema !!!
+### Data Schema
 
 ```
 [Describe key features/columns, their types, and meaning]
@@ -75,7 +75,7 @@ Example:
    - Distribution analysis
    - Correlation analysis
    - Feature importance (preliminary)
-   - Document findings in `notebooks/` and EDA_REPORT
+   - Document findings using `src/eda.py` functions and EDA_REPORT
 
 3. **Baseline Establishment**
    - Simple model (e.g., LogisticRegression, RandomForest with defaults)
@@ -84,9 +84,9 @@ Example:
 
 4. **Experimentation Cycle**
    - Formulate hypothesis (in TASK.md)
-   - Implement experiment (code in `src/`, exploration in `notebooks/`)
-   - Train and evaluate
-   - Log results in `experiments/`
+   - Implement experiment in `experiments/EXP-XXX/`
+   - Train and evaluate using `main_exp.py`
+   - Log results in experiment report
    - Update STATE.md with findings
 
 5. **Final Evaluation**
@@ -165,10 +165,45 @@ Example:
 
 ---
 
-## 8. Conventions & Logging
+## 8. Code Organization & Conventions
 
-- **Notebooks:** Naming convention `{number}_{description}.ipynb` (e.g., `01_eda.ipynb`)
-- **Experiments:** Follow EXPERIMENT_REPORT template, saved in `experiments/`
-- **Models:** Save with metadata: `model_{experiment_id}_{metric_value}.pkl`
-- **Logging:** Training logs in `logs/`, format `[YYYY-MM-DD HH:MM:SS] [LEVEL] - Message`
-- **Random Seeds:** Always set and document for reproducibility
+### Project Structure
+
+```
+src/                          # Reusable typed functions (DRY principle)
+├── __init__.py
+├── data.py                   # Data loading, cleaning, transformations
+├── features.py               # Feature engineering functions
+├── eda.py                    # EDA analysis and visualizations
+├── models.py                 # Model initialization, training, inference
+├── evaluation.py             # Metrics, validation, error analysis
+└── visualization.py          # Plotting functions
+
+main.py                       # Main pipeline (cell-like blocks with # %% separators)
+config.py                     # Global configuration and hyperparameters
+
+experiments/                  # Isolated experiments
+└── EXP-XXX_{description}/
+    ├── main_exp.py           # Experiment pipeline (cell-like blocks)
+    ├── config.py             # Experiment-specific config
+    └── REPORT.md             # Experiment report
+```
+
+### Code Style
+
+- **Cell-like execution**: Use `# %% [Block Name]` separators in `main.py` and `main_exp.py` for block-by-block execution
+- **Typed functions**: All functions should have type hints
+- **Reusability**: Functions in `src/` should be reusable across experiments (DRY)
+- **Docstrings**: All public functions must have docstrings
+
+### Naming Conventions
+
+- **Scripts**: `main.py`, `main_exp.py`, `config.py`
+- **Modules**: lowercase with underscores (`data.py`, `feature_engineering.py`)
+- **Models**: `model_{experiment_id}_{metric}_{value}.pkl`
+- **Experiments**: `EXP-{number}_{description}/`
+
+### Logging
+
+- Training logs in `logs/`, format `[YYYY-MM-DD HH:MM:SS] [LEVEL] - Message`
+- Random seeds: Always set and document for reproducibility

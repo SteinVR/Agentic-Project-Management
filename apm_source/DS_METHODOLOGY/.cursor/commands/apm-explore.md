@@ -26,51 +26,80 @@ Your goal is to deeply understand the data before any modeling begins. This is a
 
 ## EDA Workflow
 
-### 1. Data Loading & Overview
+### 1. Setup EDA Module
+
+Create reusable EDA functions in `src/eda.py`:
+
+```python
+# src/eda.py
+def describe_dataset(df: pd.DataFrame) -> dict:
+    """Get basic dataset statistics."""
+    ...
+
+def plot_distributions(df: pd.DataFrame, cols: list[str]) -> None:
+    """Plot distributions for specified columns."""
+    ...
+
+def analyze_missing(df: pd.DataFrame) -> pd.DataFrame:
+    """Analyze missing value patterns."""
+    ...
+
+def plot_correlations(df: pd.DataFrame) -> None:
+    """Plot correlation heatmap."""
+    ...
+```
+
+### 2. Build EDA Pipeline in main.py
+
+Add EDA blocks to `main.py` using cell separators:
+
+```python
+# %% [EDA: Load Data] --------------------------------------
+from src.data import load_data
+df = load_data("data/raw/train.csv")
+
+# %% [EDA: Overview] ---------------------------------------
+from src.eda import describe_dataset
+stats = describe_dataset(df)
+print(stats)
+
+# %% [EDA: Missing Values] ---------------------------------
+from src.eda import analyze_missing
+missing = analyze_missing(df)
+
+# %% [EDA: Distributions] ----------------------------------
+from src.eda import plot_distributions
+plot_distributions(df, numerical_cols)
+
+# %% [EDA: Correlations] -----------------------------------
+from src.eda import plot_correlations
+plot_correlations(df)
+```
+
+### 3. Analysis Checklist
 
 - [ ] Load data from `data/raw/`
 - [ ] Check dimensions, dtypes, memory usage
 - [ ] Identify target variable and feature types
 - [ ] Check for duplicates
-
-### 2. Missing Values Analysis
-
 - [ ] Calculate missing percentages per feature
 - [ ] Identify patterns (random vs systematic)
-- [ ] Document in EDA report
-
-### 3. Target Variable Analysis
-
-- [ ] Distribution of target
-- [ ] Class balance (classification) or distribution shape (regression)
-- [ ] Identify any anomalies
-
-### 4. Feature Analysis
-
-- [ ] Numerical: distributions, outliers, skewness
-- [ ] Categorical: cardinality, value counts
-- [ ] Temporal: patterns, seasonality (if applicable)
-
-### 5. Relationships
-
-- [ ] Correlation matrix (numerical features)
-- [ ] Feature-target relationships
+- [ ] Analyze target distribution and class balance
+- [ ] Numerical features: distributions, outliers, skewness
+- [ ] Categorical features: cardinality, value counts
+- [ ] Correlation matrix and feature-target relationships
 - [ ] Identify potential multicollinearity
-
-### 6. Data Quality Issues
-
-- [ ] Outliers detection and assessment
-- [ ] Data leakage risks
-- [ ] Inconsistencies or errors
+- [ ] Assess data leakage risks
 
 ---
 
 ## Deliverables
 
-1. **EDA Notebook**: Save detailed analysis in `notebooks/01_eda.ipynb`
-2. **EDA Report**: Create report using template @.apm/AGENT_REPORTS/EDA_REPORT.md and save in project root or `experiments/`
-3. **Feature Engineering Ideas**: Document opportunities discovered
-4. **Update STATE.md**: Add session entry
+1. **EDA Module**: Create `src/eda.py` with reusable analysis functions
+2. **EDA Blocks**: Add EDA blocks to `main.py` with `# %%` separators
+3. **EDA Report**: Create report using @.apm/AGENT_REPORTS/EDA_REPORT.md
+4. **Feature Engineering Ideas**: Document opportunities discovered
+5. **Update STATE.md**: Add session entry
 
 ---
 

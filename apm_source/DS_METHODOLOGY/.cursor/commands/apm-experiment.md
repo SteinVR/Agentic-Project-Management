@@ -38,32 +38,70 @@ Check user input above. If a specific hypothesis is provided, work on that. Othe
 - Select the highest priority untested hypothesis
 - Update "Active Experiment" section in TASK.md
 
-### 2. Plan Experiment
+### 2. Create Experiment Directory
 
-In the "Experiment Plan" section of TASK.md, write:
+```
+experiments/
+└── EXP-XXX_{short_description}/
+    ├── main_exp.py      # Experiment pipeline with cell separators
+    ├── config.py        # Experiment-specific configuration
+    └── REPORT.md        # Experiment report (copy from template)
+```
 
-- [ ] What specific change is being tested
-- [ ] Expected outcome
-- [ ] Implementation steps
-- [ ] Evaluation criteria
+### 3. Setup Experiment Config
 
-### 3. Implement
+Create `experiments/EXP-XXX/config.py`:
 
-- **Prototyping**: Work in `notebooks/` for exploration
-- **Production code**: Move reusable code to `src/`
-- **Always**: Set random seeds for reproducibility
+```python
+"""Experiment configuration."""
 
-### 4. Execute & Evaluate
+EXPERIMENT_ID = "EXP-XXX"
+HYPOTHESIS = "H-XXX"
+DESCRIPTION = "Brief description"
 
-- Run training with logging to `logs/`
-- Evaluate on validation set (NEVER touch test set)
-- Compare with baseline and previous experiments
-- Analyze errors and patterns
+RANDOM_SEED = 42
 
-### 5. Document
+# Data config
+TRAIN_PATH = "data/processed/train.csv"
+VAL_PATH = "data/processed/val.csv"
 
-Create experiment report in `experiments/` using:
-@.apm/AGENT_REPORTS/EXPERIMENT_REPORT.md
+# Model config
+MODEL_PARAMS = {
+    # hyperparameters
+}
+
+# Training config
+EPOCHS = ...
+BATCH_SIZE = ...
+```
+
+### 4. Build Experiment Pipeline
+
+Create `experiments/EXP-XXX/main_exp.py` with cell separators:
+
+```python
+# %% [Setup] -----------------------------------------------
+import sys
+sys.path.insert(0, "../..")  # Access src/ modules
+
+from config import *
+from src.data import load_data
+from src.features import create_features
+from src.models import train_model
+from src.evaluation import evaluate_model
+...
+
+# %% [Load Data] -------------------------------------------
+
+# %% [Train Model] -----------------------------------------
+
+# %% [Evaluate] --------------------------------------------
+
+# %% [Save Artifacts] --------------------------------------
+
+### 5. Document Results
+
+Fill in `experiments/EXP-XXX/REPORT.md` using @.apm/AGENT_REPORTS/EXPERIMENT_REPORT.md
 
 ### 6. Update State
 
@@ -80,6 +118,7 @@ Create experiment report in `experiments/` using:
 - **Always compare to baseline**, not just previous experiment
 - **Document everything** - no undocumented experiments
 - **Save model artifacts** with clear naming: `model_{exp_id}_{metric}_{value}.pkl`
+- **Reuse src/ functions** - don't duplicate code across experiments
 
 ---
 

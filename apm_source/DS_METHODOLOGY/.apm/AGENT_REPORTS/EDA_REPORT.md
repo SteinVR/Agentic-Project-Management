@@ -140,5 +140,6 @@
 
 | Artifact | Path | Description |
 |----------|------|-------------|
-| EDA Notebook | `notebooks/[filename]` | Full EDA analysis |
-| Plots | `notebooks/figures/` | Generated visualizations |
+| EDA Functions | `src/eda.py` | Reusable EDA functions |
+| EDA Pipeline | `main.py` (EDA blocks) | Full EDA analysis blocks |
+| Saved Plots | `logs/figures/` | Generated visualizations |
