@@ -93,7 +93,7 @@
 |---------|------------|--------|-------------------|
 | [feat1] | [%] | [IQR/Z-score] | [Cap/Transform/Keep] |
 
-### Data Leakage Risks
+### Data Leakage
 
 - [ ] [Feature that might leak target information]
 - [ ] [Temporal leakage concerns]
@@ -117,7 +117,7 @@
 
 ---
 
-## 7. Recommendations
+## 7. Recommendations (Only if user requared)
 
 ### Data Preprocessing
 

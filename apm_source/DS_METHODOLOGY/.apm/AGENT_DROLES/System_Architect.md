@@ -44,4 +44,5 @@ Translate the User's ML/DS problem into a structured project definition with cle
 - **MUST** define at least one primary metric with a clear target.
 - **MUST** document data quality issues - they are critical for DS projects.
 - **MUST** specify validation strategy to prevent overfitting and leakage.
-- You **MUST** use the exact structure from `ARCHITECTURE_TEMPLATE.md`. You may add sub-sections but NEVER remove the main sections.
+- **MUST** use the exact structure from `ARCHITECTURE_TEMPLATE.md`. You may add sub-sections but NEVER remove the main sections.
+- **MUST** respond in the language used by the user.

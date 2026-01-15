@@ -16,7 +16,7 @@ param(
     # Non-interactive mode parameters for automated testing
     [string]$ProjectName,
     [string]$ProjectPath,
-    [ValidateSet("FULL", "RAPID", "")]
+    [ValidateSet("FULL", "RAPID", "DS", "")]
     [string]$Methodology,
     [switch]$SkipGitHub,
     [switch]$SkipCursor,
@@ -174,16 +174,30 @@ function Select-Methodology {
     
     Write-Host ""
     
+    Write-Host "  [3] " -ForegroundColor Yellow -NoNewline
+    Write-Host "DS" -ForegroundColor Magenta -NoNewline
+    Write-Host " - Data Science methodology"
+    Write-Host "      " -NoNewline
+    Write-Host "ML/DS projects with experiment tracking, 2 agent roles (Architect, Data Scientist)" -ForegroundColor DarkGray
+    Write-Host "      " -NoNewline
+    Write-Host "EDA pipeline, hypothesis-driven experiments, model finalization" -ForegroundColor DarkGray
+    Write-Host "      " -NoNewline
+    Write-Host "Best for: Kaggle, ML research, data analysis" -ForegroundColor DarkGray
+    
+    Write-Host ""
+    
     while ($true) {
-        $choice = Read-UserInput -Prompt "Select methodology (1 or 2)" -Default "2"
+        $choice = Read-UserInput -Prompt "Select methodology (1, 2, or 3)" -Default "2"
         
         switch ($choice) {
             "1" { return "FULL" }
             "2" { return "RAPID" }
+            "3" { return "DS" }
             "FULL" { return "FULL" }
             "RAPID" { return "RAPID" }
+            "DS" { return "DS" }
             default {
-                Write-Error "Invalid choice. Enter 1, 2, FULL, or RAPID"
+                Write-Error "Invalid choice. Enter 1, 2, 3, FULL, RAPID, or DS"
             }
         }
     }
@@ -379,7 +393,7 @@ Options:
 Non-Interactive Mode (for automation/testing):
     -ProjectName    Name of the project to create
     -ProjectPath    Parent directory where project will be created
-    -Methodology    FULL or RAPID
+    -Methodology    FULL, RAPID, or DS
     -SkipGitHub     Skip GitHub repository creation
     -SkipCursor     Skip opening Cursor IDE
     -Force          Overwrite existing project without prompting
@@ -387,6 +401,7 @@ Non-Interactive Mode (for automation/testing):
 
 Example:
     .\apm.ps1 -ProjectName "my-app" -ProjectPath "C:\Projects" -Methodology RAPID -NonInteractive -SkipGitHub -SkipCursor
+    .\apm.ps1 -ProjectName "ml-project" -ProjectPath "C:\Projects" -Methodology DS -NonInteractive -SkipGitHub -SkipCursor
 
 This interactive wizard will guide you through creating a new APM project.
 "@

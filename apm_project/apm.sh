@@ -199,10 +199,15 @@ select_methodology() {
     echo -e "      \033[90mFaster iteration, simpler setup, less ceremony\033[0m"
     echo -e "      \033[90mBest for: MVPs, prototypes, small projects\033[0m"
     echo ""
+    echo -e "  \033[33m[3] \033[35mDS\033[0m - Data Science methodology"
+    echo -e "      \033[90mML/DS projects with experiment tracking, 2 agent roles (Architect, Data Scientist)\033[0m"
+    echo -e "      \033[90mEDA pipeline, hypothesis-driven experiments, model finalization\033[0m"
+    echo -e "      \033[90mBest for: Kaggle, ML research, data analysis\033[0m"
+    echo ""
     
     while true; do
         local choice
-        choice=$(read_user_input "Select methodology (1 or 2)" "2")
+        choice=$(read_user_input "Select methodology (1, 2, or 3)" "2")
         
         case "$choice" in
             1|FULL|full)
@@ -213,8 +218,12 @@ select_methodology() {
                 echo "RAPID"
                 return 0
                 ;;
+            3|DS|ds)
+                echo "DS"
+                return 0
+                ;;
             *)
-                write_error "Invalid choice. Enter 1, 2, FULL, or RAPID"
+                write_error "Invalid choice. Enter 1, 2, 3, FULL, RAPID, or DS"
                 ;;
         esac
     done
@@ -404,7 +413,7 @@ Options:
 Non-Interactive Mode (for automation/testing):
     --project-name      Name of the project to create
     --project-path      Parent directory where project will be created
-    --methodology       FULL or RAPID
+    --methodology       FULL, RAPID, or DS
     --skip-github       Skip GitHub repository creation
     --skip-cursor       Skip opening Cursor IDE
     --force             Overwrite existing project without prompting
@@ -412,6 +421,7 @@ Non-Interactive Mode (for automation/testing):
 
 Example:
     ./apm.sh --project-name "my-app" --project-path "/projects" --methodology RAPID --non-interactive --skip-github --skip-cursor
+    ./apm.sh --project-name "ml-project" --project-path "/projects" --methodology DS --non-interactive --skip-github --skip-cursor
 
 This interactive wizard will guide you through creating a new APM project.
 EOF
@@ -454,8 +464,8 @@ EOF
         fi
         
         # Validate methodology
-        if [[ "$METHODOLOGY" != "FULL" && "$METHODOLOGY" != "RAPID" ]]; then
-            write_error "Invalid methodology: $METHODOLOGY. Use FULL or RAPID."
+        if [[ "$METHODOLOGY" != "FULL" && "$METHODOLOGY" != "RAPID" && "$METHODOLOGY" != "DS" ]]; then
+            write_error "Invalid methodology: $METHODOLOGY. Use FULL, RAPID, or DS."
             exit 1
         fi
         

@@ -20,6 +20,8 @@ You are now the **System Architect** in review mode.
 
 Assess the current state of the DS project, analyze progress toward targets, and provide strategic recommendations.
 
+If target metrics are achieved, proceed to Model Finalization.
+
 ---
 
 ## Review Workflow
@@ -36,7 +38,7 @@ Read and analyze:
 Evaluate:
 - How close are we to target metrics?
 - What's the trend across experiments?
-- Are we making progress or plateauing?
+- Were the experiments and analyses conducted correctly?
 
 ### 3. Pattern Analysis
 
@@ -102,6 +104,45 @@ Provide:
 
 ---
 
+## Model Finalization
+
+**When target metrics are achieved**, create the final Model Report.
+
+### Finalization Checklist
+
+Before finalizing, verify:
+- [ ] Target metric achieved on validation set
+- [ ] Model evaluated on held-out test set
+- [ ] No data leakage confirmed
+- [ ] Model artifacts saved (weights, config, preprocessing)
+- [ ] Reproducibility verified
+
+### Create Model Report
+
+If all checks pass, create `models/MODEL_REPORT.md` using template:
+
+**Template:** @.apm/AGENT_REPORTS/MODEL_REPORT.md
+
+**Save to:** `models/MODEL_REPORT.md`
+
+**Required sections:**
+- Model specification and architecture
+- Final performance metrics (including test set)
+- Feature importance analysis
+- Limitations and known issues
+- Deployment considerations
+- Reproducibility instructions
+
+### Model Artifacts
+
+Ensure the following are saved in `models/`:
+- `model_final_{metric}_{value}.pkl` - Trained model
+- `preprocessor.pkl` - Fitted preprocessing pipeline
+- `config.json` - Model configuration
+- `MODEL_REPORT.md` - Documentation
+
+---
+
 ## Additional Review Focus
 
 $ARGUMENTS
@@ -110,7 +151,15 @@ $ARGUMENTS
 
 ## Next Steps
 
-After review, suggest:
-1. Update TASK.md with new hypotheses if recommended
-2. Specific next experiment to run
-3. Any architectural changes needed in ARCHITECTURE.md
+After review:
+
+**If target NOT achieved:**
+1. Update TASK.md with new hypotheses
+2. Specify next experiment to run
+3. Any architectural changes needed
+
+**If target achieved:**
+1. Complete Model Finalization checklist
+2. Create MODEL_REPORT.md
+3. Update STATE.md with project completion
+4. Archive experiment logs

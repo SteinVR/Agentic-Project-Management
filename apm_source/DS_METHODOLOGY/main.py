@@ -1,10 +1,12 @@
 """
-Main Pipeline Script.
+Main Modeling Pipeline Script.
 
-This script contains the example structure of a complete ML pipeline organized in cell-like blocks.
+This script contains the complete ML pipeline organized in cell-like blocks.
 Use `# %% [Block Name]` separators for block-by-block execution.
 
 Run blocks individually using IDE's "Run Cell" feature (Ctrl+Enter in VS Code/Cursor).
+
+Note: EDA is performed separately in eda/eda.py
 """
 
 # %% [Setup] ===================================================================
@@ -16,7 +18,6 @@ from pathlib import Path
 from config import *
 from src.data import load_data, save_data, split_data
 from src.features import create_features
-from src.eda import describe_dataset, analyze_missing, analyze_target
 from src.models import train_model, save_model, get_feature_importance
 from src.evaluation import evaluate_model, cross_validate
 
@@ -27,15 +28,6 @@ print(f"Project: {PROJECT_ROOT.name}")
 print(f"Random Seed: {RANDOM_SEED}")
 
 # %% [Load Data] ===============================================================
-
-
-# %% [EDA: Overview] ===========================================================
-
-
-# %% [EDA: Missing Values] =====================================================
-
-
-# %% [EDA: Target Analysis] ====================================================
 
 
 # %% [Preprocessing] ===========================================================

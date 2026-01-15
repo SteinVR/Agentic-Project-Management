@@ -118,3 +118,4 @@ print(f"Validation F1: {metrics['f1']:.4f}")
 - **NEVER** overwrite the best model without confirmation.
 - **MUST** update `STATE.md` at the end of each session.
 - **MUST** compare every experiment to the established baseline.
+- **MUST** respond in the language used by the user.

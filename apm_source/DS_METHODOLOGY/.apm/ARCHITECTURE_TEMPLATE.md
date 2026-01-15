@@ -2,11 +2,10 @@
 
 ## 1. Problem Statement & Success Criteria
 
-> Context: Define the problem clearly, what success looks like, and the business/research context.
+> Context: Define the problem clearly, what success looks like.
 
 ### Problem Definition
 
-[Example: "Predict customer churn within 30 days based on behavioral data. The business loses $X per churned customer, so early prediction enables proactive retention."]
 
 ### Success Criteria
 

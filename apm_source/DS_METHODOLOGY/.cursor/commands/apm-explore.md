@@ -22,61 +22,70 @@ You are now the **Data Scientist** in EDA mode.
 
 Your goal is to deeply understand the data before any modeling begins. This is a critical phase - insights here will drive feature engineering and model selection.
 
+All EDA work is performed in the `eda/` directory for reproducibility.
+
 ---
 
 ## EDA Workflow
 
-### 1. Setup EDA Module
+### 1. Setup EDA Environment
 
-Create reusable EDA functions in `src/eda.py`:
+Work in the dedicated EDA directory:
 
-```python
-# src/eda.py
-def describe_dataset(df: pd.DataFrame) -> dict:
-    """Get basic dataset statistics."""
-    ...
-
-def plot_distributions(df: pd.DataFrame, cols: list[str]) -> None:
-    """Plot distributions for specified columns."""
-    ...
-
-def analyze_missing(df: pd.DataFrame) -> pd.DataFrame:
-    """Analyze missing value patterns."""
-    ...
-
-def plot_correlations(df: pd.DataFrame) -> None:
-    """Plot correlation heatmap."""
-    ...
+```
+eda/
+├── eda.py              # Main EDA pipeline (cell-based execution)
+├── results/
+│   ├── figures/        # Saved plots (.png, .svg)
+│   └── tables/         # Saved tables (.csv)
+└── EDA_REPORT.md       # Final report (created after analysis)
 ```
 
-### 2. Build EDA Pipeline in main.py
+### 2. Build EDA Pipeline
 
-Add EDA blocks to `main.py` using cell separators:
+Edit `eda/eda.py` with cell separators for reproducible analysis:
 
 ```python
-# %% [EDA: Load Data] --------------------------------------
-from src.data import load_data
-df = load_data("data/raw/train.csv")
+# %% [Setup] -----------------------------------------------
 
-# %% [EDA: Overview] ---------------------------------------
-from src.eda import describe_dataset
-stats = describe_dataset(df)
-print(stats)
+FIGURES_DIR = Path(__file__).parent / "results/figures"
+TABLES_DIR = Path(__file__).parent / "results/tables"
 
-# %% [EDA: Missing Values] ---------------------------------
-from src.eda import analyze_missing
-missing = analyze_missing(df)
+# %% [Load Data] -------------------------------------------
+df = pd.read_csv("../data/raw/train.csv")
 
-# %% [EDA: Distributions] ----------------------------------
-from src.eda import plot_distributions
-plot_distributions(df, numerical_cols)
+# %% [Overview] --------------------------------------------
+# Basic statistics, shape, dtypes
 
-# %% [EDA: Correlations] -----------------------------------
-from src.eda import plot_correlations
-plot_correlations(df)
+# %% [Missing Values] --------------------------------------
+# Analyze and save missing value report
+missing_df.to_csv(TABLES_DIR / "missing_values.csv")
+
+# %% [Distributions] ---------------------------------------
+# Plot and save distributions
+fig.savefig(FIGURES_DIR / "distributions.png", dpi=150)
+
+# %% [Correlations] ----------------------------------------
+# Correlation analysis
+fig.savefig(FIGURES_DIR / "correlation_matrix.png", dpi=150)
 ```
 
-### 3. Analysis Checklist
+### 3. Save All Results
+
+**Figures** - Save to `eda/results/figures/`:
+- `target_distribution.png`
+- `numerical_distributions.png`
+- `correlation_matrix.png`
+- `feature_target_correlation.png`
+
+**Tables** - Save to `eda/results/tables/`:
+- `numerical_summary.csv`
+- `missing_values.csv`
+- `categorical_summary.csv`
+- `high_correlations.csv`
+- `outliers_summary.csv`
+
+### 4. Analysis Checklist
 
 - [ ] Load data from `data/raw/`
 - [ ] Check dimensions, dtypes, memory usage
@@ -95,23 +104,28 @@ plot_correlations(df)
 
 ## Deliverables
 
-1. **EDA Module**: Create `src/eda.py` with reusable analysis functions
-2. **EDA Blocks**: Add EDA blocks to `main.py` with `# %%` separators
-3. **EDA Report**: Create report using @.apm/AGENT_REPORTS/EDA_REPORT.md
-4. **Feature Engineering Ideas**: Document opportunities discovered
-5. **Update STATE.md**: Add session entry
+After completing EDA, you MUST:
+
+1. **EDA Pipeline**: Complete `eda/eda.py` with all analysis blocks
+2. **Saved Artifacts**: All figures and tables in `eda/results/`
+3. **EDA Report**: Create `eda/EDA_REPORT.md` using template @.apm/AGENT_REPORTS/EDA_REPORT.md
+4. **Update STATE.md**: Add session entry with key findings
+
+### Creating EDA Report
+
+Save as `eda/EDA_REPORT.md`.
 
 ---
 
 ## User Guidance
 
-If user provided specific focus areas in input above, prioritize those. Otherwise, perform comprehensive EDA.
-
 $ARGUMENTS
+
+If user provided specific focus areas in input above, prioritize those. Otherwise, perform comprehensive EDA.
 
 ---
 
-## Report Format
+## Output Format
 
 Present key findings as:
 
@@ -131,6 +145,14 @@ Present key findings as:
 | Idea | Source | Expected Impact |
 |------|--------|-----------------|
 | [idea] | [features] | [reasoning] |
+
+### Artifacts Created
+
+| Type | Path | Description |
+|------|------|-------------|
+| Figure | `eda/results/figures/...` | ... |
+| Table | `eda/results/tables/...` | ... |
+| Report | `eda/EDA_REPORT.md` | Complete EDA report |
 
 ### Next Steps
 

@@ -49,7 +49,7 @@ Analyze the user's problem description provided above.
 
 ## Suggest Approach
 
-If the problem definition is incomplete, actively propose specific details:
+ONLY When the problem definition is incomplete, actively propose specific details:
 
 **Suggested Details:**
 
@@ -73,7 +73,7 @@ If the user has **NOT** specified a technology stack, propose options:
 | ML | scikit-learn, XGBoost | LightGBM, CatBoost |
 | DL | PyTorch | TensorFlow (if needed) |
 | Visualization | matplotlib, seaborn | plotly (interactive) |
-| Environment | venv/conda | Docker |
+| Environment | uv/venv/conda | Docker |
 
 ---
 
@@ -97,4 +97,4 @@ Once the user confirms:
    - Add baseline experiment as first hypothesis
    - Add 2-3 initial hypotheses based on problem understanding
 4. **Initialize STATE.md** with project start entry
-5. **Report completion** and suggest running `/apm-explore` for EDA or `/apm-experiment` to begin experimentation
+5. **Report completion**
