@@ -105,9 +105,14 @@ Example:
   - ML: [e.g., scikit-learn, XGBoost, LightGBM]
   - DL: [e.g., PyTorch, TensorFlow] (if applicable)
   - Visualization: [e.g., matplotlib, seaborn, plotly]
-- **Environment:** [e.g., Conda, venv, Docker]
+- **Environment:** [e.g., uv, Docker]
 - **Compute:** [e.g., Local, Cloud GPU, Colab]
-
+- **Setup Commands:**
+  ```bash
+  uv sync                    # Install dependencies
+  source .venv/bin/activate  # Linux/macOS
+  .venv\Scripts\activate     # Windows
+  ```
 ---
 
 ## 5. Model Architecture (If Applicable)

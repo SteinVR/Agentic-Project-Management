@@ -55,19 +55,18 @@ TABLES_DIR = Path(__file__).parent / "results/tables"
 df = pd.read_csv("../data/raw/train.csv")
 
 # %% [Overview] --------------------------------------------
-# Basic statistics, shape, dtypes
 
 # %% [Missing Values] --------------------------------------
-# Analyze and save missing value report
 missing_df.to_csv(TABLES_DIR / "missing_values.csv")
 
 # %% [Distributions] ---------------------------------------
-# Plot and save distributions
 fig.savefig(FIGURES_DIR / "distributions.png", dpi=150)
 
 # %% [Correlations] ----------------------------------------
-# Correlation analysis
 fig.savefig(FIGURES_DIR / "correlation_matrix.png", dpi=150)
+
+# %% [Etc] ----------------------------------------
+
 ```
 
 ### 3. Save All Results
@@ -108,7 +107,7 @@ After completing EDA, you MUST:
 
 1. **EDA Pipeline**: Complete `eda/eda.py` with all analysis blocks
 2. **Saved Artifacts**: All figures and tables in `eda/results/`
-3. **EDA Report**: Create `eda/EDA_REPORT.md` using template @.apm/AGENT_REPORTS/EDA_REPORT.md
+3. **EDA Report**: Create `eda/EDA_REPORT.md` using template @.apm/AGENT_REPORTS_TMP/EDA_REPORT.md
 4. **Update STATE.md**: Add session entry with key findings
 
 ### Creating EDA Report
@@ -122,38 +121,3 @@ Save as `eda/EDA_REPORT.md`.
 $ARGUMENTS
 
 If user provided specific focus areas in input above, prioritize those. Otherwise, perform comprehensive EDA.
-
----
-
-## Output Format
-
-Present key findings as:
-
-### Key Findings
-
-1. **[Finding Category]**: [Specific insight]
-2. **[Finding Category]**: [Specific insight]
-
-### Data Quality Summary
-
-| Issue | Severity | Recommendation |
-|-------|----------|----------------|
-| [issue] | High/Medium/Low | [action] |
-
-### Feature Engineering Opportunities
-
-| Idea | Source | Expected Impact |
-|------|--------|-----------------|
-| [idea] | [features] | [reasoning] |
-
-### Artifacts Created
-
-| Type | Path | Description |
-|------|------|-------------|
-| Figure | `eda/results/figures/...` | ... |
-| Table | `eda/results/tables/...` | ... |
-| Report | `eda/EDA_REPORT.md` | Complete EDA report |
-
-### Next Steps
-
-Recommend whether to proceed to baseline modeling or address data issues first.

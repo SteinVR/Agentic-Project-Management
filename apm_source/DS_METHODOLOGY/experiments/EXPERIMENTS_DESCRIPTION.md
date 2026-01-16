@@ -32,7 +32,7 @@ Examples:
 2. Copy template files or create:
    - `config.py` - experiment parameters
    - `main_exp.py` - experiment pipeline
-   - `REPORT.md` - copy from `.apm/AGENT_REPORTS/EXPERIMENT_REPORT.md`
+   - `REPORT.md` - copy from `.apm/AGENT_REPORTS_TMP/EXPERIMENT_REPORT.md`
 
 3. Update `TASK.md` with active experiment
 

@@ -16,14 +16,14 @@ Generate a report based on user request.
 
 ## Report Templates
 
-Use the appropriate template from `.apm/AGENT_REPORTS/`:
+Use the appropriate template from `.apm/AGENT_REPORTS_TMP/`:
 
 | Report Type | Template | When to Use |
 |-------------|----------|-------------|
-| **General** | @.apm/AGENT_REPORTS/GENERAL_REPORT_TEMPLATE.md | Work summary, implementation snapshot, general status |
-| **Test** | @.apm/AGENT_REPORTS/TEST_REPORT_TEMPLATE.md | Test execution results, coverage, failure analysis |
-| **E2E** | @.apm/AGENT_REPORTS/E2E_REPORT_TEMPLATE.md | User scenario validation, workflow verification |
-| **Debug** | @.apm/AGENT_REPORTS/DEBUGGING_REPORT_TEMPLATE.md | TDD cycle status, diagnostic logs, fix instructions |
+| **General** | @.apm/AGENT_REPORTS_TMP/GENERAL_REPORT_TEMPLATE.md | Work summary, implementation snapshot, general status |
+| **Test** | @.apm/AGENT_REPORTS_TMP/TEST_REPORT_TEMPLATE.md | Test execution results, coverage, failure analysis |
+| **E2E** | @.apm/AGENT_REPORTS_TMP/E2E_REPORT_TEMPLATE.md | User scenario validation, workflow verification |
+| **Debug** | @.apm/AGENT_REPORTS_TMP/DEBUGGING_REPORT_TEMPLATE.md | TDD cycle status, diagnostic logs, fix instructions |
 
 ---
 

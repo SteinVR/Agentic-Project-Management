@@ -41,7 +41,7 @@ Create or update GitHub Actions CI workflow for this project.
 
 3. **Verify** - Ensure the workflow is valid YAML and uses correct commands for the project
 
-4. **Report** - Use `AGENT_REPORTS/TEST_REPORT_TEMPLATE.md` format if reporting results
+4. **Report** - Use `AGENT_REPORTS_TMP/TEST_REPORT_TEMPLATE.md` format if reporting results
 
 ### Output
 

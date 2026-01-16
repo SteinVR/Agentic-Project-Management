@@ -101,7 +101,7 @@ from src.evaluation import evaluate_model
 
 ### 5. Document Results
 
-Fill in `experiments/EXP-XXX/REPORT.md` using @.apm/AGENT_REPORTS/EXPERIMENT_REPORT.md
+Fill in `experiments/EXP-XXX/REPORT.md` using @.apm/AGENT_REPORTS_TMP/EXPERIMENT_REPORT.md
 
 ### 6. Update State
 

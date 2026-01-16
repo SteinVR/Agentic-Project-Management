@@ -46,7 +46,7 @@ Create or update GitHub Actions CD workflow for deployment to staging.
 
 4. **Verify** - Ensure workflow is valid and deployment credentials are referenced via secrets
 
-5. **Report** - Use `AGENT_REPORTS/E2E_REPORT_TEMPLATE.md` format for E2E results
+5. **Report** - Use `AGENT_REPORTS_TMP/E2E_REPORT_TEMPLATE.md` format for E2E results
 
 ### Output
 

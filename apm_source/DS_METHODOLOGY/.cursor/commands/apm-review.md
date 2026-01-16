@@ -121,7 +121,7 @@ Before finalizing, verify:
 
 If all checks pass, create `models/MODEL_REPORT.md` using template:
 
-**Template:** @.apm/AGENT_REPORTS/MODEL_REPORT.md
+**Template:** @.apm/AGENT_REPORTS_TMP/MODEL_REPORT.md
 
 **Save to:** `models/MODEL_REPORT.md`
 
