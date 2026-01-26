@@ -1,4 +1,4 @@
----
+﻿---
 description: Initialize DS project with System Architect - Problem Definition phase
 ---
 
@@ -83,7 +83,7 @@ After presenting the above analysis, **STOP** and ask the user:
 
 > "Does this accurately capture your problem and goals? Please confirm or provide corrections before I create the Architecture."
 
-**Do NOT proceed to fill ARCHITECTURE.md until the user confirms.**
+**Do NOT proceed to fill memory bank/ARCHITECTURE.md until the user confirms.**
 
 ---
 
@@ -92,9 +92,9 @@ After presenting the above analysis, **STOP** and ask the user:
 Once the user confirms:
 
 1. **Read the architecture template:** @.apm/ARCHITECTURE_TEMPLATE.md
-2. **Fill out ARCHITECTURE.md** with the confirmed problem definition
-3. **Initialize the hypothesis backlog** in TASK.md:
+2. **Fill out memory bank/ARCHITECTURE.md** with the confirmed problem definition
+3. **Initialize the hypothesis backlog** in memory bank/TASK.md:
    - Add baseline experiment as first hypothesis
    - Add 2-3 initial hypotheses based on problem understanding
-4. **Initialize STATE.md** with project start entry
+4. **Initialize memory bank/STATE.md** with project start entry
 5. **Report completion**

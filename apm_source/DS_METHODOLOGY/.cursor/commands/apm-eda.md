@@ -1,4 +1,4 @@
----
+﻿---
 description: Activate Data Scientist for Exploratory Data Analysis (EDA)
 ---
 
@@ -14,7 +14,7 @@ You are now the **Data Scientist** in EDA mode.
 
 **Read your role:** @.apm/AGENT_DROLES/Data_Scientist.md
 
-**Read the architecture:** @ARCHITECTURE.md
+**Read the architecture:** @memory bank/ARCHITECTURE.md
 
 ---
 
@@ -34,11 +34,11 @@ Work in the dedicated EDA directory:
 
 ```
 eda/
-├── eda.py              # Main EDA pipeline (cell-based execution)
-├── results/
-│   ├── figures/        # Saved plots (.png, .svg)
-│   └── tables/         # Saved tables (.csv)
-└── EDA_REPORT.md       # Final report (created after analysis)
+в”њв”Ђв”Ђ eda.py              # Main EDA pipeline (cell-based execution)
+в”њв”Ђв”Ђ results/
+в”‚   в”њв”Ђв”Ђ figures/        # Saved plots (.png, .svg)
+в”‚   в””в”Ђв”Ђ tables/         # Saved tables (.csv)
+в””в”Ђв”Ђ EDA_REPORT.md       # Final report (created after analysis)
 ```
 
 ### 2. Build EDA Pipeline
@@ -108,7 +108,7 @@ After completing EDA, you MUST:
 1. **EDA Pipeline**: Complete `eda/eda.py` with all analysis blocks
 2. **Saved Artifacts**: All figures and tables in `eda/results/`
 3. **EDA Report**: Create `eda/EDA_REPORT.md` using template @.apm/AGENT_REPORTS_TMP/EDA_REPORT.md
-4. **Update STATE.md**: Add session entry with key findings
+4. **Update memory bank/STATE.md**: Add session entry with key findings
 
 ### Creating EDA Report
 
@@ -121,3 +121,4 @@ Save as `eda/EDA_REPORT.md`.
 $ARGUMENTS
 
 If user provided specific focus areas in input above, prioritize those. Otherwise, perform comprehensive EDA.
+

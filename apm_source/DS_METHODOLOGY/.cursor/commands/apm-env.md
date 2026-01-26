@@ -1,5 +1,5 @@
----
-description: Setup project environment based on ARCHITECTURE.md
+﻿---
+description: Setup project environment based on memory bank/ARCHITECTURE.md
 ---
 
 ## User Input
@@ -14,13 +14,13 @@ You are the **System Architect** in environment setup mode.
 
 **Read your role:** @.apm/AGENT_DROLES/System_Architect.md
 
-**Read the architecture:** @ARCHITECTURE.md
+**Read the architecture:** @memory bank/ARCHITECTURE.md
 
 ---
 
 ## Environment Setup Mission
 
-Analyze the Technology Stack defined in ARCHITECTURE.md and set up the project environment accordingly.
+Analyze the Technology Stack defined in memory bank/ARCHITECTURE.md and set up the project environment accordingly.
 
 ---
 
@@ -28,7 +28,7 @@ Analyze the Technology Stack defined in ARCHITECTURE.md and set up the project e
 
 ### 1. Analyze Technology Stack
 
-Read ARCHITECTURE.md section "Technology Stack" and identify:
+Read memory bank/ARCHITECTURE.md section "Technology Stack" and identify:
 - Python version required
 - Core libraries (pandas, numpy, sklearn, etc.)
 - ML/DL frameworks (PyTorch, TensorFlow, XGBoost, etc.)
@@ -56,7 +56,7 @@ Provide setup instructions.
 
 1. **pyproject.toml** - Dependencies file for uv
 2. **Setup verification** - Confirm all packages install correctly
-3. **Update STATE.md** - Record environment setup completion
+3. **Update memory bank/STATE.md** - Record environment setup completion
 
 ---
 

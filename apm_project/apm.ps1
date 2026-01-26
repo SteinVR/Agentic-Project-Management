@@ -343,6 +343,93 @@ function Rename-ProjectPlaceholders {
     }
 }
 
+function Initialize-MemoryBank {
+    param(
+        [string]$ProjectPath,
+        [string]$Methodology
+    )
+    
+    if ($Methodology -eq 'FULL') {
+        return
+    }
+    
+    $memoryBankDir = Join-Path $ProjectPath "memory bank"
+    if (-not (Test-Path $memoryBankDir)) {
+        New-Item -Path $memoryBankDir -ItemType Directory -Force | Out-Null
+        Write-Info "Created memory bank directory"
+    }
+    
+    $apmDir = Join-Path $ProjectPath ".apm"
+    $templateMap = @{
+        "ARCHITECTURE.md" = "ARCHITECTURE_TEMPLATE.md"
+        "STATE.md"        = "STATE_TEMPLATE.md"
+        "TASK.md"         = "TASK_TEMPLATE.md"
+    }
+    
+    foreach ($fileName in $templateMap.Keys) {
+        $rootFile = Join-Path $ProjectPath $fileName
+        $bankFile = Join-Path $memoryBankDir $fileName
+        $templateFile = Join-Path $apmDir $templateMap[$fileName]
+        
+        if ((Test-Path $rootFile) -and -not (Test-Path $bankFile)) {
+            Move-Item -Path $rootFile -Destination $bankFile -Force
+            Write-Info "Moved $fileName to memory bank/"
+            continue
+        }
+        
+        if (-not (Test-Path $bankFile)) {
+            if (Test-Path $templateFile) {
+                Copy-Item -Path $templateFile -Destination $bankFile -Force
+                Write-Info "Initialized memory bank/$fileName from template"
+            } else {
+                Set-Content -Path $bankFile -Value "# $($fileName -replace '\\.md$','')" -Encoding UTF8
+                Write-Warning "Initialized memory bank/$fileName as empty file (template missing)"
+            }
+        }
+    }
+}
+
+function Initialize-AgentReports {
+    param(
+        [string]$ProjectPath,
+        [string]$Methodology
+    )
+    
+    if ($Methodology -eq 'FULL') {
+        return
+    }
+    
+    $apmDir = Join-Path $ProjectPath ".apm"
+    if (-not (Test-Path $apmDir)) {
+        return
+    }
+    
+    $reportsRoot = Join-Path $apmDir "Agent Reports"
+    if (-not (Test-Path $reportsRoot)) {
+        New-Item -Path $reportsRoot -ItemType Directory -Force | Out-Null
+        Write-Info "Created .apm/Agent Reports/"
+    }
+    
+    $rolesDir = Join-Path $apmDir "AGENT_DROLES"
+    if (-not (Test-Path $rolesDir)) {
+        return
+    }
+    
+    $roleFiles = Get-ChildItem -Path $rolesDir -Filter "*.md" -File -Force -ErrorAction SilentlyContinue
+    foreach ($roleFile in $roleFiles) {
+        $roleName = [IO.Path]::GetFileNameWithoutExtension($roleFile.Name) -replace '[_-]+', ' '
+        $roleReportDir = Join-Path $reportsRoot $roleName
+        if (-not (Test-Path $roleReportDir)) {
+            New-Item -Path $roleReportDir -ItemType Directory -Force | Out-Null
+        }
+        
+        $gitkeep = Join-Path $roleReportDir ".gitkeep"
+        if (-not (Test-Path $gitkeep)) {
+            New-Item -Path $gitkeep -ItemType File -Force | Out-Null
+        }
+    }
+}
+
 function Open-Cursor {
     param([string]$ProjectPath)
     
@@ -513,6 +600,10 @@ This interactive wizard will guide you through creating a new APM project.
         
         # Rename placeholders
         Rename-ProjectPlaceholders -ProjectPath $projectPath -ProjectName $projectName
+
+        # Initialize Memory Bank and Agent Reports
+        Initialize-MemoryBank -ProjectPath $projectPath -Methodology $methodology
+        Initialize-AgentReports -ProjectPath $projectPath -Methodology $methodology
         
         # Initialize git
         Initialize-GitRepository -ProjectPath $projectPath -ProjectName $projectName -CreateRemote $githubEnabled

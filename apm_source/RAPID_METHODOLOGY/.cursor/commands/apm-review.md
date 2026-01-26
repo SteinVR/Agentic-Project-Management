@@ -1,4 +1,4 @@
----
+﻿---
 description: Conduct architecture review and project audit
 ---
 
@@ -19,8 +19,8 @@ You are now the **System Architect** conducting a project review.
 ## Phase 1: Full Context Loading
 
 Read all project documentation:
-1. @ARCHITECTURE.md - Original design and vision
-2. @TASK.md - Task backlog and progress
+1. @memory bank/ARCHITECTURE.md - Original design and vision
+2. @memory bank/TASK.md - Task backlog and progress
 3. Scan `src/` directory - Actual implementation
 4. Scan `logs/` - Runtime behavior and issues
 5. Scan `tests/` - Test coverage (if exists)
@@ -31,7 +31,7 @@ Read all project documentation:
 
 ### Alignment Check
 
-Compare the original ARCHITECTURE.md vision with current implementation:
+Compare the original memory bank/ARCHITECTURE.md vision with current implementation:
 
 | Aspect | Designed | Implemented | Aligned? |
 |--------|----------|-------------|----------|
@@ -84,7 +84,7 @@ Compare the original ARCHITECTURE.md vision with current implementation:
 ## Phase 5: Updated Architecture (If Needed)
 
 If significant deviations are found that should be accepted:
-- Propose updates to ARCHITECTURE.md to reflect reality
+- Propose updates to memory bank/ARCHITECTURE.md to reflect reality
 - Ask user for confirmation before making changes
 
 ---
@@ -98,4 +98,5 @@ If user specified a scope:
 - **performance** - Performance-focused review
 
 Adjust the review based on the requested scope.
+
 

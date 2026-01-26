@@ -1,4 +1,4 @@
----
+﻿---
 description: Generate a report using templates
 ---
 
@@ -31,7 +31,7 @@ Use the appropriate template from `.apm/AGENT_REPORTS_TMP/`:
 
 1. Determine report type from user input (default: General)
 2. Read the corresponding template
-3. Run the necessary tests and fill the chosen template with actual project data from `src/`, `logs/`, `tests/`, `TASK.md`
+3. Run the necessary tests and fill the chosen template with actual project data from `src/`, `logs/`, `tests/`, `memory bank/TASK.md`
 4. Output the completed report
 
 ---
@@ -39,3 +39,4 @@ Use the appropriate template from `.apm/AGENT_REPORTS_TMP/`:
 ## User Request
 
 $ARGUMENTS
+

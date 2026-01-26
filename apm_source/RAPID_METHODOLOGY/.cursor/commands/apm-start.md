@@ -1,4 +1,4 @@
----
+﻿---
 description: Initialize project with System Architect - Vision Alignment phase
 ---
 
@@ -90,7 +90,7 @@ After presenting the above analysis, **STOP** and ask the user:
 
 > "Does this accurately capture your vision? Please confirm or provide corrections before I proceed to create the Architecture."
 
-**Do NOT proceed to fill ARCHITECTURE.md until the user confirms.**
+**Do NOT proceed to fill memory bank/ARCHITECTURE.md until the user confirms.**
 
 ---
 
@@ -99,6 +99,6 @@ After presenting the above analysis, **STOP** and ask the user:
 Once the user confirms:
 
 1. **Read the architecture template:** @.apm/ARCHITECTURE_TEMPLATE.md
-2. **Fill out ARCHITECTURE.md** with the confirmed vision
-3. **Initialize the task backlog** in TASK.md based on the architecture
+2. **Fill out memory bank/ARCHITECTURE.md** with the confirmed vision
+3. **Initialize the task backlog** in memory bank/TASK.md based on the architecture
 4. **Report completion** and suggest running `/apm-develop` to begin implementation

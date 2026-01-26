@@ -1,4 +1,4 @@
----
+﻿---
 description: Activate System Architect for project review and recommendations
 ---
 
@@ -29,9 +29,9 @@ If target metrics are achieved, proceed to Model Finalization.
 ### 1. Gather Context
 
 Read and analyze:
-- @ARCHITECTURE.md - Original problem definition and targets
-- @TASK.md - Hypothesis backlog and current focus
-- @STATE.md - Experiment history and decisions
+- @memory bank/ARCHITECTURE.md - Original problem definition and targets
+- @memory bank/TASK.md - Hypothesis backlog and current focus
+- @memory bank/STATE.md - Experiment history and decisions
 
 ### 2. Progress Assessment
 
@@ -71,7 +71,7 @@ Provide:
 
 | Experiment | Date | Metric | Delta from Previous |
 |------------|------|--------|---------------------|
-| [recent experiments from STATE.md] |
+| [recent experiments from memory bank/STATE.md] |
 
 **Trend Assessment:** [Improving / Plateauing / Declining]
 
@@ -154,12 +154,13 @@ $ARGUMENTS
 After review:
 
 **If target NOT achieved:**
-1. Update TASK.md with new hypotheses
+1. Update memory bank/TASK.md with new hypotheses
 2. Specify next experiment to run
 3. Any architectural changes needed
 
 **If target achieved:**
 1. Complete Model Finalization checklist
 2. Create MODEL_REPORT.md
-3. Update STATE.md with project completion
+3. Update memory bank/STATE.md with project completion
 4. Archive experiment logs
+

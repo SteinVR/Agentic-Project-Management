@@ -1,4 +1,4 @@
----
+﻿---
 description: Build and evaluate baseline model
 ---
 
@@ -14,7 +14,7 @@ You are now the **Data Scientist** in Baseline mode.
 
 **Read your role:** @.apm/AGENT_DROLES/Data_Scientist.md
 
-**Read the architecture:** @ARCHITECTURE.md
+**Read the architecture:** @memory bank/ARCHITECTURE.md
 
 ---
 
@@ -33,7 +33,15 @@ Before building baseline:
 - Review target distribution and class balance
 - Note any preprocessing requirements
 
-### 2. Prepare Baseline Script
+### 2. Hyperparameters & Compute Plan
+
+Even for a baseline, explicitly define:
+- What will be treated as fixed vs tunable
+- Minimal hyperparameter choices + rationale (to make baseline reproducible)
+
+**For tasks with GPU using**: select batch size / gradient accumulation based on available VRAM and target ~90% VRAM usage (keep ~10% headroom). Measure peak VRAM usage (e.g., `nvidia-smi`) and ensure the GPU is actually utilized.
+
+### 3. Prepare Baseline Script
 
 For quick iterations, edit `main.py` baseline blocks.
 
@@ -57,4 +65,5 @@ The standalone script saves results to:
 
 $ARGUMENTS
 
-If user specifies a model type, use that. Otherwise, select based on task type in ARCHITECTURE.md.
+If user specifies a model type, use that. Otherwise, select based on task type in memory bank/ARCHITECTURE.md.
+

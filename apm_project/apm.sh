@@ -366,6 +366,74 @@ rename_project_placeholders() {
     fi
 }
 
+initialize_memory_bank() {
+    local project_path="$1"
+    local methodology="$2"
+    
+    if [[ "$methodology" == "FULL" ]]; then
+        return 0
+    fi
+    
+    local memory_bank_dir="$project_path/memory bank"
+    mkdir -p "$memory_bank_dir"
+    
+    local apm_dir="$project_path/.apm"
+    local file_name
+    for file_name in ARCHITECTURE.md STATE.md TASK.md; do
+        local root_file="$project_path/$file_name"
+        local bank_file="$memory_bank_dir/$file_name"
+        local template_file="$apm_dir/${file_name%.md}_TEMPLATE.md"
+        
+        if [[ -f "$root_file" && ! -f "$bank_file" ]]; then
+            mv "$root_file" "$bank_file"
+            write_info "Moved $file_name to memory bank/"
+            continue
+        fi
+        
+        if [[ ! -f "$bank_file" ]]; then
+            if [[ -f "$template_file" ]]; then
+                cp "$template_file" "$bank_file"
+                write_info "Initialized memory bank/$file_name from template"
+            else
+                echo "# ${file_name%.md}" > "$bank_file"
+                write_warning "Initialized memory bank/$file_name as empty file (template missing)"
+            fi
+        fi
+    done
+}
+
+initialize_agent_reports() {
+    local project_path="$1"
+    local methodology="$2"
+    
+    if [[ "$methodology" == "FULL" ]]; then
+        return 0
+    fi
+    
+    local roles_dir="$project_path/.apm/AGENT_DROLES"
+    local reports_root="$project_path/.apm/Agent Reports"
+    
+    if [[ ! -d "$roles_dir" ]]; then
+        return 0
+    fi
+    
+    mkdir -p "$reports_root"
+    
+    local role_file
+    for role_file in "$roles_dir"/*.md; do
+        [[ -f "$role_file" ]] || continue
+        
+        local base
+        base="$(basename "$role_file" .md)"
+        local role_name="${base//_/ }"
+        role_name="${role_name//-/ }"
+        
+        local role_dir="$reports_root/$role_name"
+        mkdir -p "$role_dir"
+        : > "$role_dir/.gitkeep"
+    done
+}
+
 open_cursor() {
     local project_path="$1"
     
@@ -552,6 +620,10 @@ EOF
     
     # Rename placeholders
     rename_project_placeholders "$project_path" "$project_name"
+
+    # Initialize Memory Bank and Agent Reports
+    initialize_memory_bank "$project_path" "$methodology"
+    initialize_agent_reports "$project_path" "$methodology"
     
     # Initialize git (skip github in non-interactive mode if SKIP_GITHUB is set)
     if [[ "$NON_INTERACTIVE" == "true" && "$SKIP_GITHUB" == "true" ]]; then

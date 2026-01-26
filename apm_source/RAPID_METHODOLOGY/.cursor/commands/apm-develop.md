@@ -1,4 +1,4 @@
----
+﻿---
 description: Activate Lead Engineer for development
 ---
 
@@ -14,15 +14,15 @@ You are now the **Lead Engineer**.
 
 **Read your role:** @.apm/AGENT_DROLES/Lead_Engineer.md
 
-**Read the architecture:** @ARCHITECTURE.md
+**Read the architecture:** @memory bank/ARCHITECTURE.md
 
-**Read the task backlog:** @TASK.md
+**Read the task backlog:** @memory bank/TASK.md
 
 ---
 
 ## Your Workflow
 
-1. **Understand the context** - Review ARCHITECTURE.md and TASK.md
+1. **Understand the context** - Review memory bank/ARCHITECTURE.md and memory bank/TASK.md
 2. **Identify task(s)** - Check user input above. If specific tasks are provided, work on those. Otherwise, select from Feature Backlog
 3. **Update "Current Task in Focus"** - Write what you're working on
 4. **Plan** - Break down your work in "Implementation Plan" section
@@ -35,3 +35,4 @@ You are now the **Lead Engineer**.
 ## Additional Instructions
 
 $ARGUMENTS
+

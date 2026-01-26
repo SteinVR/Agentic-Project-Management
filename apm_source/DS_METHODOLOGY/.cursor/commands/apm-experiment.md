@@ -1,4 +1,4 @@
----
+﻿---
 description: Activate Data Scientist for experiment execution
 ---
 
@@ -14,17 +14,17 @@ You are now the **Data Scientist** in Experiment mode.
 
 **Read your role:** @.apm/AGENT_DROLES/Data_Scientist.md
 
-**Read the architecture:** @ARCHITECTURE.md
+**Read the architecture:** @memory bank/ARCHITECTURE.md
 
-**Read the task backlog:** @TASK.md
+**Read the task backlog:** @memory bank/TASK.md
 
-**Read the current state:** @STATE.md
+**Read the current state:** @memory bank/STATE.md
 
 ---
 
 ## Your Mission
 
-Execute experiments to improve model performance toward the target metrics defined in ARCHITECTURE.md.
+Execute experiments to improve model performance toward the target metrics defined in memory bank/ARCHITECTURE.md.
 
 ---
 
@@ -34,21 +34,30 @@ Execute experiments to improve model performance toward the target metrics defin
 
 Check user input above. If a specific hypothesis is provided, work on that. Otherwise:
 
-- Review Hypothesis Backlog in TASK.md
+- Review Hypothesis Backlog in memory bank/TASK.md
 - Select the highest priority untested hypothesis
-- Update "Active Experiment" section in TASK.md
+- Update "Active Experiment" section in memory bank/TASK.md
 
-### 2. Create Experiment Directory
+### 2. Hyperparameters & Compute Plan
+
+Before writing code, explicitly plan:
+- Hyperparameter search space + rationale
+- Search strategy + stopping criteria
+- Logging format for trials (params → metric → notes) in the experiment report
+
+**For tasks with GPU using**: choose batch size / gradient accumulation based on available VRAM and target ~90% VRAM usage (keep ~10% headroom). Measure peak VRAM usage (e.g., `nvidia-smi`) and ensure the GPU is actually utilized.
+
+### 3. Create Experiment Directory
 
 ```
 experiments/
-└── EXP-XXX_{short_description}/
-    ├── main_exp.py      # Experiment pipeline with cell separators
-    ├── config.py        # Experiment-specific configuration
-    └── REPORT.md        # Experiment report (copy from template)
+ EXP-XXX_{short_description}/
+ main_exp.py      # Experiment pipeline with cell separators
+ config.py        # Experiment-specific configuration
+ REPORT.md        # Experiment report (copy from template)
 ```
 
-### 3. Setup Experiment Config
+### 4. Setup Experiment Config
 
 Create `experiments/EXP-XXX/config.py`:
 
@@ -75,7 +84,7 @@ EPOCHS = ...
 BATCH_SIZE = ...
 ```
 
-### 4. Build Experiment Pipeline
+### 5. Build Experiment Pipeline
 
 Create `experiments/EXP-XXX/main_exp.py` with cell separators:
 
@@ -105,10 +114,10 @@ Fill in `experiments/EXP-XXX/REPORT.md` using @.apm/AGENT_REPORTS_TMP/EXPERIMENT
 
 ### 6. Update State
 
-- Add row to "Experiment History" in STATE.md
+- Add row to "Experiment History" in memory bank/STATE.md
 - Update "Best Model Tracker" if new best achieved
-- Mark hypothesis as tested in TASK.md
-- Update "Active Context" in STATE.md
+- Mark hypothesis as tested in memory bank/TASK.md
+- Update "Active Context" in memory bank/STATE.md
 
 ---
 
@@ -151,3 +160,4 @@ After completing experiment, report:
 ### Recommendation
 
 [Next step - continue experimenting, try different approach, or move to final evaluation]
+

@@ -1,4 +1,4 @@
----
+﻿---
 description: Setup CI - Generate GitHub Actions workflow for automated testing
 ---
 
@@ -14,9 +14,9 @@ You are now the **SDET** in CI Setup mode.
 
 **Read your role:** @.apm/AGENT_DROLES/SDET.md
 
-**Read the architecture:** @ARCHITECTURE.md
+**Read the architecture:** @memory bank/ARCHITECTURE.md
 
-**Read the task backlog:** @TASK.md
+**Read the task backlog:** @memory bank/TASK.md
 
 ---
 
@@ -87,3 +87,4 @@ jobs:
 ## Additional Context
 
 $ARGUMENTS
+

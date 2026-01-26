@@ -1,4 +1,4 @@
-# Experiments Directory
+﻿# Experiments Directory
 
 This folder contains isolated experiments. Each experiment is a self-contained directory with its own pipeline and configuration.
 
@@ -6,15 +6,15 @@ This folder contains isolated experiments. Each experiment is a self-contained d
 
 ```
 experiments/
-├── EXP-001_baseline/
-│   ├── main_exp.py      # Experiment pipeline (cell-like blocks)
-│   ├── config.py        # Experiment-specific configuration
-│   └── REPORT.md        # Experiment report
-├── EXP-002_feature_engineering/
-│   ├── main_exp.py
-│   ├── config.py
-│   └── REPORT.md
-└── ...
+в”њв”Ђв”Ђ EXP-001_baseline/
+в”‚   в”њв”Ђв”Ђ main_exp.py      # Experiment pipeline (cell-like blocks)
+в”‚   в”њв”Ђв”Ђ config.py        # Experiment-specific configuration
+в”‚   в””в”Ђв”Ђ REPORT.md        # Experiment report
+в”њв”Ђв”Ђ EXP-002_feature_engineering/
+в”‚   в”њв”Ђв”Ђ main_exp.py
+в”‚   в”њв”Ђв”Ђ config.py
+в”‚   в””в”Ђв”Ђ REPORT.md
+в””в”Ђв”Ђ ...
 ```
 
 ## Naming Convention
@@ -34,7 +34,7 @@ Examples:
    - `main_exp.py` - experiment pipeline
    - `REPORT.md` - copy from `.apm/AGENT_REPORTS_TMP/EXPERIMENT_REPORT.md`
 
-3. Update `TASK.md` with active experiment
+3. Update `memory bank/TASK.md` with active experiment
 
 ## Running Experiments
 
@@ -64,3 +64,4 @@ All reusable functions should be in `src/` modules:
 - `src/evaluation.py` - metrics and evaluation
 
 Import from `src/` in experiments to maintain DRY principle.
+
