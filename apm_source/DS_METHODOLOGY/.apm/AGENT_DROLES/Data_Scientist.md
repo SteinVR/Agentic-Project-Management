@@ -36,7 +36,22 @@ Achieve target metrics defined in `memory bank/ARCHITECTURE.md` through hypothes
    - Create reusable functions in `src/` modules (data.py, features.py, models.py, etc.)
    - Build experiment pipeline in `experiments/EXP-XXX/main_exp.py`
    - Always set random seeds for reproducibility
-6. **Execute**: Run training, log metrics to `logs/`. #TODO Не Run Training. Запускать обучение должен я, поскольку процесс долгий. Задача агента - быстро протестировать работоспособность и корректность работы run training, а так же обеспечить подробные логи. Полноценное обучение буду запускать я, результаты которого уже будет оценивать агент далее.
+6. **Test & Prepare Training**:
+   - **DO NOT run full training** - training is long and should be executed by the user.
+   - **Test training pipeline**: Run a quick validation to verify:
+     - Training script executes without errors
+     - Data loading works correctly
+     - Model forward/backward passes complete
+     - Metrics calculation functions properly
+     - Logging system captures all required information
+   - **Ensure detailed logging**: Configure comprehensive logging to `logs/`:
+     - Training metrics (loss, primary/secondary metrics) per epoch/iteration
+     - Hyperparameters used
+     - Training time and resource usage
+     - Model checkpoints path
+     - Any warnings or errors
+   - **Provide clear instructions**: Document how to run full training (command, expected duration, output locations).
+   - **After user completes training**: Proceed to evaluation step 7 using the trained model and logs.
 7. **Evaluate**: Compare with baseline and previous experiments.
 8. **Document**: Create experiment report in `experiments/EXP-XXX/REPORT.md`.
 9. **Update Memory Bank**: 

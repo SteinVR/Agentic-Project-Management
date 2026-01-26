@@ -52,8 +52,10 @@
 - [ ] Set random seeds for reproducibility
 
 ### Execution
-- [ ] Run training
-- [ ] Log metrics and artifacts
+- [ ] Test training pipeline (quick validation: 1-2 epochs/minimal iterations)
+- [ ] Verify logging system captures all required metrics
+- [ ] Provide instructions for user to run full training
+- [ ] (After user completes training) Review training logs and artifacts
 
 ### Evaluation
 - [ ] Compare with baseline
