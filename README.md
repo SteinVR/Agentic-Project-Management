@@ -15,12 +15,12 @@
 
 ## 🎯 What is APM?
 
-APM (Agentic Project Management) is a methodology toolkit that brings structure and predictability to AI-assisted software development. It provides:
+APM (Agentic Project Management) is a methodology toolkit that brings structure and predictability to AI-assisted software development in Cursor IDE. It provides:
 
 - **CLI Configurator** - Interactive wizard to bootstrap new projects (Windows, Linux, macOS)
-- **Agent Roles** - Pre-defined personas for LLM agents (Architect, Engineer, SDET, Principal)
-- **Cursor Commands** - Slash commands for seamless workflow (`/apm-start`, `/apm-develop`, `/apm-ci`, etc.)
-- **Memory Bank** - Persistent project state across sessions (decisions, context, tech debt)
+- **Agent Roles** - Pre-defined personas for LLM agents (Architect, Engineer, SDET, Data Scientist)
+- **Cursor Commands** - Slash commands for seamless workflow (`/apm-start`, `/apm-develop`, `/apm-scientist`, etc.)
+- **Memory Bank** - Persistent project state across sessions stored in `memory bank/` directory
 - **Documentation Templates** - Structured specs, tasks, and reports
 
 ---
@@ -36,87 +36,75 @@ Traditional development starts with code. SDD flips this:
 3. **Implement** - Write code that satisfies the specification
 4. **Verify** - Tests validate against the spec, not implementation details
 
-The specification (`ARCHITECTURE.md`, `TASK.md`) becomes executable through AI agents that understand and follow it.
+The specification becomes executable through AI agents that understand and follow it.
 
-### Domain-Driven Design (DDD)
+### Memory Bank Pattern
 
-Complex projects are decomposed into **bounded contexts** - isolated functional blocks with clear interfaces. In APM's FULL methodology:
+APM uses a **Memory Bank** pattern to solve the context loss problem in long-running AI-assisted projects:
 
-- Each block has its own `task.md`, `src/`, `tests/`, and `logs/`
-- Blocks can be developed in parallel by different agents
-- Interfaces between blocks are explicitly defined in `ARCHITECTURE.md`
-
-### Test-Driven Development (TDD)
-
-In FULL methodology, the workflow follows strict TDD:
-
-1. **RED** - SDET writes failing tests based on Acceptance Criteria
-2. **GREEN** - Lead Engineer implements code to pass tests
-3. **REFACTOR** - Code is cleaned up while tests stay green
-4. **REVIEW** - Principal Engineer audits for quality and compliance
+- All project state is stored in `memory bank/` directory
+- `ARCHITECTURE.md` is the single source of truth for design
+- `TASK.md` tracks work backlog (features for RAPID, hypotheses for DS)
+- `STATE.md` maintains session history and active context
+- Agents are required to update Memory Bank at the end of each session
 
 ---
 
 ## 🔧 Methodologies
 
-### FULL Methodology
+### DS Methodology (Data Science)
 
-**For:** Large projects, microservices, team collaboration
+**For:** Machine Learning projects, data analysis, research experiments
 
 ```
 project/
 ├── .apm/
-│   ├── AGENT_DROLES/         # Agent role definitions
-│   ├── AGENT_REPORTS/        # Report templates
-│   ├── AGENT_TOOLS/          # Auxiliary scripts
-│   └── MEMORY/               # Memory Bank
-│       ├── STATE.md          # Project state tracking
-│       ├── DECISIONS.md      # Architecture decision log
-│       └── TECH_DEBT.md      # Technical debt tracker
+│   ├── AGENT_ROLES/          # Agent role definitions
+│   ├── TEMPLATES/            # Document templates
+│   └── REPORTS/              # Report storage
 ├── .cursor/commands/         # Slash commands
-├── {project-name}/
-│   ├── {Block-1}/
-│   │   ├── src/
-│   │   ├── tests/
-│   │   ├── logs/
-│   │   └── task.md
-│   ├── {Block-2}/
-│   │   └── ...
-│   └── {Block-N}/
-├── external/
-├── ARCHITECTURE.md
-└── WORKFLOW.md
+├── src/                      # Reusable modules
+├── experiments/              # Experiment tracking
+│   └── EXP-XXX/              # Individual experiments
+├── eda/                      # Exploratory data analysis
+├── models/                   # Saved models
+├── logs/                     # Execution logs
+├── memory bank/              # Memory Bank
+│   ├── ARCHITECTURE.md       # Problem definition & architecture
+│   ├── TASK.md               # Hypothesis backlog
+│   └── STATE.md              # Experiment history & state
+├── config.py                 # Project configuration
+└── main.py                   # Entry point
 ```
 
 **Agent Roles:**
 | Role | Responsibility |
 |------|----------------|
-| **System Architect** | Vision alignment, architecture design, block decomposition |
-| **SDET** | Write tests before implementation (TDD) |
-| **Lead Engineer** | Implement features, make tests pass |
-| **Principal Engineer** | Quality audit, code review, final approval |
+| **System Architect** | Problem definition, success criteria, data architecture |
+| **Data Scientist** | EDA, feature engineering, model training, experiments |
+
+**Workflow:** Hypothesis-driven experimentation with rigorous tracking.
 
 ---
 
 ### RAPID Methodology
 
-**For:** MVPs, prototypes, small projects
+**For:** MVPs, prototypes, small software projects
 
 ```
 project/
 ├── .apm/
-│   ├── AGENT_DROLES/
-│   ├── AGENT_REPORTS/
-│   ├── AGENT_TOOLS/
-│   └── STATE_TEMPLATE.md     # State tracking template
-├── .cursor/commands/
+│   ├── AGENT_ROLES/          # Agent role definitions
+│   ├── TEMPLATES/            # Document templates
+│   └── REPORTS/              # Report storage
+├── .cursor/commands/         # Slash commands
 ├── src/                      # Unified source directory
-├── tests/
-├── logs/
-├── external/
-├── STATE.md                  # Project state
-├── ARCHITECTURE.md
-└── TASK.md
+├── tests/                    # Test suite
+├── logs/                     # Execution logs
+└── memory bank/              # Memory Bank
+    ├── ARCHITECTURE.md       # Project architecture
+    ├── TASK.md               # Feature backlog
+    └── STATE.md              # Project state & history
 ```
 
 **Agent Roles:**
@@ -127,6 +115,14 @@ project/
 | **SDET** | Test coverage when needed |
 
 Less ceremony, faster iteration, same structured approach.
+
+---
+
+### FULL Methodology (Deprecated)
+
+**Status:** ⚠️ Deprecated - Use RAPID for new projects
+
+The FULL methodology with block-based architecture is no longer actively maintained. For large projects, consider using RAPID methodology with clear module boundaries.
 
 ---
 
@@ -153,7 +149,7 @@ chmod +x ./apm_project/apm.sh
 The interactive wizard will guide you through:
 1. Select project directory
 2. Enter project name
-3. Choose methodology (FULL / RAPID)
+3. Choose methodology (DS / RAPID / FULL)
 4. Optional GitHub integration
 
 ### 2. Open in Cursor
@@ -164,120 +160,140 @@ The configurator will offer to open Cursor automatically.
 
 In Cursor chat, run:
 
+**For RAPID projects:**
 ```
 /apm-start I want to build a CLI task manager with local JSON storage...
 ```
 
+**For DS projects:**
+```
+/apm-start I want to predict customer churn using transaction history...
+```
+
 The System Architect will:
 - Analyze your request
-- Output a structured understanding (Idea, Body, Workflow)
+- Output a structured understanding (Idea, Body, Workflow for RAPID; Problem Statement, Success Criteria for DS)
 - Propose improvements
 - Wait for your confirmation
-- Create `ARCHITECTURE.md` and task files
+- Create `memory bank/ARCHITECTURE.md` and `memory bank/TASK.md`
 
 ### 4. Start Development
 
+**For RAPID:**
 ```
 /apm-develop
 ```
-
 The Lead Engineer picks up tasks and begins implementation.
+
+**For DS:**
+```
+/apm-scientist
+```
+The Data Scientist begins exploratory analysis and experiments.
 
 ---
 
 ## 💻 Commands
 
-### Core Commands
+### Core Commands (RAPID & DS)
 
 | Command | Description |
 |---------|-------------|
-| `/apm-start` | Initialize project with System Architect (Vision Alignment) |
-| `/apm-develop` | Activate Lead Engineer for development |
+| `/apm-start` | Initialize project with System Architect (Vision Alignment / Problem Definition) |
 | `/apm-architect` | Activate System Architect for consultation or review |
-| `/apm-tester` | Activate SDET role for quality assurance |
-| `/apm-report` | Generate reports using templates (General, Test, E2E, Debug) |
 | `/apm-review` | Conduct architecture review and quality audit |
+| `/apm-report` | Generate reports using templates |
+| `/apm-sync` | Sync Memory Bank - update `memory bank/STATE.md` with current project state |
 
-### CI/CD Commands
+### RAPID Methodology Commands
 
 | Command | Description |
 |---------|-------------|
+| `/apm-develop` | Activate Lead Engineer for development |
+| `/apm-tester` | Activate SDET role for quality assurance |
 | `/apm-ci` | Generate GitHub Actions CI workflow (tests, coverage) |
-| `/apm-cd` | Generate GitHub Actions CD workflow (staging deployment) - FULL only |
 
-### Memory Bank Commands
-
-| Command | Description |
-|---------|-------------|
-| `/apm-sync` | Sync Memory Bank - update STATE.md with current project state |
-
-### FULL Methodology Exclusive
+### DS Methodology Commands
 
 | Command | Description |
 |---------|-------------|
-| `/apm-principal` | Activate Principal Engineer for code review and validation |
-| `/apm-cd` | Setup CD workflow for staging deployment |
+| `/apm-scientist` | Activate Data Scientist for experiments |
+| `/apm-eda` | Exploratory Data Analysis workflow |
+| `/apm-experiment` | Run a hypothesis-driven experiment |
+| `/apm-baseline` | Create baseline model |
+| `/apm-env` | Setup project environment (dependencies, config) |
 
 ---
 
 ## 🧠 Memory Bank
 
-Memory Bank provides persistent context across agent sessions, solving the "context loss" problem in long-running projects.
+Memory Bank provides persistent context across agent sessions, solving the "context loss" problem in long-running projects. All Memory Bank files are stored in the `memory bank/` directory.
 
 ### Components
 
-**STATE.md** - Active project state
+**`memory bank/ARCHITECTURE.md`** - Single source of truth
+- Project Idea & Philosophy (RAPID) or Problem Statement (DS)
+- Form Factor and User Workflow
+- Technology Decisions
+- Component Design
+- Code Organization Pattern
+
+**`memory bank/TASK.md`** - Work tracking
+- Feature Backlog (RAPID) or Hypothesis Backlog (DS)
+- Current Task/Hypothesis in Focus
+- Implementation/Experiment Plan
+
+**`memory bank/STATE.md`** - Active project state
 - Current focus and blockers
-- Block status overview (FULL) or project status (RAPID)
 - Session history for continuity
-
-**DECISIONS.md** (FULL only) - Architecture Decision Records
-- Documented decisions with context and rationale
-- Impact tracking across blocks
-- Decision status (Proposed, Accepted, Deprecated)
-
-**TECH_DEBT.md** (FULL only) - Technical debt tracker
-- Prioritized list of known issues
-- Architecture deviations with justification
-- Resolved debt history
+- Experiment History (DS) or Decision Log (RAPID)
+- Best Model Tracker (DS) or Known Issues (RAPID)
 
 ### Sync Workflow
 
 Run `/apm-sync` periodically to:
-1. Scan recent changes in `src/`, `logs/`, and docs
-2. Update State of the project
+1. Scan recent changes in `src/`, `logs/`, `experiments/`, and docs
+2. Update `memory bank/STATE.md` with current project state
+3. Document any architecture deviations
+
+**Important:** Agents are required to update `memory bank/STATE.md` at the end of each session to maintain context continuity.
 
 ---
 
 ## 📋 Documentation Templates
 
-### ARCHITECTURE.md
+All templates are stored in `.apm/TEMPLATES/` and copied to `memory bank/` during project initialization.
+
+### `memory bank/ARCHITECTURE.md`
 The master blueprint containing:
-- Project Idea & Philosophy
+- Project Idea & Philosophy (RAPID) or Problem Statement & Success Criteria (DS)
 - Form Factor (CLI, Web, API, etc.)
 - User Workflow (step-by-step interaction)
 - Technology Decisions
 - Component Design
 - Code Organization
 
-### TASK.md / task.md
+### `memory bank/TASK.md`
 Work tracking with:
-- Feature Backlog (checklist)
-- Current Task in Focus
-- Implementation Plan (scratchpad)
+- Feature Backlog (RAPID) or Hypothesis Backlog (DS)
+- Current Task/Hypothesis in Focus
+- Implementation/Experiment Plan
 
-### STATE.md
+### `memory bank/STATE.md`
 Project state tracking:
 - Active Context (current focus, blockers)
-- Decision Log (RAPID) or reference to DECISIONS.md (FULL)
-- Known Issues / Tech Debt
 - Session History
+- Experiment History (DS) or Decision Log (RAPID)
+- Best Model Tracker (DS) or Known Issues (RAPID)
 
-### Report Templates
-- `GENERAL_REPORT_TEMPLATE.md` - Work summaries
-- `TEST_REPORT_TEMPLATE.md` - Test execution results
-- `E2E_REPORT_TEMPLATE.md` - User scenario validation
-- `DEBUGGING_REPORT_TEMPLATE.md` - TDD cycle diagnostics
+### Report Templates (`.apm/TEMPLATES/AGENT_REPORTS_TMP/`)
+- `GENERAL_REPORT_TMP.md` - Work summaries
+- `TEST_REPORT_TMP.md` - Test execution results
+- `E2E_REPORT_TMP.md` - User scenario validation
+- `DEBUGGING_REPORT_TMP.md` - TDD cycle diagnostics
+- `EDA_REPORT_TMP.md` (DS) - Exploratory Data Analysis findings
+- `EXPERIMENT_REPORT_TMP.md` (DS) - Experiment results and analysis
+- `MODEL_REPORT_TMP.md` (DS) - Model evaluation and comparison
 
 ---
 
