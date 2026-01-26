@@ -33,9 +33,6 @@ RANDOM_SEED = 42
 TARGET_COL = "target"
 
 # Train/Val/Test split ratios
-TRAIN_RATIO = 0.7
-VAL_RATIO = 0.15
-TEST_RATIO = 0.15
 
 # =============================================================================
 # Model Configuration (Baseline)
