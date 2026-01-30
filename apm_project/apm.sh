@@ -2,7 +2,7 @@
 #
 # APM (Agentic Project Management) - Project Configurator
 # Interactive CLI wizard for creating new projects with APM methodology.
-# Supports FULL and RAPID methodologies for AI-driven development in Cursor.
+# Supports FULL/RAPID/DS methodologies for Cursor and OpenCode CLI environments.
 #
 # Author: APM Team
 # Version: 1.0.0
@@ -21,6 +21,7 @@ APP_VERSION="1.0.0"
 PROJECT_NAME=""
 PROJECT_PATH=""
 METHODOLOGY=""
+DEV_ENV=""
 SKIP_GITHUB=false
 SKIP_CURSOR=false
 FORCE=false
@@ -53,6 +54,10 @@ parse_args() {
                 ;;
             --methodology)
                 METHODOLOGY="$2"
+                shift 2
+                ;;
+            --dev-env)
+                DEV_ENV="$2"
                 shift 2
                 ;;
             --skip-github)
@@ -185,47 +190,112 @@ read_project_name() {
     done
 }
 
-select_methodology() {
+select_dev_environment() {
     echo ""
-    echo "Available Methodologies:"
+    echo "Select Development Environment:"
     echo ""
-    echo -e "  \033[33m[1] \033[32mFULL\033[0m - Enterprise methodology"
-    echo -e "      \033[90mBlock-based architecture, 4 agent roles (Architect, SDET, Engineer, Principal)\033[0m"
-    echo -e "      \033[90mTDD workflow, isolated components, comprehensive documentation\033[0m"
-    echo -e "      \033[90mBest for: Large projects, microservices, team collaboration\033[0m"
+    echo -e "  \033[33m[1] \033[36mCursor IDE\033[0m - Interactive IDE workflow"
+    echo -e "      \033[90mIncludes Cursor commands and .apm methodology assets\033[0m"
     echo ""
-    echo -e "  \033[33m[2] \033[36mRAPID\033[0m - Startup methodology"
-    echo -e "      \033[90mUnified src/ structure, 3 agent roles (Architect, Engineer, SDET)\033[0m"
-    echo -e "      \033[90mFaster iteration, simpler setup, less ceremony\033[0m"
-    echo -e "      \033[90mBest for: MVPs, prototypes, small projects\033[0m"
-    echo ""
-    echo -e "  \033[33m[3] \033[35mDS\033[0m - Data Science methodology"
-    echo -e "      \033[90mML/DS projects with experiment tracking, 2 agent roles (Architect, Data Scientist)\033[0m"
-    echo -e "      \033[90mEDA pipeline, hypothesis-driven experiments, model finalization\033[0m"
-    echo -e "      \033[90mBest for: Kaggle, ML research, data analysis\033[0m"
+    echo -e "  \033[33m[2] \033[32mOpenCode CLI\033[0m - CLI-first workflow"
+    echo -e "      \033[90mUses OpenCode agents/commands/skills pack and memory-bank/\033[0m"
     echo ""
     
     while true; do
         local choice
-        choice=$(read_user_input "Select methodology (1, 2, or 3)" "2")
+        choice=$(read_user_input "Select environment (1 or 2)" "1")
         
         case "$choice" in
-            1|FULL|full)
-                echo "FULL"
+            1|CURSOR|cursor)
+                echo "CURSOR"
                 return 0
                 ;;
-            2|RAPID|rapid)
-                echo "RAPID"
-                return 0
-                ;;
-            3|DS|ds)
-                echo "DS"
+            2|OPENCODE|opencode|OpenCode|OpenCodeCLI)
+                echo "OPENCODE"
                 return 0
                 ;;
             *)
-                write_error "Invalid choice. Enter 1, 2, 3, FULL, RAPID, or DS"
+                write_error "Invalid choice. Enter 1 or 2"
                 ;;
         esac
+    done
+}
+
+select_methodology() {
+    local dev_env="$1"
+
+    echo ""
+    echo "Available Methodologies:"
+    echo ""
+    if [[ "$dev_env" != "OPENCODE" ]]; then
+        echo -e "  \033[33m[1] \033[32mFULL\033[0m - Enterprise methodology"
+        echo -e "      \033[90mBlock-based architecture, 4 agent roles (Architect, SDET, Engineer, Principal)\033[0m"
+        echo -e "      \033[90mTDD workflow, isolated components, comprehensive documentation\033[0m"
+        echo -e "      \033[90mBest for: Large projects, microservices, team collaboration\033[0m"
+        echo ""
+        echo -e "  \033[33m[2] \033[36mRAPID\033[0m - Startup methodology"
+        echo -e "      \033[90mUnified src/ structure, 3 agent roles (Architect, Engineer, SDET)\033[0m"
+        echo -e "      \033[90mFaster iteration, simpler setup, less ceremony\033[0m"
+        echo -e "      \033[90mBest for: MVPs, prototypes, small projects\033[0m"
+        echo ""
+        echo -e "  \033[33m[3] \033[35mDS\033[0m - Data Science methodology"
+        echo -e "      \033[90mML/DS projects with experiment tracking, 2 agent roles (Architect, Data Scientist)\033[0m"
+        echo -e "      \033[90mEDA pipeline, hypothesis-driven experiments, model finalization\033[0m"
+        echo -e "      \033[90mBest for: Kaggle, ML research, data analysis\033[0m"
+        echo ""
+    else
+        echo -e "  \033[33m[1] \033[36mRAPID\033[0m - Startup methodology"
+        echo -e "      \033[90mUnified src/ structure, 3 agent roles (Architect, Engineer, SDET)\033[0m"
+        echo -e "      \033[90mFaster iteration, simpler setup, less ceremony\033[0m"
+        echo -e "      \033[90mBest for: MVPs, prototypes, small projects\033[0m"
+        echo ""
+        echo -e "  \033[33m[2] \033[35mDS\033[0m - Data Science methodology"
+        echo -e "      \033[90mML/DS projects with experiment tracking, 2 agent roles (Architect, Data Scientist)\033[0m"
+        echo -e "      \033[90mEDA pipeline, hypothesis-driven experiments, model finalization\033[0m"
+        echo ""
+    fi
+    
+    while true; do
+        local choice
+        if [[ "$dev_env" == "OPENCODE" ]]; then
+            choice=$(read_user_input "Select methodology (1 or 2)" "1")
+        else
+            choice=$(read_user_input "Select methodology (1, 2, or 3)" "2")
+        fi
+        
+        if [[ "$dev_env" == "OPENCODE" ]]; then
+            case "$choice" in
+                1|RAPID|rapid)
+                    echo "RAPID"
+                    return 0
+                    ;;
+                2|DS|ds)
+                    echo "DS"
+                    return 0
+                    ;;
+                *)
+                    write_error "Invalid choice. Enter 1 or 2"
+                    ;;
+            esac
+        else
+            case "$choice" in
+                1|FULL|full)
+                    echo "FULL"
+                    return 0
+                    ;;
+                2|RAPID|rapid)
+                    echo "RAPID"
+                    return 0
+                    ;;
+                3|DS|ds)
+                    echo "DS"
+                    return 0
+                    ;;
+                *)
+                    write_error "Invalid choice. Enter 1, 2, 3, FULL, RAPID, or DS"
+                    ;;
+            esac
+        fi
     done
 }
 
@@ -264,7 +334,8 @@ show_summary() {
     local project_path="$1"
     local project_name="$2"
     local methodology="$3"
-    local github_enabled="$4"
+    local dev_env="$4"
+    local github_enabled="$5"
     
     echo ""
     echo -e "\033[90m==================================================\033[0m"
@@ -276,6 +347,14 @@ show_summary() {
     echo -e "\033[32m$project_path\033[0m"
     echo -n "  Methodology:   "
     echo -e "\033[32m$methodology\033[0m"
+    local env_label="$dev_env"
+    if [[ "$dev_env" == "OPENCODE" ]]; then
+        env_label="OpenCode CLI"
+    elif [[ "$dev_env" == "CURSOR" ]]; then
+        env_label="Cursor IDE"
+    fi
+    echo -n "  Environment:  "
+    echo -e "\033[32m$env_label\033[0m"
     echo -n "  GitHub:        "
     if [[ "$github_enabled" == "true" ]]; then
         echo -e "\033[32mYes (will create repository)\033[0m"
@@ -300,8 +379,20 @@ show_summary() {
 copy_methodology_template() {
     local methodology="$1"
     local target_path="$2"
+    local dev_env="$3"
     
-    local source_path="$SOURCE_PATH/${methodology}_METHODOLOGY"
+    local source_root="$SOURCE_PATH/interactive_ide"
+    if [[ "$dev_env" == "OPENCODE" ]]; then
+        source_root="$SOURCE_PATH/cli_ide"
+    fi
+    
+    local source_path="$source_root/${methodology}_METHODOLOGY"
+    if [[ "$methodology" == "FULL" && ! -d "$source_path" ]]; then
+        local deprecated_path="$source_root/FULL_METHODOLOGY (Deprecated)"
+        if [[ -d "$deprecated_path" ]]; then
+            source_path="$deprecated_path"
+        fi
+    fi
     
     if [[ ! -d "$source_path" ]]; then
         write_error "Methodology template not found: $source_path"
@@ -345,6 +436,7 @@ initialize_git_repository() {
 rename_project_placeholders() {
     local project_path="$1"
     local project_name="$2"
+    local dev_env="$3"
     
     # Rename {project-name} directory if exists (FULL methodology)
     local placeholder_dir="$project_path/{project-name}"
@@ -354,35 +446,68 @@ rename_project_placeholders() {
     fi
     
     # Update project name in ARCHITECTURE.md
+    local replace_in_file
+    replace_in_file() {
+        local target_file="$1"
+        if [[ "$(uname)" == "Darwin" ]]; then
+            sed -i '' "s/\\[Project Name\\]/$project_name/g" "$target_file"
+        else
+            sed -i "s/\\[Project Name\\]/$project_name/g" "$target_file"
+        fi
+    }
+
     local arch_file="$project_path/ARCHITECTURE.md"
     if [[ -f "$arch_file" ]]; then
-        if [[ "$(uname)" == "Darwin" ]]; then
-            # macOS sed requires empty string after -i
-            sed -i '' "s/\[Project Name\]/$project_name/g" "$arch_file"
-        else
-            sed -i "s/\[Project Name\]/$project_name/g" "$arch_file"
-        fi
+        replace_in_file "$arch_file"
         write_info "Updated ARCHITECTURE.md with project name"
     fi
+
+    local memory_bank_dir="$project_path/memory bank"
+    if [[ "$dev_env" == "OPENCODE" ]]; then
+        memory_bank_dir="$project_path/memory-bank"
+    fi
+    local mb_file
+    for mb_file in "$memory_bank_dir/ARCHITECTURE.md" "$memory_bank_dir/TASK.md" "$memory_bank_dir/STATE.md"; do
+        if [[ -f "$mb_file" ]]; then
+            replace_in_file "$mb_file"
+            write_info "Updated $(basename "$mb_file") in $(basename "$memory_bank_dir") with project name"
+        fi
+    done
 }
 
 initialize_memory_bank() {
     local project_path="$1"
     local methodology="$2"
+    local dev_env="$3"
     
     if [[ "$methodology" == "FULL" ]]; then
+        return 0
+    fi
+    if [[ "$dev_env" == "OPENCODE" ]]; then
         return 0
     fi
     
     local memory_bank_dir="$project_path/memory bank"
     mkdir -p "$memory_bank_dir"
     
-    local apm_dir="$project_path/.apm"
+    local templates_dir="$project_path/.apm/TEMPLATES"
+    resolve_template() {
+        local base_name="$1"
+        local candidate
+        for candidate in "${base_name}_TEMPLATE.md" "${base_name}_TMP.md" "${base_name}_TEMPLATE_TMP.md"; do
+            if [[ -f "$templates_dir/$candidate" ]]; then
+                echo "$templates_dir/$candidate"
+                return 0
+            fi
+        done
+        return 1
+    }
+    
     local file_name
     for file_name in ARCHITECTURE.md STATE.md TASK.md; do
         local root_file="$project_path/$file_name"
         local bank_file="$memory_bank_dir/$file_name"
-        local template_file="$apm_dir/${file_name%.md}_TEMPLATE.md"
+        local template_file
         
         if [[ -f "$root_file" && ! -f "$bank_file" ]]; then
             mv "$root_file" "$bank_file"
@@ -391,7 +516,7 @@ initialize_memory_bank() {
         fi
         
         if [[ ! -f "$bank_file" ]]; then
-            if [[ -f "$template_file" ]]; then
+            if template_file="$(resolve_template "${file_name%.md}")"; then
                 cp "$template_file" "$bank_file"
                 write_info "Initialized memory bank/$file_name from template"
             else
@@ -405,12 +530,16 @@ initialize_memory_bank() {
 initialize_agent_reports() {
     local project_path="$1"
     local methodology="$2"
+    local dev_env="$3"
     
-    if [[ "$methodology" == "FULL" ]]; then
+    if [[ "$methodology" == "FULL" || "$dev_env" == "OPENCODE" ]]; then
         return 0
     fi
     
-    local roles_dir="$project_path/.apm/AGENT_DROLES"
+    local roles_dir="$project_path/.apm/AGENT_ROLES"
+    if [[ ! -d "$roles_dir" ]]; then
+        roles_dir="$project_path/.apm/AGENT_DROLES"
+    fi
     local reports_root="$project_path/.apm/Agent Reports"
     
     if [[ ! -d "$roles_dir" ]]; then
@@ -432,32 +561,6 @@ initialize_agent_reports() {
         mkdir -p "$role_dir"
         : > "$role_dir/.gitkeep"
     done
-}
-
-open_cursor() {
-    local project_path="$1"
-    
-    local open_choice
-    open_choice=$(read_user_input "Open project in Cursor? (y/n)" "y")
-    
-    if [[ "$open_choice" == "y" || "$open_choice" == "Y" ]]; then
-        # Try cursor command first
-        if command -v cursor &> /dev/null; then
-            write_info "Opening Cursor..."
-            cursor "$project_path" &
-            return 0
-        fi
-        
-        # Try code command as fallback (VS Code)
-        if command -v code &> /dev/null; then
-            write_warning "Cursor not found, opening VS Code..."
-            code "$project_path" &
-            return 0
-        fi
-        
-        write_warning "Neither Cursor nor VS Code found in PATH"
-        echo -e "      \033[90mOpen the project manually: $project_path\033[0m"
-    fi
 }
 
 # ============================================================================
@@ -482,14 +585,15 @@ Non-Interactive Mode (for automation/testing):
     --project-name      Name of the project to create
     --project-path      Parent directory where project will be created
     --methodology       FULL, RAPID, or DS
+    --dev-env           CURSOR or OPENCODE (default: CURSOR)
     --skip-github       Skip GitHub repository creation
-    --skip-cursor       Skip opening Cursor IDE
+    --skip-cursor       Deprecated (no auto-open)
     --force             Overwrite existing project without prompting
     --non-interactive   Run without any user prompts
 
 Example:
-    ./apm.sh --project-name "my-app" --project-path "/projects" --methodology RAPID --non-interactive --skip-github --skip-cursor
-    ./apm.sh --project-name "ml-project" --project-path "/projects" --methodology DS --non-interactive --skip-github --skip-cursor
+    ./apm.sh --project-name "my-app" --project-path "/projects" --methodology RAPID --dev-env CURSOR --non-interactive --skip-github --skip-cursor
+    ./apm.sh --project-name "ml-project" --project-path "/projects" --methodology DS --dev-env OPENCODE --non-interactive --skip-github --skip-cursor
 
 This interactive wizard will guide you through creating a new APM project.
 EOF
@@ -512,6 +616,7 @@ EOF
     local directory
     local project_name
     local methodology
+    local dev_env
     local github_enabled
     local project_path
     
@@ -530,10 +635,21 @@ EOF
             write_error "--methodology is required in non-interactive mode"
             exit 1
         fi
+        if [[ -z "$DEV_ENV" ]]; then
+            DEV_ENV="CURSOR"
+        fi
+        if [[ "$DEV_ENV" != "CURSOR" && "$DEV_ENV" != "OPENCODE" ]]; then
+            write_error "Invalid --dev-env: $DEV_ENV. Use CURSOR or OPENCODE."
+            exit 1
+        fi
         
         # Validate methodology
         if [[ "$METHODOLOGY" != "FULL" && "$METHODOLOGY" != "RAPID" && "$METHODOLOGY" != "DS" ]]; then
             write_error "Invalid methodology: $METHODOLOGY. Use FULL, RAPID, or DS."
+            exit 1
+        fi
+        if [[ "$DEV_ENV" == "OPENCODE" && "$METHODOLOGY" == "FULL" ]]; then
+            write_error "FULL methodology is not available for OpenCode CLI projects."
             exit 1
         fi
         
@@ -546,13 +662,14 @@ EOF
         directory="$(cd "$PROJECT_PATH" && pwd)"
         project_name="$PROJECT_NAME"
         methodology="$METHODOLOGY"
+        dev_env="$DEV_ENV"
         github_enabled="false"
         if [[ "$SKIP_GITHUB" != "true" ]]; then
             github_enabled="true"
         fi
         project_path="$directory/$project_name"
         
-        write_info "Non-interactive mode: Creating $methodology project '$project_name'"
+        write_info "Non-interactive mode: Creating $methodology project '$project_name' ($dev_env)"
         
         # Check if project exists
         if [[ -d "$project_path" ]]; then
@@ -591,16 +708,20 @@ EOF
             rm -rf "$project_path"
         fi
         
-        # Step 3: Select methodology
-        write_step "Step 3: Select Methodology"
-        methodology=$(select_methodology)
+        # Step 3: Select development environment
+        write_step "Step 3: Select Development Environment"
+        dev_env=$(select_dev_environment)
         
-        # Step 4: GitHub integration
-        write_step "Step 4: GitHub Integration"
+        # Step 4: Select methodology
+        write_step "Step 4: Select Methodology"
+        methodology=$(select_methodology "$dev_env")
+        
+        # Step 5: GitHub integration
+        write_step "Step 5: GitHub Integration"
         github_enabled=$(confirm_github_integration)
         
         # Show summary and confirm
-        if ! show_summary "$project_path" "$project_name" "$methodology" "$github_enabled"; then
+        if ! show_summary "$project_path" "$project_name" "$methodology" "$dev_env" "$github_enabled"; then
             echo ""
             echo -e "\033[33mAborted.\033[0m"
             exit 0
@@ -616,14 +737,14 @@ EOF
     write_success "Created project directory"
     
     # Copy methodology template
-    copy_methodology_template "$methodology" "$project_path"
+    copy_methodology_template "$methodology" "$project_path" "$dev_env"
     
     # Rename placeholders
-    rename_project_placeholders "$project_path" "$project_name"
+    rename_project_placeholders "$project_path" "$project_name" "$dev_env"
 
     # Initialize Memory Bank and Agent Reports
-    initialize_memory_bank "$project_path" "$methodology"
-    initialize_agent_reports "$project_path" "$methodology"
+    initialize_memory_bank "$project_path" "$methodology" "$dev_env"
+    initialize_agent_reports "$project_path" "$methodology" "$dev_env"
     
     # Initialize git (skip github in non-interactive mode if SKIP_GITHUB is set)
     if [[ "$NON_INTERACTIVE" == "true" && "$SKIP_GITHUB" == "true" ]]; then
@@ -640,23 +761,15 @@ EOF
     echo "Location: $project_path"
     echo ""
     echo "Next steps:"
-    echo "  1. Open the project in Cursor"
+    echo "  1. Open the project in your preferred environment"
     echo -n "  2. Run "
     echo -e "\033[33m/apm-start\033[0m and describe your project idea"
     echo "  3. The System Architect will guide you through the setup"
     echo ""
-    
-    # Offer to open Cursor (skip in non-interactive mode or if SKIP_CURSOR is set)
-    if [[ "$NON_INTERACTIVE" != "true" && "$SKIP_CURSOR" != "true" ]]; then
-        open_cursor "$project_path"
-    elif [[ "$NON_INTERACTIVE" == "true" ]]; then
-        write_info "Skipping Cursor launch (non-interactive mode)"
-    fi
-    
+
     echo ""
     echo -e "\033[36mHappy coding!\033[0m"
 }
 
 # Run main
 main "$@"
-
