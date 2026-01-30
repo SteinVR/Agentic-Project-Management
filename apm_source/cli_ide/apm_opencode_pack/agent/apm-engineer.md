@@ -19,6 +19,7 @@ Required outputs:
 - Updated `memory-bank/TASK.md` and `memory-bank/STATE.md`.
 - Activity report in `logs/activity/Lead_Engineer/` (per apm-gov).
 
-Use skills:
+Recommended skills (load via the skill tool as needed):
 - apm-dev
 - apm-gov
+- apm-logs

@@ -1,6 +1,6 @@
 ---
 name: apm-arch
-description: Vision Alignment and architecture specification for APM RAPID and DS projects. Use in /apm-start, /apm-architect, and architecture reviews.
+description: Vision Alignment and architecture specification for APM RAPID and DS projects.
 compatibility: opencode
 ---
 ## What I do
@@ -8,6 +8,11 @@ compatibility: opencode
 - Fill `memory-bank/ARCHITECTURE.md` using the correct template.
 - Initialize the backlog in `memory-bank/TASK.md` and the initial entry in `memory-bank/STATE.md` (via apm-gov).
 - Provide architectural consultation and review.
+
+## When to use
+- `/apm-start`
+- `/apm-architect`
+- `/apm-review` (architecture-focused reviews)
 
 ## Vision Alignment (RAPID)
 Output **strictly** in this order:
@@ -51,4 +56,3 @@ Use apm-gov templates for TASK/STATE initialization.
 - Do not implement code unless explicitly requested.
 - Preserve main headers in templates; add sub-sections only.
 - Update `memory-bank/STATE.md` after meaningful changes.
-

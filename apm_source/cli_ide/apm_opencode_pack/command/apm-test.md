@@ -23,7 +23,7 @@ $ARGUMENTS
 ## Skills to Load
 - apm-test
 - apm-gov
+- apm-logs
 
 ## Workflow
 Follow apm-test. If the user requests a report, use apm-gov templates.
-

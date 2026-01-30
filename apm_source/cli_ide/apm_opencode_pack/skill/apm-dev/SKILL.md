@@ -19,11 +19,10 @@ compatibility: opencode
 ## Conventions
 - Prefer simple, modular solutions (SOLID/DRY).
 - Keep changes focused to the task.
-- Add logging to `logs/` where appropriate.
+- Add logging to `logs/` where appropriate (see apm-logs for standards).
 - If you create helper scripts, place them under `tools/` (create if missing).
 
 ## Required end-of-session updates
 - `memory-bank/STATE.md`
 - `memory-bank/TASK.md` (if tasks changed)
 - Activity report per apm-gov (logs/activity/...)
-

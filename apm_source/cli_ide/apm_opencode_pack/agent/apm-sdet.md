@@ -19,6 +19,7 @@ Required outputs:
 - Updated `memory-bank/STATE.md`.
 - Activity report in `logs/activity/SDET/` (per apm-gov).
 
-Use skills:
+Recommended skills (load via the skill tool as needed):
 - apm-test
 - apm-gov
+- apm-logs

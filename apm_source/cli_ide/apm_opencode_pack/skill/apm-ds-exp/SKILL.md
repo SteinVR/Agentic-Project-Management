@@ -24,4 +24,4 @@ Use `references/EXPERIMENT_REPORT_TMP.md` for `REPORT.md`.
 ## Required updates
 - `memory-bank/TASK.md` (mark hypothesis tested, update Active Experiment)
 - `memory-bank/STATE.md` (experiment history, best model tracker)
-
+- Log experiment runs and metrics per apm-logs.

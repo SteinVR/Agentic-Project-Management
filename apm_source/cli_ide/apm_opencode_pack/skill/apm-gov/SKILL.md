@@ -13,6 +13,9 @@ compatibility: opencode
 - **Always update `memory-bank/STATE.md` at the end of a session** if any work was performed.
 - Keep the main headers from the templates intact; add sub-sections only when needed.
 
+## Logging and feedback loop
+Logging conventions and feedback-loop rules live in **apm-logs**. Use that skill when writing or interpreting logs.
+
 ### RAPID updates
 - **ARCHITECTURE.md**: update only when scope or architecture changes.
 - **TASK.md**:
@@ -60,4 +63,3 @@ compatibility: opencode
   - `references/ARCHITECTURE_DS_TMP.md` (in apm-arch)
   - `references/TASK_DS_TMP.md`
   - `references/STATE_DS_TMP.md`
-

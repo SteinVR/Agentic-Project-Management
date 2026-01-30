@@ -23,7 +23,7 @@ $ARGUMENTS
 ## Skills to Load
 - apm-eda
 - apm-gov
+- apm-logs
 
 ## Workflow
 Follow apm-eda. Prioritize user-specified focus areas if provided.
-

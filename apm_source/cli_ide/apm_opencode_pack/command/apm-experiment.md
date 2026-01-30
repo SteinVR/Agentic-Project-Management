@@ -23,7 +23,7 @@ $ARGUMENTS
 ## Skills to Load
 - apm-ds-exp
 - apm-gov
+- apm-logs
 
 ## Workflow
 Follow apm-ds-exp. Do not run full training without user approval.
-

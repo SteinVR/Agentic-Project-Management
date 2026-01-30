@@ -1,5 +1,5 @@
 ---
-name: apm-ds-models
+name: apm-finalize-model
 description: Model finalization, artifact management, and MODEL_REPORT for DS projects.
 compatibility: opencode
 ---
@@ -22,4 +22,3 @@ Use `references/MODEL_REPORT_TMP.md` to create `models/MODEL_REPORT.md`.
 - `models/preprocessor.pkl`
 - `models/config.json`
 - `models/MODEL_REPORT.md`
-

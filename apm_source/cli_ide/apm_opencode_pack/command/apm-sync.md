@@ -20,7 +20,7 @@ $ARGUMENTS
 
 ## Skills to Load
 - apm-gov
+- apm-logs
 
 ## Workflow
 Scan recent changes, update Active Context, Decision Log, Known Issues, and Session History. Summarize the updates.
-

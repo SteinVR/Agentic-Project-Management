@@ -20,9 +20,10 @@ Required outputs:
 - Updated Memory Bank files as appropriate.
 - Activity report in `logs/activity/System_Architect/` (per apm-gov).
 
-Use skills:
+Recommended skills (load via the skill tool as needed):
 - apm-arch
 - apm-gov
+- apm-logs
 
 Stop conditions:
 - Ask for confirmation before applying significant architecture decisions / changes.

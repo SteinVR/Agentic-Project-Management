@@ -4,7 +4,7 @@
 set -e
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+REPO_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
 PACK_DIR="$REPO_ROOT/apm_source/cli_ide/apm_opencode_pack"
 
 if [[ ! -d "$PACK_DIR" ]]; then

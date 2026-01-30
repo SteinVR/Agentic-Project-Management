@@ -21,9 +21,10 @@ Required outputs:
 - Model artifacts in `models/`.
 - Activity report in `logs/activity/Data_Scientist/` (per apm-gov).
 
-Use skills:
+Recommended skills (load via the skill tool as needed):
 - apm-eda
 - apm-ds-exp
 - apm-ds-baseline
-- apm-ds-models
+- apm-finalize-model
 - apm-gov
+- apm-logs

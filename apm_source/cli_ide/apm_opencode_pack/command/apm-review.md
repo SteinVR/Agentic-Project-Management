@@ -24,7 +24,8 @@ $ARGUMENTS
 ## Skills to Load
 - apm-arch
 - apm-gov
-- apm-ds-models (DS only)
+- apm-finalize-model (DS only)
+- apm-logs
 
 ## Review flow
 Determine methodology from ARCHITECTURE.md or user input.
@@ -39,5 +40,4 @@ Determine methodology from ARCHITECTURE.md or user input.
 - Assess progress to target metrics using STATE.md.
 - Identify patterns across experiments.
 - Provide next hypotheses and strategic recommendations.
-- If targets are met, run model finalization using apm-ds-models.
-
+- If targets are met, run model finalization using apm-finalize-model.

@@ -23,7 +23,7 @@ $ARGUMENTS
 ## Skills to Load
 - apm-dev
 - apm-gov
+- apm-logs
 
 ## Workflow
 Follow apm-dev. If $ARGUMENTS specify tasks, prioritize them; otherwise select from the backlog.
-

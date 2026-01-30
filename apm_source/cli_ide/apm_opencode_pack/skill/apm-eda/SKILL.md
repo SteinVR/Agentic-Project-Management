@@ -27,4 +27,4 @@ Use `references/EDA_REPORT_TMP.md`.
 
 ## Required updates
 - Add key findings to `memory-bank/STATE.md`.
-
+ - Log notable EDA runs and outputs per apm-logs when applicable.

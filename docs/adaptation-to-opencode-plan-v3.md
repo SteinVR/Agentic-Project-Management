@@ -108,6 +108,8 @@ apm_opencode_pack/skill/
     SKILL.md
   apm-test/
     SKILL.md
+  apm-logs/
+    SKILL.md
   apm-eda/
     SKILL.md
     references/
@@ -116,12 +118,12 @@ apm_opencode_pack/skill/
     references/
   apm-ds-baseline/
     SKILL.md
-  apm-ds-models/
+  apm-finalize-model/
     SKILL.md
     references/
 ```
 
-**Декомпозиция DS-методологии:** вместо одного монолитного apm-ds используются отдельные навыки: **apm-eda** (Exploratory Data Analysis: eda/, EDA report), **apm-ds-exp** (эксперименты: hypothesis, experiments/, EXPERIMENT_REPORT), **apm-ds-baseline** (baseline-модель), **apm-ds-models** (артефакты моделей, версионирование, MODEL_REPORT). Команды `/apm-eda`, `/apm-baseline`, `/apm-experiment` привязывают соответствующий навык.
+**Декомпозиция DS-методологии:** вместо одного монолитного apm-ds используются отдельные навыки: **apm-eda** (Exploratory Data Analysis: eda/, EDA report), **apm-ds-exp** (эксперименты: hypothesis, experiments/, EXPERIMENT_REPORT), **apm-ds-baseline** (baseline-модель), **apm-finalize-model** (артефакты моделей, версионирование, MODEL_REPORT). Команды `/apm-eda`, `/apm-baseline`, `/apm-experiment` привязывают соответствующий навык. Отдельный навык **apm-logs** задаёт стандарты логирования и feedback loop.
 
 Требования к skills:
 
@@ -234,8 +236,8 @@ project/
    - **RAPID:** создавать директории: `src/`, `tests/`, `logs/`, `memory-bank/`.
    - **DS:** создавать директории: `src/`, `experiments/`, `eda/`, `models/`, `logs/`, `memory-bank/`. Файлы `config.py`, `main.py` и содержимое директорий tool не создаёт — только каталоги.
 3. Добавить install scripts в репозиторий APM:
-   - `scripts/opencode_install.sh`
-   - `scripts/opencode_install.ps1`
+   - `apm_project/scripts/opencode_install.sh`
+   - `apm_project/scripts/opencode_install.ps1`
 
 Скрипты должны:
 
@@ -291,7 +293,7 @@ project/
 - краткое содержание
 - stop conditions / outputs
 
-Для DS-методологии: Data_Scientist.md и команды apm-eda, apm-baseline, apm-experiment декомпозировать в apm-eda, apm-ds-exp, apm-ds-baseline, apm-ds-models (не один монолитный apm-ds).
+Для DS-методологии: Data_Scientist.md и команды apm-eda, apm-baseline, apm-experiment декомпозировать в apm-eda, apm-ds-exp, apm-ds-baseline, apm-finalize-model (не один монолитный apm-ds).
 
 #### 5.2. Создать skills как директории
 
@@ -312,7 +314,7 @@ project/
 
 1. Добавить флаг/режим “OpenCode project” (чтобы создавать проекты с `memory-bank/` и без `.cursor/`).
 2. Отдельной командой/флагом добавить “install APM into OpenCode”:
-   - вызывает `scripts/opencode_install.*`
+   - вызывает `apm_project/scripts/opencode_install.*`
 
 ### Этап 8: Приемка (v3 core)
 
@@ -351,11 +353,11 @@ project/
 
 ### v3 core
 
-1. В репозитории есть `apm_opencode_pack/skill/*` (skills по спецификации: apm-gov, apm-arch, apm-dev, apm-test, apm-eda, apm-ds-exp, apm-ds-baseline, apm-ds-models).
+1. В репозитории есть `apm_opencode_pack/skill/*` (skills по спецификации: apm-gov, apm-arch, apm-dev, apm-test, apm-logs, apm-eda, apm-ds-exp, apm-ds-baseline, apm-finalize-model).
 2. В репозитории есть `apm_opencode_pack/agent/*` (профили ролей; все subagents, кроме экспериментального Orchestrator).
 3. В репозитории есть `apm_opencode_pack/command/*` (playbooks для человека; обязательная привязка memory-bank файлов).
 4. В репозитории есть `apm_opencode_pack/tools/` с custom tool `apm_init_structure`.
-5. Есть `scripts/opencode_install.*`, которые ставят pack в `~/.config/opencode/agents/`, `commands/`, `skills/`, `tools/`.
+5. Есть `apm_project/scripts/opencode_install.*`, которые ставят pack в `~/.config/opencode/agents/`, `commands/`, `skills/`, `tools/`.
 6. Конфигуратор создает RAPID/DS проекты с `memory-bank/`.
 
 ### v3 experimental (optional)

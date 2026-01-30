@@ -22,7 +22,7 @@ $ARGUMENTS
 ## Skills to Load
 - apm-ds-baseline
 - apm-gov
+- apm-logs
 
 ## Workflow
 Follow apm-ds-baseline. Do not run long training without user approval.
-

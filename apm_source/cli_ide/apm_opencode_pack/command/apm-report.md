@@ -20,9 +20,9 @@ $ARGUMENTS
 
 ## Skills to Load
 - apm-gov
+- apm-logs
 
 ## Workflow
 1. Determine report type from user input (default: General).
 2. Use the corresponding template from apm-gov.
 3. Fill with real project data and save to `logs/reports/`.
-

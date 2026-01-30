@@ -22,4 +22,4 @@ compatibility: opencode
 
 ## Reports
 Use apm-gov report templates when asked to produce a report.
-
+Follow apm-logs for logging test runs and failures when applicable.
