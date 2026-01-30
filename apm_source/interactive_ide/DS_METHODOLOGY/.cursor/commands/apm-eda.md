@@ -34,11 +34,11 @@ Work in the dedicated EDA directory:
 
 ```
 eda/
-в”њв”Ђв”Ђ eda.py              # Main EDA pipeline (cell-based execution)
-в”њв”Ђв”Ђ results/
-в”‚   в”њв”Ђв”Ђ figures/        # Saved plots (.png, .svg)
-в”‚   в””в”Ђв”Ђ tables/         # Saved tables (.csv)
-в””в”Ђв”Ђ EDA_REPORT.md       # Final report (created after analysis)
+eda.py              # Main EDA pipeline (cell-based execution)
+results/
+figures/        # Saved plots (.png, .svg)
+tables/         # Saved tables (.csv)
+EDA_REPORT.md       # Final report (created after analysis)
 ```
 
 ### 2. Build EDA Pipeline

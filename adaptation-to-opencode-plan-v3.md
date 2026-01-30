@@ -6,9 +6,10 @@
 
 **Выбранный вариант установки:** **A (глобально в OpenCode профиле)**
 
-- APM-команды (playbooks для человека) устанавливаются в `~/.config/opencode/command/`
-- APM-агенты (роли как профили агентов) устанавливаются в `~/.config/opencode/agent/`
-- APM-skills (навыки по спецификации Agent Skills) устанавливаются в `~/.config/opencode/skill/`
+- APM-команды (playbooks для человека) устанавливаются в `~/.config/opencode/commands/`
+- APM-агенты (роли как профили агентов) устанавливаются в `~/.config/opencode/agents/`
+- APM-skills (навыки по спецификации Agent Skills) устанавливаются в `~/.config/opencode/skills/`
+- APM custom tool `apm_init_structure` устанавливается в `~/.config/opencode/tools/`
 - Проекты, создаваемые APM-конфигуратором, НЕ содержат `.apm/` с методологией (минимальный project template), но содержат `memory-bank/` и структуру методологии (RAPID/DS).
 
 ---
@@ -25,7 +26,7 @@
 
 4) **Роли остаются**: но становятся короткими “контрактами поведения” (responsibilities + guardrails + stop conditions + required outputs) и опираются на skills.
 
-5) **Оркестратор**: отдельный экспериментальный primary agent “Team Lead” рядом с Plan/Build, который управляет subagents. Не является частью базовой методологии и не запускает playbooks.
+5) **Оркестратор**: отдельный экспериментальный primary agent "Orchestrator" рядом с Plan/Build, который управляет subagents. Не является частью базовой методологии и не запускает playbooks.
 
 ---
 
@@ -41,9 +42,9 @@
 
 Жесткое правило: любой агент в конце сессии, если были изменения, **обновляет `memory-bank/STATE.md`**.
 
-### 2.2. Confirmation gate
+### 2.2. Vision Alignment и confirmation gate
 
-`apm-start` не имеет права заполнять `memory-bank/ARCHITECTURE.md`, пока пользователь не подтвердил “понимание идеи/проблемы”.
+В фазе `apm-start` архитектор проводит **Vision Alignment**: не только фиксирует идею в структурированном виде, но и задаёт уточняющие вопросы, консультирует по реализационным моментам (например, подбор тех. стека под задачу). Заполнение `memory-bank/ARCHITECTURE.md` допускается только после завершения Vision Alignment и подтверждения пользователем (обязательный блок "WAIT FOR CONFIRMATION" в сценарии).
 
 ---
 
@@ -61,14 +62,13 @@
 
 ### 3.2. Agents / Roles (для предсказуемости поведения)
 
-Роли — это профили subagents OpenCode. Они:
+Все роли APM — **subagents**, кроме экспериментального Orchestrator (primary). Роли — это профили subagents OpenCode. Они:
 
 - задают границы ответственности,
 - определяют stop conditions,
-- определяют обязательные артефакты,
-- говорят, какие skills использовать.
+- определяют обязательные артефакты.
 
-Роли не содержат больших методологических простыней.
+Роли не предписывают фиксированный список skills: агент получает доступ к skills через инструмент `skill`, видит name и description и сам выбирает релевантные по задаче. Роли не содержат больших методологических простыней.
 
 ### 3.3. Skills (для возможностей)
 
@@ -88,7 +88,8 @@ Skill = директория с `SKILL.md` + `scripts/`, `references/`, `assets/
 apm_opencode_pack/
 ├── agent/
 ├── command/
-└── skill/
+├── skill/
+└── tools/
 ```
 
 ### 4.2. Skills (по спецификации)
@@ -97,47 +98,56 @@ apm_opencode_pack/
 
 ```text
 apm_opencode_pack/skill/
-  apm-memory-bank/
+  apm-gov/
     SKILL.md
     references/
-  apm-sdd-architecture/
+  apm-arch/
     SKILL.md
     references/
-  apm-rapid-development/
+  apm-dev/
     SKILL.md
-  apm-rapid-testing-ci/
+  apm-test/
     SKILL.md
-  apm-ds-experimentation/
+  apm-eda/
     SKILL.md
     references/
-  apm-ds-productionization/
+  apm-ds-exp/
     SKILL.md
+    references/
+  apm-ds-baseline/
+    SKILL.md
+  apm-ds-models/
+    SKILL.md
+    references/
 ```
+
+**Декомпозиция DS-методологии:** вместо одного монолитного apm-ds используются отдельные навыки: **apm-eda** (Exploratory Data Analysis: eda/, EDA report), **apm-ds-exp** (эксперименты: hypothesis, experiments/, EXPERIMENT_REPORT), **apm-ds-baseline** (baseline-модель), **apm-ds-models** (артефакты моделей, версионирование, MODEL_REPORT). Команды `/apm-eda`, `/apm-baseline`, `/apm-experiment` привязывают соответствующий навык.
 
 Требования к skills:
 
 - имя папки == `name` в YAML frontmatter;
 - `name` в `hyphen-case`, до 64 символов;
 - `SKILL.md` держать компактным (рекомендация: < 500 строк, < 5000 токенов), детали уносить в `references/`;
-- избегать дублирования правил между skills.
+- избегать дублирования правил между skills;
+- шаблоны отчётов и архитектуры в `references/` именовать с суффиксом `_TMP` (напр. ARCHITECTURE_TMP.md, EDA_REPORT_TMP.md).
 
 ### 4.3. Agents (роли)
 
-В `apm_opencode_pack/agent/` — профили агентов OpenCode.
+В `apm_opencode_pack/agent/` — профили агентов OpenCode. Все агенты APM — **subagents**, кроме экспериментального Orchestrator (primary).
 
 **Набор (минимум):**
 
-- `apm-architect` (RAPID)
+- Объединить `apm-architect` (RAPID) и `apm-ds-architect` (DS). Доменные особенности вынести в скиллы, playbooks.
 - `apm-engineer` (RAPID)
 - `apm-sdet` (RAPID)
-- `apm-ds-architect` (DS)
 - `apm-data-scientist` (DS)
 
-Каждый агент:
+Каждый subagent:
 
 - короткий контракт поведения;
-- список обязательных файлов для чтения (`memory-bank/*`);
-- перечень skills, которые он должен использовать по ситуации.
+- список обязательных файлов для чтения (`memory-bank/*`).
+
+Skills агент подбирает сам через инструмент `skill` по description; в роли перечислять их не требуется.
 
 ### 4.4. Commands (playbooks)
 
@@ -148,9 +158,20 @@ apm_opencode_pack/skill/
 Команда должна:
 
 - явно указывать, какой агент/роль подразумевается;
-- указывать required reads (`memory-bank/STATE.md` всегда);
+- обязательно привязывать файлы memory-bank: required reads (`memory-bank/STATE.md` всегда, остальные по контексту — ARCHITECTURE.md, TASK.md);
 - указывать required outputs (какие файлы меняются);
 - ссылаться на relevant skills (“используй skill X для правил/шаблонов”).
+
+---
+
+### 4.5. Activity reports (compact)
+
+Требование **compact activity reports** сохраняется. В OpenCode-проекте нет `.apm/Agent Reports/` — место и формат задаются в pack:
+
+- В навыке **apm-gov** (Governance) описать: куда агенты пишут краткие отчёты сессии (путь по соглашению, напр. `reports/` или `logs/activity/`), формат имени файла и структуру.
+- В контрактах агентов (profiles в `apm_opencode_pack/agent/`) указать обязательный артефакт: обновление `memory-bank/STATE.md` и при необходимости запись в каталог activity reports по правилам из apm-gov.
+
+При выборе пути для activity reports можно добавить в project template пустую директорию (напр. `reports/`) как единое место; тогда `.apm/REPORTS/` не переносится, а заменяется на эту директорию.
 
 ---
 
@@ -206,20 +227,26 @@ project/
 - правилами именования,
 - способом установки/перезагрузки OpenCode (если нужен).
 
-### Этап 2: Скелет `apm_opencode_pack/`
+### Этап 2: Скелет `apm_opencode_pack/` и Custom Tool
 
-1. Создать `apm_opencode_pack/agent/`, `apm_opencode_pack/command/`, `apm_opencode_pack/skill/`.
-2. Добавить “install scripts” в репозиторий APM:
+1. Создать `apm_opencode_pack/agent/`, `apm_opencode_pack/command/`, `apm_opencode_pack/skill/`, `apm_opencode_pack/tools/`.
+2. Реализовать custom tool `apm_init_structure` (TypeScript или Python по спецификации OpenCode): детерминированное развёртывание **только директорий** по параметру методологии. Шаблоны файлов (ARCHITECTURE.md, TASK.md, STATE.md) при запуске скрипта не создаются. Разместить в `apm_opencode_pack/tools/`; устанавливается в `~/.config/opencode/tools/`. Обязателен для команды `apm-start`.
+   - **RAPID:** создавать директории: `src/`, `tests/`, `logs/`, `memory-bank/`.
+   - **DS:** создавать директории: `src/`, `experiments/`, `eda/`, `models/`, `logs/`, `memory-bank/`. Файлы `config.py`, `main.py` и содержимое директорий tool не создаёт — только каталоги.
+3. Добавить install scripts в репозиторий APM:
    - `scripts/opencode_install.sh`
    - `scripts/opencode_install.ps1`
 
 Скрипты должны:
 
-- копировать/синхронизировать `apm_opencode_pack/skill/*` -> `~/.config/opencode/skill/`
-- копировать `apm_opencode_pack/agent/*` -> `~/.config/opencode/agent/`
-- копировать `apm_opencode_pack/command/*` -> `~/.config/opencode/command/`
+- копировать/синхронизировать `apm_opencode_pack/skill/*` -> `~/.config/opencode/skills/`
+- копировать `apm_opencode_pack/agent/*` -> `~/.config/opencode/agents/`
+- копировать `apm_opencode_pack/command/*` -> `~/.config/opencode/commands/`
+- копировать `apm_opencode_pack/tools/*` -> `~/.config/opencode/tools/`
 
 ### Этап 3: Миграция команд (Cursor -> OpenCode commands)
+
+**Мигрируемые команды.** RAPID: apm-start, apm-architect, apm-develop, apm-test (из apm-tester.md), apm-review, apm-sync, apm-report. DS: apm-start, apm-architect, apm-eda, apm-baseline, apm-experiment, apm-review, apm-env. Общие (core): apm-start, apm-architect, apm-review. Команды **apm-ci** (RAPID) и **apm-scientist** (DS) в миграцию не включаются. При миграции имя команды в OpenCode = имя файла (apm-tester.md -> apm-test при желании переименовать).
 
 Источник:
 
@@ -232,10 +259,11 @@ project/
 2. Убрать Cursor-специфику (`@file` ссылки).
 3. Заменить пути:
    - `memory bank/` -> `memory-bank/`
-   - `AGENT_DROLES` -> `AGENT_ROLES` (если встречается)
-4. Встроить ссылки на skills вместо длинных инструкций.
+   - везде использовать `AGENT_ROLES` (нижнее подчёркивание; при встрече `AGENT_DROLES` заменять на `AGENT_ROLES`)
+   - шаблоны отчётов: единое именование с суффиксом `_TMP` (ARCHITECTURE_TMP.md, *_REPORT_TMP.md)
+4. Встроить ссылки на skills вместо длинных инструкций; в каждой команде обязательная привязка файлов memory-bank (required reads).
 5. Сохранить ключевой детерминизм:
-   - `apm-start` обязан иметь “WAIT FOR CONFIRMATION” блок.
+   - `apm-start` обязан иметь фазу Vision Alignment и блок WAIT FOR CONFIRMATION перед заполнением `memory-bank/ARCHITECTURE.md`; обязательный вызов инструмента `apm_init_structure`.
 
 ### Этап 4: Пересборка ролей (короткие контракты)
 
@@ -248,8 +276,7 @@ project/
 
 1. Сжать роли: оставить responsibilities/guardrails/outputs/stop.
 2. Все процедурные “как делать” вынести в skills.
-3. Добавить указания по применению skills (“когда активировать какой skill”).
-4. Добавить DS роль `ML Engineer` (как агент-профиль + контракт).
+3. В командах явно ссылаться на relevant skills; в профилях агентов перечисление skills не обязательно.
 
 ### Этап 5: Декомпозиция в skills (главный смысл v3)
 
@@ -264,6 +291,8 @@ project/
 - краткое содержание
 - stop conditions / outputs
 
+Для DS-методологии: Data_Scientist.md и команды apm-eda, apm-baseline, apm-experiment декомпозировать в apm-eda, apm-ds-exp, apm-ds-baseline, apm-ds-models (не один монолитный apm-ds).
+
 #### 5.2. Создать skills как директории
 
 Каждый skill оформить по `external/about_skills/skills-specification.md`:
@@ -272,22 +301,6 @@ project/
 - перенос тяжелых деталей в `references/`
 - при необходимости добавить `scripts/` (например, генерация отчетов/шаблонов)
 
-#### 5.3. Рекомендуемый минимальный набор skills (v3)
-
-**Core:**
-
-- `apm-memory-bank` — правила SSOT + обязательные обновления `STATE.md`
-- `apm-sdd-architecture` — confirmation gate + заполнение ARCHITECTURE по шаблону
-
-**RAPID:**
-
-- `apm-rapid-development` — цикл реализации (план -> код -> проверка -> фиксация)
-- `apm-rapid-testing-ci` — тестирование, CI, отчеты по тестам
-
-**DS:**
-
-- `apm-ds-experimentation` — экспериментальная гигиена, leakage, validation, отчеты
-- `apm-ds-productionization` — перенос в `src/`, воспроизводимость, артефакты, подготовка к продакшену
 
 ### Этап 6: Project templates под OpenCode (без `.apm/`)
 
@@ -306,9 +319,10 @@ project/
 Минимальные сценарии:
 
 1. Установка пакета в OpenCode profile:
-   - skills появились в `~/.config/opencode/skill/`
-   - агенты появились в `~/.config/opencode/agent/`
-   - команды появились в `~/.config/opencode/command/`
+   - skills появились в `~/.config/opencode/skills/`
+   - агенты появились в `~/.config/opencode/agents/`
+   - команды появились в `~/.config/opencode/commands/`
+   - custom tool `apm_init_structure` появился в `~/.config/opencode/tools/`
 
 2. Создание RAPID проекта:
    - корректная структура + `memory-bank/*`
@@ -317,12 +331,12 @@ project/
    - корректная структура + `memory-bank/*`
 
 4. Исполнение методологии:
-   - `apm-start` проходит confirmation gate и заполняет `memory-bank/*` строго по шаблонам
+   - `apm-start` проводит Vision Alignment, вызывает `apm_init_structure`, после confirmation gate заполняет `memory-bank/*` строго по шаблонам
    - `apm-develop`/`apm-eda`/`apm-experiment` обновляют `memory-bank/STATE.md` в конце
 
 ---
 
-## 7. Эксперимент (не core): Team Lead orchestrator
+## 7. Эксперимент: Team Lead orchestrator
 
 Добавить отдельного primary агента “Team Lead” (рядом с Plan/Build), который:
 
@@ -337,13 +351,13 @@ project/
 
 ### v3 core
 
-1. В репозитории есть `apm_opencode_pack/skill/*` (skills по спецификации).
-2. В репозитории есть `apm_opencode_pack/agent/*` (профили ролей).
-3. В репозитории есть `apm_opencode_pack/command/*` (playbooks для человека).
-4. Есть `scripts/opencode_install.*`, которые ставят pack в `~/.config/opencode/*`.
-5. Конфигуратор создает RAPID/DS проекты с `memory-bank/`.
+1. В репозитории есть `apm_opencode_pack/skill/*` (skills по спецификации: apm-gov, apm-arch, apm-dev, apm-test, apm-eda, apm-ds-exp, apm-ds-baseline, apm-ds-models).
+2. В репозитории есть `apm_opencode_pack/agent/*` (профили ролей; все subagents, кроме экспериментального Orchestrator).
+3. В репозитории есть `apm_opencode_pack/command/*` (playbooks для человека; обязательная привязка memory-bank файлов).
+4. В репозитории есть `apm_opencode_pack/tools/` с custom tool `apm_init_structure`.
+5. Есть `scripts/opencode_install.*`, которые ставят pack в `~/.config/opencode/agents/`, `commands/`, `skills/`, `tools/`.
+6. Конфигуратор создает RAPID/DS проекты с `memory-bank/`.
 
 ### v3 experimental (optional)
 
 1. Есть агент Team Lead + subagents в `apm_opencode_pack/agent/`.
-2. Делегирование работает и не ломает Memory Bank протокол.
