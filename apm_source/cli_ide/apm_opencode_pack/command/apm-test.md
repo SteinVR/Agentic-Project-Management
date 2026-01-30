@@ -11,9 +11,9 @@ $ARGUMENTS
 ```
 
 ## Required Reads
-- memory-bank/ARCHITECTURE.md
-- memory-bank/TASK.md
-- memory-bank/STATE.md
+@memory-bank/ARCHITECTURE.md
+@memory-bank/TASK.md
+@memory-bank/STATE.md
 
 ## Required Outputs
 - tests in tests/

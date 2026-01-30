@@ -11,8 +11,8 @@ $ARGUMENTS
 ```
 
 ## Required Reads
-- memory-bank/ARCHITECTURE.md
-- memory-bank/STATE.md
+@memory-bank/ARCHITECTURE.md
+@memory-bank/STATE.md
 
 ## Required Outputs
 - baseline results in logs/

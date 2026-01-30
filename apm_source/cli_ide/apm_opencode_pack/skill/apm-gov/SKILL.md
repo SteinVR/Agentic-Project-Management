@@ -16,6 +16,12 @@ compatibility: opencode
 ## Logging and feedback loop
 Logging conventions and feedback-loop rules live in **apm-logs**. Use that skill when writing or interpreting logs.
 
+## Terminology (quick)
+- **RAPID:** fast product delivery with tight feedback loops and disciplined Memory Bank updates.
+- **DS:** experiment-driven data science workflow (EDA → baseline → experiments → finalize).
+
+See `references/TERMINOLOGY.md` for a short glossary.
+
 ### RAPID updates
 - **ARCHITECTURE.md**: update only when scope or architecture changes.
 - **TASK.md**:

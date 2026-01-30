@@ -11,8 +11,8 @@ $ARGUMENTS
 ```
 
 ## Required Reads
-- memory-bank/TASK.md
-- memory-bank/STATE.md
+@memory-bank/TASK.md
+@memory-bank/STATE.md
 - relevant files in src/, tests/, logs/
 
 ## Required Outputs

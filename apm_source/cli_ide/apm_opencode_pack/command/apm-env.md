@@ -11,8 +11,8 @@ $ARGUMENTS
 ```
 
 ## Required Reads
-- memory-bank/ARCHITECTURE.md
-- memory-bank/STATE.md
+@memory-bank/ARCHITECTURE.md
+@memory-bank/STATE.md
 
 ## Required Outputs
 - pyproject.toml
@@ -25,4 +25,3 @@ $ARGUMENTS
 ## Workflow
 Analyze the Technology Stack section and propose or create a compatible `pyproject.toml`.
 Provide setup commands and update STATE.md.
-

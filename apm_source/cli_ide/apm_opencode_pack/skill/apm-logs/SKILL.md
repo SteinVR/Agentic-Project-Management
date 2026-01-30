@@ -23,6 +23,10 @@ compatibility: opencode
 [YYYY-MM-DD HH:MM:SS] [LEVEL] - Message
 ```
 
+## Templates
+- RAPID example: `references/LOGGING_RAPID_TMP.md`
+- DS example: `references/LOGGING_DS_TMP.md`
+
 ## RAPID logging requirements
 - **Core runtime:** write to `logs/`.
 - Log key events: start/stop, user actions, important decisions, errors.
@@ -44,4 +48,3 @@ compatibility: opencode
 - Summarize log outcomes in `memory-bank/STATE.md`.
 - If logs reveal a deviation from architecture, document it.
 - Use logs as evidence when writing reports.
-

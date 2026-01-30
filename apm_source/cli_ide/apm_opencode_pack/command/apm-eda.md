@@ -11,8 +11,8 @@ $ARGUMENTS
 ```
 
 ## Required Reads
-- memory-bank/ARCHITECTURE.md
-- memory-bank/STATE.md (if exists)
+@memory-bank/ARCHITECTURE.md
+@memory-bank/STATE.md
 
 ## Required Outputs
 - eda/eda.py

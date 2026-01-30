@@ -11,7 +11,9 @@ $ARGUMENTS
 ```
 
 ## Required Reads
-- memory-bank/STATE.md (if it exists)
+@memory-bank/STATE.md
+@memory-bank/ARCHITECTURE.md
+@memory-bank/TASK.md
 
 ## Required Outputs
 - memory-bank/ARCHITECTURE.md
@@ -55,4 +57,3 @@ Ask the user to confirm before writing any files:
 - Suggest next command:
   - RAPID: `/apm-develop`
   - DS: `/apm-eda` or `/apm-baseline`
-

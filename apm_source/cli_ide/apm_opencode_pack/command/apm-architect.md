@@ -11,9 +11,9 @@ $ARGUMENTS
 ```
 
 ## Required Reads
-- memory-bank/ARCHITECTURE.md
-- memory-bank/STATE.md
-- memory-bank/TASK.md (if relevant)
+@memory-bank/ARCHITECTURE.md
+@memory-bank/STATE.md
+@memory-bank/TASK.md
 
 ## Required Outputs
 - memory-bank/ARCHITECTURE.md (if changes are accepted)
@@ -30,4 +30,3 @@ Provide architectural guidance, review, or updates within the current methodolog
 - If the request implies DS, follow the DS problem/experiment framing.
 
 Ask clarifying questions if the scope is unclear. Update Memory Bank files only after user confirmation when changes are significant.
-
