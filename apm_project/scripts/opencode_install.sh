@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Install APM OpenCode pack into ~/.config/opencode
+# Install APM OpenCode pack into ~/.config/opencode or a local .opencode directory
 
 set -e
 
@@ -7,12 +7,68 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
 PACK_DIR="$REPO_ROOT/apm_source/cli_ide/apm_opencode_pack"
 
+usage() {
+  cat << 'EOF'
+APM OpenCode pack installer
+
+Usage:
+  ./opencode_install.sh              # global install to ~/.config/opencode
+  ./opencode_install.sh --global     # same as above
+  ./opencode_install.sh --local      # install to .opencode in current directory
+  ./opencode_install.sh --local /path/to/project
+
+EOF
+}
+
+TARGET_MODE="global"
+TARGET_PATH=""
+
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --help|-h)
+      usage
+      exit 0
+      ;;
+    --global)
+      TARGET_MODE="global"
+      shift
+      ;;
+    --local)
+      TARGET_MODE="local"
+      if [[ -n "${2:-}" && "${2:0:1}" != "-" ]]; then
+        TARGET_PATH="$2"
+        shift 2
+      else
+        TARGET_PATH="$(pwd)"
+        shift
+      fi
+      ;;
+    *)
+      echo "[ERROR] Unknown option: $1" >&2
+      usage
+      exit 1
+      ;;
+  esac
+done
+
 if [[ ! -d "$PACK_DIR" ]]; then
   echo "[ERROR] Pack not found: $PACK_DIR" >&2
   exit 1
 fi
 
-OPENCODE_DIR="$HOME/.config/opencode"
+if [[ "$TARGET_MODE" == "local" ]]; then
+  if [[ -z "$TARGET_PATH" ]]; then
+    TARGET_PATH="$(pwd)"
+  fi
+  if [[ ! -d "$TARGET_PATH" ]]; then
+    echo "[ERROR] Project path not found: $TARGET_PATH" >&2
+    exit 1
+  fi
+  OPENCODE_DIR="$TARGET_PATH/.opencode"
+else
+  OPENCODE_DIR="$HOME/.config/opencode"
+fi
+
 mkdir -p "$OPENCODE_DIR/agents" "$OPENCODE_DIR/commands" "$OPENCODE_DIR/skills" "$OPENCODE_DIR/tools"
 
 cp -R "$PACK_DIR/agent/." "$OPENCODE_DIR/agents/"

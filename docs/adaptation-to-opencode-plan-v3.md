@@ -245,6 +245,7 @@ project/
 - копировать `apm_opencode_pack/agent/*` -> `~/.config/opencode/agents/`
 - копировать `apm_opencode_pack/command/*` -> `~/.config/opencode/commands/`
 - копировать `apm_opencode_pack/tools/*` -> `~/.config/opencode/tools/`
+- поддерживать локальную установку в `.opencode/` проекта (флаг `--local` / `-Local`)
 
 ### Этап 3: Миграция команд (Cursor -> OpenCode commands)
 

@@ -56,9 +56,29 @@ parse_args() {
                 METHODOLOGY="$2"
                 shift 2
                 ;;
+            --rapid)
+                METHODOLOGY="RAPID"
+                shift
+                ;;
+            --ds)
+                METHODOLOGY="DS"
+                shift
+                ;;
+            --full)
+                METHODOLOGY="FULL"
+                shift
+                ;;
             --dev-env)
                 DEV_ENV="$2"
                 shift 2
+                ;;
+            --opencode)
+                DEV_ENV="OPENCODE"
+                shift
+                ;;
+            --cursor)
+                DEV_ENV="CURSOR"
+                shift
                 ;;
             --skip-github)
                 SKIP_GITHUB=true
@@ -585,15 +605,20 @@ Non-Interactive Mode (for automation/testing):
     --project-name      Name of the project to create
     --project-path      Parent directory where project will be created
     --methodology       FULL, RAPID, or DS
+    --rapid             Shorthand for --methodology RAPID
+    --ds                Shorthand for --methodology DS
+    --full              Shorthand for --methodology FULL
     --dev-env           CURSOR or OPENCODE (default: CURSOR)
+    --opencode          Shorthand for --dev-env OPENCODE
+    --cursor            Shorthand for --dev-env CURSOR
     --skip-github       Skip GitHub repository creation
     --skip-cursor       Deprecated (no auto-open)
     --force             Overwrite existing project without prompting
     --non-interactive   Run without any user prompts
 
 Example:
-    ./apm.sh --project-name "my-app" --project-path "/projects" --methodology RAPID --dev-env CURSOR --non-interactive --skip-github --skip-cursor
-    ./apm.sh --project-name "ml-project" --project-path "/projects" --methodology DS --dev-env OPENCODE --non-interactive --skip-github --skip-cursor
+    ./apm.sh --project-name "my-app" --project-path "/projects" --rapid --cursor --non-interactive --skip-github --skip-cursor
+    ./apm.sh --project-name "ml-project" --project-path "/projects" --ds --opencode --non-interactive --skip-github --skip-cursor
 
 This interactive wizard will guide you through creating a new APM project.
 EOF

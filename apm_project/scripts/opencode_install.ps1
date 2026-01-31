@@ -1,4 +1,10 @@
-# Install APM OpenCode pack into ~/.config/opencode
+# Install APM OpenCode pack into ~/.config/opencode or a local .opencode directory
+
+param(
+  [switch]$Local,
+  [switch]$Global,
+  [string]$Path
+)
 
 $ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 $RepoRoot = Resolve-Path (Join-Path $ScriptDir "../..")
@@ -9,7 +15,21 @@ if (-not (Test-Path $PackDir)) {
   exit 1
 }
 
-$OpenCodeDir = Join-Path $HOME ".config/opencode"
+$useLocal = $false
+if ($Local) { $useLocal = $true }
+if ($Global) { $useLocal = $false }
+
+if ($useLocal) {
+  if (-not $Path) { $Path = (Get-Location).Path }
+  if (-not (Test-Path $Path)) {
+    Write-Error "Project path not found: $Path"
+    exit 1
+  }
+  $OpenCodeDir = Join-Path $Path ".opencode"
+} else {
+  $OpenCodeDir = Join-Path $HOME ".config/opencode"
+}
+
 $agentsDir = Join-Path $OpenCodeDir "agents"
 $commandsDir = Join-Path $OpenCodeDir "commands"
 $skillsDir = Join-Path $OpenCodeDir "skills"

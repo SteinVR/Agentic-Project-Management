@@ -12,7 +12,7 @@
     *   Реализация инструмента `apm_init_structure` (TypeScript/Python) для детерминированного развёртывания **только директорий** по параметру методологии (RAPID | DS). Шаблоны файлов (ARCHITECTURE.md, TASK.md, STATE.md) при запуске скрипта не создаются. Устанавливается в `~/.config/opencode/tools/`. Обязателен для использования в `apm-start`.
     *   **RAPID:** создавать директории: `src/`, `tests/`, `logs/`, `memory-bank/`.
     *   **DS:** создавать директории: `src/`, `experiments/`, `eda/`, `models/`, `logs/`, `memory-bank/`.
-*   **Установка пакета APM:** Скрипты `apm_project/scripts/opencode_install.sh` и `apm_project/scripts/opencode_install.ps1` копируют: `apm_opencode_pack/skill/*` в `~/.config/opencode/skills/`, `apm_opencode_pack/agent/*` в `~/.config/opencode/agents/`, `apm_opencode_pack/command/*` в `~/.config/opencode/commands/`, `apm_opencode_pack/tools/*` в `~/.config/opencode/tools/`.
+*   **Установка пакета APM:** Скрипты `apm_project/scripts/opencode_install.sh` и `apm_project/scripts/opencode_install.ps1` копируют pack либо **глобально** в `~/.config/opencode/*`, либо **локально** в `.opencode/*` внутри проекта (флаг `--local`/`-Local`).
 
 ## 2. Слой Skills (Модуляризация знаний)
 Цель: Декомпозиция монолитных инструкций APM на атомарные, подключаемые навыки (Skills).
