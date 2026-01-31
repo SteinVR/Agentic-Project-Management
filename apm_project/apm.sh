@@ -85,9 +85,13 @@ parse_args() {
                 DEV_ENV="CURSOR"
                 shift
                 ;;
-            --opencode-install|--install-opencode)
-                OPENCODE_INSTALL="$2"
-                shift 2
+            --local)
+                OPENCODE_INSTALL="local"
+                shift
+                ;;
+            --global)
+                OPENCODE_INSTALL="global"
+                shift
                 ;;
             --none|--no-opencode-install)
                 OPENCODE_INSTALL="skip"
@@ -656,8 +660,9 @@ Non-Interactive Mode (for automation/testing):
     --project-path      Target directory or parent directory (default: current directory)
     --methodology       FULL, RAPID, or DS
     --dev-env           CURSOR or OPENCODE (default: CURSOR)
-    --opencode-install  local | global | skip (default: skip when OPENCODE)
-    --none              Shorthand for --opencode-install skip
+    --local             Install OpenCode pack locally into .opencode/
+    --global            Install OpenCode pack globally into ~/.config/opencode/
+    --none              Skip OpenCode pack install (default when OPENCODE)
     --skip-github       Skip GitHub repository creation
     --skip-cursor       Deprecated (no auto-open)
     --force             Overwrite existing project without prompting
@@ -719,7 +724,7 @@ EOF
             case "$OPENCODE_INSTALL" in
                 local|global|skip|"") ;;
                 *)
-                    write_error "Invalid --opencode-install: $OPENCODE_INSTALL. Use local, global, or skip."
+                    write_error "Invalid OpenCode install option. Use --local, --global, or --none."
                     exit 1
                     ;;
             esac

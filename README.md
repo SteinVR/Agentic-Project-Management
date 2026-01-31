@@ -50,7 +50,7 @@ chmod +x ./apm_project/apm.sh
 Shorthands are supported:
 - `--opencode` / `--cursor`
 - `--rapid` / `--ds` / `--full`
-- `--none` (skip OpenCode pack install)
+- `--local` / `--global` / `--none` (OpenCode pack install; default is `--none`)
 
 Recommended order for non‑interactive usage: **Environment → Mode → other flags**.
 
