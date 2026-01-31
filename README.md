@@ -120,7 +120,7 @@ Less ceremony, faster iteration, same structured approach.
 
 ### FULL Methodology (Deprecated)
 
-**Status:** ⚠️ Deprecated - Use RAPID for new projects
+**Status:** ⚠️ Deprecated
 
 The FULL methodology with block-based architecture is no longer actively maintained. For large projects, consider using RAPID methodology with clear module boundaries.
 
