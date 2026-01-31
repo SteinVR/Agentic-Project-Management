@@ -20,8 +20,11 @@ APP_VERSION="1.0.0"
 # Command line arguments
 PROJECT_NAME=""
 PROJECT_PATH=""
+PROJECT_NAME_SET=false
+PROJECT_PATH_SET=false
 METHODOLOGY=""
 DEV_ENV=""
+OPENCODE_INSTALL=""
 SKIP_GITHUB=false
 SKIP_CURSOR=false
 FORCE=false
@@ -46,10 +49,12 @@ parse_args() {
                 ;;
             --project-name)
                 PROJECT_NAME="$2"
+                PROJECT_NAME_SET=true
                 shift 2
                 ;;
             --project-path)
                 PROJECT_PATH="$2"
+                PROJECT_PATH_SET=true
                 shift 2
                 ;;
             --methodology)
@@ -78,6 +83,14 @@ parse_args() {
                 ;;
             --cursor)
                 DEV_ENV="CURSOR"
+                shift
+                ;;
+            --opencode-install|--install-opencode)
+                OPENCODE_INSTALL="$2"
+                shift 2
+                ;;
+            --none|--no-opencode-install)
+                OPENCODE_INSTALL="skip"
                 shift
                 ;;
             --skip-github)
@@ -171,7 +184,10 @@ read_directory_path() {
         path=$(read_user_input "$prompt" "$default_path")
         
         if [[ -d "$path" ]]; then
-            echo "$(cd "$path" && pwd)"
+            local resolved
+            resolved="$(cd "$path" && pwd)"
+            write_info "Selected directory: $resolved"
+            echo "$resolved"
             return 0
         fi
         
@@ -180,7 +196,10 @@ read_directory_path() {
         create=$(read_user_input "Create it? (y/n)" "n")
         if [[ "$create" == "y" ]]; then
             if mkdir -p "$path" 2>/dev/null; then
-                echo "$(cd "$path" && pwd)"
+                local created
+                created="$(cd "$path" && pwd)"
+                write_info "Selected directory: $created"
+                echo "$created"
                 return 0
             else
                 write_error "Failed to create directory"
@@ -428,6 +447,32 @@ copy_methodology_template() {
     write_success "Template copied"
 }
 
+install_opencode_pack() {
+    local mode="$1"
+    local project_path="$2"
+    local pack_dir="$SOURCE_PATH/cli_ide/apm_opencode_pack"
+    
+    if [[ ! -d "$pack_dir" ]]; then
+        write_warning "OpenCode pack not found: $pack_dir"
+        return 0
+    fi
+    
+    local target_dir
+    if [[ "$mode" == "local" ]]; then
+        target_dir="$project_path/.opencode"
+    else
+        target_dir="$HOME/.config/opencode"
+    fi
+    
+    mkdir -p "$target_dir/agents" "$target_dir/commands" "$target_dir/skills" "$target_dir/tools"
+    cp -R "$pack_dir/agent/." "$target_dir/agents/"
+    cp -R "$pack_dir/command/." "$target_dir/commands/"
+    cp -R "$pack_dir/skill/." "$target_dir/skills/"
+    cp -R "$pack_dir/tools/." "$target_dir/tools/"
+    
+    write_success "OpenCode pack installed to $target_dir"
+}
+
 initialize_git_repository() {
     local project_path="$1"
     local project_name="$2"
@@ -602,23 +647,25 @@ Options:
     -v, --version       Show version information
 
 Non-Interactive Mode (for automation/testing):
-    --project-name      Name of the project to create
-    --project-path      Parent directory where project will be created
-    --methodology       FULL, RAPID, or DS
+    --opencode          Shorthand for --dev-env OPENCODE
+    --cursor            Shorthand for --dev-env CURSOR
     --rapid             Shorthand for --methodology RAPID
     --ds                Shorthand for --methodology DS
     --full              Shorthand for --methodology FULL
+    --project-name      Project name (defaults to current directory name)
+    --project-path      Target directory or parent directory (default: current directory)
+    --methodology       FULL, RAPID, or DS
     --dev-env           CURSOR or OPENCODE (default: CURSOR)
-    --opencode          Shorthand for --dev-env OPENCODE
-    --cursor            Shorthand for --dev-env CURSOR
+    --opencode-install  local | global | skip (default: skip when OPENCODE)
+    --none              Shorthand for --opencode-install skip
     --skip-github       Skip GitHub repository creation
     --skip-cursor       Deprecated (no auto-open)
     --force             Overwrite existing project without prompting
     --non-interactive   Run without any user prompts
 
 Example:
-    ./apm.sh --project-name "my-app" --project-path "/projects" --rapid --cursor --non-interactive --skip-github --skip-cursor
-    ./apm.sh --project-name "ml-project" --project-path "/projects" --ds --opencode --non-interactive --skip-github --skip-cursor
+    ./apm.sh --opencode --rapid --project-name "my-app" --project-path "/projects" --non-interactive --skip-github --skip-cursor
+    ./apm.sh --opencode --ds --project-name "ml-project" --project-path "/projects" --non-interactive --skip-github --skip-cursor
 
 This interactive wizard will guide you through creating a new APM project.
 EOF
@@ -647,14 +694,12 @@ EOF
     
     # Check if running in non-interactive mode
     if [[ "$NON_INTERACTIVE" == "true" ]]; then
-        # Validate required parameters
-        if [[ -z "$PROJECT_NAME" ]]; then
-            write_error "--project-name is required in non-interactive mode"
-            exit 1
-        fi
+        # Resolve defaults
         if [[ -z "$PROJECT_PATH" ]]; then
-            write_error "--project-path is required in non-interactive mode"
-            exit 1
+            PROJECT_PATH="$(pwd)"
+        fi
+        if [[ -z "$PROJECT_NAME" ]]; then
+            PROJECT_NAME="$(basename "$PROJECT_PATH")"
         fi
         if [[ -z "$METHODOLOGY" ]]; then
             write_error "--methodology is required in non-interactive mode"
@@ -667,6 +712,18 @@ EOF
             write_error "Invalid --dev-env: $DEV_ENV. Use CURSOR or OPENCODE."
             exit 1
         fi
+        if [[ "$DEV_ENV" == "OPENCODE" && -z "$OPENCODE_INSTALL" ]]; then
+            OPENCODE_INSTALL="skip"
+        fi
+        if [[ "$DEV_ENV" == "OPENCODE" ]]; then
+            case "$OPENCODE_INSTALL" in
+                local|global|skip|"") ;;
+                *)
+                    write_error "Invalid --opencode-install: $OPENCODE_INSTALL. Use local, global, or skip."
+                    exit 1
+                    ;;
+            esac
+        fi
         
         # Validate methodology
         if [[ "$METHODOLOGY" != "FULL" && "$METHODOLOGY" != "RAPID" && "$METHODOLOGY" != "DS" ]]; then
@@ -678,13 +735,33 @@ EOF
             exit 1
         fi
         
-        # Resolve paths
-        if [[ ! -d "$PROJECT_PATH" ]]; then
-            write_error "Project path does not exist: $PROJECT_PATH"
+        # Resolve paths (support parent path or full project path)
+        local base_path
+        if [[ "$PROJECT_PATH_SET" == "true" && "$PROJECT_NAME_SET" == "true" ]]; then
+            if [[ "$(basename "$PROJECT_PATH")" == "$PROJECT_NAME" ]]; then
+                base_path="$PROJECT_PATH"
+            else
+                base_path="$PROJECT_PATH/$PROJECT_NAME"
+            fi
+        elif [[ "$PROJECT_PATH_SET" == "true" && "$PROJECT_NAME_SET" != "true" ]]; then
+            base_path="$PROJECT_PATH"
+        elif [[ "$PROJECT_PATH_SET" != "true" && "$PROJECT_NAME_SET" == "true" ]]; then
+            base_path="$PROJECT_PATH/$PROJECT_NAME"
+        else
+            base_path="$PROJECT_PATH"
+        fi
+
+        local parent_dir
+        parent_dir="$(dirname "$base_path")"
+        if [[ ! -d "$parent_dir" ]]; then
+            write_error "Parent directory does not exist: $parent_dir"
             exit 1
         fi
-        
-        directory="$(cd "$PROJECT_PATH" && pwd)"
+
+        local resolved_parent
+        resolved_parent="$(cd "$parent_dir" && pwd)"
+        project_path="$resolved_parent/$(basename "$base_path")"
+
         project_name="$PROJECT_NAME"
         methodology="$METHODOLOGY"
         dev_env="$DEV_ENV"
@@ -692,18 +769,27 @@ EOF
         if [[ "$SKIP_GITHUB" != "true" ]]; then
             github_enabled="true"
         fi
-        project_path="$directory/$project_name"
+        directory="$resolved_parent"
         
         write_info "Non-interactive mode: Creating $methodology project '$project_name' ($dev_env)"
         
         # Check if project exists
         if [[ -d "$project_path" ]]; then
-            if [[ "$FORCE" == "true" ]]; then
-                write_warning "Overwriting existing project: $project_path"
-                rm -rf "$project_path"
+            local current_dir
+            current_dir="$(pwd)"
+            if [[ "$project_path" == "$current_dir" ]]; then
+                if [[ "$FORCE" == "true" ]]; then
+                    write_warning "--force ignored for in-place setup: $project_path"
+                fi
+                write_warning "Project directory already exists; proceeding in-place: $project_path"
             else
-                write_error "Project already exists: $project_path. Use --force to overwrite."
-                exit 1
+                if [[ "$FORCE" == "true" ]]; then
+                    write_warning "Overwriting existing project: $project_path"
+                    rm -rf "$project_path"
+                else
+                    write_error "Project already exists: $project_path. Use --force to overwrite."
+                    exit 1
+                fi
             fi
         fi
     else
@@ -770,6 +856,30 @@ EOF
     # Initialize Memory Bank and Agent Reports
     initialize_memory_bank "$project_path" "$methodology" "$dev_env"
     initialize_agent_reports "$project_path" "$methodology" "$dev_env"
+
+    # Optional: install OpenCode pack
+    if [[ "$dev_env" == "OPENCODE" ]]; then
+        if [[ "$NON_INTERACTIVE" != "true" ]]; then
+            while true; do
+                local install_choice
+                install_choice=$(read_user_input "Install OpenCode pack? (local/global/skip)" "skip")
+                case "$install_choice" in
+                    local|global|skip)
+                        OPENCODE_INSTALL="$install_choice"
+                        break
+                        ;;
+                    *)
+                        write_error "Invalid choice. Enter local, global, or skip"
+                        ;;
+                esac
+            done
+        fi
+        if [[ "$OPENCODE_INSTALL" == "local" ]]; then
+            install_opencode_pack "local" "$project_path"
+        elif [[ "$OPENCODE_INSTALL" == "global" ]]; then
+            install_opencode_pack "global" ""
+        fi
+    fi
     
     # Initialize git (skip github in non-interactive mode if SKIP_GITHUB is set)
     if [[ "$NON_INTERACTIVE" == "true" && "$SKIP_GITHUB" == "true" ]]; then

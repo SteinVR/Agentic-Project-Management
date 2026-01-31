@@ -50,11 +50,23 @@ chmod +x ./apm_project/apm.sh
 Shorthands are supported:
 - `--opencode` / `--cursor`
 - `--rapid` / `--ds` / `--full`
+- `--none` (skip OpenCode pack install)
+
+Recommended order for non‑interactive usage: **Environment → Mode → other flags**.
+
+Defaults:
+- `--project-path` defaults to the current directory
+- `--project-name` defaults to the current directory name
 
 Example:
 ```bash
-./apm_project/apm.sh --project-name "my-app" --project-path "/projects" \
-  --rapid --opencode --non-interactive --skip-github --skip-cursor
+./apm_project/apm.sh --opencode --rapid --project-name "my-app" --project-path "/projects" \
+  --non-interactive --skip-github --skip-cursor
+```
+
+In‑place (inside an existing project directory):
+```bash
+./apm_project/apm.sh --opencode --rapid --non-interactive --skip-github
 ```
 
 ---
