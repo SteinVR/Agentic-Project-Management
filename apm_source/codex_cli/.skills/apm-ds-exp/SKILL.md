@@ -1,7 +1,7 @@
 ---
 name: apm-ds-exp
 description: Hypothesis-driven experiment workflow for APM DS projects.
-compatibility: opencode
+compatibility: codex
 ---
 ## What I do
 - Define experiment selection, planning, and reporting.

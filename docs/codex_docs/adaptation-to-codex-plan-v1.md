@@ -14,7 +14,7 @@
 
 2) Зафиксировать инварианты APM через **цепочку AGENTS.md** (global → project → nested overrides).
 
-3) Держать методологию модульной: “что делать” — в command‑skills, “как именно делать” — в base‑skills.
+3) Держать методологию модульной: отдельные skills для каждой зоны ответственности; `apm-start` — entrypoint.
 
 4) Минимизировать контекст: короткие `SKILL.md`, тяжелые детали — в `references/`.
 
@@ -65,19 +65,16 @@ Custom prompts как slash‑команды **deprecated**
 
 ## 4. Target state: структура APM для Codex
 
-### 4.1. Codex pack в репозитории (источник для установки)
+### 4.1. Codex skills в репозитории (источник для установки)
 
 ```
-apm_source/codex_cli/apm_codex_pack/
-├── skills/
-│   ├── base/         # каноничные навыки (без дублей)
-│   └── commands/     # тонкие entrypoint-обертки (только если нет коллизии по имени)
-├── templates/        # общие шаблоны (если не в references/)
-└── scripts/          # shared scripts (если нужны)
+apm_source/codex_cli/
+├── .skills/          # все навыки Codex (entrypoint + base в одном месте)
+├── RAPID_METHODOLOGY/
+└── DS_METHODOLOGY/
 ```
 
-**Правило:** имена skills должны быть уникальными. Если навык уже существует в `base/`,
-он **не** дублируется в `commands/`. Большая часть APM‑навыков живет в `base/`.
+**Правило:** все навыки лежат в `.skills/`, без дублирования по именам.
 
 ### 4.2. AGENTS в шаблонах проекта (не отдельная директория)
 
@@ -97,37 +94,24 @@ AGENTS размещаются **там, где реально применяют
 
 ### 5.1. Принцип
 
-**Command‑skills** — это опциональные entrypoint‑обертки. Они создаются **только**
-для сценариев, которые нельзя выразить одной base‑инструкцией (например, `apm-start`
-с confirmation gate + инициализацией структуры).
-
-Если command‑skill совпадает по имени с base‑skill — command‑версия **не создается**.
+Все сценарии реализуются как skills Codex. `apm-start` — основной entrypoint
+для старта проекта, остальные навыки подбираются по контексту.
 
 ### 5.2. Маппинг команд → skills
 
-| Команда (OpenCode/Cursor) | Skill (Codex) | Слой | Назначение |
-|---|---|---|---|
-| apm-start | apm-start | commands | Vision Alignment + init структуры + gate |
-| apm-architect | apm-arch | base | Архитектурные решения и обновления |
-| apm-develop | apm-dev | base | Инженерный цикл (Plan → Code → Verify) |
-| apm-test | apm-test | base | QA/TDD цикл |
-| apm-review | apm-review | base | Архитектурный/качество ревью |
-| apm-sync | apm-sync | base | Обновление Memory Bank |
-| apm-report | apm-report | base | Генерация отчетов по шаблонам |
-| apm-eda | apm-eda | base | EDA workflow |
-| apm-baseline | apm-ds-baseline | base | Baseline модель |
-| apm-experiment | apm-ds-exp | base | Гипотезы и эксперименты |
-| apm-env | apm-env | base | Настройка окружения по ARCHITECTURE |
-
-### 5.3. Структура command‑skill
-
-Каждый command‑skill содержит:
-
-- **Required reads:** `memory-bank/STATE.md` + контекстные файлы.
-- **Required outputs:** какие файлы обновляются и где.
-- **Stop conditions:** когда нужно остановиться/задать вопросы.
-- **Links to base‑skills:** какие навыки подключить для правил/шаблонов.
-- **Минимум текста:** большие разделы переносим в `references/`.
+| Команда (OpenCode/Cursor) | Skill (Codex) | Назначение |
+|---|---|---|
+| apm-start | apm-start | Vision Alignment + init структуры + confirmation gate |
+| apm-architect | apm-start | Архитектурные решения и инициализация Memory Bank |
+| apm-develop | apm-dev | Инженерный цикл (Plan → Code → Verify) |
+| apm-test | apm-test | QA/TDD цикл |
+| apm-review | apm-review | Хирургический ревью для разблокировки |
+| apm-sync | apm-sync | Синхронизация Memory Bank |
+| apm-report | apm-report | Общий отчет по шаблону |
+| apm-eda | apm-eda | EDA workflow |
+| apm-baseline | apm-ds-baseline | Baseline модель |
+| apm-experiment | apm-ds-exp | Гипотезы и эксперименты |
+| apm-env | apm-env | Настройка окружения по ARCHITECTURE |
 
 ---
 
@@ -162,24 +146,23 @@ AGENTS размещаются **там, где реально применяют
 - Проверить официальные пути установки skills и поведение Codex в CLI.
 - Подтвердить стратегию AGENTS.md chain и fallback‑имена.
 
-### Этап 1 — Скелет codex pack
+### Этап 1 — Скелет Codex
 
-- Создать `apm_source/codex_cli/apm_codex_pack/` с подкаталогами.
+- Создать `apm_source/codex_cli/.skills/` и разместить там все навыки.
 - Обновить шаблоны проектов: добавить root `AGENTS.md` и локальные `AGENTS.md`
   в нужных поддиректориях.
 
-### Этап 2 — Base skills
+### Этап 2 — Skills
 
-- Перенести каноничные навыки в `base/`:
-  apm-gov, apm-arch, apm-dev, apm-test, apm-logs, apm-eda, apm-ds-baseline,
-  apm-ds-exp, apm-finalize-model, apm-review, apm-sync, apm-report, apm-env.
+- Перенести каноничные навыки в `.skills/`:
+  apm-start, apm-dev, apm-test, apm-logs, apm-eda, apm-ds-baseline,
+  apm-ds-exp, apm-model-report, apm-review, apm-sync, apm-report, apm-env.
 - Сжимать `SKILL.md` только если реально разрастаются; тяжелые детали — в `references/`.
 
-### Этап 3 — Command‑skills (минимальные)
+### Этап 3 — Entrypoint skill
 
-- Создать **только** те entrypoint‑skills, которые не пересекаются по имени с base.
-- Базовый минимум: `apm-start`.
-- Внутри — только сценарий, required reads/outputs/stop conditions, ссылки на base.
+- Базовый entrypoint: `apm-start` (Vision Alignment + init структуры + confirmation gate).
+- Внутри — только сценарий, required reads/outputs/stop conditions, ссылки на шаблоны.
 
 ### Этап 4 — Детерминированная инициализация структуры
 
@@ -194,7 +177,7 @@ AGENTS размещаются **там, где реально применяют
 
 ### Этап 6 — Установка в Codex
 
-- Скрипт установки: копирование skills + templates + scripts в нужные Codex‑папки.
+- Скрипт установки: копирование `.skills/` и шаблонов проектов в нужные Codex‑папки.
 - Опционально — снабдить `config.toml` шаблоном fallback‑имен.
 
 ### Этап 7 — Приемка
@@ -207,8 +190,8 @@ AGENTS размещаются **там, где реально применяют
 
 ## 8. Definition of Done
 
-1) В репозитории есть **codex pack**: `apm_source/codex_cli/apm_codex_pack/`.
-2) Все команды APM реализованы как **command‑skills**.
-3) Все методологические правила вынесены в **base‑skills**.
-4) В проектах создаются `AGENTS.md` + nested overrides.
+1) В репозитории есть `apm_source/codex_cli/.skills/` с актуальными навыками.
+2) `apm-start` работает как entrypoint (Vision Alignment + init).
+3) Методологические правила вынесены в skills и локальные `AGENTS.md`.
+4) В проектах создаются `AGENTS.md` + локальные инструкции.
 5) Ручной сценарий (RAPID + DS) проходит без доп. инструкций.

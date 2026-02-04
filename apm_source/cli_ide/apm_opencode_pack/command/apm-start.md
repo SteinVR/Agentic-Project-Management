@@ -25,7 +25,6 @@ $ARGUMENTS
 
 ## Skills to Load
 - apm-arch
-- apm-gov
 
 ## Step 0: Determine methodology
 - If the user explicitly states RAPID or DS in $ARGUMENTS, use it.
@@ -52,8 +51,8 @@ Ask the user to confirm before writing any files:
 
 ## Step 3: After confirmation
 - Fill `memory-bank/ARCHITECTURE.md` using the correct template (apm-arch).
-- Initialize `memory-bank/TASK.md` and `memory-bank/STATE.md` using apm-gov templates.
+- Initialize `memory-bank/TASK.md` and `memory-bank/STATE.md` using the project templates if present; otherwise create minimal headers and refine with the user.
 - Summarize what was created.
-- Suggest next command:
-  - RAPID: `/apm-develop`
-  - DS: `/apm-eda` or `/apm-baseline`
+- Suggest the next skill:
+  - RAPID: `apm-dev`
+  - DS: `apm-eda` or `apm-ds-baseline`

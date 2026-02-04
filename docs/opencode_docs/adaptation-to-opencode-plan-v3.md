@@ -18,9 +18,9 @@
 
 Сохранить рабочий Cursor-workflow и сделать его нативным для OpenCode:
 
-1) **Изоляция контекста по фазам**: `apm-start` -> новая сессия -> `apm-develop`/`apm-eda`/`apm-experiment` -> по необходимости `apm-review`/`apm-sync`/`apm-report`.
+1) **Изоляция контекста по фазам**: `apm-start` -> новая сессия -> ключевые skills (`apm-dev`/`apm-eda`/`apm-ds-exp`) -> по необходимости `apm-review`/`apm-sync`/`apm-report`.
 
-2) **Детерминированность**: команды остаются основным способом запуска сценариев (ты сам выбираешь и запускаешь playbook).
+2) **Детерминированность**: команда остаётся только одна (`/apm-start`); остальные сценарии выполняются через skills по запросу пользователя.
 
 3) **Скиллы как расширяемость**: все «как именно работать» (workflow/чеклисты/форматы/техники/инструменты) выносятся из ролей/команд в skills (модульно, без дублирования).
 
@@ -98,9 +98,6 @@ apm_opencode_pack/
 
 ```text
 apm_opencode_pack/skill/
-  apm-gov/
-    SKILL.md
-    references/
   apm-arch/
     SKILL.md
     references/
@@ -110,6 +107,14 @@ apm_opencode_pack/skill/
     SKILL.md
   apm-logs/
     SKILL.md
+  apm-report/
+    SKILL.md
+    references/
+  apm-review/
+    SKILL.md
+    references/
+  apm-sync/
+    SKILL.md
   apm-eda/
     SKILL.md
     references/
@@ -118,12 +123,14 @@ apm_opencode_pack/skill/
     references/
   apm-ds-baseline/
     SKILL.md
-  apm-finalize-model/
+  apm-model-report/
     SKILL.md
     references/
+  apm-env/
+    SKILL.md
 ```
 
-**Декомпозиция DS-методологии:** вместо одного монолитного apm-ds используются отдельные навыки: **apm-eda** (Exploratory Data Analysis: eda/, EDA report), **apm-ds-exp** (эксперименты: hypothesis, experiments/, EXPERIMENT_REPORT), **apm-ds-baseline** (baseline-модель), **apm-finalize-model** (артефакты моделей, версионирование, MODEL_REPORT). Команды `/apm-eda`, `/apm-baseline`, `/apm-experiment` привязывают соответствующий навык. Отдельный навык **apm-logs** задаёт стандарты логирования и feedback loop.
+**Декомпозиция DS-методологии:** вместо одного монолитного apm-ds используются отдельные навыки: **apm-eda** (Exploratory Data Analysis: eda/, EDA report), **apm-ds-exp** (эксперименты: hypothesis, experiments/, EXPERIMENT_REPORT), **apm-ds-baseline** (baseline-модель), **apm-model-report** (отчёт по модели, MODEL_REPORT). Эти навыки используются по контексту; отдельные команды не обязательны. Отдельный навык **apm-logs** задаёт стандарты логирования и feedback loop.
 
 Требования к skills:
 
@@ -153,7 +160,7 @@ Skills агент подбирает сам через инструмент `ski
 
 ### 4.4. Commands (playbooks)
 
-В `apm_opencode_pack/command/` — набор команд, аналог Cursor `/apm-*`.
+В `apm_opencode_pack/command/` — минимальный набор команд. Принято оставить только `/apm-start`; остальные сценарии реализуются как skills.
 
 **Важно:** команда = сценарий для человека; агент не запускает команды сам.
 
@@ -170,8 +177,8 @@ Skills агент подбирает сам через инструмент `ski
 
 Требование **compact activity reports** сохраняется. В OpenCode-проекте нет `.apm/Agent Reports/` — место и формат задаются в pack:
 
-- В навыке **apm-gov** (Governance) описать: куда агенты пишут краткие отчёты сессии (путь по соглашению, напр. `reports/` или `logs/activity/`), формат имени файла и структуру.
-- В контрактах агентов (profiles в `apm_opencode_pack/agent/`) указать обязательный артефакт: обновление `memory-bank/STATE.md` и при необходимости запись в каталог activity reports по правилам из apm-gov.
+- В навыке **apm-logs** описать: куда агенты пишут краткие отчёты сессии (путь по соглашению, напр. `reports/` или `logs/activity/`), формат имени файла и структуру.
+- В контрактах агентов (profiles в `apm_opencode_pack/agent/`) указать обязательный артефакт: обновление `memory-bank/STATE.md` и при необходимости запись в каталог activity reports по правилам из apm-logs.
 
 При выборе пути для activity reports можно добавить в project template пустую директорию (напр. `reports/`) как единое место; тогда `.apm/REPORTS/` не переносится, а заменяется на эту директорию.
 
@@ -249,7 +256,7 @@ project/
 
 ### Этап 3: Миграция команд (Cursor -> OpenCode commands)
 
-**Мигрируемые команды.** RAPID: apm-start, apm-architect, apm-develop, apm-test (из apm-tester.md), apm-review, apm-sync, apm-report. DS: apm-start, apm-architect, apm-eda, apm-baseline, apm-experiment, apm-review, apm-env. Общие (core): apm-start, apm-architect, apm-review. Команды **apm-ci** (RAPID) и **apm-scientist** (DS) в миграцию не включаются. При миграции имя команды в OpenCode = имя файла (apm-tester.md -> apm-test при желании переименовать).
+**Мигрируемые команды.** Принято оставить только `apm-start`. Остальные сценарии реализуются как skills.
 
 Источник:
 
@@ -258,7 +265,7 @@ project/
 
 Действия:
 
-1. Для каждой команды создать OpenCode-версию в `apm_opencode_pack/command/`.
+1. Создать OpenCode-версию `apm-start` в `apm_opencode_pack/command/`.
 2. Убрать Cursor-специфику (`@file` ссылки).
 3. Заменить пути:
    - `memory bank/` -> `memory-bank/`
@@ -294,7 +301,7 @@ project/
 - краткое содержание
 - stop conditions / outputs
 
-Для DS-методологии: Data_Scientist.md и команды apm-eda, apm-baseline, apm-experiment декомпозировать в apm-eda, apm-ds-exp, apm-ds-baseline, apm-finalize-model (не один монолитный apm-ds).
+Для DS-методологии: Data_Scientist.md и DS-сценарии декомпозировать в apm-eda, apm-ds-exp, apm-ds-baseline, apm-model-report (не один монолитный apm-ds).
 
 #### 5.2. Создать skills как директории
 
@@ -335,7 +342,7 @@ project/
 
 4. Исполнение методологии:
    - `apm-start` проводит Vision Alignment, вызывает `apm_init_structure`, после confirmation gate заполняет `memory-bank/*` строго по шаблонам
-   - `apm-develop`/`apm-eda`/`apm-experiment` обновляют `memory-bank/STATE.md` в конце
+   - ключевые skills (`apm-dev`/`apm-eda`/`apm-ds-exp`) обновляют `memory-bank/STATE.md` в конце
 
 ---
 
@@ -354,9 +361,9 @@ project/
 
 ### v3 core
 
-1. В репозитории есть `apm_opencode_pack/skill/*` (skills по спецификации: apm-gov, apm-arch, apm-dev, apm-test, apm-logs, apm-eda, apm-ds-exp, apm-ds-baseline, apm-finalize-model).
+1. В репозитории есть `apm_opencode_pack/skill/*` (skills по спецификации: apm-arch, apm-dev, apm-test, apm-logs, apm-report, apm-review, apm-sync, apm-eda, apm-ds-exp, apm-ds-baseline, apm-model-report, apm-env).
 2. В репозитории есть `apm_opencode_pack/agent/*` (профили ролей; все subagents, кроме экспериментального Orchestrator).
-3. В репозитории есть `apm_opencode_pack/command/*` (playbooks для человека; обязательная привязка memory-bank файлов).
+3. В репозитории есть `apm_opencode_pack/command/*` (playbooks для человека; принят минимум из `/apm-start`).
 4. В репозитории есть `apm_opencode_pack/tools/` с custom tool `apm_init_structure`.
 5. Есть `apm_project/scripts/opencode_install.*`, которые ставят pack в `~/.config/opencode/agents/`, `commands/`, `skills/`, `tools/`.
 6. Конфигуратор создает RAPID/DS проекты с `memory-bank/`.

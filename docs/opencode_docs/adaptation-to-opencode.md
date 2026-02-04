@@ -17,15 +17,18 @@
 ## 2. Слой Skills (Модуляризация знаний)
 Цель: Декомпозиция монолитных инструкций APM на атомарные, подключаемые навыки (Skills).
 
-*   **Навык `apm-gov` (Governance):** Правила ведения `STATE.md` и `TASK.md`; протоколы обновления сессии и трекинга блокеров. Рекомендуется для всех агентов.
 *   **Навык `apm-arch` (Architecture & Vision):** Spec-Driven Development, шаблоны `ARCHITECTURE.md`, протокол Vision Alignment (интервью, уточняющие вопросы, консультирование по реализации).
 *   **Навык `apm-dev` (Development):** Цикл Plan -> Code -> Verify, TDD, работа с `src/`, правила логирования.
 *   **Навык `apm-test` (QA):** Стратегии тестирования (Unit, Integration, E2E), критерии покрытия, форматы отчётов.
 *   **Навык `apm-logs` (Logging & Feedback):** Единые правила логирования и feedback loop, стандарты формата и расположения логов.
+*   **Навык `apm-report` (Reports):** Общий отчёт по шаблону.
+*   **Навык `apm-review` (Review):** Хирургический ревью для разблокировки и поиска проблем.
+*   **Навык `apm-sync` (Sync):** Актуализация Memory Bank и устаревших артефактов.
 *   **Навык `apm-eda` (Exploratory Data Analysis):** Понимание данных до моделирования: структура `eda/`, EDA-пайплайн (`eda.py`), отчёт EDA_REPORT.md, фигуры и таблицы в `eda/results/`. Шаблон отчёта — из TEMPLATES.
 *   **Навык `apm-ds-exp` (Experiments):** Гипотезы, трекинг в `memory-bank/TASK.md` и `experiments/`; структура EXP-XXX (main_exp.py, config.py, REPORT.md); план по гиперпараметрам и вычислениям (в т.ч. GPU/VRAM); формат EXPERIMENT_REPORT. Не запускать полное обучение без пользователя; после обучения — оценка и обновление Memory Bank.
 *   **Навык `apm-ds-baseline` (Baseline):** Референсная модель: опора на результаты EDA, минимальный набор гиперпараметров, скрипт baseline, сохранение в `models/` и `logs/`; воспроизводимость (seeds, конфиг).
-*   **Навык `apm-finalize-model` (Models):** Артефакты моделей, версионирование, сохранение/загрузка; шаблон MODEL_REPORT; метрики, сравнение с baseline и предыдущими экспериментами; правила про тест/валидацию и отсутствие утечек.
+*   **Навык `apm-model-report` (Models):** Отчёт по модели и артефактам; шаблон MODEL_REPORT; метрики и сравнение с baseline/экспериментами.
+*   **Навык `apm-env` (Environment):** Настройка окружения по ARCHITECTURE.md.
 
 ## 3. Слой Agents (Профилирование исполнителей)
 Цель: Настройка специализированных агентов с ограниченными правами и контекстом. Все роли, кроме Orchestrator, — **subagents**. Роли — короткие контракты поведения (responsibilities, guardrails, stop conditions, обязательные артефакты). Skills агент подбирает сам через инструмент `skill` по description; в профиле агента перечислять skills не обязательно.
@@ -42,7 +45,7 @@
     *   *Фокус:* Генерация и запуск тестов.
 *   **Агент `Data Scientist` (DS):**
     *   *Режим:* subagent.
-    *   *Фокус:* По контексту команды использует навыки apm-eda (EDA), apm-ds-exp (эксперименты), apm-ds-baseline (baseline), apm-finalize-model (артефакты и отчёты моделей); работа с `eda/`, `experiments/`, `models/`.
+    *   *Фокус:* По контексту использует навыки apm-eda (EDA), apm-ds-exp (эксперименты), apm-ds-baseline (baseline), apm-model-report (отчёты моделей); работа с `eda/`, `experiments/`, `models/`.
 *   **Агент `Orchestrator` / `Team Lead` (Experimental):**
     *   *Режим:* primary. Единственный primary в наборе APM; не является частью базовой методологии, не запускает playbooks.
     *   *Функция:* Координация субагентов (Architect, Engineer, SDET, Data Scientist).
@@ -55,17 +58,7 @@
     *   Принудительный вызов агента `Architect`.
     *   Vision Alignment: структурирование идеи, уточняющие вопросы, консультирование (в т.ч. тех. стек); затем блок "WAIT FOR CONFIRMATION" перед заполнением `memory-bank/ARCHITECTURE.md`.
     *   Обязательный запуск инструмента `apm_init_structure` для развёртывания структуры проекта.
-*   **Команда `/apm-develop` (RAPID):**
-    *   Принудительный вызов агента `Engineer`. Обновление `memory-bank/STATE.md` в конце сессии при изменениях.
-*   **Команда `/apm-eda` (DS):** Вызов агента `Data Scientist`; навык apm-eda; EDA в `eda/`; обновление `memory-bank/STATE.md` в конце.
-*   **Команда `/apm-baseline` (DS):** Вызов агента `Data Scientist`; навык apm-ds-baseline; референсная модель.
-*   **Команда `/apm-experiment` (DS):** Вызов агента `Data Scientist`; навык apm-ds-exp; гипотезы и эксперименты в `experiments/`; обновление `memory-bank/STATE.md` в конце.
-*   **Команда `/apm-test`:**
-    *   Вызов агента `SDET`; запуск тестов и генерация отчета.
-*   **Команда `/apm-review`:** Вызов агента для ревью по методологии.
-*   **Команда `/apm-sync`:** Актуализация Memory Bank без смены основного контекста.
-*   **Команда `/apm-report` (RAPID):** Генерация отчётов по шаблонам (General, Test, E2E, Debug).
-*   **Команда `/apm-env` (DS):** Вызов агента Architect; настройка окружения по ARCHITECTURE.md (pyproject.toml, uv и т.д.).
+*   Остальные сценарии выполняются как skills по запросу пользователя (apm-dev, apm-test, apm-eda, apm-ds-baseline, apm-ds-exp, apm-model-report, apm-report, apm-review, apm-sync, apm-env).
 
 ## 5. Целевое состояние создаваемого проекта (шаблоны)
 Проекты, создаваемые конфигуратором APM для OpenCode, не содержат `.apm/` и содержат только `memory-bank/` и структуру методологии.
@@ -77,10 +70,10 @@
 ## 6. Валидация и внедрение
 Цель: Проверка работоспособности системы.
 
-*   **Интеграционное тестирование:** Проверка сквозного сценария: Start (с confirmation gate) -> Develop/EDA/Experiment -> Test -> Sync; обновление `memory-bank/STATE.md` в конце сессий.
+*   **Интеграционное тестирование:** Проверка сквозного сценария: Start (с confirmation gate) -> ключевые skills (dev/eda/experiment/test) -> Sync; обновление `memory-bank/STATE.md` в конце сессий.
 *   **Оптимизация токенов:** Рефакторинг Markdown-файлов навыков для минимизации контекста (удаление избыточных примеров, использование ссылок, перенос деталей в `references/`).
 *   **Критерии приемки (Definition of Done):**
-    *   В репозитории APM есть `apm_opencode_pack/` с подкаталогами `agent/`, `command/`, `skill/`, `tools/`; skills по спецификации OpenCode (SKILL.md, name/description, имя папки == name в frontmatter), в т.ч. DS-навыки: apm-eda, apm-ds-exp, apm-ds-baseline, apm-finalize-model, а также apm-logs; custom tool `apm_init_structure` в `tools/`.
+    *   В репозитории APM есть `apm_opencode_pack/` с подкаталогами `agent/`, `command/`, `skill/`, `tools/`; skills по спецификации OpenCode (SKILL.md, name/description, имя папки == name в frontmatter), в т.ч. apm-dev, apm-test, apm-logs, apm-report, apm-review, apm-sync, apm-eda, apm-ds-exp, apm-ds-baseline, apm-model-report, apm-env; custom tool `apm_init_structure` в `tools/`.
     *   Скрипты `apm_project/scripts/opencode_install.*` устанавливают pack в `~/.config/opencode/agents/`, `commands/`, `skills/`, `tools/`.
     *   Конфигуратор создаёт RAPID/DS проекты с `memory-bank/` и без `.apm/`.
     *   Команды мигрированы из `apm_source/interactive_ide/RAPID_METHODOLOGY/.cursor/commands/` и `DS_METHODOLOGY/.cursor/commands/`; пути `memory bank/` заменены на `memory-bank/`, Cursor-специфика удалена.
