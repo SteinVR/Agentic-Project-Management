@@ -2,6 +2,9 @@
 **Author:** [Agent Role]
 **Context:** [Task ID or Trigger Reason]
 
+## Task Statement
+> What the task was?
+
 ##  Scope
 > What was analyzed, implemented, or tested?
 

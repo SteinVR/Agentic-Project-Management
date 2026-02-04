@@ -16,7 +16,7 @@ compatibility: opencode
 ## Logging and feedback loop
 Logging conventions and feedback-loop rules live in **apm-logs**. Use that skill when writing or interpreting logs.
 
-## Terminology (quick)
+## Terminology
 - **RAPID:** fast product delivery with tight feedback loops and disciplined Memory Bank updates.
 - **DS:** experiment-driven data science workflow (EDA → baseline → experiments → finalize).
 
@@ -40,7 +40,7 @@ See `references/TERMINOLOGY.md` for a short glossary.
   - keep **Decision Log** and **Session History** current;
   - record data drift in **Data Drift & Changes Log**.
 
-## Activity reports (compact)
+## Activity reports
 - **Location:** `logs/activity/<Role>/`
 - **Filename:** `<Role>_YYYY-MM-DD_HH-mm_short-title.md`
 - **When:** end of each session and after any non-trivial work.

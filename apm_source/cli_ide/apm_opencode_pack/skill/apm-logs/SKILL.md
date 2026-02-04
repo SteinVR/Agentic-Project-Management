@@ -43,8 +43,3 @@ compatibility: opencode
 - [ ] Inputs and configuration (high level)
 - [ ] Result summary or metric
 - [ ] Error details with context (if any)
-
-## How logs feed Memory Bank
-- Summarize log outcomes in `memory-bank/STATE.md`.
-- If logs reveal a deviation from architecture, document it.
-- Use logs as evidence when writing reports.

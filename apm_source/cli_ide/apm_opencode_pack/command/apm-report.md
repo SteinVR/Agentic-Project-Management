@@ -1,5 +1,5 @@
 ---
-description: Generate a report from templates (General/Test/E2E/Debug)
+description: Generate a report from templates
 agent: apm-engineer
 subtask: true
 ---
