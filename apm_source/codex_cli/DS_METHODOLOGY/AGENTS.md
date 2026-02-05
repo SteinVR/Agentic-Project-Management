@@ -16,7 +16,7 @@
 ## DS workflow
 - Use `apm-start` for Vision Alignment and initialization.
 - Suggested flow: `apm-eda` → `apm-ds-baseline` → `apm-ds-exp` → `apm-model-report` (when a model needs formal reporting).
-- Supporting skills: `apm-logs`, `apm-report`, `apm-sync`, `apm-review`, `apm-env`.
+- Supporting skills: `apm-logs`, `apm-report`, `apm-sync`, `apm-review`.
 
 ## Notes
 - If instructions conflict, prefer the closest (most specific) AGENTS.md.

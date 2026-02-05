@@ -101,7 +101,7 @@ AGENTS размещаются **там, где реально применяют
 
 | Команда (OpenCode/Cursor) | Skill (Codex) | Назначение |
 |---|---|---|
-| apm-start | apm-start | Vision Alignment + init структуры + confirmation gate |
+| apm-start | apm-start | Vision Alignment + init структуры + confirmation gate + environment proposal |
 | apm-architect | apm-start | Архитектурные решения и инициализация Memory Bank |
 | apm-develop | apm-dev | Инженерный цикл (Plan → Code → Verify) |
 | apm-test | apm-test | QA/TDD цикл |
@@ -111,7 +111,6 @@ AGENTS размещаются **там, где реально применяют
 | apm-eda | apm-eda | EDA workflow |
 | apm-baseline | apm-ds-baseline | Baseline модель |
 | apm-experiment | apm-ds-exp | Гипотезы и эксперименты |
-| apm-env | apm-env | Настройка окружения по ARCHITECTURE |
 
 ---
 
@@ -156,7 +155,7 @@ AGENTS размещаются **там, где реально применяют
 
 - Перенести каноничные навыки в `.skills/`:
   apm-start, apm-dev, apm-test, apm-logs, apm-eda, apm-ds-baseline,
-  apm-ds-exp, apm-model-report, apm-review, apm-sync, apm-report, apm-env.
+  apm-ds-exp, apm-model-report, apm-review, apm-sync, apm-report.
 - Сжимать `SKILL.md` только если реально разрастаются; тяжелые детали — в `references/`.
 
 ### Этап 3 — Entrypoint skill

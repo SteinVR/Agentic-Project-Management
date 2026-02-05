@@ -126,8 +126,6 @@ apm_opencode_pack/skill/
   apm-model-report/
     SKILL.md
     references/
-  apm-env/
-    SKILL.md
 ```
 
 **Декомпозиция DS-методологии:** вместо одного монолитного apm-ds используются отдельные навыки: **apm-eda** (Exploratory Data Analysis: eda/, EDA report), **apm-ds-exp** (эксперименты: hypothesis, experiments/, EXPERIMENT_REPORT), **apm-ds-baseline** (baseline-модель), **apm-model-report** (отчёт по модели, MODEL_REPORT). Эти навыки используются по контексту; отдельные команды не обязательны. Отдельный навык **apm-logs** задаёт стандарты логирования и feedback loop.
@@ -361,7 +359,7 @@ project/
 
 ### v3 core
 
-1. В репозитории есть `apm_opencode_pack/skill/*` (skills по спецификации: apm-arch, apm-dev, apm-test, apm-logs, apm-report, apm-review, apm-sync, apm-eda, apm-ds-exp, apm-ds-baseline, apm-model-report, apm-env).
+1. В репозитории есть `apm_opencode_pack/skill/*` (skills по спецификации: apm-arch, apm-dev, apm-test, apm-logs, apm-report, apm-review, apm-sync, apm-eda, apm-ds-exp, apm-ds-baseline, apm-model-report).
 2. В репозитории есть `apm_opencode_pack/agent/*` (профили ролей; все subagents, кроме экспериментального Orchestrator).
 3. В репозитории есть `apm_opencode_pack/command/*` (playbooks для человека; принят минимум из `/apm-start`).
 4. В репозитории есть `apm_opencode_pack/tools/` с custom tool `apm_init_structure`.

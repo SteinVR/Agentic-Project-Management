@@ -24,7 +24,6 @@
 | DS          | apm-baseline           | да                          | да        |
 | DS          | apm-experiment         | да                          | да        |
 | DS          | apm-review             | да                          | да        |
-| DS          | apm-env                | да                          | да        |
 | DS          | apm-scientist          | не перечислена явно         | да        |
 
 **Решение:** Команды **apm-ci** (RAPID) и **apm-scientist** (DS) в миграцию **не включать**. В OpenCode pack их нет.
@@ -44,7 +43,7 @@
 | apm-report (RAPID)        | DEBUGGING_REPORT_TEMPLATE.md    | DEBUGGING_REPORT_TMP.md                 |
 | apm-eda (DS)               | EDA_REPORT.md                   | EDA_REPORT_TMP.md                       |
 | apm-experiment (DS)        | EXPERIMENT_REPORT.md            | EXPERIMENT_REPORT_TMP.md                |
-| apm-review (DS)            | MODEL_REPORT.md                 | MODEL_REPORT_TMP.md                     |
+| apm-review (DS)            | REVIEW_REPORT.md                | REVIEW_REPORT_TMP.md                    |
 | EXPERIMENTS_DESCRIPTION.md | EXPERIMENT_REPORT.md            | EXPERIMENT_REPORT_TMP.md                |
 
 **Решение:** Единое именование — **нижнее подчёркивание и суффикс `_TMP`**: `ARCHITECTURE_TMP.md`, `*_REPORT_TMP.md` и т.д. Все ссылки в командах и skills ведут на файлы с суффиксом `_TMP`.

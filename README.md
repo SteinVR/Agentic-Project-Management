@@ -144,7 +144,7 @@ Core files:
 
 | Command | Description |
 |---------|-------------|
-| `/apm-start` | Vision Alignment / Problem Definition + Memory Bank initialization |
+| `/apm-start` | Vision Alignment / Problem Definition + Memory Bank initialization + environment proposal |
 | `/apm-architect` | Architecture consultation or updates |
 | `/apm-review` | Architecture review & recommendations |
 | `/apm-sync` | Sync current project state into `STATE.md` |
@@ -164,7 +164,6 @@ Core files:
 | `/apm-eda` | Exploratory Data Analysis workflow |
 | `/apm-baseline` | Build a domain‑credible baseline model |
 | `/apm-experiment` | Hypothesis‑driven experiment cycle |
-| `/apm-env` | Environment setup from ARCHITECTURE.md |
 
 ---
 

@@ -8,6 +8,7 @@ compatibility: codex
 - Initialize project structure.
 - Run Vision Alignment / Problem Definition.
 - After confirmation, create Memory Bank files.
+- Propose environment setup from ARCHITECTURE after Memory Bank is formed.
 
 ## Required reads
 - `memory-bank/STATE.md` (if exists)
@@ -58,10 +59,16 @@ Ask the user to confirm before writing any files.
 "Does this accurately capture your vision? Please confirm or provide corrections before I proceed."
 
 ## Step 3: After confirmation
-- Fill `memory-bank/ARCHITECTURE.md` using the correct template:
-  - RAPID: `references/ARCHITECTURE_RAPID_TMP.md`
-  - DS: `references/ARCHITECTURE_DS_TMP.md`
+- Fill `memory-bank/ARCHITECTURE.md` using the correct template
 - Initialize `memory-bank/TASK.md` and `memory-bank/STATE.md` using the project templates if present; otherwise create minimal headers and refine with the user.
+
+
+## Step 4: Environment setup (post Memory Bank)
+- Read the Technology Stack and Deployment sections in `memory-bank/ARCHITECTURE.md`.
+- Propose the environment (runtime versions, package manager, core deps).
+- If approved, create or update config files (pyproject, package.json, etc.).
+- Provide setup commands for the user.
+- Update `memory-bank/STATE.md` with environment notes.
 - Summarize what was created and suggest the next skill:
   - RAPID: `apm-dev`
   - DS: `apm-eda` or `apm-ds-baseline`

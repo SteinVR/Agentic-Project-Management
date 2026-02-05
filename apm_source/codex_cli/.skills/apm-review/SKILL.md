@@ -22,8 +22,9 @@ compatibility: codex
 5. Ask for confirmation before changing `ARCHITECTURE.md`.
 6. Update `STATE.md` with review findings and decisions.
 
-## Reports (optional)
-- Store reports under `logs/reports/`.
+## Report template (optional)
+- Use `references/REVIEW_REPORT_TMP.md`.
+- Store reports under `logs/reports/` (e.g., `logs/reports/REVIEW_REPORT.md`).
 
 ## Required outputs
 - Review summary (message)

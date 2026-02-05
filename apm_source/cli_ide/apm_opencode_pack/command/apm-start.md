@@ -1,5 +1,5 @@
 ---
-description: Start APM project (Vision Alignment) and initialize Memory Bank
+description: Start APM project (Vision Alignment), initialize Memory Bank, and propose environment setup
 agent: apm-architect
 subtask: true
 ---
@@ -52,7 +52,19 @@ Ask the user to confirm before writing any files:
 ## Step 3: After confirmation
 - Fill `memory-bank/ARCHITECTURE.md` using the correct template (apm-arch).
 - Initialize `memory-bank/TASK.md` and `memory-bank/STATE.md` using the project templates if present; otherwise create minimal headers and refine with the user.
+
+## Step 4: Environment setup (post Memory Bank)
+- Read the Technology Stack and Deployment sections in `memory-bank/ARCHITECTURE.md`.
+- Propose the environment (runtime versions, package manager, core deps).
+- If approved, create or update config files (pyproject, package.json, etc.).
+- Provide setup commands for the user.
+- Update `memory-bank/STATE.md` with environment notes.
 - Summarize what was created.
 - Suggest the next skill:
   - RAPID: `apm-dev`
   - DS: `apm-eda` or `apm-ds-baseline`
+
+## Guardrails
+- Do not implement code unless explicitly requested.
+- Preserve main headers in templates; add sub-sections only.
+- Update `memory-bank/STATE.md` after meaningful changes.
