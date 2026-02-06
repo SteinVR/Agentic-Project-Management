@@ -1,5 +1,5 @@
 # DS — Models
 
 - Use apm-model-report for model reporting and artifact summaries.
-- Store model artifacts and `MODEL_REPORT` here.
+- Use a separate subfolder per model; store that model's artifacts and `MODEL_REPORT` inside it.
 - Update `memory-bank/STATE.md` with best-model tracking.

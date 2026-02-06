@@ -10,8 +10,8 @@ compatibility: opencode
 ## Required reads
 - `memory-bank/STATE.md`
 - `memory-bank/TASK.md`
-- relevant files in `src/`, `tests/`, `logs/`
+- relevant files
 
 ## Template
 Use `references/GENERAL_REPORT_TMP.md`.
-Store reports under `logs/reports/`.
+Store reports under `logs/reports/`. **Filename:** `YYYY-MM-DD_short-title.md` (e.g. `2025-02-06_sprint-review.md`).

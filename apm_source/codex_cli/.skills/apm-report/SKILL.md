@@ -14,4 +14,4 @@ compatibility: codex
 
 ## Template
 Use `references/GENERAL_REPORT_TMP.md`.
-Store reports under `logs/reports/`.
+Store reports under `logs/reports/`. **Filename:** `YYYY-MM-DD_short-title.md` (e.g. `2025-02-06_sprint-review.md`).

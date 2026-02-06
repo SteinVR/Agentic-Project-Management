@@ -25,3 +25,9 @@ Use `references/EXPERIMENT_REPORT_TMP.md` for `REPORT.md`.
 - `memory-bank/TASK.md` (mark hypothesis tested, update Active Experiment)
 - `memory-bank/STATE.md` (experiment history, best model tracker)
 - Log experiment runs and metrics per apm-logs.
+
+## Conventions
+- Prefer simple, modular solutions (SOLID/DRY).
+- Use explicit type hints (annotations) for function parameters and return values.
+- Add logging to `logs/` where appropriate (see apm-logs for standards).
+- If you create helper scripts, place them under `tools/` (create if missing).

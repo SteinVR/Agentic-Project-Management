@@ -25,6 +25,8 @@ compatibility: codex
 - If unclear, ask a single clarifying question and wait.
 
 ## Step 1: Initialize structure
+(Run this step only when the project directory was not set up in advance or when some required directories are missing.)
+
 Run the `apm_init_structure` script bundled with this skill (see `scripts/apm_init_structure.sh`).
 If the script location is unknown, create the directories manually:
 

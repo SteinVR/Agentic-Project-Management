@@ -31,6 +31,8 @@ $ARGUMENTS
 - If unclear, ask a single clarifying question and wait.
 
 ## Step 1: Initialize structure
+(Run this step only when the project directory was not set up in advance or when some required directories are missing.)
+
 Call `apm_init_structure` with the chosen methodology before writing any files.
 
 ## Step 2: Vision Alignment

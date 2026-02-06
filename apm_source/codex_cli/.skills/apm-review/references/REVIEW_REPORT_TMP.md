@@ -15,8 +15,7 @@
 > Likely causes and confidence.
 
 ## Recommended Actions (Ordered)
-> 1. ...
-> 2. ...
+
 
 ## Decisions / Questions
 > Items requiring user or architect input.

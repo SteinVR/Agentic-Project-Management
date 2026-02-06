@@ -19,6 +19,12 @@ compatibility: opencode
 6. Update `memory-bank/STATE.md` and `memory-bank/TASK.md`.
 7. Ensure baseline logs follow apm-logs.
 
+## Conventions
+- Prefer simple, modular solutions (SOLID/DRY).
+- Use explicit type hints (annotations) for function parameters and return values.
+- Add logging to `logs/` where appropriate (see apm-logs for standards).
+- If you create helper scripts, place them under `tools/` (create if missing).
+
 ## Guardrails
 - Do not run long training without user approval.
 - Keep the baseline reproducible and comparable across experiments.

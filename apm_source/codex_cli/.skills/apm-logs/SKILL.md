@@ -16,11 +16,11 @@ compatibility: codex
 ## Common log locations
 - **RAPID:** `logs/` (core runtime) + optional subfolders.
 - **DS:** `logs/` for training/evaluation metrics, run summaries, and errors.
-- **Activity reports:** `logs/activity/<Role>/`.
+- **Activity reports:** `logs/activity/`.
 
 ## Activity reports (session summary)
-- **Location:** `logs/activity/<Role>/`
-- **Filename:** `<Role>_YYYY-MM-DD_HH-mm_short-title.md`
+- **Location:** `logs/activity/`
+- **Filename:** `YYYY-MM-DD_HH-mm_short-title.md`
 - **When:** end of each session and after any non-trivial work.
 - **Structure (3 parts):**
   1. **Task Setup (Given / Goal)**
