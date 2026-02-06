@@ -440,7 +440,7 @@ copy_methodology_template() {
     
     local source_root="$SOURCE_PATH/interactive_ide"
     if [[ "$dev_env" == "OPENCODE" ]]; then
-        source_root="$SOURCE_PATH/cli_ide"
+        source_root="$SOURCE_PATH/opencode_cli"
     elif [[ "$dev_env" == "CODEX" ]]; then
         source_root="$SOURCE_PATH/codex_cli"
     fi
@@ -470,7 +470,7 @@ copy_methodology_template() {
 install_opencode_pack() {
     local mode="$1"
     local project_path="$2"
-    local pack_dir="$SOURCE_PATH/cli_ide/apm_opencode_pack"
+    local pack_dir="$SOURCE_PATH/opencode_cli/apm_opencode_pack"
     
     if [[ ! -d "$pack_dir" ]]; then
         write_warning "OpenCode pack not found: $pack_dir"

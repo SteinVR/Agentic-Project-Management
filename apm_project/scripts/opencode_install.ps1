@@ -8,7 +8,7 @@ param(
 
 $ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 $RepoRoot = Resolve-Path (Join-Path $ScriptDir "../..")
-$PackDir = Join-Path $RepoRoot "apm_source/cli_ide/apm_opencode_pack"
+$PackDir = Join-Path $RepoRoot "apm_source/opencode_cli/apm_opencode_pack"
 
 if (-not (Test-Path $PackDir)) {
   Write-Error "Pack not found: $PackDir"

@@ -169,7 +169,7 @@ Core files:
 
 ## Notes
 
-- OpenCode pack lives in `apm_source/cli_ide/apm_opencode_pack/`.
+- OpenCode pack lives in `apm_source/opencode_cli/apm_opencode_pack/`.
 - Cursor templates live in `apm_source/interactive_ide/`.
 
 ---

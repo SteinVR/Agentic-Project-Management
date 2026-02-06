@@ -5,7 +5,7 @@ set -e
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
-PACK_DIR="$REPO_ROOT/apm_source/cli_ide/apm_opencode_pack"
+PACK_DIR="$REPO_ROOT/apm_source/opencode_cli/apm_opencode_pack"
 
 usage() {
   cat << 'EOF'
