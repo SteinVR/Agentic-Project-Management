@@ -1,7 +1,6 @@
 ---
 name: apm-eda
 description: Exploratory Data Analysis workflow for APM DS projects, including artifacts and EDA report template.
-compatibility: opencode
 ---
 ## What I do
 - Provide a reproducible EDA workflow under `eda/`.

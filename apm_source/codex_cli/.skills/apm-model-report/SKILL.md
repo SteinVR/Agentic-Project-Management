@@ -1,7 +1,6 @@
 ---
 name: apm-model-report
 description: Model report and artifact summary for DS projects.
-compatibility: codex
 ---
 ## What I do
 - Document a specific model: metrics, data, config, and artifacts.

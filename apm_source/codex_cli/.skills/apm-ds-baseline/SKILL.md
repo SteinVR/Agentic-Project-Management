@@ -1,7 +1,6 @@
 ---
 name: apm-ds-baseline
 description: Build a reproducible baseline model for DS projects and record results.
-compatibility: codex
 ---
 ## What I do
 - Establish a **representative, domain-credible** baseline before experiments.

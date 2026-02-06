@@ -1,7 +1,6 @@
 ---
 name: apm-report
 description: Generate a concise general project report using the standard template.
-compatibility: codex
 ---
 ## What I do
 - Provide the standard template if no other template fits better for general project reports.

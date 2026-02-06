@@ -1,7 +1,6 @@
 ---
 name: apm-review
 description: Surgical project review to unblock stuck situations and surface risks.
-compatibility: opencode
 ---
 ## What I do
 - Load a clean context from Memory Bank and recent changes.

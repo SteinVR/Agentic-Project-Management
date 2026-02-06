@@ -1,7 +1,6 @@
 ---
 name: apm-start
 description: Project kickoff for RAPID/DS: Vision Alignment, structure init, and Memory Bank setup.
-compatibility: codex
 ---
 ## What I do
 - Determine methodology (RAPID or DS).

@@ -1,7 +1,6 @@
 ---
 name: apm-dev
 description: Implementation workflow for RAPID feature work and fixes (plan, build, verify, update Memory Bank).
-compatibility: codex
 ---
 ## What I do
 - Provide a disciplined implementation loop for RAPID work.

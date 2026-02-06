@@ -1,7 +1,6 @@
 ---
 name: apm-arch
 description: Vision Alignment and architecture specification for projects.
-compatibility: opencode
 ---
 ## What I do
 - Run Vision Alignment / Problem Definition.

@@ -1,7 +1,6 @@
 ---
 name: apm-sync
 description: Sync Memory Bank with current project status and decisions.
-compatibility: opencode
 ---
 ## What I do
 - Reconcile recent work with `memory-bank/STATE.md`.

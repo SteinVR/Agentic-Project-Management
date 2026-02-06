@@ -1,7 +1,6 @@
 ---
 name: apm-logs
 description: Logging and feedback-loop conventions for APM projects (RAPID and DS). Use when writing or interpreting logs.
-compatibility: codex
 ---
 ## What I do
 - Define logging conventions that enable fast feedback loops.

@@ -1,7 +1,6 @@
 ---
 name: apm-test
 description: Quality assurance and testing workflow for RAPID projects (strategy, coverage, reporting).
-compatibility: codex
 ---
 ## What I do
 - Define test strategy and coverage targets.

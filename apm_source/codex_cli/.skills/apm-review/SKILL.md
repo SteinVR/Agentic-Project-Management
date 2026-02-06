@@ -1,7 +1,6 @@
 ---
 name: apm-review
 description: Surgical project review to unblock stuck situations and surface risks.
-compatibility: codex
 ---
 ## What I do
 - Load a context from Memory Bank and recent changes.
