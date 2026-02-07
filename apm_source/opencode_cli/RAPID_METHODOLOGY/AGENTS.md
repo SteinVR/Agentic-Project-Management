@@ -12,11 +12,11 @@
 
 ## Terminology
 - **RAPID:** fast product delivery with tight feedback loops and disciplined Memory Bank updates.
-- **DS:** experiment-driven workflow (EDA → baseline → experiments → model report).
+- **DS:** experiment-driven workflow (EDA -> baseline -> experiments -> model report).
 
 ## RAPID workflow
 - Use `apm-start` for Vision Alignment and initialization.
-- Core loop: plan → implement → verify → update Memory Bank.
+- Core loop: plan -> implement -> verify -> update Memory Bank.
 - Suggested skills: `apm-dev`, `apm-test`, `apm-logs`, `apm-report`, `apm-sync`, `apm-review`.
 
 ## Notes
