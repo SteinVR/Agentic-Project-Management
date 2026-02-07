@@ -1,4 +1,4 @@
-# APM OpenCode — DS
+# APM OpenCode - DS
 
 ## Memory Bank (SSOT)
 - Directory name is `memory-bank/`.
@@ -7,7 +7,7 @@
 
 ## Terminology
 - **RAPID:** fast product delivery with tight feedback loops and disciplined Memory Bank updates.
-- **DS:** experiment-driven workflow (EDA → baseline → experiments → model report).
+- **DS:** experiment-driven workflow (EDA -> baseline -> experiments -> model report).
 
 ### DS updates
 - **TASK.md:** manage hypotheses and **Active Experiment**; maintain **Experiment Plan** and mark tested hypotheses.
