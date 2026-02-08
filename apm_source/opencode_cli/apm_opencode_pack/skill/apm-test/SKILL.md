@@ -1,6 +1,6 @@
 ---
 name: apm-test
-description: Quality assurance and testing workflow for RAPID projects (strategy, coverage, reporting).
+description: "Write and run tests (unit, integration, e2e) for RAPID projects. Defines test strategy, coverage targets, and generates test reports. Use when adding tests, validating changes, or auditing test coverage."
 ---
 ## What I do
 - Define test strategy and coverage targets.

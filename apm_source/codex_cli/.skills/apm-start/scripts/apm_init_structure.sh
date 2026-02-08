@@ -12,7 +12,7 @@ case "${method^^}" in
     dirs=("src" "tests" "logs" "memory-bank")
     ;;
   DS)
-    dirs=("src" "experiments" "eda" "models" "logs" "memory-bank")
+    dirs=("src" "experiments" "eda" "models" "logs" "memory-bank" "data/raw" "data/processed" "data/external")
     ;;
   *)
     echo "Unknown methodology: $method"

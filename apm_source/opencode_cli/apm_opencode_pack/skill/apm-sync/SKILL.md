@@ -1,6 +1,6 @@
 ---
 name: apm-sync
-description: Sync Memory Bank with current project status and decisions.
+description: "Reconcile Memory Bank (STATE, TASK, ARCHITECTURE) with the current project state. Use after a work session, before switching context, or when Memory Bank feels outdated."
 ---
 ## What I do
 - Reconcile recent work with `memory-bank/STATE.md`.
@@ -17,6 +17,17 @@ description: Sync Memory Bank with current project status and decisions.
 2. Update `STATE.md` with the current context and decisions.
 3. If `TASK.md` is stale, propose updates and ask for approval.
 4. If `ARCHITECTURE.md` is outdated, propose updates and ask for approval.
+
+## Memory Bank maintenance
+When **Session History** in `STATE.md` exceeds 7 entries:
+1. Summarize the oldest entries into 2-3 sentences (key outcomes and decisions).
+2. Append the summary to the **Accumulated Context** section.
+3. Remove the summarized entries from Session History, keeping only the 7 most recent.
+
+When **Experiment History** (DS only) exceeds 15 rows:
+1. Summarize the oldest experiments into a compact paragraph (trends, key learnings).
+2. Append to **Accumulated Context**.
+3. Keep only the 15 most recent rows in the table.
 
 ## Required outputs
 - `memory-bank/STATE.md` (updated)

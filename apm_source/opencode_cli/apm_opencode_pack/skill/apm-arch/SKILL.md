@@ -1,6 +1,6 @@
 ---
 name: apm-arch
-description: Vision Alignment and architecture specification for projects.
+description: "Architecture design and Vision Alignment for RAPID/DS projects: define project scope, tech stack, and structure. Use at project kickoff, major scope changes, or architecture re-alignment."
 ---
 ## What I do
 - Run Vision Alignment / Problem Definition.
@@ -47,6 +47,17 @@ Do **not** write to `memory-bank/ARCHITECTURE.md` until the user confirms.
 Use the correct template based on methodology:
 - **RAPID:** `references/ARCHITECTURE_RAPID_TMP.md`
 - **DS:** `references/ARCHITECTURE_DS_TMP.md`
+
+## Environment setup (post Memory Bank)
+When used as part of full project initialization:
+- Read the Technology Stack section in `memory-bank/ARCHITECTURE.md`.
+- Propose the environment (runtime versions, package manager, core deps).
+- If approved, create or update config files (pyproject, package.json, etc.).
+- Provide setup commands for the user.
+- Update `memory-bank/STATE.md` with environment notes.
+- Suggest the next skill:
+  - RAPID: `apm-dev`
+  - DS: `apm-eda` or `apm-ds-baseline`
 
 ## Guardrails
 - Do not implement code unless explicitly requested.

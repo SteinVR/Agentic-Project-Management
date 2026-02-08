@@ -1,6 +1,6 @@
 ---
 name: apm-ds-exp
-description: Hypothesis-driven experiment workflow for APM DS projects.
+description: "Plan, execute, and document a hypothesis-driven experiment for DS projects. Creates an experiment directory under experiments/, manages hyperparameters, and tracks results in Memory Bank. Use when testing a hypothesis or training a new model variant."
 ---
 ## What I do
 - Define experiment selection, planning, and reporting.

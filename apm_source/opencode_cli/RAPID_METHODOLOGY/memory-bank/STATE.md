@@ -50,3 +50,11 @@
 |------|-------|---------|
 | YYYY-MM-DD | [Role] | [What was accomplished] |
 
+---
+
+## 6. Accumulated Context
+
+> Auto-maintained by apm-sync. Summarizes older sessions and decisions when history grows beyond the working window.
+
+[No accumulated context yet.]
+

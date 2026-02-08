@@ -1,6 +1,6 @@
 ---
 name: apm-review
-description: Surgical project review to unblock stuck situations and surface risks.
+description: "Diagnose project issues: identify blockers, architecture drift, and high-risk gaps by comparing Memory Bank intent vs actual state. Use when the project is stuck, unclear, or needs a focused audit before further work."
 ---
 ## What I do
 - Load a clean context from Memory Bank and recent changes.

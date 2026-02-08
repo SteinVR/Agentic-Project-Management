@@ -1,6 +1,6 @@
 ---
 name: apm-start
-description: Project kickoff for RAPID/DS: Vision Alignment, structure init, and Memory Bank setup.
+description: "Project kickoff: initialize directory structure, run Vision Alignment (RAPID) or Problem Definition (DS), and set up Memory Bank. Use when starting a new project or resetting architecture from scratch."
 ---
 ## What I do
 - Determine methodology (RAPID or DS).
@@ -30,7 +30,7 @@ Run the `apm_init_structure` script bundled with this skill (see `scripts/apm_in
 If the script location is unknown, create the directories manually:
 
 - RAPID: `src/`, `tests/`, `logs/`, `memory-bank/`
-- DS: `src/`, `experiments/`, `eda/`, `models/`, `logs/`, `memory-bank/`
+- DS: `src/`, `experiments/`, `eda/`, `models/`, `logs/`, `memory-bank/`, `data/raw/`, `data/processed/`, `data/external/`
 
 ## Step 2: Vision Alignment / Problem Definition
 

@@ -15,7 +15,7 @@ export default tool({
     const dirs =
       methodology === "RAPID"
         ? ["src", "tests", "logs", "memory-bank"]
-        : ["src", "experiments", "eda", "models", "logs", "memory-bank"]
+        : ["src", "experiments", "eda", "models", "logs", "memory-bank", "data/raw", "data/processed", "data/external"]
 
     await Promise.all(
       dirs.map((dir) => fs.mkdir(path.join(root, dir), { recursive: true }))

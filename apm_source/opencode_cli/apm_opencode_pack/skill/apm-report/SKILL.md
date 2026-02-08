@@ -1,6 +1,6 @@
 ---
 name: apm-report
-description: Generate a concise general project report using the standard template.
+description: "Generate a general-purpose project status report from Memory Bank and recent work. Use for sprint reviews, progress summaries, or stakeholder updates."
 ---
 ## What I do
 - Provide the standard template if no other template fits better for general project reports.
