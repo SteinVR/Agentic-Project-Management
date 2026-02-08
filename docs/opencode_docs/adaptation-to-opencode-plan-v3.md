@@ -1,6 +1,6 @@
 # Миграция APM в OpenCode (v3, Variant A)
 
-**Статус:** Draft
+**Статус:** Finished
 
 **Target среда:** OpenCode
 
