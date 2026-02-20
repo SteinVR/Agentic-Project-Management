@@ -2,7 +2,7 @@
 
 # Agentic Project Management
 
-**AI‑driven development framework for Cursor IDE and OpenCode CLI**
+**AI-driven development framework for Cursor IDE, Codex CLI, and OpenCode CLI**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![PowerShell](https://img.shields.io/badge/PowerShell-5.1+-blue.svg)](https://github.com/PowerShell/PowerShell)
@@ -13,9 +13,18 @@
 
 ---
 
-## What is APM?
+## Review
 
-APM is a methodology toolkit that brings structure and predictability to AI‑assisted development. It provides:
+APM is a configurable SDD-based framework that brings structure and predictability to LLM-assisted development across Cursor IDE, Codex CLI, and OpenCode CLI. It standardizes project setup, roles, and documentation so teams keep continuity with minimal overhead.
+
+Ideology: configured SDD, only-essential Memory Bank, context engineering, agents and skills, with an emphasis on declarative control, determinism, and token efficiency.
+
+Usage: run the TUI configurator (`apm.sh`) to generate a project, then drive work via environment-specific commands and skills. For automation or CI, use non-interactive flags.
+
+---
+
+## What you get
+
 - CLI configurator for new projects
 - Agent roles and commands
 - Memory Bank for durable project context
@@ -26,7 +35,8 @@ APM is a methodology toolkit that brings structure and predictability to AI‑as
 ## Environments
 
 - **Cursor IDE** (interactive): full methodology assets, `.cursor/` commands, `.apm/` templates, `memory bank/`.
-- **OpenCode CLI** (global or per‑project): commands/agents/skills installed into OpenCode; projects use `memory-bank/` and minimal structure.
+- **Codex CLI** (global or per-project): skills installed into `.codex/skills/`; projects use `memory-bank/` and minimal structure.
+- **OpenCode CLI** (global or per-project): commands/agents/skills installed into OpenCode; projects use `memory-bank/` and minimal structure.
 
 ---
 
@@ -34,25 +44,20 @@ APM is a methodology toolkit that brings structure and predictability to AI‑as
 
 ### 1) Run the configurator
 
-**Windows (PowerShell):**
-```powershell
-.\apm_project\apm.ps1
-```
-
-**Linux/macOS:**
+**Linux/macOS (and Windows via WSL/Git Bash):**
 ```bash
 chmod +x ./apm_project/apm.sh
 ./apm_project/apm.sh
 ```
 
-### 2) Non‑interactive flags
+### 2) Non-interactive flags
 
 Shorthands are supported:
-- `--opencode` / `--cursor`
+- `--opencode` / `--codex` / `--cursor`
 - `--rapid` / `--ds` / `--full`
-- `--local` / `--global` / `--none` (OpenCode pack install; default is `--none`)
+- `--local` / `--global` / `--none` (CLI pack install; default is `--none`)
 
-Recommended order for non‑interactive usage: **Environment → Mode → other flags**.
+Recommended order for non-interactive usage: **Environment -> Mode -> other flags**.
 
 Defaults:
 - `--project-path` defaults to the current directory
@@ -61,12 +66,12 @@ Defaults:
 Example:
 ```bash
 ./apm_project/apm.sh --opencode --rapid --project-name "my-app" --project-path "/projects" \
-  --non-interactive --skip-github --skip-cursor
+  --non-interactive --skip-cursor
 ```
 
-In‑place (inside an existing project directory):
+In-place (inside an existing project directory):
 ```bash
-./apm_project/apm.sh --opencode --rapid --non-interactive --skip-github
+./apm_project/apm.sh --opencode --rapid --non-interactive
 ```
 
 ---
@@ -78,7 +83,7 @@ In‑place (inside an existing project directory):
 ./apm_project/scripts/opencode_install.sh --global
 ```
 
-**Local** (project‑only):
+**Local** (project-only):
 ```bash
 ./apm_project/scripts/opencode_install.sh --local /path/to/project
 ```
@@ -86,6 +91,24 @@ In‑place (inside an existing project directory):
 PowerShell equivalents:
 - `apm_project/scripts/opencode_install.ps1 -Global`
 - `apm_project/scripts/opencode_install.ps1 -Local -Path <project>`
+
+---
+
+## Codex install (global or local)
+
+**Global** (applies to all projects):
+```bash
+./apm_project/scripts/codex_install.sh --global
+```
+
+**Local** (project-only):
+```bash
+./apm_project/scripts/codex_install.sh --local /path/to/project
+```
+
+PowerShell equivalents:
+- `apm_project/scripts/codex_install.ps1 -Global`
+- `apm_project/scripts/codex_install.ps1 -Local -Path <project>`
 
 ---
 
@@ -104,8 +127,8 @@ alias apm-cd='cd /path/to/Agentic-Project-Management'
 ## Methodologies
 
 - **RAPID**: fast product iterations, minimal ceremony.
-- **DS**: data science workflow (EDA → baseline → experiments → evaluation → finalize).
-- **FULL**: deprecated (Cursor‑only).
+- **DS**: data science workflow (EDA -> baseline -> experiments -> evaluation -> finalize).
+- **FULL**: deprecated (Cursor-only).
 
 ---
 
@@ -113,23 +136,23 @@ alias apm-cd='cd /path/to/Agentic-Project-Management'
 
 1. **/apm-start** runs Vision Alignment (RAPID) or Problem Definition (DS).
 2. After your confirmation, APM creates the Memory Bank: `ARCHITECTURE.md`, `TASK.md`, `STATE.md`.
-3. You continue with role‑specific commands (/apm-develop, /apm-eda, /apm-experiment, etc.).
+3. You continue with role-specific commands/skills (e.g., `/apm-develop`, `apm-eda`, `apm-ds-exp`).
 4. Every session ends with an update to `STATE.md` (project continuity).
 
 ---
 
 ## Example flow
 
-**RAPID:** `/apm-start` → `/apm-develop` → `/apm-test` → `/apm-sync`
+**RAPID:** `/apm-start` -> `/apm-develop` -> `/apm-test` -> `/apm-sync`
 
-**DS:** `/apm-start` → `/apm-eda` → `/apm-baseline` → `/apm-experiment` → `/apm-review`
+**DS:** `/apm-start` -> `/apm-eda` -> `/apm-baseline` -> `/apm-experiment` -> `/apm-review`
 
 ---
 
 ## Memory Bank
 
 - Cursor projects: `memory bank/` (with space)
-- OpenCode projects: `memory-bank/` (no space)
+- CLI projects (Codex/OpenCode): `memory-bank/` (no space)
 
 Core files:
 - `ARCHITECTURE.md`
@@ -144,9 +167,9 @@ Core files:
 
 | Command | Description |
 |---------|-------------|
-| `/apm-start` | Vision Alignment / Problem Definition + Memory Bank initialization |
+| `/apm-start` | Vision Alignment / Problem Definition + Memory Bank initialization + environment proposal |
 | `/apm-architect` | Architecture consultation or updates |
-| `/apm-review` | Architecture review & recommendations |
+| `/apm-review` | Architecture review and recommendations |
 | `/apm-sync` | Sync current project state into `STATE.md` |
 | `/apm-report` | Generate reports from templates |
 
@@ -162,16 +185,17 @@ Core files:
 | Command | Description |
 |---------|-------------|
 | `/apm-eda` | Exploratory Data Analysis workflow |
-| `/apm-baseline` | Build a domain‑credible baseline model |
-| `/apm-experiment` | Hypothesis‑driven experiment cycle |
-| `/apm-env` | Environment setup from ARCHITECTURE.md |
+| `/apm-baseline` | Build a domain-credible baseline model |
+| `/apm-experiment` | Hypothesis-driven experiment cycle |
 
 ---
 
 ## Notes
 
-- OpenCode pack lives in `apm_source/cli_ide/apm_opencode_pack/`.
-- Cursor templates live in `apm_source/interactive_ide/`.
+- OpenCode pack lives in `apm_source/opencode_pack/`.
+- Shared CLI skills live in `apm_source/skills/`.
+- Cursor templates live in `apm_source/methodologies/*/cursor/`.
+- CLI templates (Codex/OpenCode) live in `apm_source/methodologies/*/cli/`.
 
 ---
 

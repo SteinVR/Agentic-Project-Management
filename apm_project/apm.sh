@@ -2,7 +2,7 @@
 #
 # APM (Agentic Project Management) - Project Configurator
 # Interactive CLI wizard for creating new projects with APM methodology.
-# Supports FULL/RAPID/DS methodologies for Cursor and OpenCode CLI environments.
+# Supports FULL/RAPID/DS methodologies for Cursor, OpenCode CLI, and Codex CLI environments.
 #
 # Author: APM Team
 # Version: 1.0.0
@@ -24,8 +24,7 @@ PROJECT_NAME_SET=false
 PROJECT_PATH_SET=false
 METHODOLOGY=""
 DEV_ENV=""
-OPENCODE_INSTALL=""
-SKIP_GITHUB=false
+PACK_INSTALL=""
 SKIP_CURSOR=false
 FORCE=false
 NON_INTERACTIVE=false
@@ -81,28 +80,32 @@ parse_args() {
                 DEV_ENV="OPENCODE"
                 shift
                 ;;
+            --codex)
+                DEV_ENV="CODEX"
+                shift
+                ;;
             --cursor)
                 DEV_ENV="CURSOR"
                 shift
                 ;;
             --local)
-                OPENCODE_INSTALL="local"
+                PACK_INSTALL="local"
                 shift
                 ;;
             --global)
-                OPENCODE_INSTALL="global"
+                PACK_INSTALL="global"
                 shift
                 ;;
-            --none|--no-opencode-install)
-                OPENCODE_INSTALL="skip"
-                shift
-                ;;
-            --skip-github)
-                SKIP_GITHUB=true
+            --none|--no-opencode-install|--no-codex-install)
+                PACK_INSTALL="skip"
                 shift
                 ;;
             --skip-cursor)
                 SKIP_CURSOR=true
+                shift
+                ;;
+            --skip-github)
+                # Deprecated no-op: kept for backward compatibility with old CI/docs.
                 shift
                 ;;
             --force)
@@ -139,24 +142,24 @@ show_banner() {
 }
 
 write_step() {
-    echo ""
-    echo -e "\033[33m>> \033[0m\033[37m$1\033[0m"
+    echo "" >&2
+    echo -e "\033[33m>> \033[0m\033[37m$1\033[0m" >&2
 }
 
 write_success() {
-    echo -e "\033[32m[OK] \033[0m$1"
+    echo -e "\033[32m[OK] \033[0m$1" >&2
 }
 
 write_error() {
-    echo -e "\033[31m[ERROR] \033[0m$1"
+    echo -e "\033[31m[ERROR] \033[0m$1" >&2
 }
 
 write_info() {
-    echo -e "\033[36m[INFO] \033[0m$1"
+    echo -e "\033[36m[INFO] \033[0m$1" >&2
 }
 
 write_warning() {
-    echo -e "\033[33m[WARN] \033[0m$1"
+    echo -e "\033[33m[WARN] \033[0m$1" >&2
 }
 
 read_user_input() {
@@ -165,9 +168,9 @@ read_user_input() {
     local input
     
     if [[ -n "$default" ]]; then
-        echo -n "$prompt [$default]: "
+        echo -n "$prompt [$default]: " >&2
     else
-        echo -n "$prompt: "
+        echo -n "$prompt: " >&2
     fi
     
     read -r input
@@ -180,8 +183,7 @@ read_user_input() {
 
 read_directory_path() {
     local prompt="$1"
-    local default_path
-    default_path="$(pwd)"
+    local default_path="${2:-$(pwd)}"
     
     while true; do
         local path
@@ -213,9 +215,10 @@ read_directory_path() {
 }
 
 read_project_name() {
+    local default_name="${1:-}"
     while true; do
         local name
-        name=$(read_user_input "Project name" "")
+        name=$(read_user_input "Project name" "$default_name")
         
         if [[ -z "$name" ]]; then
             write_error "Project name cannot be empty"
@@ -233,20 +236,67 @@ read_project_name() {
     done
 }
 
+maybe_install_apm_alias() {
+    local alias_name="apm"
+    local target="$SCRIPT_DIR/apm.sh"
+    local existing
+    existing="$(command -v "$alias_name" 2>/dev/null || true)"
+    if [[ -n "$existing" ]]; then
+        write_warning "Command or alias '$alias_name' already exists; skipping alias install"
+        return 0
+    fi
+
+    local shell_name
+    local rc_file
+    shell_name="$(basename "${SHELL:-}")"
+    case "$shell_name" in
+        bash)
+            rc_file="$HOME/.bashrc"
+            ;;
+        zsh)
+            rc_file="$HOME/.zshrc"
+            ;;
+        *)
+            rc_file="$HOME/.profile"
+            ;;
+    esac
+
+    if [[ -z "$rc_file" ]]; then
+        return 0
+    fi
+
+    if [[ ! -f "$rc_file" ]]; then
+        touch "$rc_file" 2>/dev/null || return 0
+    fi
+
+    if grep -qE '^[[:space:]]*alias[[:space:]]+apm=' "$rc_file"; then
+        return 0
+    fi
+
+    {
+        echo ""
+        echo "alias apm=\"$target\""
+    } >> "$rc_file"
+    write_info "Installed shell alias 'apm' -> $target (restart your shell)"
+}
+
 select_dev_environment() {
-    echo ""
-    echo "Select Development Environment:"
-    echo ""
-    echo -e "  \033[33m[1] \033[36mCursor IDE\033[0m - Interactive IDE workflow"
-    echo -e "      \033[90mIncludes Cursor commands and .apm methodology assets\033[0m"
-    echo ""
-    echo -e "  \033[33m[2] \033[32mOpenCode CLI\033[0m - CLI-first workflow"
-    echo -e "      \033[90mUses OpenCode agents/commands/skills pack and memory-bank/\033[0m"
-    echo ""
+    echo "" >&2
+    echo "Select Development Environment:" >&2
+    echo "" >&2
+    echo -e "  \033[33m[1] \033[36mCursor IDE\033[0m - Interactive IDE workflow" >&2
+    echo -e "      \033[90mIncludes Cursor commands and .apm methodology assets\033[0m" >&2
+    echo "" >&2
+    echo -e "  \033[33m[2] \033[32mOpenCode CLI\033[0m - CLI-first workflow" >&2
+    echo -e "      \033[90mUses OpenCode agents/commands/skills pack and memory-bank/\033[0m" >&2
+    echo "" >&2
+    echo -e "  \033[33m[3] \033[35mCodex CLI\033[0m - CLI-first workflow" >&2
+    echo -e "      \033[90mUses Codex skills and AGENTS chain with memory-bank/\033[0m" >&2
+    echo "" >&2
     
     while true; do
         local choice
-        choice=$(read_user_input "Select environment (1 or 2)" "1")
+        choice=$(read_user_input "Select environment (1, 2, or 3)" "1")
         
         case "$choice" in
             1|CURSOR|cursor)
@@ -257,8 +307,12 @@ select_dev_environment() {
                 echo "OPENCODE"
                 return 0
                 ;;
+            3|CODEX|codex|Codex|CodexCLI)
+                echo "CODEX"
+                return 0
+                ;;
             *)
-                write_error "Invalid choice. Enter 1 or 2"
+                write_error "Invalid choice. Enter 1, 2, or 3"
                 ;;
         esac
     done
@@ -267,46 +321,46 @@ select_dev_environment() {
 select_methodology() {
     local dev_env="$1"
 
-    echo ""
-    echo "Available Methodologies:"
-    echo ""
-    if [[ "$dev_env" != "OPENCODE" ]]; then
-        echo -e "  \033[33m[1] \033[32mFULL\033[0m - Enterprise methodology"
-        echo -e "      \033[90mBlock-based architecture, 4 agent roles (Architect, SDET, Engineer, Principal)\033[0m"
-        echo -e "      \033[90mTDD workflow, isolated components, comprehensive documentation\033[0m"
-        echo -e "      \033[90mBest for: Large projects, microservices, team collaboration\033[0m"
-        echo ""
-        echo -e "  \033[33m[2] \033[36mRAPID\033[0m - Startup methodology"
-        echo -e "      \033[90mUnified src/ structure, 3 agent roles (Architect, Engineer, SDET)\033[0m"
-        echo -e "      \033[90mFaster iteration, simpler setup, less ceremony\033[0m"
-        echo -e "      \033[90mBest for: MVPs, prototypes, small projects\033[0m"
-        echo ""
-        echo -e "  \033[33m[3] \033[35mDS\033[0m - Data Science methodology"
-        echo -e "      \033[90mML/DS projects with experiment tracking, 2 agent roles (Architect, Data Scientist)\033[0m"
-        echo -e "      \033[90mEDA pipeline, hypothesis-driven experiments, model finalization\033[0m"
-        echo -e "      \033[90mBest for: Kaggle, ML research, data analysis\033[0m"
-        echo ""
+    echo "" >&2
+    echo "Available Methodologies:" >&2
+    echo "" >&2
+    if [[ "$dev_env" == "CURSOR" ]]; then
+        echo -e "  \033[33m[1] \033[32mFULL\033[0m - Enterprise methodology" >&2
+        echo -e "      \033[90mBlock-based architecture, 4 agent roles (Architect, SDET, Engineer, Principal)\033[0m" >&2
+        echo -e "      \033[90mTDD workflow, isolated components, comprehensive documentation\033[0m" >&2
+        echo -e "      \033[90mBest for: Large projects, microservices, team collaboration\033[0m" >&2
+        echo "" >&2
+        echo -e "  \033[33m[2] \033[36mRAPID\033[0m - Startup methodology" >&2
+        echo -e "      \033[90mUnified src/ structure, 3 agent roles (Architect, Engineer, SDET)\033[0m" >&2
+        echo -e "      \033[90mFaster iteration, simpler setup, less ceremony\033[0m" >&2
+        echo -e "      \033[90mBest for: MVPs, prototypes, small projects\033[0m" >&2
+        echo "" >&2
+        echo -e "  \033[33m[3] \033[35mDS\033[0m - Data Science methodology" >&2
+        echo -e "      \033[90mML/DS projects with experiment tracking, 2 agent roles (Architect, Data Scientist)\033[0m" >&2
+        echo -e "      \033[90mEDA pipeline, hypothesis-driven experiments, model finalization\033[0m" >&2
+        echo -e "      \033[90mBest for: Kaggle, ML research, data analysis\033[0m" >&2
+        echo "" >&2
     else
-        echo -e "  \033[33m[1] \033[36mRAPID\033[0m - Startup methodology"
-        echo -e "      \033[90mUnified src/ structure, 3 agent roles (Architect, Engineer, SDET)\033[0m"
-        echo -e "      \033[90mFaster iteration, simpler setup, less ceremony\033[0m"
-        echo -e "      \033[90mBest for: MVPs, prototypes, small projects\033[0m"
-        echo ""
-        echo -e "  \033[33m[2] \033[35mDS\033[0m - Data Science methodology"
-        echo -e "      \033[90mML/DS projects with experiment tracking, 2 agent roles (Architect, Data Scientist)\033[0m"
-        echo -e "      \033[90mEDA pipeline, hypothesis-driven experiments, model finalization\033[0m"
-        echo ""
+        echo -e "  \033[33m[1] \033[36mRAPID\033[0m - Startup methodology" >&2
+        echo -e "      \033[90mUnified src/ structure, 3 agent roles (Architect, Engineer, SDET)\033[0m" >&2
+        echo -e "      \033[90mFaster iteration, simpler setup, less ceremony\033[0m" >&2
+        echo -e "      \033[90mBest for: MVPs, prototypes, small projects\033[0m" >&2
+        echo "" >&2
+        echo -e "  \033[33m[2] \033[35mDS\033[0m - Data Science methodology" >&2
+        echo -e "      \033[90mML/DS projects with experiment tracking, 2 agent roles (Architect, Data Scientist)\033[0m" >&2
+        echo -e "      \033[90mEDA pipeline, hypothesis-driven experiments, model finalization\033[0m" >&2
+        echo "" >&2
     fi
     
     while true; do
         local choice
-        if [[ "$dev_env" == "OPENCODE" ]]; then
+        if [[ "$dev_env" != "CURSOR" ]]; then
             choice=$(read_user_input "Select methodology (1 or 2)" "1")
         else
             choice=$(read_user_input "Select methodology (1, 2, or 3)" "2")
         fi
         
-        if [[ "$dev_env" == "OPENCODE" ]]; then
+        if [[ "$dev_env" != "CURSOR" ]]; then
             case "$choice" in
                 1|RAPID|rapid)
                     echo "RAPID"
@@ -342,43 +396,11 @@ select_methodology() {
     done
 }
 
-confirm_github_integration() {
-    echo ""
-    echo "GitHub Integration:"
-    
-    # Check if gh CLI is available
-    if ! command -v gh &> /dev/null; then
-        write_warning "GitHub CLI (gh) not found. GitHub integration will be skipped."
-        echo -e "      \033[90mInstall from: https://cli.github.com/\033[0m"
-        echo "false"
-        return 0
-    fi
-    
-    # Check authentication status
-    if ! gh auth status &> /dev/null; then
-        write_warning "Not authenticated with GitHub CLI."
-        echo -e "      \033[90mRun 'gh auth login' to authenticate.\033[0m"
-        echo "false"
-        return 0
-    fi
-    
-    write_success "GitHub CLI authenticated"
-    
-    local enable
-    enable=$(read_user_input "Create GitHub repository? (y/n)" "y")
-    if [[ "$enable" == "y" || "$enable" == "Y" ]]; then
-        echo "true"
-    else
-        echo "false"
-    fi
-}
-
 show_summary() {
     local project_path="$1"
     local project_name="$2"
     local methodology="$3"
     local dev_env="$4"
-    local github_enabled="$5"
     
     echo ""
     echo -e "\033[90m==================================================\033[0m"
@@ -393,17 +415,13 @@ show_summary() {
     local env_label="$dev_env"
     if [[ "$dev_env" == "OPENCODE" ]]; then
         env_label="OpenCode CLI"
+    elif [[ "$dev_env" == "CODEX" ]]; then
+        env_label="Codex CLI"
     elif [[ "$dev_env" == "CURSOR" ]]; then
         env_label="Cursor IDE"
     fi
     echo -n "  Environment:  "
     echo -e "\033[32m$env_label\033[0m"
-    echo -n "  GitHub:        "
-    if [[ "$github_enabled" == "true" ]]; then
-        echo -e "\033[32mYes (will create repository)\033[0m"
-    else
-        echo -e "\033[33mNo\033[0m"
-    fi
     echo -e "\033[90m==================================================\033[0m"
     
     local confirm
@@ -423,19 +441,24 @@ copy_methodology_template() {
     local methodology="$1"
     local target_path="$2"
     local dev_env="$3"
-    
-    local source_root="$SOURCE_PATH/interactive_ide"
-    if [[ "$dev_env" == "OPENCODE" ]]; then
-        source_root="$SOURCE_PATH/cli_ide"
+
+    local env_key="cli"
+    if [[ "$dev_env" == "CURSOR" ]]; then
+        env_key="cursor"
     fi
-    
-    local source_path="$source_root/${methodology}_METHODOLOGY"
-    if [[ "$methodology" == "FULL" && ! -d "$source_path" ]]; then
-        local deprecated_path="$source_root/FULL_METHODOLOGY (Deprecated)"
-        if [[ -d "$deprecated_path" ]]; then
-            source_path="$deprecated_path"
-        fi
-    fi
+
+    local method_key
+    case "$methodology" in
+        RAPID) method_key="rapid" ;;
+        DS) method_key="ds" ;;
+        FULL) method_key="full_deprecated" ;;
+        *)
+            write_error "Unknown methodology: $methodology"
+            exit 1
+            ;;
+    esac
+
+    local source_path="$SOURCE_PATH/methodologies/$method_key/$env_key"
     
     if [[ ! -d "$source_path" ]]; then
         write_error "Methodology template not found: $source_path"
@@ -454,7 +477,8 @@ copy_methodology_template() {
 install_opencode_pack() {
     local mode="$1"
     local project_path="$2"
-    local pack_dir="$SOURCE_PATH/cli_ide/apm_opencode_pack"
+    local pack_dir="$SOURCE_PATH/opencode_pack"
+    local skills_dir="$SOURCE_PATH/skills"
     
     if [[ ! -d "$pack_dir" ]]; then
         write_warning "OpenCode pack not found: $pack_dir"
@@ -471,35 +495,37 @@ install_opencode_pack() {
     mkdir -p "$target_dir/agents" "$target_dir/commands" "$target_dir/skills" "$target_dir/tools"
     cp -R "$pack_dir/agent/." "$target_dir/agents/"
     cp -R "$pack_dir/command/." "$target_dir/commands/"
-    cp -R "$pack_dir/skill/." "$target_dir/skills/"
     cp -R "$pack_dir/tools/." "$target_dir/tools/"
+    if [[ -d "$skills_dir" ]]; then
+        cp -R "$skills_dir/." "$target_dir/skills/"
+    else
+        write_warning "Skills not found: $skills_dir"
+    fi
     
     write_success "OpenCode pack installed to $target_dir"
 }
 
-initialize_git_repository() {
-    local project_path="$1"
-    local project_name="$2"
-    local create_remote="$3"
-    
-    pushd "$project_path" > /dev/null
-    
-    write_info "Initializing Git repository..."
-    git init --quiet
-    git add .
-    git commit -m "Initial commit: APM project setup" --quiet
-    write_success "Git repository initialized"
-    
-    if [[ "$create_remote" == "true" ]]; then
-        write_info "Creating GitHub repository..."
-        if gh repo create "$project_name" --private --source=. --push; then
-            write_success "GitHub repository created and pushed"
-        else
-            write_warning "Failed to create GitHub repository"
-        fi
+install_codex_skills() {
+    local mode="$1"
+    local project_path="$2"
+    local skills_dir="$SOURCE_PATH/skills"
+
+    if [[ ! -d "$skills_dir" ]]; then
+        write_warning "Codex skills not found: $skills_dir"
+        return 0
     fi
-    
-    popd > /dev/null
+
+    local codex_dir
+    if [[ "$mode" == "local" ]]; then
+        codex_dir="$project_path/.codex"
+    else
+        codex_dir="$HOME/.codex"
+    fi
+
+    mkdir -p "$codex_dir/skills"
+    cp -R "$skills_dir/." "$codex_dir/skills/"
+
+    write_success "Codex skills installed to $codex_dir/skills"
 }
 
 rename_project_placeholders() {
@@ -532,7 +558,7 @@ rename_project_placeholders() {
     fi
 
     local memory_bank_dir="$project_path/memory bank"
-    if [[ "$dev_env" == "OPENCODE" ]]; then
+    if [[ "$dev_env" != "CURSOR" ]]; then
         memory_bank_dir="$project_path/memory-bank"
     fi
     local mb_file
@@ -552,7 +578,7 @@ initialize_memory_bank() {
     if [[ "$methodology" == "FULL" ]]; then
         return 0
     fi
-    if [[ "$dev_env" == "OPENCODE" ]]; then
+    if [[ "$dev_env" != "CURSOR" ]]; then
         return 0
     fi
     
@@ -601,7 +627,7 @@ initialize_agent_reports() {
     local methodology="$2"
     local dev_env="$3"
     
-    if [[ "$methodology" == "FULL" || "$dev_env" == "OPENCODE" ]]; then
+    if [[ "$methodology" == "FULL" || "$dev_env" != "CURSOR" ]]; then
         return 0
     fi
     
@@ -638,6 +664,7 @@ initialize_agent_reports() {
 
 main() {
     parse_args "$@"
+    maybe_install_apm_alias
     
     # Handle help flag
     if [[ "$SHOW_HELP" == "true" ]]; then
@@ -652,6 +679,7 @@ Options:
 
 Non-Interactive Mode (for automation/testing):
     --opencode          Shorthand for --dev-env OPENCODE
+    --codex             Shorthand for --dev-env CODEX
     --cursor            Shorthand for --dev-env CURSOR
     --rapid             Shorthand for --methodology RAPID
     --ds                Shorthand for --methodology DS
@@ -659,18 +687,19 @@ Non-Interactive Mode (for automation/testing):
     --project-name      Project name (defaults to current directory name)
     --project-path      Target directory or parent directory (default: current directory)
     --methodology       FULL, RAPID, or DS
-    --dev-env           CURSOR or OPENCODE (default: CURSOR)
-    --local             Install OpenCode pack locally into .opencode/
-    --global            Install OpenCode pack globally into ~/.config/opencode/
-    --none              Skip OpenCode pack install (default when OPENCODE)
-    --skip-github       Skip GitHub repository creation
+    --dev-env           CURSOR, OPENCODE, or CODEX (default: CURSOR)
+    --local             Install CLI pack/skills locally into project config directory
+    --global            Install CLI pack/skills globally into user config directory
+    --none              Skip CLI pack/skills install (default when OPENCODE/CODEX)
+    --skip-github       Deprecated no-op (kept for backward compatibility)
     --skip-cursor       Deprecated (no auto-open)
     --force             Overwrite existing project without prompting
     --non-interactive   Run without any user prompts
 
 Example:
-    ./apm.sh --opencode --rapid --project-name "my-app" --project-path "/projects" --non-interactive --skip-github --skip-cursor
-    ./apm.sh --opencode --ds --project-name "ml-project" --project-path "/projects" --non-interactive --skip-github --skip-cursor
+    ./apm.sh --opencode --rapid --project-name "my-app" --project-path "/projects" --non-interactive --skip-cursor
+    ./apm.sh --opencode --ds --project-name "ml-project" --project-path "/projects" --non-interactive --skip-cursor
+    ./apm.sh --codex --rapid --project-name "my-codex-app" --project-path "/projects" --non-interactive --skip-cursor
 
 This interactive wizard will guide you through creating a new APM project.
 EOF
@@ -694,7 +723,6 @@ EOF
     local project_name
     local methodology
     local dev_env
-    local github_enabled
     local project_path
     
     # Check if running in non-interactive mode
@@ -713,18 +741,18 @@ EOF
         if [[ -z "$DEV_ENV" ]]; then
             DEV_ENV="CURSOR"
         fi
-        if [[ "$DEV_ENV" != "CURSOR" && "$DEV_ENV" != "OPENCODE" ]]; then
-            write_error "Invalid --dev-env: $DEV_ENV. Use CURSOR or OPENCODE."
+        if [[ "$DEV_ENV" != "CURSOR" && "$DEV_ENV" != "OPENCODE" && "$DEV_ENV" != "CODEX" ]]; then
+            write_error "Invalid --dev-env: $DEV_ENV. Use CURSOR, OPENCODE, or CODEX."
             exit 1
         fi
-        if [[ "$DEV_ENV" == "OPENCODE" && -z "$OPENCODE_INSTALL" ]]; then
-            OPENCODE_INSTALL="skip"
+        if [[ "$DEV_ENV" != "CURSOR" && -z "$PACK_INSTALL" ]]; then
+            PACK_INSTALL="skip"
         fi
-        if [[ "$DEV_ENV" == "OPENCODE" ]]; then
-            case "$OPENCODE_INSTALL" in
+        if [[ "$DEV_ENV" != "CURSOR" ]]; then
+            case "$PACK_INSTALL" in
                 local|global|skip|"") ;;
                 *)
-                    write_error "Invalid OpenCode install option. Use --local, --global, or --none."
+                    write_error "Invalid install option. Use --local, --global, or --none."
                     exit 1
                     ;;
             esac
@@ -735,8 +763,8 @@ EOF
             write_error "Invalid methodology: $METHODOLOGY. Use FULL, RAPID, or DS."
             exit 1
         fi
-        if [[ "$DEV_ENV" == "OPENCODE" && "$METHODOLOGY" == "FULL" ]]; then
-            write_error "FULL methodology is not available for OpenCode CLI projects."
+        if [[ "$DEV_ENV" != "CURSOR" && "$METHODOLOGY" == "FULL" ]]; then
+            write_error "FULL methodology is not available for OpenCode/Codex CLI projects."
             exit 1
         fi
         
@@ -770,10 +798,6 @@ EOF
         project_name="$PROJECT_NAME"
         methodology="$METHODOLOGY"
         dev_env="$DEV_ENV"
-        github_enabled="false"
-        if [[ "$SKIP_GITHUB" != "true" ]]; then
-            github_enabled="true"
-        fi
         directory="$resolved_parent"
         
         write_info "Non-interactive mode: Creating $methodology project '$project_name' ($dev_env)"
@@ -804,24 +828,36 @@ EOF
         
         # Step 1: Get project directory
         write_step "Step 1: Project Location"
-        directory=$(read_directory_path "Parent directory for the project")
+        local cwd
+        local default_parent
+        local default_name
+        cwd="$(pwd)"
+        default_parent="$(dirname "$cwd")"
+        default_name="$(basename "$cwd")"
+        directory=$(read_directory_path "Parent directory for the project" "$default_parent")
         
         # Step 2: Get project name
         write_step "Step 2: Project Name"
-        project_name=$(read_project_name)
+        project_name=$(read_project_name "$default_name")
         
         # Check if project already exists
         project_path="$directory/$project_name"
         if [[ -d "$project_path" ]]; then
-            write_error "A folder named '$project_name' already exists at this location."
-            local overwrite
-            overwrite=$(read_user_input "Overwrite? (y/n)" "n")
-            if [[ "$overwrite" != "y" ]]; then
-                echo ""
-                echo -e "\033[33mAborted.\033[0m"
-                exit 0
+            local current_dir
+            current_dir="$(pwd)"
+            if [[ "$project_path" == "$current_dir" ]]; then
+                write_warning "Project directory already exists; proceeding in-place: $project_path"
+            else
+                write_error "A folder named '$project_name' already exists at this location."
+                local overwrite
+                overwrite=$(read_user_input "Overwrite? (y/n)" "n")
+                if [[ "$overwrite" != "y" ]]; then
+                    echo ""
+                    echo -e "\033[33mAborted.\033[0m"
+                    exit 0
+                fi
+                rm -rf "$project_path"
             fi
-            rm -rf "$project_path"
         fi
         
         # Step 3: Select development environment
@@ -832,12 +868,8 @@ EOF
         write_step "Step 4: Select Methodology"
         methodology=$(select_methodology "$dev_env")
         
-        # Step 5: GitHub integration
-        write_step "Step 5: GitHub Integration"
-        github_enabled=$(confirm_github_integration)
-        
         # Show summary and confirm
-        if ! show_summary "$project_path" "$project_name" "$methodology" "$dev_env" "$github_enabled"; then
+        if ! show_summary "$project_path" "$project_name" "$methodology" "$dev_env"; then
             echo ""
             echo -e "\033[33mAborted.\033[0m"
             exit 0
@@ -862,15 +894,21 @@ EOF
     initialize_memory_bank "$project_path" "$methodology" "$dev_env"
     initialize_agent_reports "$project_path" "$methodology" "$dev_env"
 
-    # Optional: install OpenCode pack
-    if [[ "$dev_env" == "OPENCODE" ]]; then
+    # Optional: install CLI pack/skills
+    if [[ "$dev_env" != "CURSOR" ]]; then
         if [[ "$NON_INTERACTIVE" != "true" ]]; then
+            local install_prompt
+            if [[ "$dev_env" == "OPENCODE" ]]; then
+                install_prompt="Install OpenCode pack? (local/global/skip)"
+            else
+                install_prompt="Install Codex skills? (local/global/skip)"
+            fi
             while true; do
                 local install_choice
-                install_choice=$(read_user_input "Install OpenCode pack? (local/global/skip)" "skip")
+                install_choice=$(read_user_input "$install_prompt" "skip")
                 case "$install_choice" in
                     local|global|skip)
-                        OPENCODE_INSTALL="$install_choice"
+                        PACK_INSTALL="$install_choice"
                         break
                         ;;
                     *)
@@ -879,18 +917,20 @@ EOF
                 esac
             done
         fi
-        if [[ "$OPENCODE_INSTALL" == "local" ]]; then
-            install_opencode_pack "local" "$project_path"
-        elif [[ "$OPENCODE_INSTALL" == "global" ]]; then
-            install_opencode_pack "global" ""
+        if [[ "$PACK_INSTALL" == "local" ]]; then
+            if [[ "$dev_env" == "OPENCODE" ]]; then
+                install_opencode_pack "local" "$project_path"
+            else
+                install_codex_skills "local" "$project_path"
+            fi
+        elif [[ "$PACK_INSTALL" == "global" ]]; then
+            if [[ "$dev_env" == "OPENCODE" ]]; then
+                install_opencode_pack "global" ""
+            else
+                install_codex_skills "global" ""
+            fi
         fi
     fi
-    
-    # Initialize git (skip github in non-interactive mode if SKIP_GITHUB is set)
-    if [[ "$NON_INTERACTIVE" == "true" && "$SKIP_GITHUB" == "true" ]]; then
-        github_enabled="false"
-    fi
-    initialize_git_repository "$project_path" "$project_name" "$github_enabled"
     
     # Success message
     echo ""
