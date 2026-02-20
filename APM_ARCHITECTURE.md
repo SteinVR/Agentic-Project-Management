@@ -1,9 +1,5 @@
 # Архитектура проекта: APM (Agentic Project Management)
 
-> Этот документ — единый источник истины по продуктовой логике и структуре репозитория APM.
-
----
-
 ## 1. Назначение и принципы
 
 APM стандартизирует и упорядочивает разработку с LLM-агентами в **Cursor IDE**, **Codex CLI** и **OpenCode CLI**.
@@ -31,7 +27,7 @@ APM стандартизирует и упорядочивает разрабо�
 
 ## 3. Базовый workflow
 
-1. **Инициализация** через конфигуратор (`apm_project/apm.sh` или `apm_project/apm.ps1`).
+1. **Инициализация** через конфигуратор (`apm_project/apm.sh`).
 2. **Развертывание** структуры проекта и Memory Bank.
 3. **Работа** через команды/skills по ролям.
 4. **Обновление** `STATE.md` в конце каждой значимой сессии.
@@ -94,7 +90,7 @@ APM/
 
 ## 7. Ключевые компоненты
 
-- **Configurator:** `apm_project/apm.sh`, `apm_project/apm.ps1`
+- **Configurator:** `apm_project/apm.sh`
 - **Install scripts:** `apm_project/scripts/codex_install.*`, `apm_project/scripts/opencode_install.*`
 - **Templates:** `apm_source/methodologies/*`
 - **Skills:** `apm_source/skills/`

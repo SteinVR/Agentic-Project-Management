@@ -19,7 +19,7 @@ APM is a configurable SDD-based framework that brings structure and predictabili
 
 Ideology: configured SDD, only-essential Memory Bank, context engineering, agents and skills, with an emphasis on declarative control, determinism, and token efficiency.
 
-Usage: run the TUI configurator (`apm.sh` / `apm.ps1`) to generate a project, then drive work via environment-specific commands and skills. For automation or CI, use non-interactive flags.
+Usage: run the TUI configurator (`apm.sh`) to generate a project, then drive work via environment-specific commands and skills. For automation or CI, use non-interactive flags.
 
 ---
 
@@ -44,12 +44,7 @@ Usage: run the TUI configurator (`apm.sh` / `apm.ps1`) to generate a project, th
 
 ### 1) Run the configurator
 
-**Windows (PowerShell):**
-```powershell
-.\apm_project\apm.ps1
-```
-
-**Linux/macOS:**
+**Linux/macOS (and Windows via WSL/Git Bash):**
 ```bash
 chmod +x ./apm_project/apm.sh
 ./apm_project/apm.sh
@@ -71,12 +66,12 @@ Defaults:
 Example:
 ```bash
 ./apm_project/apm.sh --opencode --rapid --project-name "my-app" --project-path "/projects" \
-  --non-interactive --skip-github --skip-cursor
+  --non-interactive --skip-cursor
 ```
 
 In-place (inside an existing project directory):
 ```bash
-./apm_project/apm.sh --opencode --rapid --non-interactive --skip-github
+./apm_project/apm.sh --opencode --rapid --non-interactive
 ```
 
 ---

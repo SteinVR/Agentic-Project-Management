@@ -104,6 +104,10 @@ parse_args() {
                 SKIP_CURSOR=true
                 shift
                 ;;
+            --skip-github)
+                # Deprecated no-op: kept for backward compatibility with old CI/docs.
+                shift
+                ;;
             --force)
                 FORCE=true
                 shift
@@ -687,6 +691,7 @@ Non-Interactive Mode (for automation/testing):
     --local             Install CLI pack/skills locally into project config directory
     --global            Install CLI pack/skills globally into user config directory
     --none              Skip CLI pack/skills install (default when OPENCODE/CODEX)
+    --skip-github       Deprecated no-op (kept for backward compatibility)
     --skip-cursor       Deprecated (no auto-open)
     --force             Overwrite existing project without prompting
     --non-interactive   Run without any user prompts
