@@ -276,8 +276,15 @@ function Copy-MethodologyTemplate {
         [string]$Methodology,
         [string]$TargetPath
     )
-    
-    $sourcePath = Join-Path $Script:SourcePath "${Methodology}_METHODOLOGY"
+
+    $methodKey = switch ($Methodology.ToUpper()) {
+        "RAPID" { "rapid" }
+        "DS" { "ds" }
+        "FULL" { "full_deprecated" }
+        Default { throw "Unknown methodology: $Methodology" }
+    }
+
+    $sourcePath = Join-Path $Script:SourcePath "methodologies\$methodKey\cursor"
     
     if (-not (Test-Path $sourcePath)) {
         throw "Methodology template not found: $sourcePath"
@@ -638,4 +645,3 @@ This interactive wizard will guide you through creating a new APM project.
 
 # Run main
 Main
-

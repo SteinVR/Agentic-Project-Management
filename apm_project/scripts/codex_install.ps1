@@ -8,7 +8,7 @@ param(
 
 $ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 $RepoRoot = Resolve-Path (Join-Path $ScriptDir "../..")
-$SkillsDir = Join-Path $RepoRoot "apm_source/codex_cli/.skills"
+$SkillsDir = Join-Path $RepoRoot "apm_source/skills"
 
 if (-not (Test-Path $SkillsDir)) {
   Write-Error "Codex skills not found: $SkillsDir"

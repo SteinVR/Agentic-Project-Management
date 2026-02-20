@@ -115,7 +115,7 @@ Example:
   ```
 ---
 
-## 5. Baseline Model Architecture
+## 5. Model Architecture (If Applicable)
 
 > Context: For DL projects or complex ML pipelines, describe the model architecture.
 
@@ -127,7 +127,7 @@ Example:
 
 [Describe layers, components, or pipeline stages]
 
-### Hyperparameters
+### Hyperparameters (Initial)
 
 | Parameter | Value | Search Range |
 |-----------|-------|--------------|
@@ -136,7 +136,7 @@ Example:
 
 ---
 
-## 6. Feature Engineering Strategy (not for baseline)
+## 6. Feature Engineering Strategy
 
 > Context: Planned and implemented feature transformations.
 

@@ -5,7 +5,8 @@ set -e
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
-PACK_DIR="$REPO_ROOT/apm_source/opencode_cli/apm_opencode_pack"
+PACK_DIR="$REPO_ROOT/apm_source/opencode_pack"
+SKILLS_DIR="$REPO_ROOT/apm_source/skills"
 
 usage() {
   cat << 'EOF'
@@ -55,6 +56,10 @@ if [[ ! -d "$PACK_DIR" ]]; then
   echo "[ERROR] Pack not found: $PACK_DIR" >&2
   exit 1
 fi
+if [[ ! -d "$SKILLS_DIR" ]]; then
+  echo "[ERROR] Skills not found: $SKILLS_DIR" >&2
+  exit 1
+fi
 
 if [[ "$TARGET_MODE" == "local" ]]; then
   if [[ -z "$TARGET_PATH" ]]; then
@@ -73,7 +78,7 @@ mkdir -p "$OPENCODE_DIR/agents" "$OPENCODE_DIR/commands" "$OPENCODE_DIR/skills" 
 
 cp -R "$PACK_DIR/agent/." "$OPENCODE_DIR/agents/"
 cp -R "$PACK_DIR/command/." "$OPENCODE_DIR/commands/"
-cp -R "$PACK_DIR/skill/." "$OPENCODE_DIR/skills/"
 cp -R "$PACK_DIR/tools/." "$OPENCODE_DIR/tools/"
+cp -R "$SKILLS_DIR/." "$OPENCODE_DIR/skills/"
 
 echo "APM OpenCode pack installed to $OPENCODE_DIR"

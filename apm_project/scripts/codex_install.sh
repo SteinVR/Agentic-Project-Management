@@ -5,7 +5,7 @@ set -e
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
-SKILLS_DIR="$REPO_ROOT/apm_source/codex_cli/.skills"
+SKILLS_DIR="$REPO_ROOT/apm_source/skills"
 
 usage() {
   cat << 'EOF'

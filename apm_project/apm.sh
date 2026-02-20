@@ -437,21 +437,24 @@ copy_methodology_template() {
     local methodology="$1"
     local target_path="$2"
     local dev_env="$3"
-    
-    local source_root="$SOURCE_PATH/interactive_ide"
-    if [[ "$dev_env" == "OPENCODE" ]]; then
-        source_root="$SOURCE_PATH/opencode_cli"
-    elif [[ "$dev_env" == "CODEX" ]]; then
-        source_root="$SOURCE_PATH/codex_cli"
+
+    local env_key="cli"
+    if [[ "$dev_env" == "CURSOR" ]]; then
+        env_key="cursor"
     fi
-    
-    local source_path="$source_root/${methodology}_METHODOLOGY"
-    if [[ "$methodology" == "FULL" && ! -d "$source_path" ]]; then
-        local deprecated_path="$source_root/FULL_METHODOLOGY (Deprecated)"
-        if [[ -d "$deprecated_path" ]]; then
-            source_path="$deprecated_path"
-        fi
-    fi
+
+    local method_key
+    case "$methodology" in
+        RAPID) method_key="rapid" ;;
+        DS) method_key="ds" ;;
+        FULL) method_key="full_deprecated" ;;
+        *)
+            write_error "Unknown methodology: $methodology"
+            exit 1
+            ;;
+    esac
+
+    local source_path="$SOURCE_PATH/methodologies/$method_key/$env_key"
     
     if [[ ! -d "$source_path" ]]; then
         write_error "Methodology template not found: $source_path"
@@ -470,7 +473,8 @@ copy_methodology_template() {
 install_opencode_pack() {
     local mode="$1"
     local project_path="$2"
-    local pack_dir="$SOURCE_PATH/opencode_cli/apm_opencode_pack"
+    local pack_dir="$SOURCE_PATH/opencode_pack"
+    local skills_dir="$SOURCE_PATH/skills"
     
     if [[ ! -d "$pack_dir" ]]; then
         write_warning "OpenCode pack not found: $pack_dir"
@@ -487,8 +491,12 @@ install_opencode_pack() {
     mkdir -p "$target_dir/agents" "$target_dir/commands" "$target_dir/skills" "$target_dir/tools"
     cp -R "$pack_dir/agent/." "$target_dir/agents/"
     cp -R "$pack_dir/command/." "$target_dir/commands/"
-    cp -R "$pack_dir/skill/." "$target_dir/skills/"
     cp -R "$pack_dir/tools/." "$target_dir/tools/"
+    if [[ -d "$skills_dir" ]]; then
+        cp -R "$skills_dir/." "$target_dir/skills/"
+    else
+        write_warning "Skills not found: $skills_dir"
+    fi
     
     write_success "OpenCode pack installed to $target_dir"
 }
@@ -496,7 +504,7 @@ install_opencode_pack() {
 install_codex_skills() {
     local mode="$1"
     local project_path="$2"
-    local skills_dir="$SOURCE_PATH/codex_cli/.skills"
+    local skills_dir="$SOURCE_PATH/skills"
 
     if [[ ! -d "$skills_dir" ]]; then
         write_warning "Codex skills not found: $skills_dir"

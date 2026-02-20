@@ -5,13 +5,13 @@
 
 ## Expected structure
 - Root `logs/` -- training logs, evaluation logs, error logs.
-- `logs/activity/` -- session activity reports.
+- `logs/activity/<Role>/` -- session activity reports (per agent role).
 - `logs/reports/` -- generated reports (test, review, general).
 - `logs/figures/` -- training plots (loss curves, etc.) if applicable.
 
 ## Conventions
 - Log format: `[YYYY-MM-DD HH:MM:SS] [LEVEL] - Message`.
-- Activity report filename: `YYYY-MM-DD_HH-mm_short-title.md`.
+- Activity report filename: `<Role>_YYYY-MM-DD_HH-mm_short-title.md`.
 - Summarize logging outcomes in `memory-bank/STATE.md`.
 
 ## Guardrails

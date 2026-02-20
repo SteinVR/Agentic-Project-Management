@@ -8,10 +8,15 @@ param(
 
 $ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 $RepoRoot = Resolve-Path (Join-Path $ScriptDir "../..")
-$PackDir = Join-Path $RepoRoot "apm_source/opencode_cli/apm_opencode_pack"
+$PackDir = Join-Path $RepoRoot "apm_source/opencode_pack"
+$SkillsSourceDir = Join-Path $RepoRoot "apm_source/skills"
 
 if (-not (Test-Path $PackDir)) {
   Write-Error "Pack not found: $PackDir"
+  exit 1
+}
+if (-not (Test-Path $SkillsSourceDir)) {
+  Write-Error "Skills not found: $SkillsSourceDir"
   exit 1
 }
 
@@ -39,7 +44,7 @@ New-Item -ItemType Directory -Force -Path $agentsDir, $commandsDir, $skillsDir, 
 
 Copy-Item -Recurse -Force (Join-Path $PackDir "agent/*") $agentsDir
 Copy-Item -Recurse -Force (Join-Path $PackDir "command/*") $commandsDir
-Copy-Item -Recurse -Force (Join-Path $PackDir "skill/*") $skillsDir
 Copy-Item -Recurse -Force (Join-Path $PackDir "tools/*") $toolsDir
+Copy-Item -Recurse -Force (Join-Path $SkillsSourceDir "*") $skillsDir
 
 Write-Host "APM OpenCode pack installed to $OpenCodeDir"
