@@ -10,7 +10,11 @@ set -e
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
 SKILLS_DIR="$REPO_ROOT/apm_source/skills"
-CODEX_AGENTS_DIR="$REPO_ROOT/apm_source/codex_agents"
+CODEX_AGENTS_DIR="$REPO_ROOT/apm_source/packs/codex_pack"
+if [[ ! -d "$CODEX_AGENTS_DIR" && -d "$REPO_ROOT/apm_source/codex_agents" ]]; then
+  echo "[WARN] Using legacy Codex path: apm_source/codex_agents" >&2
+  CODEX_AGENTS_DIR="$REPO_ROOT/apm_source/codex_agents"
+fi
 SOURCE_AGENTS_DIR="$CODEX_AGENTS_DIR/agents"
 SOURCE_CONFIG_FILE="$CODEX_AGENTS_DIR/config.toml"
 

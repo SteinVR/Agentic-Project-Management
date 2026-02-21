@@ -197,11 +197,12 @@ Core files:
 
 ## Notes
 
-- OpenCode pack lives in `apm_source/opencode_pack/`.
+- OpenCode pack lives in `apm_source/packs/opencode_pack/`.
 - Shared CLI skills live in `apm_source/skills/`.
-- Codex subagent config source lives in `apm_source/codex_agents/`.
-- Cursor templates live in `apm_source/methodologies/*/cursor/`.
-- CLI templates (Codex/OpenCode) live in `apm_source/methodologies/*/cli/`.
+- Codex subagent config source lives in `apm_source/packs/codex_pack/`.
+- Cursor agents/commands pack lives in `apm_source/packs/cursor_pack/`.
+- Methodology templates live in `apm_source/methodologies/{rapid,ds}/`.
+- Legacy FULL methodology is stored in `apm_source/legacy/full_deprecated/`.
 
 ---
 

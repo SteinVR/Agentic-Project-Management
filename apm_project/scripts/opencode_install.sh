@@ -5,7 +5,11 @@ set -e
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
-PACK_DIR="$REPO_ROOT/apm_source/opencode_pack"
+PACK_DIR="$REPO_ROOT/apm_source/packs/opencode_pack"
+if [[ ! -d "$PACK_DIR" && -d "$REPO_ROOT/apm_source/opencode_pack" ]]; then
+  echo "[WARN] Using legacy OpenCode path: apm_source/opencode_pack" >&2
+  PACK_DIR="$REPO_ROOT/apm_source/opencode_pack"
+fi
 SKILLS_DIR="$REPO_ROOT/apm_source/skills"
 
 usage() {

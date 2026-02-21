@@ -82,15 +82,19 @@ The source repository for the APM framework itself is organized as follows:
 APM/
 ├── apm_project/                 # Framework orchestrators
 │   ├── apm.sh                   # Main Configurator (TUI / CLI)
-│   ├── scripts/                 # Installers (Codex, OpenCode) for Bash/PS
+│   ├── scripts/                 # Installers (Codex, OpenCode, Cursor) for Bash/PS
 │   └── tests/                   # Framework E2E tests
 ├── apm_source/                  # Framework Source of Truth (Payloads)
 │   ├── methodologies/           # Templates and instructions per methodology
-│   │   ├── rapid/               # RAPID workflow (Cursor & CLI subfolders)
-│   │   └── ds/                  # DS workflow (Cursor & CLI subfolders)
-│   ├── skills/                  # Shared cross-CLI skills (Codex/OpenCode)
-│   ├── codex_agents/            # Subagent roles (.toml) for Codex CLI
-│   └── opencode_pack/           # Native OpenCode agents/commands/tools
+│   │   ├── rapid/               # RAPID workflow template
+│   │   └── ds/                  # DS workflow template
+│   ├── skills/                  # Shared skills source
+│   ├── packs/                   # Environment-specific packs
+│   │   ├── codex_pack/          # Subagent roles (.toml) for Codex CLI
+│   │   ├── opencode_pack/       # Native OpenCode agents/commands/tools
+│   │   └── cursor_pack/         # Cursor agents and command wrappers
+│   └── legacy/                  # Frozen legacy assets
+│       └── full_deprecated/
 ├── docs/                        # Extensive ecosystem and CLI documentation
 ├── APM_ARCHITECTURE.md          # THIS FILE: Framework Architecture
 └── README.md                    # Project overview and Quick Start

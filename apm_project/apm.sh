@@ -285,7 +285,7 @@ select_dev_environment() {
     echo "Select Development Environment:" >&2
     echo "" >&2
     echo -e "  \033[33m[1] \033[36mCursor IDE\033[0m - Interactive IDE workflow" >&2
-    echo -e "      \033[90mIncludes Cursor commands and .apm methodology assets\033[0m" >&2
+    echo -e "      \033[90mUses Cursor agents/commands pack and methodology assets\033[0m" >&2
     echo "" >&2
     echo -e "  \033[33m[2] \033[32mOpenCode CLI\033[0m - CLI-first workflow" >&2
     echo -e "      \033[90mUses OpenCode agents/commands/skills pack and memory-bank/\033[0m" >&2
@@ -442,11 +442,6 @@ copy_methodology_template() {
     local target_path="$2"
     local dev_env="$3"
 
-    local env_key="cli"
-    if [[ "$dev_env" == "CURSOR" ]]; then
-        env_key="cursor"
-    fi
-
     local method_key
     case "$methodology" in
         RAPID) method_key="rapid" ;;
@@ -458,8 +453,30 @@ copy_methodology_template() {
             ;;
     esac
 
-    local source_path="$SOURCE_PATH/methodologies/$method_key/$env_key"
-    
+    local source_path=""
+    if [[ "$methodology" == "FULL" ]]; then
+        if [[ -d "$SOURCE_PATH/legacy/full_deprecated/cursor" ]]; then
+            source_path="$SOURCE_PATH/legacy/full_deprecated/cursor"
+        elif [[ -d "$SOURCE_PATH/methodologies/full_deprecated/cursor" ]]; then
+            write_warning "Using legacy FULL path at apm_source/methodologies/full_deprecated/cursor"
+            source_path="$SOURCE_PATH/methodologies/full_deprecated/cursor"
+        fi
+    else
+        source_path="$SOURCE_PATH/methodologies/$method_key"
+        if [[ ! -d "$source_path" ]]; then
+            local legacy_path
+            if [[ "$dev_env" == "CURSOR" ]]; then
+                legacy_path="$SOURCE_PATH/methodologies/$method_key/cursor"
+            else
+                legacy_path="$SOURCE_PATH/methodologies/$method_key/cli"
+            fi
+            if [[ -d "$legacy_path" ]]; then
+                write_warning "Using legacy methodology split path: $legacy_path"
+                source_path="$legacy_path"
+            fi
+        fi
+    fi
+
     if [[ ! -d "$source_path" ]]; then
         write_error "Methodology template not found: $source_path"
         exit 1
@@ -474,10 +491,23 @@ copy_methodology_template() {
     write_success "Template copied"
 }
 
+prune_template_for_environment() {
+    local project_path="$1"
+    local dev_env="$2"
+
+    if [[ "$dev_env" != "CURSOR" ]]; then
+        rm -rf "$project_path/.apm" "$project_path/memory bank" "$project_path/.cursor"
+    fi
+}
+
 install_opencode_pack() {
     local mode="$1"
     local project_path="$2"
-    local pack_dir="$SOURCE_PATH/opencode_pack"
+    local pack_dir="$SOURCE_PATH/packs/opencode_pack"
+    if [[ ! -d "$pack_dir" && -d "$SOURCE_PATH/opencode_pack" ]]; then
+        write_warning "Using legacy OpenCode pack path at apm_source/opencode_pack"
+        pack_dir="$SOURCE_PATH/opencode_pack"
+    fi
     local skills_dir="$SOURCE_PATH/skills"
     
     if [[ ! -d "$pack_dir" ]]; then
@@ -503,6 +533,33 @@ install_opencode_pack() {
     fi
     
     write_success "OpenCode pack installed to $target_dir"
+}
+
+install_cursor_pack() {
+    local mode="$1"
+    local project_path="$2"
+    local pack_dir="$SOURCE_PATH/packs/cursor_pack"
+    if [[ ! -d "$pack_dir" ]]; then
+        write_warning "Cursor pack not found: $pack_dir"
+        return 0
+    fi
+
+    local target_dir
+    if [[ "$mode" == "local" ]]; then
+        target_dir="$project_path/.cursor"
+    else
+        target_dir="$HOME/.cursor"
+    fi
+
+    mkdir -p "$target_dir/agents" "$target_dir/commands"
+    if [[ -d "$pack_dir/agents" ]]; then
+        cp -R "$pack_dir/agents/." "$target_dir/agents/"
+    fi
+    if [[ -d "$pack_dir/commands" ]]; then
+        cp -R "$pack_dir/commands/." "$target_dir/commands/"
+    fi
+
+    write_success "Cursor pack installed to $target_dir"
 }
 
 install_codex_skills() {
@@ -882,6 +939,7 @@ EOF
     
     # Copy methodology template
     copy_methodology_template "$methodology" "$project_path" "$dev_env"
+    prune_template_for_environment "$project_path" "$dev_env"
     
     # Rename placeholders
     rename_project_placeholders "$project_path" "$project_name" "$dev_env"
@@ -889,6 +947,11 @@ EOF
     # Initialize Memory Bank and Agent Reports
     initialize_memory_bank "$project_path" "$methodology" "$dev_env"
     initialize_agent_reports "$project_path" "$methodology" "$dev_env"
+
+    # Cursor projects always receive local Cursor agents/commands pack.
+    if [[ "$dev_env" == "CURSOR" ]]; then
+        install_cursor_pack "local" "$project_path"
+    fi
 
     # Optional: install CLI pack/assets
     if [[ "$dev_env" != "CURSOR" ]]; then

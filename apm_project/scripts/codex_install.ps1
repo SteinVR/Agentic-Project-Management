@@ -13,7 +13,14 @@ param(
 $ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 $RepoRoot = Resolve-Path (Join-Path $ScriptDir "../..")
 $SkillsDir = Join-Path $RepoRoot "apm_source/skills"
-$CodexAgentsDir = Join-Path $RepoRoot "apm_source/codex_agents"
+$CodexAgentsDir = Join-Path $RepoRoot "apm_source/packs/codex_pack"
+if (-not (Test-Path $CodexAgentsDir)) {
+  $LegacyCodexAgentsDir = Join-Path $RepoRoot "apm_source/codex_agents"
+  if (Test-Path $LegacyCodexAgentsDir) {
+    Write-Warning "Using legacy Codex path: apm_source/codex_agents"
+    $CodexAgentsDir = $LegacyCodexAgentsDir
+  }
+}
 $AgentsSourceDir = Join-Path $CodexAgentsDir "agents"
 $ConfigSourceFile = Join-Path $CodexAgentsDir "config.toml"
 
