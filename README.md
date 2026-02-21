@@ -35,7 +35,7 @@ Usage: run the TUI configurator (`apm.sh`) to generate a project, then drive wor
 ## Environments
 
 - **Cursor IDE** (interactive): full methodology assets, `.cursor/` commands, `.apm/` templates, `memory bank/`.
-- **Codex CLI** (global or per-project): skills installed into `.codex/skills/`; projects use `memory-bank/` and minimal structure.
+- **Codex CLI** (global or per-project): skills + subagent roles installed into `.codex/`; APM blocks merged into `.codex/config.toml`; projects use `memory-bank/` and minimal structure.
 - **OpenCode CLI** (global or per-project): commands/agents/skills installed into OpenCode; projects use `memory-bank/` and minimal structure.
 
 ---
@@ -109,6 +109,11 @@ PowerShell equivalents:
 PowerShell equivalents:
 - `apm_project/scripts/codex_install.ps1 -Global`
 - `apm_project/scripts/codex_install.ps1 -Local -Path <project>`
+
+Codex install adds:
+- Skills to `.codex/skills/`
+- Subagent role configs to `.codex/agents/`
+- Missing APM sections in `.codex/config.toml` (`features.multi_agent`, `agents.max_threads`, `agents.apm-*`)
 
 ---
 
@@ -194,6 +199,7 @@ Core files:
 
 - OpenCode pack lives in `apm_source/opencode_pack/`.
 - Shared CLI skills live in `apm_source/skills/`.
+- Codex subagent config source lives in `apm_source/codex_agents/`.
 - Cursor templates live in `apm_source/methodologies/*/cursor/`.
 - CLI templates (Codex/OpenCode) live in `apm_source/methodologies/*/cli/`.
 

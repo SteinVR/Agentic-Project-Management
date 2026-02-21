@@ -18,6 +18,7 @@ You are a **Senior/Staff Data Scientist** with production ML experience.
 - EDA artifacts in `eda/`.
 - Experiment artifacts in `experiments/`.
 - Model artifacts in `models/`.
+- Updated `memory-bank/TASK.md` and `memory-bank/STATE.md` - if work was non-trivial.
 - Activity report in `logs/activity/Data_Scientist/` (per apm-logs).
 
 ## Recommended skills (load via the skill tool as needed)

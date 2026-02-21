@@ -16,7 +16,14 @@
 ## DS workflow
 - Use `apm-start` for Vision Alignment and initialization.
 - Suggested flow: `apm-eda` -> `apm-ds-baseline` -> `apm-ds-exp` -> `apm-model-report` (when a model needs formal reporting).
-- Supporting skills: `apm-logs`, `apm-report`, `apm-sync`, `apm-review`.
+- Supporting skills: `apm-logs`, `apm-report`, `apm-sync`, `apm-review`, `apm-orchestrate`.
+
+## Subagent paradigm
+- For complex DS work, decompose into independent experiment and implementation streams.
+- Parallelize experiments only when data handling and output ownership are explicit.
+- Define each delegation with required metrics, output format, and verification criteria.
+- Use `apm-orchestrate` for fan-out/fan-in planning and git worktree execution patterns.
+- Before final integration, normalize outputs and run comparison checks.
 
 ## Notes
 - If instructions conflict, prefer the closest (most specific) AGENTS.md.

@@ -17,7 +17,14 @@
 ## RAPID workflow
 - Use `apm-start` for Vision Alignment and initialization.
 - Core loop: plan -> implement -> verify -> update Memory Bank.
-- Suggested skills: `apm-dev`, `apm-test`, `apm-logs`, `apm-report`, `apm-sync`, `apm-review`.
+- Suggested skills: `apm-dev`, `apm-test`, `apm-logs`, `apm-report`, `apm-sync`, `apm-review`, `apm-orchestrate`.
+
+## Subagent paradigm
+- For complex tasks, decompose work into independent subtasks and delegate to subagents.
+- Parallelize only tasks with low file overlap and explicit ownership boundaries.
+- Define each delegation with expected output format and acceptance checks.
+- Use `apm-orchestrate` for fan-out/fan-in planning and git worktree execution patterns.
+- Before final integration, reconcile outputs and run verification.
 
 ## Notes
 - If instructions conflict, prefer the closest (most specific) AGENTS.md.

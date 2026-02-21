@@ -291,7 +291,7 @@ select_dev_environment() {
     echo -e "      \033[90mUses OpenCode agents/commands/skills pack and memory-bank/\033[0m" >&2
     echo "" >&2
     echo -e "  \033[33m[3] \033[35mCodex CLI\033[0m - CLI-first workflow" >&2
-    echo -e "      \033[90mUses Codex skills and AGENTS chain with memory-bank/\033[0m" >&2
+    echo -e "      \033[90mUses Codex skills, subagent roles, and AGENTS chain with memory-bank/\033[0m" >&2
     echo "" >&2
     
     while true; do
@@ -508,24 +508,20 @@ install_opencode_pack() {
 install_codex_skills() {
     local mode="$1"
     local project_path="$2"
-    local skills_dir="$SOURCE_PATH/skills"
+    local installer_path="$SCRIPT_DIR/scripts/codex_install.sh"
 
-    if [[ ! -d "$skills_dir" ]]; then
-        write_warning "Codex skills not found: $skills_dir"
+    if [[ ! -f "$installer_path" ]]; then
+        write_warning "Codex installer not found: $installer_path"
         return 0
     fi
 
-    local codex_dir
     if [[ "$mode" == "local" ]]; then
-        codex_dir="$project_path/.codex"
+        bash "$installer_path" --local "$project_path"
+        write_success "Codex assets installed to $project_path/.codex"
     else
-        codex_dir="$HOME/.codex"
+        bash "$installer_path" --global
+        write_success "Codex assets installed to $HOME/.codex"
     fi
-
-    mkdir -p "$codex_dir/skills"
-    cp -R "$skills_dir/." "$codex_dir/skills/"
-
-    write_success "Codex skills installed to $codex_dir/skills"
 }
 
 rename_project_placeholders() {
@@ -688,9 +684,9 @@ Non-Interactive Mode (for automation/testing):
     --project-path      Target directory or parent directory (default: current directory)
     --methodology       FULL, RAPID, or DS
     --dev-env           CURSOR, OPENCODE, or CODEX (default: CURSOR)
-    --local             Install CLI pack/skills locally into project config directory
-    --global            Install CLI pack/skills globally into user config directory
-    --none              Skip CLI pack/skills install (default when OPENCODE/CODEX)
+    --local             Install CLI pack/assets locally into project config directory
+    --global            Install CLI pack/assets globally into user config directory
+    --none              Skip CLI pack/assets install (default when OPENCODE/CODEX)
     --skip-github       Deprecated no-op (kept for backward compatibility)
     --skip-cursor       Deprecated (no auto-open)
     --force             Overwrite existing project without prompting
@@ -894,14 +890,14 @@ EOF
     initialize_memory_bank "$project_path" "$methodology" "$dev_env"
     initialize_agent_reports "$project_path" "$methodology" "$dev_env"
 
-    # Optional: install CLI pack/skills
+    # Optional: install CLI pack/assets
     if [[ "$dev_env" != "CURSOR" ]]; then
         if [[ "$NON_INTERACTIVE" != "true" ]]; then
             local install_prompt
             if [[ "$dev_env" == "OPENCODE" ]]; then
                 install_prompt="Install OpenCode pack? (local/global/skip)"
             else
-                install_prompt="Install Codex skills? (local/global/skip)"
+                install_prompt="Install Codex assets? (local/global/skip)"
             fi
             while true; do
                 local install_choice

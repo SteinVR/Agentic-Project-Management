@@ -1,0 +1,21 @@
+[features]
+multi_agent = true
+
+[agents]
+max_threads = 6
+
+[agents.apm-architect]
+description = "APM System Architect for RAPID and DS projects (vision alignment, architecture, reviews)"
+config_file = "agents/apm-architect.toml"
+
+[agents.apm-engineer]
+description = "APM Lead Engineer for RAPID projects (implementation and integration)"
+config_file = "agents/apm-engineer.toml"
+
+[agents.apm-sdet]
+description = "APM SDET for RAPID projects (testing and QA)"
+config_file = "agents/apm-sdet.toml"
+
+[agents.apm-data-scientist]
+description = "APM Data Scientist for DS projects (EDA, baseline, experiments)"
+config_file = "agents/apm-data-scientist.toml"
