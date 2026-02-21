@@ -34,7 +34,7 @@ Usage: run the TUI configurator (`apm.sh`) to generate a project, then drive wor
 
 ## Environments
 
-- **Cursor IDE** (interactive): full methodology assets, `.cursor/` commands, `.apm/` templates, `memory bank/`.
+- **Cursor IDE** (interactive): methodology assets, `.cursor/` agents and commands, shared skills, `memory-bank/`.
 - **Codex CLI** (global or per-project): skills + subagent roles installed into `.codex/`; APM blocks merged into `.codex/config.toml`; projects use `memory-bank/` and minimal structure.
 - **OpenCode CLI** (global or per-project): commands/agents/skills installed into OpenCode; projects use `memory-bank/` and minimal structure.
 
@@ -156,8 +156,7 @@ alias apm-cd='cd /path/to/Agentic-Project-Management'
 
 ## Memory Bank
 
-- Cursor projects: `memory bank/` (with space)
-- CLI projects (Codex/OpenCode): `memory-bank/` (no space)
+- All environments: `memory-bank/`
 
 Core files:
 - `ARCHITECTURE.md`
@@ -202,7 +201,7 @@ Core files:
 - Codex subagent config source lives in `apm_source/packs/codex_pack/`.
 - Cursor agents/commands pack lives in `apm_source/packs/cursor_pack/`.
 - Methodology templates live in `apm_source/methodologies/{rapid,ds}/`.
-- Legacy FULL methodology is stored in `apm_source/legacy/full_deprecated/`.
+- Legacy FULL methodology is stored in `apm_source/_legacy/cursor_ide/full_deprecated/`.
 
 ---
 

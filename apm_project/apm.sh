@@ -455,11 +455,11 @@ copy_methodology_template() {
 
     local source_path=""
     if [[ "$methodology" == "FULL" ]]; then
-        if [[ -d "$SOURCE_PATH/legacy/full_deprecated/cursor" ]]; then
+        if [[ -d "$SOURCE_PATH/_legacy/cursor_ide/full_deprecated/cursor" ]]; then
+            source_path="$SOURCE_PATH/_legacy/cursor_ide/full_deprecated/cursor"
+        elif [[ -d "$SOURCE_PATH/legacy/full_deprecated/cursor" ]]; then
+            write_warning "Using legacy FULL path at apm_source/legacy/full_deprecated/cursor"
             source_path="$SOURCE_PATH/legacy/full_deprecated/cursor"
-        elif [[ -d "$SOURCE_PATH/methodologies/full_deprecated/cursor" ]]; then
-            write_warning "Using legacy FULL path at apm_source/methodologies/full_deprecated/cursor"
-            source_path="$SOURCE_PATH/methodologies/full_deprecated/cursor"
         fi
     else
         source_path="$SOURCE_PATH/methodologies/$method_key"
@@ -496,7 +496,7 @@ prune_template_for_environment() {
     local dev_env="$2"
 
     if [[ "$dev_env" != "CURSOR" ]]; then
-        rm -rf "$project_path/.apm" "$project_path/memory bank" "$project_path/.cursor"
+        rm -rf "$project_path/.apm" "$project_path/.cursor"
     fi
 }
 
@@ -610,15 +610,12 @@ rename_project_placeholders() {
         write_info "Updated ARCHITECTURE.md with project name"
     fi
 
-    local memory_bank_dir="$project_path/memory bank"
-    if [[ "$dev_env" != "CURSOR" ]]; then
-        memory_bank_dir="$project_path/memory-bank"
-    fi
+    local memory_bank_dir="$project_path/memory-bank"
     local mb_file
     for mb_file in "$memory_bank_dir/ARCHITECTURE.md" "$memory_bank_dir/TASK.md" "$memory_bank_dir/STATE.md"; do
         if [[ -f "$mb_file" ]]; then
             replace_in_file "$mb_file"
-            write_info "Updated $(basename "$mb_file") in $(basename "$memory_bank_dir") with project name"
+            write_info "Updated $(basename "$mb_file") in memory-bank/ with project name"
         fi
     done
 }
@@ -631,46 +628,31 @@ initialize_memory_bank() {
     if [[ "$methodology" == "FULL" ]]; then
         return 0
     fi
-    if [[ "$dev_env" != "CURSOR" ]]; then
+    
+    local memory_bank_dir="$project_path/memory-bank"
+    
+    # Flat methodology templates already include memory-bank/ with all files
+    if [[ -d "$memory_bank_dir" ]]; then
         return 0
     fi
     
-    local memory_bank_dir="$project_path/memory bank"
+    # Fallback: create memory-bank/ if missing
     mkdir -p "$memory_bank_dir"
-    
-    local templates_dir="$project_path/.apm/TEMPLATES"
-    resolve_template() {
-        local base_name="$1"
-        local candidate
-        for candidate in "${base_name}_TEMPLATE.md" "${base_name}_TMP.md" "${base_name}_TEMPLATE_TMP.md"; do
-            if [[ -f "$templates_dir/$candidate" ]]; then
-                echo "$templates_dir/$candidate"
-                return 0
-            fi
-        done
-        return 1
-    }
     
     local file_name
     for file_name in ARCHITECTURE.md STATE.md TASK.md; do
         local root_file="$project_path/$file_name"
         local bank_file="$memory_bank_dir/$file_name"
-        local template_file
         
         if [[ -f "$root_file" && ! -f "$bank_file" ]]; then
             mv "$root_file" "$bank_file"
-            write_info "Moved $file_name to memory bank/"
+            write_info "Moved $file_name to memory-bank/"
             continue
         fi
         
         if [[ ! -f "$bank_file" ]]; then
-            if template_file="$(resolve_template "${file_name%.md}")"; then
-                cp "$template_file" "$bank_file"
-                write_info "Initialized memory bank/$file_name from template"
-            else
-                echo "# ${file_name%.md}" > "$bank_file"
-                write_warning "Initialized memory bank/$file_name as empty file (template missing)"
-            fi
+            echo "# ${file_name%.md}" > "$bank_file"
+            write_warning "Initialized memory-bank/$file_name as empty file"
         fi
     done
 }

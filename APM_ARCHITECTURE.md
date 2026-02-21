@@ -17,9 +17,9 @@ Core Principles:
 APM supports three distinct environments (or workflows), tailoring its components for each ecosystem:
 
 1. **Cursor IDE (Interactive UI):**
-   - Utilizes `.cursor/rules/`, `.cursor/commands/`, and `.apm/TEMPLATES/`.
+   - Utilizes `.cursor/agents/`, `.cursor/commands/`, and shared skills.
    - Leverages Cursor's native Subagents and Skills system (`SKILL.md`).
-   - Memory Bank resides in `memory bank/` (with a space).
+   - Memory Bank resides in `memory-bank/`.
 
 2. **Codex CLI (Terminal / Orchestrated):**
    - Utilizes `config.toml` for subagent declarations (`[agents.*]`) and parallel multi-agent threading.
@@ -93,8 +93,9 @@ APM/
 │   │   ├── codex_pack/          # Subagent roles (.toml) for Codex CLI
 │   │   ├── opencode_pack/       # Native OpenCode agents/commands/tools
 │   │   └── cursor_pack/         # Cursor agents and command wrappers
-│   └── legacy/                  # Frozen legacy assets
-│       └── full_deprecated/
+│   └── _legacy/                 # Frozen legacy assets
+│       └── cursor_ide/
+│           └── full_deprecated/
 ├── docs/                        # Extensive ecosystem and CLI documentation
 ├── APM_ARCHITECTURE.md          # THIS FILE: Framework Architecture
 └── README.md                    # Project overview and Quick Start
