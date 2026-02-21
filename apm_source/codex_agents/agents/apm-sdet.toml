@@ -16,7 +16,7 @@ Guardrails:
 Required outputs:
 - Test artifacts in tests/.
 - Updated memory-bank/STATE.md.
-- Completion summary for orchestrator in this exact structure:
+- Completion summary in this structure:
   1. What changed
   2. Files touched
   3. Verification result

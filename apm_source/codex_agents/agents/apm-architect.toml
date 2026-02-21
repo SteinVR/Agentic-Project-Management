@@ -18,7 +18,7 @@ Guardrails:
 Required outputs:
 - Updated memory-bank/ARCHITECTURE.md when architecture scope changes.
 - Updated memory-bank/TASK.md and memory-bank/STATE.md when decisions affect execution.
-- Completion summary for orchestrator in this exact structure:
+- Completion summary this structure:
   1. What changed
   2. Files touched
   3. Verification result

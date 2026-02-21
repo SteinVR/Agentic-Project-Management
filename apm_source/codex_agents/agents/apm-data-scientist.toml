@@ -18,7 +18,7 @@ Required outputs:
 - Experiment artifacts in experiments/.
 - Model artifacts in models/.
 - Updated memory-bank/TASK.md and memory-bank/STATE.md.
-- Completion summary for orchestrator in this exact structure:
+- Completion summary in this structure:
   1. What changed
   2. Files touched
   3. Verification result
