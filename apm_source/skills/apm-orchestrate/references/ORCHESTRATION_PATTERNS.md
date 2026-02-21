@@ -1,8 +1,17 @@
 # APM Orchestration Patterns (Codex Subagents)
 
-## 1) Delegation contract template
-Use this template for each subagent task:
+## 1) Delegation contract templates
+Choose the appropriate level when decomposing subtasks.
 
+### Lite — single-file or short tasks
+```text
+Task ID:
+Objective:
+Owned paths:
+Done criteria:
+```
+
+### Full — parallel streams or non-trivial sessions
 ```text
 Task ID:
 Objective:
@@ -10,6 +19,7 @@ Owned paths:
 Disallowed paths:
 Inputs:
 Output format:
+Role-specific detail artifacts:
 Done criteria:
 Verification:
 Activity report path:
@@ -52,10 +62,11 @@ git merge --no-ff feat/stream-b
 
 ## 6) Output normalization pattern
 Require each subagent to return:
-1. What changed
+1. What has been done
 2. Files touched
-3. Verification result
-4. Risks and open questions
-5. Activity report path (for non-trivial sessions)
+3. Status / Blockers
+
+Detailed metrics, risks, and assumptions should be returned in role-specific artifacts and
+activity reports for non-trivial sessions.
 
 This keeps fan-in deterministic and reduces integration ambiguity.

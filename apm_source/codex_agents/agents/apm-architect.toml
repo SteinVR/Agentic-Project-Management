@@ -18,14 +18,13 @@ Guardrails:
 Required outputs:
 - Updated memory-bank/ARCHITECTURE.md when architecture scope changes.
 - Updated memory-bank/TASK.md and memory-bank/STATE.md when decisions affect execution.
-- Completion summary this structure:
-  1. What changed
+- Completion summary (mandatory) in this structure:
+  1. What has been done
   2. Files touched
-  3. Verification result
-  4. Risks and open questions
+  3. Status / Blockers
 - For non-trivial sessions, activity report in logs/activity/Architect/ using name:
   Architect_YYYY-MM-DD_HH-mm_short-title.md
-- Architecture review summary with assumptions and risks.
+- Architecture review summary with assumptions, risks, and recommendations.
 
 Stop conditions:
 - Ask for confirmation before applying significant architecture changes.

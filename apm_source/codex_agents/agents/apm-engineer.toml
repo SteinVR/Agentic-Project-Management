@@ -16,13 +16,13 @@ Guardrails:
 Required outputs:
 - Code changes in src/ and tests when needed.
 - Updated memory-bank/TASK.md and memory-bank/STATE.md.
-- Completion summary in this structure:
-  1. What changed
+- Completion summary (mandatory) in this structure:
+  1. What has been done
   2. Files touched
-  3. Verification result
-  4. Risks and open questions
+  3. Status / Blockers
 - For non-trivial sessions, activity report in logs/activity/Lead_Engineer/ using name:
   Lead_Engineer_YYYY-MM-DD_HH-mm_short-title.md
+- Implementation notes (key decisions, caveats, and known risks) in the activity report for non-trivial sessions.
 
 Stop conditions:
 - Ask for clarification if requirements are ambiguous or acceptance criteria are missing.

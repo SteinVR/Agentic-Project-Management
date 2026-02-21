@@ -16,11 +16,10 @@ Guardrails:
 Required outputs:
 - Test artifacts in tests/.
 - Updated memory-bank/STATE.md.
-- Completion summary in this structure:
-  1. What changed
+- Completion summary (mandatory) in this structure:
+  1. What has been done
   2. Files touched
-  3. Verification result
-  4. Risks and open questions
+  3. Status / Blockers
 - Test report summarizing failures, risks, and coverage gaps.
 - For non-trivial sessions, activity report in logs/activity/SDET/ using name:
   SDET_YYYY-MM-DD_HH-mm_short-title.md

@@ -14,7 +14,7 @@ description: "Orchestrate complex Codex CLI tasks with subagents: decompose work
 
 ## Workflow
 1. Decompose work into independent subtasks with explicit file ownership.
-2. Define one contract per subtask: input, expected output format, and done criteria.
+2. Define one contract per subtask (Lite or Full depending on complexity): input, expected output format, and done criteria.
 3. Decide execution mode:
    - Parallel for low-overlap subtasks.
    - Sequential for high-coupling or shared-state subtasks.
@@ -23,12 +23,19 @@ description: "Orchestrate complex Codex CLI tasks with subagents: decompose work
 6. Update `memory-bank/STATE.md` and suggest next step.
 
 ## Delegation contract requirements
+Use the **Lite** contract for single-file or short tasks:
 - Scope and objective
 - File boundaries (owned paths)
+- Done criteria
+
+Use the **Full** contract for parallel streams or non-trivial sessions:
+- Scope and objective
+- File boundaries (owned paths) and disallowed paths
 - Constraints and non-goals
-- Required output format
+- Required completion summary format
+- Role-specific artifact expectations
 - Verification checklist
-- Reporting location for activity report (when work is non-trivial)
+- Reporting location for activity report
 
 ## Git worktree guidance
 - Use one branch/worktree per independent stream.
@@ -38,11 +45,11 @@ description: "Orchestrate complex Codex CLI tasks with subagents: decompose work
 ## Required output
 - Orchestration plan with subtasks, ownership boundaries, and integration order.
 - Normalized completion contract for each subagent:
-  1. What changed
+  1. What has been done
   2. Files touched
-  3. Verification result
-  4. Risks and open questions
-  5. Activity report path in `logs/activity/<Role>/...` for non-trivial sessions
+  3. Status / Blockers
+- Role-specific details (metrics, risks, assumptions, caveats) must be captured in role artifacts and
+  in `logs/activity/<Role>/...` for non-trivial sessions.
 
 ## Guardrails
 - Do not parallelize coupled changes that touch the same critical files.
