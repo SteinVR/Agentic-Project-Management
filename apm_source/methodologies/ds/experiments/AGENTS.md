@@ -1,5 +1,3 @@
-# DS -- Experiments
-
 ## Skill
 - Use **apm-ds-exp** for hypothesis-driven experiments.
 

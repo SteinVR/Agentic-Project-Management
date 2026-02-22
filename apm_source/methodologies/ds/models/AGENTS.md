@@ -1,5 +1,3 @@
-# DS -- Models
-
 ## Skill
 - Use **apm-model-report** for model reporting and artifact summaries.
 

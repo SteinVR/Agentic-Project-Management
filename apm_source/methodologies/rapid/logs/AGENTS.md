@@ -1,5 +1,3 @@
-# RAPID -- Logs
-
 ## Skill
 - Follow **apm-logs** for logging conventions and activity report standards.
 
