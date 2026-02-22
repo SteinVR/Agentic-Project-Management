@@ -1,6 +1,6 @@
 ---
 name: apm-start
-description: "Project kickoff: initialize directory structure, run Vision Alignment (RAPID) or Problem Definition (DS), and set up Memory Bank. Use when starting a new project or resetting architecture from scratch."
+description: "Project kickoff: initialize directory structure, run Vision Alignment or Problem Definition, and set up Memory Bank. Use when starting a new project or resetting architecture from scratch."
 ---
 ## What I do
 - Determine methodology (RAPID or DS).

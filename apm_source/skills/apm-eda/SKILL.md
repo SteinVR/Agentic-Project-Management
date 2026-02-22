@@ -1,6 +1,6 @@
 ---
 name: apm-eda
-description: "Exploratory Data Analysis for DS projects: analyze distributions, missingness, correlations, and leakage risks. Produces reproducible artifacts and an EDA report under eda/. Use when exploring a new dataset or validating data quality."
+description: "Exploratory Data Analysis: analyze distributions, missingness, correlations, and leakage risks. Produces reproducible artifacts and an EDA report under eda/. Use when exploring a new dataset or validating data quality."
 ---
 ## What I do
 - Provide a reproducible EDA workflow under `eda/`.

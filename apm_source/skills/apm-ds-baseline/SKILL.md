@@ -1,6 +1,6 @@
 ---
 name: apm-ds-baseline
-description: "Build and document a reproducible baseline model for DS projects. Use before running experiments to establish a domain-credible reference benchmark for comparison."
+description: "Build and document a reproducible baseline model for machine learning projects. Use before running experiments to establish a domain-credible reference benchmark for comparison."
 ---
 ## What I do
 - Establish a **representative, domain-credible** baseline before experiments.

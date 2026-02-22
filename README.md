@@ -34,8 +34,8 @@ Usage: run the TUI configurator (`apm.sh`) to generate a project, then drive wor
 
 ## Environments
 
-- **Cursor IDE** (interactive): full methodology assets, `.cursor/` commands, `.apm/` templates, `memory bank/`.
-- **Codex CLI** (global or per-project): skills installed into `.codex/skills/`; projects use `memory-bank/` and minimal structure.
+- **Cursor IDE** (interactive): methodology assets, `.cursor/` agents and commands, shared skills, `memory-bank/`.
+- **Codex CLI** (global or per-project): skills + subagent roles installed into `.codex/`; APM blocks merged into `.codex/config.toml`; projects use `memory-bank/` and minimal structure.
 - **OpenCode CLI** (global or per-project): commands/agents/skills installed into OpenCode; projects use `memory-bank/` and minimal structure.
 
 ---
@@ -110,6 +110,11 @@ PowerShell equivalents:
 - `apm_project/scripts/codex_install.ps1 -Global`
 - `apm_project/scripts/codex_install.ps1 -Local -Path <project>`
 
+Codex install adds:
+- Skills to `.codex/skills/`
+- Subagent role configs to `.codex/agents/`
+- Missing APM sections in `.codex/config.toml` (`features.multi_agent`, `agents.max_threads`, `agents.apm-*`)
+
 ---
 
 ## Alias suggestions
@@ -136,14 +141,14 @@ alias apm-cd='cd /path/to/Agentic-Project-Management'
 
 1. **/apm-start** runs Vision Alignment (RAPID) or Problem Definition (DS).
 2. After your confirmation, APM creates the Memory Bank: `ARCHITECTURE.md`, `TASK.md`, `STATE.md`.
-3. You continue with role-specific commands/skills (e.g., `/apm-develop`, `apm-eda`, `apm-ds-exp`).
+3. You continue with role-specific commands/skills (e.g., `/apm-develop`, `apm-code-simplifier`, `apm-eda`, `apm-ds-exp`).
 4. Every session ends with an update to `STATE.md` (project continuity).
 
 ---
 
 ## Example flow
 
-**RAPID:** `/apm-start` -> `/apm-develop` -> `/apm-test` -> `/apm-sync`
+**RAPID:** `/apm-start` -> `/apm-develop` -> `apm-code-simplifier` -> `/apm-test` -> `/apm-sync`
 
 **DS:** `/apm-start` -> `/apm-eda` -> `/apm-baseline` -> `/apm-experiment` -> `/apm-review`
 
@@ -151,8 +156,7 @@ alias apm-cd='cd /path/to/Agentic-Project-Management'
 
 ## Memory Bank
 
-- Cursor projects: `memory bank/` (with space)
-- CLI projects (Codex/OpenCode): `memory-bank/` (no space)
+- All environments: `memory-bank/`
 
 Core files:
 - `ARCHITECTURE.md`
@@ -178,6 +182,7 @@ Core files:
 | Command | Description |
 |---------|-------------|
 | `/apm-develop` | Lead Engineer implementation loop |
+| `/apm-simplify` | Behavior-preserving simplification pass (maps to `apm-code-simplifier`) |
 | `/apm-test` | SDET testing / QA |
 
 ### DS
@@ -192,10 +197,13 @@ Core files:
 
 ## Notes
 
-- OpenCode pack lives in `apm_source/opencode_pack/`.
+- OpenCode pack lives in `apm_source/packs/opencode_pack/`.
 - Shared CLI skills live in `apm_source/skills/`.
-- Cursor templates live in `apm_source/methodologies/*/cursor/`.
-- CLI templates (Codex/OpenCode) live in `apm_source/methodologies/*/cli/`.
+- Example shared skills: `apm-dev`, `apm-code-simplifier`, `apm-test`, `apm-review`, `apm-logs`.
+- Codex subagent config source lives in `apm_source/packs/codex_pack/`.
+- Cursor agents/commands pack lives in `apm_source/packs/cursor_pack/`.
+- Methodology templates live in `apm_source/methodologies/{rapid,ds}/`.
+- Legacy FULL methodology is stored in `apm_source/_legacy/cursor_ide/full_deprecated/`.
 
 ---
 
@@ -203,7 +211,7 @@ Core files:
 
 - **Commands** = playbooks the user runs (`/apm-*`). They set the phase and required context.
 - **Agents** = role profiles (Architect/Engineer/SDET/DS). They keep behavior consistent.
-- **Skills** = modular knowledge chunks loaded on demand (governance, arch, dev, test, logs, DS workflows).
+- **Skills** = modular knowledge chunks loaded on demand (governance, arch, dev, simplification, test, logs, DS workflows).
 - **Tools** = custom actions (e.g., `apm_init_structure`) used by commands.
 - **Install targets**:
   - Global: `~/.config/opencode/{commands,agents,skills,tools}`

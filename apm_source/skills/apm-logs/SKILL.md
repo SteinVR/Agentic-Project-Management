@@ -1,6 +1,6 @@
 ---
 name: apm-logs
-description: "Logging conventions and activity report standards for RAPID and DS projects. Use when writing runtime logs, creating session activity reports, or interpreting existing log output."
+description: "Logging conventions and activity report standards for software and data science projects. Use when writing runtime logs, creating session activity reports, or interpreting existing log output."
 ---
 ## What I do
 - Define logging conventions that enable fast feedback loops.

@@ -1,6 +1,6 @@
 # RAPID Logging Template (Example)
 
-**Primary log file:** `logs/prototype.log`
+**Primary log file:** `logs/app.log`
 **Format:** `[YYYY-MM-DD HH:MM:SS] [LEVEL] - Message`
 
 ## Recommended events

@@ -1,6 +1,6 @@
 ---
 name: apm-dev
-description: "RAPID development loop: plan, implement, verify, and log changes for features, bug fixes, or refactors. Use when writing or modifying application code in src/."
+description: "Iterative development loop: plan, implement, verify, and log changes for features, bug fixes, or refactors. Use when writing or modifying application code in src/."
 ---
 ## What I do
 - Provide a disciplined implementation loop for RAPID work.
@@ -16,7 +16,6 @@ description: "RAPID development loop: plan, implement, verify, and log changes f
 3. Implement changes in `src/` with clean structure.
 4. Verify with tests or targeted smoke checks.
 5. Update `memory-bank/TASK.md` and `memory-bank/STATE.md` with outcomes.
-6. Record an activity report per apm-logs if work was non-trivial.
 
 ## Conventions
 - Prefer simple, modular solutions (SOLID/DRY).

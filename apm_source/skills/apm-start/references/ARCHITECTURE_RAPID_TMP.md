@@ -106,6 +106,6 @@
 ## 8. Key Conventions & Logging
 
 - **Modularity:** Code must be logically separated into classes and modules within `src/`.
-- **Logging:** All significant events must be logged to `logs/prototype.log`.
+- **Logging:** All significant events must be logged to `logs/`.
     - **Format:** `[YYYY-MM-DD HH:MM:SS] [LEVEL] - Message`
-- **Tools:** Reusable scripts created during development should be saved in `TOOLS/`.
+- **Tools:** Reusable scripts created during development should be saved in `tools/`.

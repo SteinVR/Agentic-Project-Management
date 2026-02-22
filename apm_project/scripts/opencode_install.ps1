@@ -8,7 +8,14 @@ param(
 
 $ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 $RepoRoot = Resolve-Path (Join-Path $ScriptDir "../..")
-$PackDir = Join-Path $RepoRoot "apm_source/opencode_pack"
+$PackDir = Join-Path $RepoRoot "apm_source/packs/opencode_pack"
+if (-not (Test-Path $PackDir)) {
+  $LegacyPackDir = Join-Path $RepoRoot "apm_source/opencode_pack"
+  if (Test-Path $LegacyPackDir) {
+    Write-Warning "Using legacy OpenCode path: apm_source/opencode_pack"
+    $PackDir = $LegacyPackDir
+  }
+}
 $SkillsSourceDir = Join-Path $RepoRoot "apm_source/skills"
 
 if (-not (Test-Path $PackDir)) {

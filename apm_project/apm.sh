@@ -285,13 +285,13 @@ select_dev_environment() {
     echo "Select Development Environment:" >&2
     echo "" >&2
     echo -e "  \033[33m[1] \033[36mCursor IDE\033[0m - Interactive IDE workflow" >&2
-    echo -e "      \033[90mIncludes Cursor commands and .apm methodology assets\033[0m" >&2
+    echo -e "      \033[90mUses Cursor agents/commands pack and methodology assets\033[0m" >&2
     echo "" >&2
     echo -e "  \033[33m[2] \033[32mOpenCode CLI\033[0m - CLI-first workflow" >&2
     echo -e "      \033[90mUses OpenCode agents/commands/skills pack and memory-bank/\033[0m" >&2
     echo "" >&2
     echo -e "  \033[33m[3] \033[35mCodex CLI\033[0m - CLI-first workflow" >&2
-    echo -e "      \033[90mUses Codex skills and AGENTS chain with memory-bank/\033[0m" >&2
+    echo -e "      \033[90mUses Codex skills, subagent roles, and AGENTS chain with memory-bank/\033[0m" >&2
     echo "" >&2
     
     while true; do
@@ -442,11 +442,6 @@ copy_methodology_template() {
     local target_path="$2"
     local dev_env="$3"
 
-    local env_key="cli"
-    if [[ "$dev_env" == "CURSOR" ]]; then
-        env_key="cursor"
-    fi
-
     local method_key
     case "$methodology" in
         RAPID) method_key="rapid" ;;
@@ -458,8 +453,30 @@ copy_methodology_template() {
             ;;
     esac
 
-    local source_path="$SOURCE_PATH/methodologies/$method_key/$env_key"
-    
+    local source_path=""
+    if [[ "$methodology" == "FULL" ]]; then
+        if [[ -d "$SOURCE_PATH/_legacy/cursor_ide/full_deprecated/cursor" ]]; then
+            source_path="$SOURCE_PATH/_legacy/cursor_ide/full_deprecated/cursor"
+        elif [[ -d "$SOURCE_PATH/legacy/full_deprecated/cursor" ]]; then
+            write_warning "Using legacy FULL path at apm_source/legacy/full_deprecated/cursor"
+            source_path="$SOURCE_PATH/legacy/full_deprecated/cursor"
+        fi
+    else
+        source_path="$SOURCE_PATH/methodologies/$method_key"
+        if [[ ! -d "$source_path" ]]; then
+            local legacy_path
+            if [[ "$dev_env" == "CURSOR" ]]; then
+                legacy_path="$SOURCE_PATH/methodologies/$method_key/cursor"
+            else
+                legacy_path="$SOURCE_PATH/methodologies/$method_key/cli"
+            fi
+            if [[ -d "$legacy_path" ]]; then
+                write_warning "Using legacy methodology split path: $legacy_path"
+                source_path="$legacy_path"
+            fi
+        fi
+    fi
+
     if [[ ! -d "$source_path" ]]; then
         write_error "Methodology template not found: $source_path"
         exit 1
@@ -474,10 +491,23 @@ copy_methodology_template() {
     write_success "Template copied"
 }
 
+prune_template_for_environment() {
+    local project_path="$1"
+    local dev_env="$2"
+
+    if [[ "$dev_env" != "CURSOR" ]]; then
+        rm -rf "$project_path/.apm" "$project_path/.cursor"
+    fi
+}
+
 install_opencode_pack() {
     local mode="$1"
     local project_path="$2"
-    local pack_dir="$SOURCE_PATH/opencode_pack"
+    local pack_dir="$SOURCE_PATH/packs/opencode_pack"
+    if [[ ! -d "$pack_dir" && -d "$SOURCE_PATH/opencode_pack" ]]; then
+        write_warning "Using legacy OpenCode pack path at apm_source/opencode_pack"
+        pack_dir="$SOURCE_PATH/opencode_pack"
+    fi
     local skills_dir="$SOURCE_PATH/skills"
     
     if [[ ! -d "$pack_dir" ]]; then
@@ -505,27 +535,50 @@ install_opencode_pack() {
     write_success "OpenCode pack installed to $target_dir"
 }
 
-install_codex_skills() {
+install_cursor_pack() {
     local mode="$1"
     local project_path="$2"
-    local skills_dir="$SOURCE_PATH/skills"
-
-    if [[ ! -d "$skills_dir" ]]; then
-        write_warning "Codex skills not found: $skills_dir"
+    local pack_dir="$SOURCE_PATH/packs/cursor_pack"
+    if [[ ! -d "$pack_dir" ]]; then
+        write_warning "Cursor pack not found: $pack_dir"
         return 0
     fi
 
-    local codex_dir
+    local target_dir
     if [[ "$mode" == "local" ]]; then
-        codex_dir="$project_path/.codex"
+        target_dir="$project_path/.cursor"
     else
-        codex_dir="$HOME/.codex"
+        target_dir="$HOME/.cursor"
     fi
 
-    mkdir -p "$codex_dir/skills"
-    cp -R "$skills_dir/." "$codex_dir/skills/"
+    mkdir -p "$target_dir/agents" "$target_dir/commands"
+    if [[ -d "$pack_dir/agents" ]]; then
+        cp -R "$pack_dir/agents/." "$target_dir/agents/"
+    fi
+    if [[ -d "$pack_dir/commands" ]]; then
+        cp -R "$pack_dir/commands/." "$target_dir/commands/"
+    fi
 
-    write_success "Codex skills installed to $codex_dir/skills"
+    write_success "Cursor pack installed to $target_dir"
+}
+
+install_codex_skills() {
+    local mode="$1"
+    local project_path="$2"
+    local installer_path="$SCRIPT_DIR/scripts/codex_install.sh"
+
+    if [[ ! -f "$installer_path" ]]; then
+        write_warning "Codex installer not found: $installer_path"
+        return 0
+    fi
+
+    if [[ "$mode" == "local" ]]; then
+        bash "$installer_path" --local "$project_path"
+        write_success "Codex assets installed to $project_path/.codex"
+    else
+        bash "$installer_path" --global
+        write_success "Codex assets installed to $HOME/.codex"
+    fi
 }
 
 rename_project_placeholders() {
@@ -557,15 +610,12 @@ rename_project_placeholders() {
         write_info "Updated ARCHITECTURE.md with project name"
     fi
 
-    local memory_bank_dir="$project_path/memory bank"
-    if [[ "$dev_env" != "CURSOR" ]]; then
-        memory_bank_dir="$project_path/memory-bank"
-    fi
+    local memory_bank_dir="$project_path/memory-bank"
     local mb_file
     for mb_file in "$memory_bank_dir/ARCHITECTURE.md" "$memory_bank_dir/TASK.md" "$memory_bank_dir/STATE.md"; do
         if [[ -f "$mb_file" ]]; then
             replace_in_file "$mb_file"
-            write_info "Updated $(basename "$mb_file") in $(basename "$memory_bank_dir") with project name"
+            write_info "Updated $(basename "$mb_file") in memory-bank/ with project name"
         fi
     done
 }
@@ -578,46 +628,31 @@ initialize_memory_bank() {
     if [[ "$methodology" == "FULL" ]]; then
         return 0
     fi
-    if [[ "$dev_env" != "CURSOR" ]]; then
+    
+    local memory_bank_dir="$project_path/memory-bank"
+    
+    # Flat methodology templates already include memory-bank/ with all files
+    if [[ -d "$memory_bank_dir" ]]; then
         return 0
     fi
     
-    local memory_bank_dir="$project_path/memory bank"
+    # Fallback: create memory-bank/ if missing
     mkdir -p "$memory_bank_dir"
-    
-    local templates_dir="$project_path/.apm/TEMPLATES"
-    resolve_template() {
-        local base_name="$1"
-        local candidate
-        for candidate in "${base_name}_TEMPLATE.md" "${base_name}_TMP.md" "${base_name}_TEMPLATE_TMP.md"; do
-            if [[ -f "$templates_dir/$candidate" ]]; then
-                echo "$templates_dir/$candidate"
-                return 0
-            fi
-        done
-        return 1
-    }
     
     local file_name
     for file_name in ARCHITECTURE.md STATE.md TASK.md; do
         local root_file="$project_path/$file_name"
         local bank_file="$memory_bank_dir/$file_name"
-        local template_file
         
         if [[ -f "$root_file" && ! -f "$bank_file" ]]; then
             mv "$root_file" "$bank_file"
-            write_info "Moved $file_name to memory bank/"
+            write_info "Moved $file_name to memory-bank/"
             continue
         fi
         
         if [[ ! -f "$bank_file" ]]; then
-            if template_file="$(resolve_template "${file_name%.md}")"; then
-                cp "$template_file" "$bank_file"
-                write_info "Initialized memory bank/$file_name from template"
-            else
-                echo "# ${file_name%.md}" > "$bank_file"
-                write_warning "Initialized memory bank/$file_name as empty file (template missing)"
-            fi
+            echo "# ${file_name%.md}" > "$bank_file"
+            write_warning "Initialized memory-bank/$file_name as empty file"
         fi
     done
 }
@@ -688,9 +723,9 @@ Non-Interactive Mode (for automation/testing):
     --project-path      Target directory or parent directory (default: current directory)
     --methodology       FULL, RAPID, or DS
     --dev-env           CURSOR, OPENCODE, or CODEX (default: CURSOR)
-    --local             Install CLI pack/skills locally into project config directory
-    --global            Install CLI pack/skills globally into user config directory
-    --none              Skip CLI pack/skills install (default when OPENCODE/CODEX)
+    --local             Install CLI pack/assets locally into project config directory
+    --global            Install CLI pack/assets globally into user config directory
+    --none              Skip CLI pack/assets install (default when OPENCODE/CODEX)
     --skip-github       Deprecated no-op (kept for backward compatibility)
     --skip-cursor       Deprecated (no auto-open)
     --force             Overwrite existing project without prompting
@@ -886,6 +921,7 @@ EOF
     
     # Copy methodology template
     copy_methodology_template "$methodology" "$project_path" "$dev_env"
+    prune_template_for_environment "$project_path" "$dev_env"
     
     # Rename placeholders
     rename_project_placeholders "$project_path" "$project_name" "$dev_env"
@@ -894,14 +930,19 @@ EOF
     initialize_memory_bank "$project_path" "$methodology" "$dev_env"
     initialize_agent_reports "$project_path" "$methodology" "$dev_env"
 
-    # Optional: install CLI pack/skills
+    # Cursor projects always receive local Cursor agents/commands pack.
+    if [[ "$dev_env" == "CURSOR" ]]; then
+        install_cursor_pack "local" "$project_path"
+    fi
+
+    # Optional: install CLI pack/assets
     if [[ "$dev_env" != "CURSOR" ]]; then
         if [[ "$NON_INTERACTIVE" != "true" ]]; then
             local install_prompt
             if [[ "$dev_env" == "OPENCODE" ]]; then
                 install_prompt="Install OpenCode pack? (local/global/skip)"
             else
-                install_prompt="Install Codex skills? (local/global/skip)"
+                install_prompt="Install Codex assets? (local/global/skip)"
             fi
             while true; do
                 local install_choice
