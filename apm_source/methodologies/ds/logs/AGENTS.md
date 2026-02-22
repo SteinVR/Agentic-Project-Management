@@ -1,5 +1,3 @@
-# DS -- Logs
-
 ## Skill
 - Follow **apm-logs** for logging conventions and activity report standards.
 
@@ -7,7 +5,6 @@
 - Root `logs/` -- training logs, evaluation logs, error logs.
 - `logs/activity/<Role>/` -- session activity reports (per agent role).
 - `logs/reports/` -- generated reports (test, review, general).
-- `logs/figures/` -- training plots (loss curves, etc.) if applicable.
 
 ## Conventions
 - Log format: `[YYYY-MM-DD HH:MM:SS] [LEVEL] - Message`.
@@ -17,3 +14,4 @@
 ## Guardrails
 - Do not store model artifacts here (use `models/`).
 - Do not store EDA outputs here (use `eda/results/`).
+

@@ -1,5 +1,3 @@
-# DS -- EDA
-
 ## Skill
 - Use **apm-eda** for the workflow and report format.
 

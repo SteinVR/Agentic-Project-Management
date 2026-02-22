@@ -1,5 +1,3 @@
-# RAPID -- Tests
-
 ## Skill
 - Use **apm-test** for test strategy, execution, and reporting.
 

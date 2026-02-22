@@ -1,5 +1,3 @@
-# DS -- Data
-
 ## Structure
 - `data/raw/` -- original, unmodified data files.
 - `data/processed/` -- cleaned and transformed data ready for modeling.
