@@ -63,14 +63,46 @@ Agents represent specific "personas" with customized system prompts and constrai
 - **Lead Engineer / Developer:** Focuses on implementation, adhering to specs.
 - **SDET (Software Development Engineer in Test):** Focuses entirely on QA, testing, and test automation.
 - **Data Scientist:** Executes the DS methodology loop.
+- **Code Simplifier:** Refactors recently modified code for clarity and simplicity while preserving exact behavior. Applies project coding conventions. Activated via `/apm-simplify` (Cursor) or `apm-code-simplifier` skill.
 
-### Skills Hierarchy (Dynamic Capabilities)
-Skills (`SKILL.md`) are discrete capabilities loaded dynamically.
-- **High-Level (Orchestrating) Skills:** Define intent, goals, validation gates, and expected outcomes. They coordinate workflows and can invoke low-level skills.
-- **Low-Level (Procedural) Skills:** Define step-by-step tactical execution procedures (e.g., "how to deploy to staging", "how to parse logs").
+### Skills (Dynamic Capabilities)
+Skills (`SKILL.md`) are discrete, self-contained capabilities loaded on demand. Each skill is a folder containing a required `SKILL.md` with YAML frontmatter metadata and Markdown instructions, and optional bundled resources (`scripts/`, `references/`, `agents/`).
 
-### Subagents (Parallel Execution)
-In modern environments (Cursor 2.5+ and Codex CLI), APM leverages asynchronous/parallel subagents. A primary orchestration thread can fan-out tasks to specialized subagents (e.g., delegating a wide codebase search or concurrent code review) and wait for a consolidated response.
+**Two-level hierarchy:**
+- **High-level (orchestrating) skills:** Define what to do, in which order, and when to switch modes. Delegate specialized execution to low-level skills.
+- **Low-level (atomic) skills:** Define how to execute one specific process end-to-end, with steps, checklists, and edge cases. Self-contained; do not call other skills.
+
+**Available skills:**
+
+| Skill | Purpose |
+|-------|---------|
+| `apm-start` | Vision Alignment (RAPID) or Problem Definition (DS); initializes the Memory Bank |
+| `apm-arch` | Architecture consultation and `ARCHITECTURE.md` updates |
+| `apm-dev` | Lead Engineer implementation loop |
+| `apm-code-simplifier` | Behavior-preserving simplification of recently modified code |
+| `apm-test` | SDET testing and QA workflow |
+| `apm-review` | Architecture and code review |
+| `apm-sync` | Sync current session state into `STATE.md` |
+| `apm-report` | Generate reports from templates |
+| `apm-logs` | Structured activity log management |
+| `apm-orchestrate` | Orchestrate complex tasks across subagents (fan-out/fan-in) |
+| `apm-eda` | Exploratory Data Analysis workflow |
+| `apm-ds-baseline` | Build domain-credible baseline models |
+| `apm-ds-exp` | Hypothesis-driven DS experiment cycle |
+| `apm-model-report` | DS model evaluation report generation |
+| `apm-skill-creator` | Guidance for creating and updating APM skills |
+
+### Subagents and Orchestration
+In modern environments (Cursor 2.5+ and Codex CLI), APM leverages asynchronous/parallel subagents managed by the `apm-orchestrate` skill.
+
+**Orchestration paradigm (fan-out/fan-in):**
+1. **Plan (sequential):** Analyze the task, map subtask dependencies, choose execution mode (sequential / parallel / hybrid), define delegation contracts per subtask.
+2. **Execute (fan-out):** Delegate subtasks to subagents with precise invocations. Each contract specifies scope, owned file paths, done criteria, output format, and constraints.
+3. **Integrate (fan-in):** Collect outputs, apply aggregation strategy (diff merge by ownership, set-union for findings, LLM synthesis for narratives), run verification, update Memory Bank.
+
+**Default policy:** Hybrid — sequential planning phase, parallel read-mostly phase (research/analysis/drafts), sequential integration phase.
+
+Every subagent invocation must include: concrete scope, file references, success criteria, expected output format, and constraints.
 
 ---
 
@@ -107,7 +139,7 @@ APM/
 
 1. **Initialization:** Run the `apm.sh` configurator to stamp out the methodology, environment, and initial directory structure.
 2. **Setup Phase:** Run `/apm-start` to align on vision and generate the initial Memory Bank (`ARCHITECTURE.md`, `TASK.md`).
-3. **Execution Loop:** Work through role-specific commands (e.g., `/apm-develop`, `/apm-test` for RAPID; or `/apm-eda`, `/apm-experiment` for DS).
+3. **Execution Loop:** Work through role-specific commands (e.g., `/apm-develop`, `/apm-simplify`, `/apm-test` for RAPID; or `/apm-eda`, `/apm-experiment` for DS).
 4. **Synchronization:** Invoke `/apm-sync` or manually mandate the LLM to update `STATE.md` at the end of every active session to preserve context for the next iteration.
 
 ---
