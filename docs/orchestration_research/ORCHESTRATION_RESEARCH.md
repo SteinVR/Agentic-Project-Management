@@ -137,39 +137,57 @@ Concurrent orchestration запускает несколько агентов о
 
 **Verification after write.** После каждого write-heavy шага — обязательный verification step (тесты/линт/сборка), затем переход к следующему шагу. При провале — rollback и повтор с уточнёнными ограничениями.
 
-### Delegation contract для sequential
+### Delegation prompt для sequential (шаблон)
 
-```json
-{
-  "schemaVersion": "1.0.0",
-  "trace_id": "uuid-v4",
-  "task_id": "step-2-clause-customization",
-  "step_index": 2,
-  "total_steps": 4,
-  "from_agent": "TemplateSelectionAgent",
-  "to_agent": "ClauseCustomizationAgent",
-  "input": {
-    "selected_template": "...",
-    "client_specifications": "..."
-  },
-  "output_contract": {
-    "required_fields": ["customized_clauses", "modification_log"],
-    "definition_of_done": "All negotiated terms reflected in clauses",
-    "quality_threshold": { "min_clauses_modified": 3 }
-  },
-  "constraints": {
-    "max_tokens": 4096,
-    "timeout_seconds": 120,
-    "allowed_tools": ["file_read", "file_write"],
-    "forbidden_actions": ["delete_file", "execute_shell"]
-  },
-  "error_handling": {
-    "on_validation_failure": "repair_and_retry",
-    "max_retries": 2,
-    "on_max_retries_exceeded": "escalate_to_human"
-  },
-  "previous_step_summary": "Template X selected for jurisdiction Y"
-}
+В CLI-среде субагент получает текстовый промпт, а не JSON-объект. Контракт выражается как структурированный текст:
+
+```
+Task: [Конкретное действие в императиве]
+Step: [N of M] — предыдущий шаг: [краткое summary выхода предыдущего агента]
+
+Context:
+- [Ссылка на файл/артефакт, который является входом для этого шага]
+- [Любой необходимый контекст из предыдущих шагов]
+
+Scope:
+- Работать только с: [перечень файлов/директорий]
+- Не трогать: [запрещённые файлы/директории]
+- Не выполнять: [запрещённые действия]
+
+Done when:
+- [Проверяемый критерий 1]
+- [Проверяемый критерий 2]
+
+Return:
+- [Ожидаемый артефакт 1] (например: diff, список изменений, отчёт)
+- [Ожидаемый артефакт 2]
+- Status: success | partial | fail — и причину, если не success
+```
+
+**Пример (шаг реализации в RAPID pipeline):**
+
+```
+Task: Implement POST /api/users endpoint with input validation.
+Step: 2 of 4 — previous step: API contract designed, schema in docs/api/users.md
+
+Context:
+- API schema: docs/api/users.md
+- DB model: src/db/models/user.ts (read-only reference)
+
+Scope:
+- Work only in: src/routes/users.ts, src/middleware/validate.ts
+- Do not touch: src/db/, tests/, any existing routes
+- Do not run migrations or modify schema files
+
+Done when:
+- POST /api/users returns 201 with created user on valid input
+- Returns 400 with error message on missing required fields
+- Returns 409 on duplicate email
+- No TypeScript errors on changed files
+
+Return:
+- List of files changed with a brief description of each change
+- Status: success | partial | fail
 ```
 
 ---
@@ -188,82 +206,97 @@ Concurrent orchestration запускает несколько агентов о
 
 **Structured output.** Все параллельные агенты возвращают результаты в унифицированном формате для корректной агрегации.
 
-### Delegation contract для parallel
+### Delegation prompts для parallel (шаблон)
 
-```json
-{
-  "schemaVersion": "1.0.0",
-  "trace_id": "uuid-v4",
-  "task_id": "parallel-analysis-001",
-  "orchestration_mode": "parallel",
-  "subtasks": [
-    {
-      "agent_id": "FundamentalAnalyst",
-      "input": { "ticker": "AAPL", "focus": "financials" },
-      "output_contract": {
-        "required_fields": ["valuation_score", "risk_factors", "confidence"],
-        "format": "json"
-      },
-      "constraints": {
-        "timeout_seconds": 90,
-        "allowed_tools": ["web_search", "calculator"]
-      }
-    },
-    {
-      "agent_id": "TechnicalAnalyst",
-      "input": { "ticker": "AAPL", "focus": "price_patterns" },
-      "output_contract": {
-        "required_fields": ["trend_signal", "support_resistance", "confidence"],
-        "format": "json"
-      },
-      "constraints": {
-        "timeout_seconds": 90,
-        "allowed_tools": ["web_search", "chart_analysis"]
-      }
-    }
-  ],
-  "aggregation": {
-    "strategy": "llm_synthesis",
-    "fallback": "confidence_weighted_merge",
-    "conflict_resolution": "highest_confidence_wins"
-  },
-  "error_handling": {
-    "partial_failure_policy": "continue_with_available",
-    "min_successful_agents": 2,
-    "on_below_minimum": "escalate"
-  }
-}
+В parallel workflow оркестратор отправляет каждому субагенту **отдельный** текстовый промпт. Все промпты формулируются одновременно, результаты собираются после завершения всех агентов.
+
+**Шаблон одного промпта из fan-out:**
+
 ```
+Task: [Конкретное действие для этого агента — его домен, не всей задачи]
+
+Context:
+- [Необходимый контекст, специфичный для этого домена]
+
+Scope:
+- Work only in: [перечень файлов/директорий этого агента]
+- Do not touch: [файлы других параллельных агентов]
+- Read-only / isolated branch: [указать если применимо]
+
+Done when:
+- [Проверяемый критерий]
+
+Return in this exact structure:
+1. Result: [конкретный артефакт — diff, findings, report]
+2. Evidence: [что подтверждает результат — тесты, команды, ссылки]
+3. Status: success | partial | fail
+4. Blockers / unknowns: [если есть]
+```
+
+**Пример — три параллельных агента для поиска уязвимостей:**
+
+Агент A:
+```
+Task: Audit authentication flows for security vulnerabilities.
+Scope: Read-only. Search only in src/auth/, src/middleware/auth*.ts
+Return: List of findings with file:line references. Status: success | partial | fail.
+```
+
+Агент B:
+```
+Task: Audit input validation across all API routes for injection risks.
+Scope: Read-only. Search only in src/routes/
+Return: List of findings with file:line references. Status: success | partial | fail.
+```
+
+Агент C:
+```
+Task: Check all database queries for missing parameterization.
+Scope: Read-only. Search only in src/db/
+Return: List of findings with file:line references. Status: success | partial | fail.
+```
+
+Ключевые требования к параллельным промптам:
+- Каждый агент получает **непересекающийся** набор путей.
+- Все возвращают **одинаковую структуру** (пункты 1-4 выше) для упрощения fan-in.
+- Для write-агентов явно указывать изоляцию (worktree/branch).
 
 ---
 
 ## 7. Delegation Contract: полная спецификация
 
-Delegation contract — формальный интерфейсный контракт между оркестратором и субагентом, аналогичный API-контракту. Свободно-текстовые handoffs — главный источник потери контекста.
+Delegation contract — это набор элементов, которые оркестратор обязан явно передать субагенту в промпте делегации. Свободно-текстовые handoffs без структуры — главный источник потери контекста и ошибочных выходов.
 
-### Компоненты контракта
+В CLI-среде контракт реализуется как структурированный текстовый промпт, а не JSON-объект. Но набор элементов, которые должны присутствовать, остаётся тем же.
 
-| Компонент | Описание |
-|-----------|----------|
-| **Input Schema** | Типизированное описание входных данных: `task_id`, `goal`, `context_refs`, `allowed_paths`, `forbidden_paths`, `time_budget`, `tools_allowed`, `expected_artifacts` |
-| **Output Schema** | Обязательные поля результата: (1) результат (patch/дифф, отчёт), (2) доказательства (команды, вывод тестов), (3) метаданные (confidence, риски) |
-| **Definition of Done** | Проверяемые условия: "все тесты прошли", "линтер без ошибок", "не изменены запрещённые файлы" |
-| **Constraints** | Ограничения ресурсов и прав: `timeout`, `max_tokens`, `allowed_tools`, `forbidden_actions` |
-| **Confidence** | Не "общий confidence", а разложение: `confidence_core_changes`, `confidence_tests`, `unknowns` |
-| **Error/Status** | `status` (success/partial/failed), `error_class` (retriable/non_retriable), `root_cause_hypothesis`, `next_action_suggestion` |
-| **Retries** | Политика повторов: `max_retries`, `on_failure` (repair_and_retry / escalate) |
-| **Idempotency** | Ключ идемпотентности: `task_id` + hash входа для безопасных повторов |
-| **Tool Permissions** | Явный список разрешённых инструментов и режим (auto/ask/deny) |
-| **Versioning** | `schemaVersion` (semver), `agent_version`, `toolchain_version` |
-| **Provenance** | `trace_id`, `citations[]`, `tool_state` для трассировки и аудита |
+### Элементы контракта
 
-### Валидация и repair
+| Элемент | Что должно быть в промпте |
+|---------|--------------------------|
+| **Цель и scope** | Конкретная задача + файлы/директории для работы + что нельзя трогать |
+| **Входной контекст** | Ссылки на артефакты предыдущих шагов, релевантные файлы, краткое summary если нужно |
+| **Ожидаемый выход** | Структура ответа: что вернуть (diff, список, отчёт), в каком формате |
+| **Definition of Done** | Проверяемые критерии завершения: "тесты проходят", "линтер чист", "не изменены запрещённые файлы" |
+| **Constraints** | Что НЕ делать: запрещённые файлы, действия, подходы, инструменты |
+| **Status reporting** | Субагент обязан вернуть: `success | partial | fail` + блокеры и неизвестные если есть |
+| **Неизвестные и риски** | Явно попросить субагента сообщить об unknowns, допущениях, рисках — не замалчивать |
 
-Каждый контракт валидируется строго (JSON Schema). При ошибке валидации — "repair prompt": модели показывают ошибку и просят исправить вывод. После N неудачных попыток — reject (fail closed) и эскалация к человеку.
+### Repair prompt при неверном выходе
 
-### Versioning
+Если субагент вернул выход, который не соответствует ожиданиям, оркестратор формирует repair prompt:
 
-Включайте `schemaVersion` и следуйте semver. Новые поля добавляются как optional, существующие не удаляются. Изменение формата артефактов/статусов без версий ломает агрегацию и ретраи.
+```
+Your previous output was missing: [конкретно что].
+Expected format:
+  [повтор требуемой структуры]
+Please redo only the missing part and return the complete output.
+```
+
+После 2 неудачных repair prompt — эскалация или выполнение в main session.
+
+### Версионирование формата выходов
+
+При изменении ожидаемого формата ответа субагентов — явно обновить все промпты, которые на него опираются. Несогласованность форматов ломает fan-in агрегацию.
 
 ---
 
