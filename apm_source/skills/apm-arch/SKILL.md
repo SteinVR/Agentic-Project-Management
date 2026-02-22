@@ -1,6 +1,6 @@
 ---
 name: apm-arch
-description: "Architecture design and Vision Alignment for RAPID/DS projects: define project scope, tech stack, and structure. Use at project kickoff, major scope changes, or architecture re-alignment."
+description: "Architecture design and Vision Alignment: define project scope, tech stack, and structure. Use at project kickoff, major scope changes, or architecture re-alignment."
 ---
 ## What I do
 - Run Vision Alignment / Problem Definition.

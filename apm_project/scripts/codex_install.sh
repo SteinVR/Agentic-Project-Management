@@ -227,7 +227,8 @@ merge_apm_config() {
     "agents.apm-architect" \
     "agents.apm-engineer" \
     "agents.apm-sdet" \
-    "agents.apm-data-scientist"; do
+    "agents.apm-data-scientist" \
+    "agents.apm-code-simplifier"; do
     block="$(extract_section_block "$source_config" "$role_section")"
     if [[ -z "$block" ]]; then
       echo "[WARN] Missing section in source config: [$role_section]" >&2

@@ -154,7 +154,8 @@ $roleSections = @(
   "agents.apm-architect",
   "agents.apm-engineer",
   "agents.apm-sdet",
-  "agents.apm-data-scientist"
+  "agents.apm-data-scientist",
+  "agents.apm-code-simplifier"
 )
 
 foreach ($roleSection in $roleSections) {

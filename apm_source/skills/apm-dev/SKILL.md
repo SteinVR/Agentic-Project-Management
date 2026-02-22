@@ -1,6 +1,6 @@
 ---
 name: apm-dev
-description: "RAPID development loop: plan, implement, verify, and log changes for features, bug fixes, or refactors. Use when writing or modifying application code in src/."
+description: "Iterative development loop: plan, implement, verify, and log changes for features, bug fixes, or refactors. Use when writing or modifying application code in src/."
 ---
 ## What I do
 - Provide a disciplined implementation loop for RAPID work.

@@ -172,8 +172,10 @@ run_interactive_stdin_cases() {
     assert_path_exists "$tmp_parent/int-codex-rapid/memory-bank" "Codex RAPID memory-bank"
     assert_path_exists "$tmp_parent/int-codex-rapid/.codex/skills" "Codex RAPID skills"
     assert_path_exists "$tmp_parent/int-codex-rapid/.codex/agents" "Codex RAPID agents"
+    assert_path_exists "$tmp_parent/int-codex-rapid/.codex/agents/apm-code-simplifier.toml" "Codex RAPID simplifier agent file"
     assert_path_exists "$tmp_parent/int-codex-rapid/.codex/config.toml" "Codex RAPID config.toml"
     assert_file_contains "$tmp_parent/int-codex-rapid/.codex/config.toml" "\\[agents.apm-architect\\]" "Codex config role section"
+    assert_file_contains "$tmp_parent/int-codex-rapid/.codex/config.toml" "\\[agents.apm-code-simplifier\\]" "Codex config simplifier role section"
     log_pass "interactive Codex RAPID local"
 
     # Invalid input loops then valid values (OpenCode + RAPID + skip)
@@ -270,7 +272,9 @@ run_non_interactive_matrix_and_installers() {
     HOME="$tmp_home" TERM=xterm bash "$CODEX_INSTALL" --local "$installer_projects/p1"
     assert_path_exists "$installer_projects/p1/.codex/skills" "codex_install local skills"
     assert_path_exists "$installer_projects/p1/.codex/agents" "codex_install local agents"
+    assert_path_exists "$installer_projects/p1/.codex/agents/apm-code-simplifier.toml" "codex_install local simplifier agent file"
     assert_path_exists "$installer_projects/p1/.codex/config.toml" "codex_install local config"
+    assert_file_contains "$installer_projects/p1/.codex/config.toml" "\\[agents.apm-code-simplifier\\]" "codex_install local simplifier config section"
     log_pass "codex_install local"
 
     HOME="$tmp_home" TERM=xterm bash "$CODEX_INSTALL" --global
@@ -280,6 +284,7 @@ run_non_interactive_matrix_and_installers() {
 
     HOME="$tmp_home" TERM=xterm bash "$OPENCODE_INSTALL" --local "$installer_projects/p2"
     assert_path_exists "$installer_projects/p2/.opencode/agents" "opencode_install local agents"
+    assert_path_exists "$installer_projects/p2/.opencode/agents/apm-code-simplifier.md" "opencode_install local simplifier agent file"
     assert_path_exists "$installer_projects/p2/.opencode/commands" "opencode_install local commands"
     assert_path_exists "$installer_projects/p2/.opencode/tools" "opencode_install local tools"
     assert_path_exists "$installer_projects/p2/.opencode/skills" "opencode_install local skills"
@@ -294,6 +299,7 @@ run_non_interactive_matrix_and_installers() {
 
     HOME="$tmp_home" TERM=xterm bash "$CURSOR_INSTALL" --local "$installer_projects/p3" --skip-skills
     assert_path_exists "$installer_projects/p3/.cursor/agents" "cursor_install local agents"
+    assert_path_exists "$installer_projects/p3/.cursor/agents/apm-code-simplifier.md" "cursor_install local simplifier agent file"
     assert_path_exists "$installer_projects/p3/.cursor/commands" "cursor_install local commands"
     log_pass "cursor_install local --skip-skills"
 

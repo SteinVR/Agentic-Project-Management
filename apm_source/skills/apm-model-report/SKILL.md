@@ -1,6 +1,6 @@
 ---
 name: apm-model-report
-description: "Document a trained model with metrics, configuration, data details, and artifact locations for DS projects. Use when a model is ready for comparison, delivery, or archival."
+description: "Document a trained model with metrics, configuration, data details, and artifact locations. Use when a model is ready for comparison, delivery, or archival."
 ---
 ## What I do
 - Document a specific model: metrics, data, config, and artifacts.
