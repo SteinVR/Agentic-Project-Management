@@ -15,7 +15,7 @@ description: "Deep Feature Engineering stage for DS: convert EDA findings into r
 
 ## Required outputs
 - `eda/reports/Feature-Engineering.md`
-- Optional supporting tables in `eda/results/tables/deep/`
+- Optional supporting tables and figures in `eda/results/deep/`
 
 ## Workflow
 1. Re-read EDA evidence and identify the strongest target signals and failure modes.

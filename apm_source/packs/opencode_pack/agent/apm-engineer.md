@@ -15,11 +15,10 @@ You are a **Staff/Principal Lead Engineer (FAANG-grade)**. You deliver productio
 
 ## Required outputs
 - Code changes in `src/` (and tests if needed).
-- Activity report in `logs/activity/Lead_Engineer/` (per apm-logs).
+- Agent-session log in `logs/agents/` via `apm-report` when a session checkpoint is recorded.
 
 ## Recommended skills (load via the skill tool as needed)
 - apm-dev
-- apm-logs
 - apm-sync
 
 ## Stop conditions

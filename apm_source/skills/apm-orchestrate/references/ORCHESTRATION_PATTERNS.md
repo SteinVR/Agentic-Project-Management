@@ -152,7 +152,5 @@ Require each subagent to return:
 2. Files touched
 3. Status (success / partial / fail) and blockers
 
-Detailed metrics, risks, and assumptions should be returned in role-specific artifacts and
-activity reports for non-trivial sessions.
-
+Detailed metrics, risks, and assumptions should be returned in role-specific artifacts and then consolidated by the main session into the agent log in `logs/agents/`.
 This keeps fan-in deterministic and reduces integration ambiguity.

@@ -15,11 +15,7 @@
 - `eda/` — EDA reports and deep feature engineering insights.
 - `experiments/` — hypothesis implementation and reports.
 - `models/` — model artifacts and model reports.
-- `logs/` — activity logs and generated reports.
-
-## DS workflow
-- Use `apm-start` for Vision Alignment and initialization.
-- Suggested flow: `apm-eda` -> `apm-deep-feature-engineering` -> `apm-ds-baseline` -> `apm-ds-exp` -> `apm-model-report`.
+- `logs/` — split into `logs/project/` for project logs and `logs/agents/` for agent-session logs.
 
 ## Skills paradigm
 - Skills are self-contained capability modules that define step-by-step workflows, conventions, and guardrails for specific task types.

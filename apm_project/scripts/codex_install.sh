@@ -15,6 +15,7 @@ if [[ ! -d "$CODEX_AGENTS_DIR" && -d "$REPO_ROOT/apm_source/codex_agents" ]]; th
   echo "[WARN] Using legacy Codex path: apm_source/codex_agents" >&2
   CODEX_AGENTS_DIR="$REPO_ROOT/apm_source/codex_agents"
 fi
+PACK_SKILLS_DIR="$CODEX_AGENTS_DIR/skills"
 SOURCE_AGENTS_DIR="$CODEX_AGENTS_DIR/agents"
 SOURCE_CONFIG_FILE="$CODEX_AGENTS_DIR/config.toml"
 
@@ -240,6 +241,9 @@ merge_apm_config() {
 
 mkdir -p "$CODEX_DIR/skills" "$CODEX_DIR/agents"
 cp -R "$SKILLS_DIR/." "$CODEX_DIR/skills/"
+if [[ -d "$PACK_SKILLS_DIR" ]]; then
+  cp -R "$PACK_SKILLS_DIR/." "$CODEX_DIR/skills/"
+fi
 cp -R "$SOURCE_AGENTS_DIR/." "$CODEX_DIR/agents/"
 
 merge_apm_config "$SOURCE_CONFIG_FILE" "$CODEX_DIR/config.toml"

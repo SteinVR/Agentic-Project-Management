@@ -1,16 +1,16 @@
 ---
 name: apm-report
-description: "Generate a general-purpose project status report from Memory Bank and recent work. Use for sprint reviews, progress summaries, or stakeholder updates."
+description: "Write an agent session log from the current work. Use after meaningful progress or before handing the task back to the user."
 ---
 ## What I do
-- Provide the standard template if no other template fits better for general project reports.
-- Tie the report to Memory Bank status and recent results.
-
-## Required reads
-- `memory_bank/STATE.md`
-- `memory_bank/tasks/TASKS.md`
-- relevant files
+- Turn the current main-session state into a readable agent log.
+- Consolidate subagent handoffs into one main-session artifact.
+- Tie the log to the active task label and concrete evidence.
 
 ## Template
-Use `references/GENERAL_REPORT_TMP.md`.
-Store reports under `logs/reports/`. **Filename:** `YYYY-MM-DD_short-title.md` (e.g. `2025-02-06_sprint-review.md`).
+Use `references/ACTIVITY_LOG_TMP.md`.
+Store agent logs under `logs/agents/`.
+The main session is recorded as `PrimarySession`.
+Subagents do not call this skill; they return handoffs that the main session folds into the final log.
+**Filename:** `{TASK_ID}_{AgentIdentity}_{short-title}_{HH-mm}_{DD-MM-YYYY}.md`
+Use the invoked agent config identity for subagent references. Do not assign agent names anywhere except agent config files.

@@ -52,7 +52,7 @@ Before delegating, analyze the task to choose the execution mode:
 7. Fan-in: collect outputs, normalize into common structure.
 8. Aggregate: merge results using the appropriate aggregation strategy.
 9. Verify: run integration checks, reconcile conflicts, run tests/lint.
-10. Write a compact integration summary in task artifacts or activity reports.
+10. Write a compact integration summary in task artifacts and fold it into one main-session agent log.
 
 ## Invocation quality
 
@@ -73,16 +73,18 @@ Use the **Lite** contract for single-file or short tasks:
 - Scope and objective
 - File boundaries (owned paths)
 - Done criteria
+- Reporting constraint: subagents do not write agent logs; they return handoff only
 
 Use the **Full** contract for parallel streams or non-trivial sessions:
 - Scope and objective
+- Agent role
 - File boundaries (owned paths) and disallowed paths
 - Constraints and non-goals
 - Required completion summary format
 - Role-specific artifact expectations
 - Verification checklist
 - Error/status reporting: status (success/partial/fail), blockers, next action suggestion
-- Reporting location for activity report
+- Reporting constraint: subagents do not write agent logs; they return handoff only
 
 ## Error handling protocol
 
@@ -116,14 +118,16 @@ Always run a maker-checker pass on aggregated results before finalizing.
 ## Required output
 - Orchestration plan with subtasks, ownership boundaries, execution mode, and integration order.
 - Normalized completion contract for each subagent:
-  1. What has been done
-  2. Files touched
-  3. Status / Blockers
-- Role-specific details (metrics, risks, assumptions, caveats) must be captured in role artifacts and
-  in `logs/activity/<Role>/...` for non-trivial sessions.
+  1. Agent name / type
+  2. What has been done
+  3. Files touched
+  4. Status / Blockers
+  5. Evidence, risks, or next action
+- Role-specific details (metrics, risks, assumptions, caveats) must be captured in the handoff and then consolidated by the main session into `logs/agents/`.
 
 ## Guardrails
 - Do not parallelize coupled changes that touch the same critical files.
+- Do not allow subagents to write `logs/agents/` or call `apm-report`.
 - Do not skip fan-in validation before final integration.
 - Escalate when requirements are ambiguous or contradictory.
 - Do not update Memory Bank files unless the user explicitly requests sync/update.

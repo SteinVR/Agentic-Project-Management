@@ -251,6 +251,9 @@ run_non_interactive_matrix_and_installers() {
     HOME="$tmp_home" TERM=xterm bash "$APM_SCRIPT" --codex --ds --project-name ni-codex-ds-skip --project-path "$projects_dir" --non-interactive --none --skip-cursor
     assert_path_exists "$projects_dir/ni-codex-ds-skip/memory_bank" "ni codex ds memory_bank"
     assert_path_exists "$projects_dir/ni-codex-ds-skip/memory_bank/tasks/TASKS.md" "ni codex ds TASKS.md"
+    assert_file_contains "$projects_dir/ni-codex-ds-skip/AGENTS.md" "write one consolidated activity log with" "ni codex ds activity log guidance"
+    assert_file_contains "$projects_dir/ni-codex-ds-skip/AGENTS.md" "apm-report" "ni codex ds apm-report skill mention"
+    assert_file_contains "$projects_dir/ni-codex-ds-skip/logs/AGENTS.md" "logs/activity/" "ni codex ds activity log path"
     assert_path_not_exists "$projects_dir/ni-codex-ds-skip/.codex" "ni codex ds skip install"
     log_pass "non-interactive Codex DS skip"
 
@@ -280,6 +283,8 @@ run_non_interactive_matrix_and_installers() {
     assert_path_exists "$installer_projects/p1/.codex/agents/apm-code-simplifier.toml" "codex_install local simplifier agent file"
     assert_path_exists "$installer_projects/p1/.codex/config.toml" "codex_install local config"
     assert_file_contains "$installer_projects/p1/.codex/config.toml" "\\[agents.apm-code-simplifier\\]" "codex_install local simplifier config section"
+    assert_file_contains "$installer_projects/p1/.codex/skills/apm-report/SKILL.md" "logs/activity/" "codex_install local apm-report overlay"
+    assert_file_contains "$installer_projects/p1/.codex/skills/apm-orchestrate/SKILL.md" "do not write activity logs" "codex_install local orchestrate reporting rule"
     log_pass "codex_install local"
 
     HOME="$tmp_home" TERM=xterm bash "$CODEX_INSTALL" --global

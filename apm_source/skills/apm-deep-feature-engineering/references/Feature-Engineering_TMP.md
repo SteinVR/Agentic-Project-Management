@@ -1,8 +1,7 @@
-# EDA Insights & Deep Feature Engineering: [Project Name]
+# Deep Feature Engineering: [Project Name]
 
 **Date:** YYYY-MM-DD  
 **Author:** Data Scientist  
-**Source EDA Report:** `eda/reports/EDA-Report.md`
 
 ---
 

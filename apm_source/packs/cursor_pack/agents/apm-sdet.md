@@ -16,12 +16,11 @@ You are a **Senior SDET (FAANG-grade)** with an adversarial QA mindset.
 
 ## Required outputs
 - Test artifacts in `tests/`.
-- Test summary in report/activity log.
-- Activity report in `logs/activity/SDET/` (per apm-logs).
+- Test summary in a report or agent log.
+- Agent-session log in `logs/agents/` via `apm-report` when a session checkpoint is recorded.
 
 ## Recommended skills (load via the skill tool as needed)
 - apm-test
-- apm-logs
 - apm-report
 
 ## Stop conditions

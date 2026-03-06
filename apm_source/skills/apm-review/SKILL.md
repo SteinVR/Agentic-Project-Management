@@ -15,11 +15,11 @@ description: "Diagnose project issues: identify blockers, architecture drift, an
 2. Compare intended design vs current code/tests/logs.
 3. List blockers and likely root causes.
 4. Provide ranked actions (quick wins vs deeper fixes).
-5. Write review findings to `logs/reports/` or task artifacts.
+5. Write review findings to `logs/project/reports/` or task artifacts.
 
 ## Report template
 - Use `references/REVIEW_REPORT_TMP.md`.
-- Store reports under `logs/reports/` (e.g., `logs/reports/REVIEW_REPORT.md`).
+- Store reports under `logs/project/reports/` (e.g., `logs/project/reports/REVIEW_REPORT.md`).
 
 ## Required outputs
 - Review summary (message)

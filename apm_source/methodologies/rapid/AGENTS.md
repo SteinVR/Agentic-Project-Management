@@ -3,9 +3,9 @@
 
 ## Memory Bank (SSOT)
 - Directory name is `memory_bank/`.
-- **TASKS.md:** grouped high-level tasks in priority order.
-- **{TASK_ID}.md:** per-task execution plan and working notes in each task file.
-- **STATE.md:** compact operational status and deviations.
+- `TASKS.md`: grouped high-level tasks in priority order.
+- `{TASK_ID}.md`: per-task execution plan and working notes in each task file.
+- `STATE.md`: compact operational status and deviations.
 - Do not update Memory Bank files unless the user explicitly asks.
 - Keep main headers from templates intact; add sub-sections only when needed.
 
@@ -13,12 +13,10 @@
 - `memory_bank/` — architecture source of truth, state, and task board.
 - `src/` — implementation.
 - `tests/` — tests.
-- `logs/` — activity reports and generated reports.
+- `logs/` — split into `logs/project/` for project logs and `logs/agents/` for agent-session logs.
 
-## RAPID workflow
-- Use `apm-start` for Vision Alignment and initialization.
+## Workflow
 - Core loop: plan -> implement -> verify.
-- Suggested skills: `apm-dev`, `apm-test`, `apm-logs`, `apm-report`, `apm-sync`, `apm-review`, `apm-orchestrate`.
 
 ## Skills paradigm
 - Skills are self-contained capability modules that define step-by-step workflows, conventions, and guardrails for specific task types.

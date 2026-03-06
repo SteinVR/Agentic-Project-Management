@@ -21,6 +21,7 @@ if (-not (Test-Path $CodexAgentsDir)) {
     $CodexAgentsDir = $LegacyCodexAgentsDir
   }
 }
+$PackSkillsDir = Join-Path $CodexAgentsDir "skills"
 $AgentsSourceDir = Join-Path $CodexAgentsDir "agents"
 $ConfigSourceFile = Join-Path $CodexAgentsDir "config.toml"
 
@@ -58,6 +59,9 @@ $targetConfigFile = Join-Path $CodexDir "config.toml"
 New-Item -ItemType Directory -Force -Path $skillsTarget, $agentsTarget | Out-Null
 
 Copy-Item -Recurse -Force (Join-Path $SkillsDir "*") $skillsTarget
+if (Test-Path $PackSkillsDir) {
+  Copy-Item -Recurse -Force (Join-Path $PackSkillsDir "*") $skillsTarget
+}
 Copy-Item -Recurse -Force (Join-Path $AgentsSourceDir "*") $agentsTarget
 
 function Ensure-TrailingNewLine {

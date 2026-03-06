@@ -87,8 +87,8 @@ Skills (`SKILL.md`) are discrete, self-contained capabilities loaded on demand. 
 | `apm-test` | SDET testing and QA workflow |
 | `apm-review` | Architecture and code review |
 | `apm-sync` | Explicit Memory Bank synchronization on request |
-| `apm-report` | Generate reports from templates |
-| `apm-logs` | Structured activity log management |
+| `apm-report` | Write a consolidated agent log from the current main session |
+| `apm-logs` | Structured project-log and agent-log taxonomy management |
 | `apm-orchestrate` | Orchestrate complex tasks across subagents (fan-out/fan-in) |
 | `apm-eda` | Exploratory Data Analysis workflow |
 | `apm-deep-feature-engineering` | Deep post-EDA feature engineering analysis |
@@ -108,6 +108,7 @@ In modern environments (Cursor 2.5+ and Codex CLI), APM leverages asynchronous/p
 **Default policy:** Hybrid — sequential planning phase, parallel read-mostly phase (research/analysis/drafts), sequential integration phase.
 
 Every subagent invocation must include: concrete scope, file references, success criteria, expected output format, and constraints.
+In Codex workflows, subagents return handoff summaries and the primary session writes the single consolidated agent log.
 
 ---
 
@@ -127,7 +128,7 @@ APM/
 │   │   └── ds/                  # DS workflow template
 │   ├── skills/                  # Shared skills source
 │   ├── packs/                   # Environment-specific packs
-│   │   ├── codex_pack/          # Subagent roles (.toml) for Codex CLI
+│   │   ├── codex_pack/          # Subagent roles for Codex CLI
 │   │   ├── opencode_pack/       # Native OpenCode agents/commands/tools
 │   │   └── cursor_pack/         # Cursor agents and command wrappers
 │   └── _legacy/                 # Frozen legacy assets
@@ -152,5 +153,5 @@ APM/
 ## 8. Core Conventions
 
 - **File Naming:** Core instruction or agent context files strictly use **UPPERCASE** naming conventions (e.g., `AGENTS.md`, `SKILL.md`, `ARCHITECTURE.md`) to distinguish them from standard project documentation.
-- **Continuity Guarantee:** Use `tasks/{TASK_ID}.md` and activity reports as primary working memory during execution; sync into Memory Bank only when explicitly requested.
+- **Continuity Guarantee:** Use `tasks/{TASK_ID}.md` and agent logs as primary working memory during execution; sync into Memory Bank only when explicitly requested.
 - **Skill Portability:** Whenever possible, logic should be encapsulated in reusable `.md` skills following the `agentskills.io` spec to ensure cross-compatibility between Cursor, Claude Code, and Codex.

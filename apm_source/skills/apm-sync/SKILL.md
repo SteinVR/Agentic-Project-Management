@@ -11,7 +11,7 @@ description: "Reconcile Memory Bank (`STATE`, `tasks/TASKS`, `ARCHITECTURE`) wit
 - `memory_bank/STATE.md`
 - `memory_bank/ARCHITECTURE.md`
 - `memory_bank/tasks/TASKS.md`
-- recent activity reports in `logs/activity/<Role>/`
+- recent agent logs in `logs/agents/`
 - repository status (`git status`, `git diff`, `git log`)
 
 ## Workflow
@@ -23,7 +23,7 @@ description: "Reconcile Memory Bank (`STATE`, `tasks/TASKS`, `ARCHITECTURE`) wit
 ## Memory Bank maintenance
 When `memory_bank/STATE.md` exceeds 150 lines:
 1. Compress old details into short summaries.
-2. Move granular details into `logs/activity/<Role>/` and task files.
+2. Move granular details into `logs/agents/` and task files.
 3. Keep only active operational status plus concise accumulated context.
 
 When `memory_bank/tasks/TASKS.md` exceeds 150 lines:

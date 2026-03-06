@@ -22,5 +22,5 @@ description: "Write and run tests (unit, integration, e2e). Defines test strateg
 ## Reports
 - Use `references/TEST_REPORT_TMP.md` for test reports.
 - Use `references/E2E_REPORT_TMP.md` for end-to-end/system test reports.
-- Store reports under `logs/reports/`.
+- Store reports under `logs/project/reports/`.
 - Follow apm-logs for logging test runs and failures when applicable.

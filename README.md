@@ -143,6 +143,7 @@ alias apm-cd='cd /path/to/Agentic-Project-Management'
 2. After your confirmation, APM creates the Memory Bank: `ARCHITECTURE.md`, `STATE.md`, and `tasks/` (`TASKS.md` + `TASK-001.md` starter).
 3. You continue with role-specific commands/skills (e.g., `/apm-develop`, `apm-code-simplifier`, `apm-eda`, `apm-deep-feature-engineering`, `apm-ds-exp`).
 4. Memory Bank synchronization is explicit and on-demand (e.g., `/apm-sync`).
+5. Logs are split into `logs/project/` for runtime and reports, and `logs/agents/` for main-session agent logs.
 
 ---
 
@@ -167,6 +168,13 @@ Core files:
 Line budget:
 - Keep `STATE.md` and `tasks/TASKS.md` under 150 lines (compress when exceeded).
 
+## Logs
+
+- `logs/project/runtime/` stores runtime, training, evaluation, metrics, and error logs.
+- `logs/project/reports/` stores generated reports such as test, review, and model reports.
+- `logs/agents/` stores main-session agent logs written via `apm-report`.
+- In Codex, spawned roles get their human-readable identity only from their agent config files. The primary session is recorded as `PrimarySession`.
+
 ---
 
 ## Commands
@@ -179,7 +187,7 @@ Line budget:
 | `/apm-architect` | Architecture consultation or updates |
 | `/apm-review` | Architecture review and recommendations |
 | `/apm-sync` | Explicit Memory Bank synchronization on request |
-| `/apm-report` | Generate reports from templates |
+| `/apm-report` | Write a consolidated agent log from the current main session |
 
 ### RAPID
 
@@ -204,8 +212,8 @@ Line budget:
 
 - OpenCode pack lives in `apm_source/packs/opencode_pack/`.
 - Shared CLI skills live in `apm_source/skills/`.
-- Example shared skills: `apm-dev`, `apm-code-simplifier`, `apm-test`, `apm-review`, `apm-logs`.
-- Codex subagent config source lives in `apm_source/packs/codex_pack/`.
+- Example shared skills: `apm-dev`, `apm-code-simplifier`, `apm-test`, `apm-review`, `apm-logs`, `apm-report`.
+- Codex pack source lives in `apm_source/packs/codex_pack/` (subagent roles).
 - Cursor agents/commands pack lives in `apm_source/packs/cursor_pack/`.
 - Methodology templates live in `apm_source/methodologies/{rapid,ds}/`.
 - Legacy FULL methodology is stored in `apm_source/_legacy/cursor_ide/full_deprecated/`.
