@@ -2,14 +2,16 @@
 - Use **apm-eda** for the workflow and report format.
 
 ## Expected structure
-- `eda.py` -- main EDA script
+- `src/` -- main EDA scripts folder
 - `results/figures/` -- saved plots (PNG)
 - `results/tables/` -- saved tables (CSV)
-- `EDA_REPORT.md` -- findings report (from apm-eda template)
+- `results/tables/deep/` -- deep feature engineering tables
+- `reports/` -- EDA reports folder
 
 ## Conventions
 - Name plots descriptively: `{analysis}_{feature}.png`.
-- Summarize key findings in `memory-bank/STATE.md`.
+- Keep findings reproducible from scripts in `eda/src/`.
+- Keep task-specific implementation notes in `memory_bank/tasks/{TASK_ID}.md`.
 
 ## Guardrails
 - Do not run experiments from this directory (use `experiments/`).

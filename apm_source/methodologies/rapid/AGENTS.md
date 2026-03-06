@@ -1,19 +1,23 @@
 ## Terminology
-- **RAPID:** fast product delivery with tight feedback loops and disciplined Memory Bank updates.
+- **RAPID:** fast product delivery with tight feedback loops.
 
 ## Memory Bank (SSOT)
-- Directory name is `memory-bank/`.
-- Always update `memory-bank/STATE.md` after meaningful work.
+- Directory name is `memory_bank/`.
+- **TASKS.md:** grouped high-level tasks in priority order.
+- **{TASK_ID}.md:** per-task execution plan and working notes in each task file.
+- **STATE.md:** compact operational status and deviations.
+- Do not update Memory Bank files unless the user explicitly asks.
 - Keep main headers from templates intact; add sub-sections only when needed.
 
-### RAPID updates
-- **ARCHITECTURE.md:** update only when scope or architecture changes.
-- **TASK.md:** keep **Feature Backlog** as the source of work; update **Current Task in Focus** and **Implementation Plan** before coding; mark completed items with `[x]`.
-- **STATE.md:** update **Active Context**, **Decision Log**, **Known Issues / Tech Debt**, **Architecture Deviations**, and **Session History**.
+## Project map
+- `memory_bank/` — architecture source of truth, state, and task board.
+- `src/` — implementation.
+- `tests/` — tests.
+- `logs/` — activity reports and generated reports.
 
 ## RAPID workflow
 - Use `apm-start` for Vision Alignment and initialization.
-- Core loop: plan -> implement -> verify -> update Memory Bank.
+- Core loop: plan -> implement -> verify.
 - Suggested skills: `apm-dev`, `apm-test`, `apm-logs`, `apm-report`, `apm-sync`, `apm-review`, `apm-orchestrate`.
 
 ## Skills paradigm
@@ -21,7 +25,6 @@
 - Proactively load the relevant skill at the start of a task — do not wait to be explicitly asked.
 - Match the task to a skill using the skill's `description` ("Use when..." trigger); if it fits, load and follow it.
 - A loaded skill's workflow is authoritative for its domain; follow it instead of improvising.
-- For multi-phase work, chain skills sequentially (e.g., `apm-dev` → `apm-logs` → `apm-sync`).
 
 ## Subagent paradigm
 - For complex tasks, decompose work into independent subtasks and delegate to subagents.

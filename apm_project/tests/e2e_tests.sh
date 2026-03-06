@@ -241,13 +241,14 @@ test_rapid_methodology_deployment() {
     assert_path_exists "$project_path/external" "external directory" "RAPID-External"
     assert_path_exists "$project_path/AGENTS.md" "AGENTS.md" "RAPID-Agents"
     
-    # Test memory-bank directory
-    write_test_name "Verifying RAPID memory-bank"
-    local mb_dir="$project_path/memory-bank"
-    assert_path_exists "$mb_dir" "memory-bank directory" "RAPID-MemoryBank"
-    assert_path_exists "$mb_dir/ARCHITECTURE.md" "memory-bank/ARCHITECTURE.md" "RAPID-MBArch"
-    assert_path_exists "$mb_dir/STATE.md" "memory-bank/STATE.md" "RAPID-MBState"
-    assert_path_exists "$mb_dir/TASK.md" "memory-bank/TASK.md" "RAPID-MBTask"
+    # Test memory_bank directory
+    write_test_name "Verifying RAPID memory_bank"
+    local mb_dir="$project_path/memory_bank"
+    assert_path_exists "$mb_dir" "memory_bank directory" "RAPID-MemoryBank"
+    assert_path_exists "$mb_dir/ARCHITECTURE.md" "memory_bank/ARCHITECTURE.md" "RAPID-MBArch"
+    assert_path_exists "$mb_dir/STATE.md" "memory_bank/STATE.md" "RAPID-MBState"
+    assert_path_exists "$mb_dir/tasks/TASKS.md" "memory_bank/tasks/TASKS.md" "RAPID-MBTasks"
+    assert_path_exists "$mb_dir/tasks/TASK-001.md" "memory_bank/tasks/TASK-001.md" "RAPID-MBTask001"
     
     # Verify project name was substituted in ARCHITECTURE.md
     assert_file_contains "$mb_dir/ARCHITECTURE.md" "$project_name" \
@@ -258,6 +259,7 @@ test_rapid_methodology_deployment() {
     assert_path_not_exists "$project_path/.apm" ".apm directory" "RAPID-NoAPM"
     assert_path_not_exists "$project_path/ARCHITECTURE.md" "Root ARCHITECTURE.md" "RAPID-NoRootArch"
     assert_path_not_exists "$project_path/TASK.md" "Root TASK.md" "RAPID-NoRootTask"
+    assert_path_not_exists "$project_path/TASKS.md" "Root TASKS.md" "RAPID-NoRootTASKS"
     assert_path_not_exists "$project_path/{project-name}" "{project-name} placeholder" "RAPID-NoPlaceholder"
     
     # Test cursor pack installation
@@ -321,13 +323,14 @@ test_ds_methodology_deployment() {
     assert_path_exists "$project_path/config.py" "config.py" "DS-Config"
     assert_path_exists "$project_path/main.py" "main.py" "DS-Main"
     
-    # Test memory-bank
-    write_test_name "Verifying DS memory-bank"
-    local mb_dir="$project_path/memory-bank"
-    assert_path_exists "$mb_dir" "memory-bank directory" "DS-MemoryBank"
-    assert_path_exists "$mb_dir/ARCHITECTURE.md" "memory-bank/ARCHITECTURE.md" "DS-MBArch"
-    assert_path_exists "$mb_dir/STATE.md" "memory-bank/STATE.md" "DS-MBState"
-    assert_path_exists "$mb_dir/TASK.md" "memory-bank/TASK.md" "DS-MBTask"
+    # Test memory_bank
+    write_test_name "Verifying DS memory_bank"
+    local mb_dir="$project_path/memory_bank"
+    assert_path_exists "$mb_dir" "memory_bank directory" "DS-MemoryBank"
+    assert_path_exists "$mb_dir/ARCHITECTURE.md" "memory_bank/ARCHITECTURE.md" "DS-MBArch"
+    assert_path_exists "$mb_dir/STATE.md" "memory_bank/STATE.md" "DS-MBState"
+    assert_path_exists "$mb_dir/tasks/TASKS.md" "memory_bank/tasks/TASKS.md" "DS-MBTasks"
+    assert_path_exists "$mb_dir/tasks/TASK-001.md" "memory_bank/tasks/TASK-001.md" "DS-MBTask001"
     
     # No legacy artifacts
     write_test_name "Verifying no legacy artifacts"
@@ -339,6 +342,7 @@ test_ds_methodology_deployment() {
     assert_path_exists "$project_path/.cursor/agents/apm-data-scientist.md" "apm-data-scientist agent" "DS-DSAgent"
     assert_path_exists "$project_path/.cursor/commands/apm-start.md" "apm-start command" "DS-StartCmd"
     assert_path_exists "$project_path/.cursor/commands/apm-eda.md" "apm-eda command" "DS-EDACmd"
+    assert_path_exists "$project_path/.cursor/commands/apm-deep-feature-engineering.md" "apm-deep-feature-engineering command" "DS-DeepFECmd"
     assert_path_exists "$project_path/.cursor/commands/apm-baseline.md" "apm-baseline command" "DS-BaselineCmd"
     assert_path_exists "$project_path/.cursor/commands/apm-experiment.md" "apm-experiment command" "DS-ExpCmd"
 }
@@ -454,8 +458,9 @@ test_rapid_opencode_deployment() {
     fi
     
     write_test_name "Verifying OpenCode RAPID structure"
-    assert_path_exists "$project_path/memory-bank" "memory-bank directory" "RAPID-OC-MB"
-    assert_path_exists "$project_path/memory-bank/ARCHITECTURE.md" "ARCHITECTURE.md" "RAPID-OC-Arch"
+    assert_path_exists "$project_path/memory_bank" "memory_bank directory" "RAPID-OC-MB"
+    assert_path_exists "$project_path/memory_bank/ARCHITECTURE.md" "ARCHITECTURE.md" "RAPID-OC-Arch"
+    assert_path_exists "$project_path/memory_bank/tasks/TASKS.md" "TASKS.md" "RAPID-OC-Tasks"
     assert_path_exists "$project_path/src" "src directory" "RAPID-OC-Src"
     assert_path_exists "$project_path/tests" "tests directory" "RAPID-OC-Tests"
     assert_path_exists "$project_path/AGENTS.md" "AGENTS.md" "RAPID-OC-Agents"
@@ -511,7 +516,7 @@ test_project_overwrite() {
     assert_path_not_exists "$marker_file" "Marker file after overwrite" "Overwrite-Marker"
     
     # Verify project structure is intact
-    assert_path_exists "$project_path/memory-bank/ARCHITECTURE.md" "memory-bank/ARCHITECTURE.md after overwrite" "Overwrite-Structure"
+    assert_path_exists "$project_path/memory_bank/ARCHITECTURE.md" "memory_bank/ARCHITECTURE.md after overwrite" "Overwrite-Structure"
 }
 
 test_error_handling() {

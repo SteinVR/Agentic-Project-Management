@@ -14,6 +14,12 @@
 
 ## 2. Dataset Overview
 
+### Data Architecture
+
+| Source | Type | Size | Update Frequency | Access Method |
+|--------|------|------|------------------|---------------|
+| [e.g., data/raw/train.parquet] | [Tabular/Image/Text] | [Rows/Files] | [Daily/Static] | [File/API/SQL] |
+
 ### Basic Statistics
 
 | Attribute | Value |
@@ -117,7 +123,7 @@
 
 ---
 
-## 7. Recommendations (Only if user requared)
+## 7. Recommendations
 
 ### Data Preprocessing
 
@@ -140,6 +146,7 @@
 
 | Artifact | Path | Description |
 |----------|------|-------------|
-| EDA Functions | `src/eda.py` | Reusable EDA functions |
-| EDA Pipeline | `main.py` (EDA blocks) | Full EDA analysis blocks |
-| Saved Plots | `logs/figures/` | Generated visualizations |
+| EDA Functions | `eda/src/eda.py` | Reusable EDA functions |
+| EDA Report | `eda/reports/EDA-Report.md` | EDA findings + data architecture |
+| Saved Plots | `eda/results/figures/` | Generated visualizations |
+| Saved Tables | `eda/results/tables/` | Generated EDA tables |

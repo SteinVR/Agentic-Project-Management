@@ -34,9 +34,9 @@ Usage: run the TUI configurator (`apm.sh`) to generate a project, then drive wor
 
 ## Environments
 
-- **Cursor IDE** (interactive): methodology assets, `.cursor/` agents and commands, shared skills, `memory-bank/`.
-- **Codex CLI** (global or per-project): skills + subagent roles installed into `.codex/`; APM blocks merged into `.codex/config.toml`; projects use `memory-bank/` and minimal structure.
-- **OpenCode CLI** (global or per-project): commands/agents/skills installed into OpenCode; projects use `memory-bank/` and minimal structure.
+- **Cursor IDE** (interactive): methodology assets, `.cursor/` agents and commands, shared skills, `memory_bank/`.
+- **Codex CLI** (global or per-project): skills + subagent roles installed into `.codex/`; APM blocks merged into `.codex/config.toml`; projects use `memory_bank/` and minimal structure.
+- **OpenCode CLI** (global or per-project): commands/agents/skills installed into OpenCode; projects use `memory_bank/` and minimal structure.
 
 ---
 
@@ -132,7 +132,7 @@ alias apm-cd='cd /path/to/Agentic-Project-Management'
 ## Methodologies
 
 - **RAPID**: fast product iterations, minimal ceremony.
-- **DS**: data science workflow (EDA -> baseline -> experiments -> evaluation -> finalize).
+- **DS**: data science workflow (EDA -> Deep Feature Engineering -> baseline -> experiments -> evaluation -> finalize).
 - **FULL**: deprecated (Cursor-only).
 
 ---
@@ -140,9 +140,9 @@ alias apm-cd='cd /path/to/Agentic-Project-Management'
 ## How it works
 
 1. **/apm-start** runs Vision Alignment (RAPID) or Problem Definition (DS).
-2. After your confirmation, APM creates the Memory Bank: `ARCHITECTURE.md`, `TASK.md`, `STATE.md`.
-3. You continue with role-specific commands/skills (e.g., `/apm-develop`, `apm-code-simplifier`, `apm-eda`, `apm-ds-exp`).
-4. Every session ends with an update to `STATE.md` (project continuity).
+2. After your confirmation, APM creates the Memory Bank: `ARCHITECTURE.md`, `STATE.md`, and `tasks/` (`TASKS.md` + `TASK-001.md` starter).
+3. You continue with role-specific commands/skills (e.g., `/apm-develop`, `apm-code-simplifier`, `apm-eda`, `apm-deep-feature-engineering`, `apm-ds-exp`).
+4. Memory Bank synchronization is explicit and on-demand (e.g., `/apm-sync`).
 
 ---
 
@@ -150,18 +150,22 @@ alias apm-cd='cd /path/to/Agentic-Project-Management'
 
 **RAPID:** `/apm-start` -> `/apm-develop` -> `apm-code-simplifier` -> `/apm-test` -> `/apm-sync`
 
-**DS:** `/apm-start` -> `/apm-eda` -> `/apm-baseline` -> `/apm-experiment` -> `/apm-review`
+**DS:** `/apm-start` -> `/apm-eda` -> `/apm-deep-feature-engineering` -> `/apm-baseline` -> `/apm-experiment` -> `/apm-review`
 
 ---
 
 ## Memory Bank
 
-- All environments: `memory-bank/`
+- All environments: `memory_bank/`
 
 Core files:
 - `ARCHITECTURE.md`
-- `TASK.md`
 - `STATE.md`
+- `tasks/TASKS.md`
+- `tasks/{TASK_ID}.md`
+
+Line budget:
+- Keep `STATE.md` and `tasks/TASKS.md` under 150 lines (compress when exceeded).
 
 ---
 
@@ -174,7 +178,7 @@ Core files:
 | `/apm-start` | Vision Alignment / Problem Definition + Memory Bank initialization + environment proposal |
 | `/apm-architect` | Architecture consultation or updates |
 | `/apm-review` | Architecture review and recommendations |
-| `/apm-sync` | Sync current project state into `STATE.md` |
+| `/apm-sync` | Explicit Memory Bank synchronization on request |
 | `/apm-report` | Generate reports from templates |
 
 ### RAPID
@@ -190,6 +194,7 @@ Core files:
 | Command | Description |
 |---------|-------------|
 | `/apm-eda` | Exploratory Data Analysis workflow |
+| `/apm-deep-feature-engineering` | Deep post-EDA feature engineering analysis |
 | `/apm-baseline` | Build a domain-credible baseline model |
 | `/apm-experiment` | Hypothesis-driven experiment cycle |
 

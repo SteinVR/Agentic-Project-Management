@@ -4,18 +4,18 @@ description: "Iterative development loop: plan, implement, verify, and log chang
 ---
 ## What I do
 - Provide a disciplined implementation loop for RAPID work.
-- Keep TASK and STATE aligned with actual changes.
+- Keep implementation scoped to active tasks.
 - Require verification and logging when appropriate.
 
 ## When to use
 - Implementing features, bug fixes, refactors, or integration tasks in RAPID projects.
 
 ## Workflow
-1. Read `memory-bank/ARCHITECTURE.md`, `memory-bank/TASK.md`, `memory-bank/STATE.md`.
-2. Set **Current Task in Focus** and write a short **Implementation Plan** checklist.
+1. Read `memory_bank/ARCHITECTURE.md`, `memory_bank/tasks/TASKS.md`, and the active `memory_bank/tasks/{TASK_ID}.md`.
+2. Confirm the active task scope and write a short implementation checklist in `{TASK_ID}.md`.
 3. Implement changes in `src/` with clean structure.
 4. Verify with tests or targeted smoke checks.
-5. Update `memory-bank/TASK.md` and `memory-bank/STATE.md` with outcomes.
+5. Summarize execution outcomes in the task file or activity report.
 
 ## Conventions
 - Prefer simple, modular solutions (SOLID/DRY).

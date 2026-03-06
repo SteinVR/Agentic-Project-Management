@@ -19,16 +19,16 @@ APM supports three distinct environments (or workflows), tailoring its component
 1. **Cursor IDE (Interactive UI):**
    - Utilizes `.cursor/agents/`, `.cursor/commands/`, and shared skills.
    - Leverages Cursor's native Subagents and Skills system (`SKILL.md`).
-   - Memory Bank resides in `memory-bank/`.
+   - Memory Bank resides in `memory_bank/`.
 
 2. **Codex CLI (Terminal / Orchestrated):**
    - Utilizes `config.toml` for subagent declarations (`[agents.*]`) and parallel multi-agent threading.
    - Relies on standardized `.codex/skills/` following the `agentskills.io` specification.
-   - Memory Bank resides in `memory-bank/` (hyphenated).
+   - Memory Bank resides in `memory_bank/`.
 
 3. **OpenCode CLI (Terminal / Extensible):**
    - Implements custom `commands/`, `agents/`, `skills/`, and `tools/` either globally (`~/.config/opencode/`) or locally (`.opencode/`).
-   - Memory Bank resides in `memory-bank/`.
+   - Memory Bank resides in `memory_bank/`.
 
 ---
 
@@ -37,7 +37,7 @@ APM supports three distinct environments (or workflows), tailoring its component
 APM defines strict workflows based on the nature of the project:
 
 - **RAPID:** Designed for fast, iterative software product development with minimal ceremonial overhead. Focuses on the core `develop -> test -> sync` loop.
-- **DS (Data Science):** Specialized workflow for analytical, ML, and research projects. Progresses through `EDA -> Baseline -> Experimentation -> Evaluation -> Finalization`.
+- **DS (Data Science):** Specialized workflow for analytical, ML, and research projects. Progresses through `EDA -> Deep Feature Engineering -> Baseline -> Experimentation -> Evaluation -> Finalization`.
 - **FULL (Deprecated):** Legacy workflow maintained only for older Cursor projects.
 
 ---
@@ -48,8 +48,12 @@ The Memory Bank is the heartbeat of any APM project, ensuring context continuity
 
 **Core Files:**
 - `ARCHITECTURE.md` — The SSOT for the project's technical architecture, stack, patterns, and overarching design decisions.
-- `TASK.md` — The actionable backlog, task breakdown, or active list of data science experiments.
-- `STATE.md` — The dynamic active context. Tracks current progress, immediately resolved blockers, decisions made during the session, and session history. **Must be updated at the end of every meaningful session.**
+- `STATE.md` — Compact operational status and continuity context.
+- `tasks/TASKS.md` — Grouped high-level project tasks.
+- `tasks/{TASK_ID}.md` — Per-task execution notes and working plan.
+
+Size guardrail:
+- Keep `STATE.md` and `tasks/TASKS.md` under 150 lines; compress when limits are exceeded.
 
 ---
 
@@ -82,11 +86,12 @@ Skills (`SKILL.md`) are discrete, self-contained capabilities loaded on demand. 
 | `apm-code-simplifier` | Behavior-preserving simplification of recently modified code |
 | `apm-test` | SDET testing and QA workflow |
 | `apm-review` | Architecture and code review |
-| `apm-sync` | Sync current session state into `STATE.md` |
+| `apm-sync` | Explicit Memory Bank synchronization on request |
 | `apm-report` | Generate reports from templates |
 | `apm-logs` | Structured activity log management |
 | `apm-orchestrate` | Orchestrate complex tasks across subagents (fan-out/fan-in) |
 | `apm-eda` | Exploratory Data Analysis workflow |
+| `apm-deep-feature-engineering` | Deep post-EDA feature engineering analysis |
 | `apm-ds-baseline` | Build domain-credible baseline models |
 | `apm-ds-exp` | Hypothesis-driven DS experiment cycle |
 | `apm-model-report` | DS model evaluation report generation |
@@ -138,14 +143,14 @@ APM/
 ## 7. Basic Project Workflow
 
 1. **Initialization:** Run the `apm.sh` configurator to stamp out the methodology, environment, and initial directory structure.
-2. **Setup Phase:** Run `/apm-start` to align on vision and generate the initial Memory Bank (`ARCHITECTURE.md`, `TASK.md`).
-3. **Execution Loop:** Work through role-specific commands (e.g., `/apm-develop`, `/apm-simplify`, `/apm-test` for RAPID; or `/apm-eda`, `/apm-experiment` for DS).
-4. **Synchronization:** Invoke `/apm-sync` or manually mandate the LLM to update `STATE.md` at the end of every active session to preserve context for the next iteration.
+2. **Setup Phase:** Run `/apm-start` to align on vision and generate the initial Memory Bank (`ARCHITECTURE.md`, `STATE.md`, `tasks/TASKS.md`, starter task file).
+3. **Execution Loop:** Work through role-specific commands (e.g., `/apm-develop`, `/apm-simplify`, `/apm-test` for RAPID; or `/apm-eda`, `/apm-deep-feature-engineering`, `/apm-experiment` for DS).
+4. **Synchronization:** Invoke `/apm-sync` when explicit synchronization is requested.
 
 ---
 
 ## 8. Core Conventions
 
 - **File Naming:** Core instruction or agent context files strictly use **UPPERCASE** naming conventions (e.g., `AGENTS.md`, `SKILL.md`, `ARCHITECTURE.md`) to distinguish them from standard project documentation.
-- **Continuity Guarantee:** Any architectural deviation or significant implementation choice made during a session must immediately be reflected in `STATE.md` (and subsequently `ARCHITECTURE.md` if systemic).
+- **Continuity Guarantee:** Use `tasks/{TASK_ID}.md` and activity reports as primary working memory during execution; sync into Memory Bank only when explicitly requested.
 - **Skill Portability:** Whenever possible, logic should be encapsulated in reusable `.md` skills following the `agentskills.io` spec to ensure cross-compatibility between Cursor, Claude Code, and Codex.

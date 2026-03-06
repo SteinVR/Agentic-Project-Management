@@ -4,8 +4,8 @@ description: "Architecture design and Vision Alignment: define project scope, te
 ---
 ## What I do
 - Run Vision Alignment / Problem Definition.
-- Fill `memory-bank/ARCHITECTURE.md` using the correct template.
-- Initialize the backlog in `memory-bank/TASK.md` and the initial entry in `memory-bank/STATE.md`.
+- Fill `memory_bank/ARCHITECTURE.md` using the correct template.
+- Initialize `memory_bank/tasks/TASKS.md` and `memory_bank/STATE.md` for new projects.
 - Provide architectural consultation and review.
 
 ## When to use
@@ -41,7 +41,7 @@ Before writing any files, ask:
 
 > "Does this accurately capture your vision? Please confirm or provide corrections before I proceed."
 
-Do **not** write to `memory-bank/ARCHITECTURE.md` until the user confirms.
+Do **not** write to `memory_bank/ARCHITECTURE.md` until the user confirms.
 
 ## Templates
 Use the correct template based on methodology:
@@ -50,16 +50,15 @@ Use the correct template based on methodology:
 
 ## Environment setup (post Memory Bank)
 When used as part of full project initialization:
-- Read the Technology Stack section in `memory-bank/ARCHITECTURE.md`.
+- Read the Technology Stack section in `memory_bank/ARCHITECTURE.md`.
 - Propose the environment (runtime versions, package manager, core deps).
 - If approved, create or update config files (pyproject, package.json, etc.).
 - Provide setup commands for the user.
-- Update `memory-bank/STATE.md` with environment notes.
 - Suggest the next skill:
   - RAPID: `apm-dev`
-  - DS: `apm-eda` or `apm-ds-baseline`
+  - DS: `apm-eda`
 
 ## Guardrails
 - Do not implement code unless explicitly requested.
 - Preserve main headers in templates; add sub-sections only.
-- Update `memory-bank/STATE.md` after meaningful changes.
+- Keep `memory_bank/tasks/TASKS.md` and `memory_bank/STATE.md` under 150 lines by compressing when needed.

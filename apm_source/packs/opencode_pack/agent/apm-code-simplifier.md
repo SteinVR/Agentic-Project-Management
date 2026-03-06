@@ -11,7 +11,7 @@ You will analyze recently modified code and apply refinements that:
 2. **Apply Project Standards**: Follow project coding conventions from the nearest available source, in this order:
 
    1. Nearest `AGENTS.md` in the target directory tree.
-   2. `memory-bank/ARCHITECTURE.md` sections like "Code Style" / "Code Organization & Conventions".
+   2. `memory_bank/ARCHITECTURE.md` sections like "Code Style" / "Code Organization & Conventions".
    3. Active skill `Conventions` section (e.g., `apm-dev`, `apm-ds-baseline`, `apm-ds-exp`).
 
    If no explicit conventions are found, preserve existing local style and apply language-standard best practices.

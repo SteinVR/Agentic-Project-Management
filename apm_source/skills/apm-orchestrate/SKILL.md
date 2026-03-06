@@ -52,7 +52,7 @@ Before delegating, analyze the task to choose the execution mode:
 7. Fan-in: collect outputs, normalize into common structure.
 8. Aggregate: merge results using the appropriate aggregation strategy.
 9. Verify: run integration checks, reconcile conflicts, run tests/lint.
-10. Update `memory-bank/STATE.md` with decisions, outcomes, and next steps.
+10. Write a compact integration summary in task artifacts or activity reports.
 
 ## Invocation quality
 
@@ -126,4 +126,4 @@ Always run a maker-checker pass on aggregated results before finalizing.
 - Do not parallelize coupled changes that touch the same critical files.
 - Do not skip fan-in validation before final integration.
 - Escalate when requirements are ambiguous or contradictory.
-- After fan-in: update `memory-bank/STATE.md` with orchestration decisions and outcomes. Update `memory-bank/ARCHITECTURE.md` if architectural decisions were made during orchestration.
+- Do not update Memory Bank files unless the user explicitly requests sync/update.

@@ -22,45 +22,15 @@
 
 ---
 
-## 2. Data Architecture
-
-> Context: Describe the data sources, structure, and quality considerations.
-
-### Data Sources
-
-| Source | Type | Size | Update Frequency | Access Method |
-|--------|------|------|------------------|---------------|
-| [e.g., PostgreSQL DB] | [Tabular/Image/Text] | [Rows/Files] | [Daily/Static] | [SQL/API/File] |
-
-### Data Schema
-
-```
-[Describe key features/columns, their types, and meaning]
-
-Example:
-- user_id (int): Unique user identifier
-- feature_1 (float): Description
-- feature_2 (categorical): Description [values: A, B, C]
-- target (binary): 1 = churned, 0 = retained
-```
-
-### Data Quality Notes
-
-- **Missing Values:** [Known patterns, handling strategy]
-- **Imbalance:** [Class distribution, e.g., 95% negative, 5% positive]
-- **Leakage Risks:** [Features that might leak target information]
-
----
-
-## 3. Experiment Pipeline
+## 2. Experiment Pipeline
 
 > Context: The iterative workflow for running experiments. Unlike product development, this is a cycle, not a linear flow.
 
 ```
-[Data Collection] -> [EDA] -> [Baseline] -> [Hypothesis] -> [Experiment] -> [Evaluate]
-                                                ^                              |
-                                                |______________________________|
-                                                     (iterate until target met)
+[Data Collection] -> [EDA] -> [Deep Feature Engineering] -> [Baseline] -> [Hypothesis] -> [Experiment] -> [Evaluate]
+                                                                       ^                                  |
+                                                                       |__________________________________|
+                                                                              (iterate until target met)
 ```
 
 ### Pipeline Stages
@@ -73,29 +43,35 @@ Example:
 2. **Exploratory Data Analysis (EDA)**
    - Distribution analysis
    - Correlation analysis
-   - Feature importance (preliminary)
-   - Document findings using `src/eda.py` functions and EDA_REPORT
+   - Leakage and quality checks
+   - Document data architecture in `eda/reports/EDA-Report.md`
 
-3. **Baseline Establishment**
+3. **Deep Feature Engineering**
+   - Analyze candidate features after EDA findings are stable
+   - Prioritize high-signal candidates by expected metric impact and runtime cost
+   - Document feature strategy in `eda/reports/EDA-Insights.md`
+
+4. **Baseline Establishment**
    - Simple model (e.g., LogisticRegression, RandomForest with defaults)
    - Naive baseline (e.g., predict majority class)
-   - Record in STATE.md as reference point
+   - Save benchmark artifacts and logs for comparison
 
-4. **Experimentation Cycle**
-   - Formulate hypothesis (in TASK.md)
+5. **Experimentation Cycle**
+   - Formulate hypothesis/task in `memory_bank/tasks/TASKS.md`
+   - Keep working notes in `memory_bank/tasks/{TASK_ID}.md`
    - Implement experiment in `experiments/EXP-XXX/`
    - Train and evaluate using `main_exp.py`
    - Log results in experiment report
-   - Update STATE.md with findings
 
-5. **Final Evaluation**
+6. **Final Evaluation**
    - Test set evaluation (only when confident)
    - Error analysis
-   - Model documentation
+   - Model documentation in `models/model_<metric>_<value>/MODEL_REPORT.md`
+   - Model architecture and validation strategy are documented in model reports, not here
 
 ---
 
-## 4. Technology Stack
+## 3. Technology Stack
 
 > Context: Tools, libraries, and infrastructure for the project.
 
@@ -115,61 +91,7 @@ Example:
   ```
 ---
 
-## 5. Model Architecture (If Applicable)
-
-> Context: For DL projects or complex ML pipelines, describe the model architecture.
-
-### Model Type
-
-[e.g., Gradient Boosted Trees / Neural Network / Ensemble]
-
-### Architecture Details
-
-[Describe layers, components, or pipeline stages]
-
-### Hyperparameters (Initial)
-
-| Parameter | Value | Search Range |
-|-----------|-------|--------------|
-| [e.g., learning_rate] | [0.01] | [0.001 - 0.1] |
-| [e.g., max_depth] | [6] | [3 - 10] |
-
----
-
-## 6. Feature Engineering Strategy
-
-> Context: Planned and implemented feature transformations.
-
-### Planned Features
-
-- [ ] [Feature idea 1]: [Rationale]
-- [ ] [Feature idea 2]: [Rationale]
-
-### Implemented Features
-
-| Feature | Type | Source | Impact on Metric |
-|---------|------|--------|------------------|
-| [To be filled during experiments] | | | |
-
----
-
-## 7. Validation Strategy
-
-> Context: How model performance is validated to ensure generalization.
-
-- **Split Strategy:** [e.g., 70/15/15 train/val/test, TimeSeriesSplit, GroupKFold]
-- **Cross-Validation:** [e.g., 5-fold stratified CV]
-- **Holdout Test Set:** [Describe when it will be used - only for final evaluation]
-
-### Overfitting Prevention
-
-- [e.g., Early stopping on validation loss]
-- [e.g., Regularization techniques]
-- [e.g., Data augmentation]
-
----
-
-## 8. Code Organization & Conventions
+## 4. Code Organization & Conventions
 
 ### Project Structure
 
@@ -186,11 +108,29 @@ src/                          # Reusable typed functions (DRY principle)
 main.py                       # Main pipeline (cell-like blocks with # %% separators)
 config.py                     # Global configuration and hyperparameters
 
+eda/
+├── src/
+│   ├── eda.py                # EDA analysis and visualizations
+│   └── deep_eda.py           # Deep feature engineering analysis
+├── results/
+│   ├── figures/
+│   └── tables/
+└── reports/
+    ├── EDA-Report.md
+    └── EDA-Insights.md
+
 experiments/                  # Isolated experiments
 └── EXP-XXX_{description}/
     ├── main_exp.py           # Experiment pipeline (cell-like blocks)
     ├── config.py             # Experiment-specific config
     └── REPORT.md             # Experiment report
+
+memory_bank/
+├── ARCHITECTURE.md
+├── STATE.md
+└── tasks/
+    ├── TASKS.md
+    └── {TASK_ID}.md
 ```
 
 ### Code Style

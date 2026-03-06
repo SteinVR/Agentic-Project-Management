@@ -7,8 +7,8 @@ description: "Generate a general-purpose project status report from Memory Bank 
 - Tie the report to Memory Bank status and recent results.
 
 ## Required reads
-- `memory-bank/STATE.md`
-- `memory-bank/TASK.md`
+- `memory_bank/STATE.md`
+- `memory_bank/tasks/TASKS.md`
 - relevant files
 
 ## Template

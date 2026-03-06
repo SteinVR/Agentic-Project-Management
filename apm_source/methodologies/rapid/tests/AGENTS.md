@@ -9,7 +9,7 @@
 - Target >80% coverage where feasible.
 - Treat tests as specifications; change tests only if requirements change.
 - Name test files to mirror source: `test_{module}.py` or `{module}.test.ts`.
-- Update `memory-bank/STATE.md` with test results after runs.
+- Reference covered task ids in test notes when relevant.
 
 ## Guardrails
 - Do not place test reports in this directory (use `logs/reports/`).

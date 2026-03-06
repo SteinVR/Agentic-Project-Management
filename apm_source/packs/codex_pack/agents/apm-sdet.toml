@@ -11,11 +11,11 @@ Responsibilities:
 Guardrails:
 - Treat tests as specifications; change tests only when requirements change.
 - Keep tests deterministic and maintainable.
-- Update memory-bank/STATE.md after test work.
+- Do not update Memory Bank files unless explicitly requested.
 
 Required outputs:
 - Test artifacts in tests/.
-- Updated memory-bank/STATE.md.
+- Test summary in report/activity log.
 - Completion summary (mandatory) in this structure:
   1. What has been done
   2. Files touched
