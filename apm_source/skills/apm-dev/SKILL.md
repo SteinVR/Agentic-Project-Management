@@ -16,14 +16,14 @@ description: "Iterative development loop: plan, implement, verify, and log chang
 3. Implement changes in `src/` with clean structure.
 4. Verify with tests or targeted smoke checks.
 5. Run `apm-code-simplifier` on changed files (via subagent when available; otherwise run equivalent inline refinement).
-
-6. Run `apm-code-reviewer` as an independent gate for:
+6. Verify with tests or targeted smoke checks — to ensure `apm-code-simplifier` did not break the implementation.
+7. Run `apm-code-reviewer` as an independent gate for:
    - **Verification** (task/architecture alignment),
    - **Code Review** (bugs, incorrectness, unsafe shortcuts, risks).
-7. Fix review findings and re-run targeted verification.
+8. Fix review findings and re-run targeted verification.
    - P0/P1 findings are mandatory to fix before handoff.
    - P2/P3 findings may be deferred only with explicit rationale.
-8. Prepare a PR-ready handoff:
+9. Prepare a PR-ready handoff:
    - change summary,
    - verification evidence,
    - residual risks / deferred findings.

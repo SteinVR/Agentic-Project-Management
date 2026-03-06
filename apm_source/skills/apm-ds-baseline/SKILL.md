@@ -15,15 +15,16 @@ description: "Build and document a reproducible baseline model for machine learn
 3. Implement baseline in `main.py` or a standalone script.
 4. Run a quick validation (smoke/fast run) on the implemented baseline.
 5. Run `apm-code-simplifier` on changed files (via subagent when available; otherwise run equivalent inline refinement).
-6. Run `apm-code-reviewer` as an independent gate for:
+6. Re-run quick validation — to ensure `apm-code-simplifier` did not break the implementation.
+7. Run `apm-code-reviewer` as an independent gate for:
    - **Verification** (task/architecture alignment),
    - **Code Review** (bugs, incorrectness, unsafe shortcuts, risks).
-7. Fix review findings and re-run quick validation.
+8. Fix review findings and re-run quick validation.
    - P0/P1 findings are mandatory to fix before handoff.
    - P2/P3 findings may be deferred only with explicit rationale.
-8. Save artifacts to `models/` and logs to `logs/`.
-9. If task tracking is active, reflect baseline status in `memory_bank/tasks/TASKS.md` and `memory_bank/tasks/{TASK_ID}.md`.
-10. Prepare a PR-ready handoff with metrics, evidence, and residual risks.
+9. Save artifacts to `models/` and logs to `logs/`.
+10. If task tracking is active, reflect baseline status in `memory_bank/tasks/TASKS.md` and `memory_bank/tasks/{TASK_ID}.md`.
+11. Prepare a PR-ready handoff with metrics, evidence, and residual risks.
 
 ## Conventions
 - Prefer simple, modular solutions (SOLID/DRY).
