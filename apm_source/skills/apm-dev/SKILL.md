@@ -3,7 +3,7 @@ name: apm-dev
 description: "Iterative development loop: plan, implement, verify, and log changes for features, bug fixes, or refactors. Use when writing or modifying application code in src/."
 ---
 ## What I do
-- Provide a disciplined implementation loop for RAPID work.
+- Provide a disciplined implementation loop.
 - Keep implementation scoped to active tasks.
 - Require verification and logging when appropriate.
 

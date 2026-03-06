@@ -10,10 +10,11 @@ description: "Deep Feature Engineering stage for DS: convert EDA findings into r
 ## Required reads
 - `memory_bank/ARCHITECTURE.md`
 - `eda/reports/EDA-Report.md`
-- `memory_bank/tasks/TASKS.md` (if present)
+- `eda/reports/EDA-Insights.md`
+- `memory_bank/tasks/TASKS.md`
 
 ## Required outputs
-- `eda/reports/EDA-Insights.md`
+- `eda/reports/Feature-Engineering.md`
 - Optional supporting tables in `eda/results/tables/deep/`
 
 ## Workflow
@@ -31,7 +32,7 @@ description: "Deep Feature Engineering stage for DS: convert EDA findings into r
 5. Map approved candidates to task IDs in `memory_bank/tasks/TASKS.md` and create/update `memory_bank/tasks/{TASK_ID}.md` as needed.
 
 ## Template
-Use `references/EDA_INSIGHTS_TMP.md`.
+Use `references/Feature-Engineering_TMP.md`.
 
 ## Guardrails
 - Do not run full model training in this stage.

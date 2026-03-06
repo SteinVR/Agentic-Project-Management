@@ -1,10 +1,10 @@
 # Task: TASK-001
 
-## 1. Summary 
+## 1. Summary
 
-**Title:** [Task title]  
-**Description:** [High-level description copied from `TASKS.md`]  
-**Status:** [Planned / In Progress / Blocked / Done]
+**Title:** Setup reproducible baseline and evaluator.  
+**Description:** Setup reproducible baseline and evaluator: establish first trusted benchmark and artifact contract.  
+**Status:** Planned
 
 ## 2. Scope
 

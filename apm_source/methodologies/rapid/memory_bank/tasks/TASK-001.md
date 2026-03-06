@@ -2,9 +2,9 @@
 
 ## 1. Summary (Copied from TASKS.md)
 
-**Title:** [Task title]  
-**Description:** [High-level description copied from `TASKS.md`]  
-**Status:** [Planned / In Progress / Blocked / Done]
+**Title:** Define MVP architecture and delivery boundaries.  
+**Description:** Define MVP architecture and delivery boundaries.  
+**Status:** Planned
 
 ## 2. Scope
 
