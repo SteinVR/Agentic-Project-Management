@@ -23,3 +23,11 @@ config_file = "agents/apm-data-scientist.toml"
 [agents.apm-code-simplifier]
 description = "Refactors recently modified code for clarity and simplicity while preserving behavior. Applies project coding conventions and eliminates unnecessary complexity. Use after implementation to clean up and standardize code changes."
 config_file = "agents/apm-code-simplifier.toml"
+
+[agents.apm-memory-bank-sync]
+description = "Dedicated Memory Bank synchronization role. Reconciles STATE and task files with current project reality, enforces line-budget compression, and proposes architecture sync changes for explicit approval."
+config_file = "agents/apm-memory-bank-sync.toml"
+
+[agents.apm-code-reviewer]
+description = "Independent verification and code-review gate. Checks implementation against task scope and architecture, then reports ranked findings and risks before PR handoff."
+config_file = "agents/apm-code-reviewer.toml"

@@ -8,7 +8,7 @@ Core Principles:
 - **Spec-Driven Development (SDD):** The specification is the Single Source of Truth (SSOT). Code must follow the documented architecture, not the other way around.
 - **Only Essential Memory Bank:** Maintain a minimal, highly structured set of Markdown files to preserve sustainable context across sessions without overwhelming the LLM.
 - **Context Engineering:** Emphasize declarative control, predictable determinism, and token efficiency to maximize AI output quality and consistency.
-- **Role-Based Execution:** Tasks are delegated to specialized agent profiles (e.g., Architect, Engineer, SDET, Data Scientist) acting sequentially or concurrently.
+- **Role-Based Execution:** Tasks are delegated to specialized agent profiles (e.g., Architect, Engineer, SDET, Data Scientist, Code Reviewer, Memory Bank Sync) acting sequentially or concurrently.
 
 ---
 
@@ -68,6 +68,8 @@ Agents represent specific "personas" with customized system prompts and constrai
 - **SDET (Software Development Engineer in Test):** Focuses entirely on QA, testing, and test automation.
 - **Data Scientist:** Executes the DS methodology loop.
 - **Code Simplifier:** Refactors recently modified code for clarity and simplicity while preserving exact behavior. Applies project coding conventions. Activated via `/apm-simplify` (Cursor) or `apm-code-simplifier` skill.
+- **Code Reviewer:** Runs independent verification and review gates, checking task/architecture alignment and ranked code risks before PR handoff.
+- **Memory Bank Sync:** Runs explicit Memory Bank synchronization (`STATE`, `tasks/TASKS`, `{TASK_ID}`) with line-budget compression and approval-gated architecture updates.
 
 ### Skills (Dynamic Capabilities)
 Skills (`SKILL.md`) are discrete, self-contained capabilities loaded on demand. Each skill is a folder containing a required `SKILL.md` with YAML frontmatter metadata and Markdown instructions, and optional bundled resources (`scripts/`, `references/`, `agents/`).
@@ -109,6 +111,9 @@ In modern environments (Cursor 2.5+ and Codex CLI), APM leverages asynchronous/p
 
 Every subagent invocation must include: concrete scope, file references, success criteria, expected output format, and constraints.
 In Codex workflows, subagents return handoff summaries and the primary session writes the single consolidated agent log.
+For development and DS experiment loops, the default post-implementation quality gate is:
+`apm-code-simplifier -> apm-code-reviewer -> main-agent remediation -> PR-ready handoff`.
+For explicit synchronization requests, `apm-sync` may delegate reconciliation to `apm-memory-bank-sync`.
 
 ---
 
@@ -145,7 +150,7 @@ APM/
 
 1. **Initialization:** Run the `apm.sh` configurator to stamp out the methodology, environment, and initial directory structure.
 2. **Setup Phase:** Run `/apm-start` to align on vision and generate the initial Memory Bank (`ARCHITECTURE.md`, `STATE.md`, `tasks/TASKS.md`, starter task file).
-3. **Execution Loop:** Work through role-specific commands (e.g., `/apm-develop`, `/apm-simplify`, `/apm-test` for RAPID; or `/apm-eda`, `/apm-deep-feature-engineering`, `/apm-experiment` for DS).
+3. **Execution Loop:** Work through role-specific commands (e.g., `/apm-develop`, `/apm-simplify`, `/apm-test` for RAPID; or `/apm-eda`, `/apm-deep-feature-engineering`, `/apm-experiment` for DS). Development and experiment tasks end with simplify/review/remediation quality gates before PR handoff.
 4. **Synchronization:** Invoke `/apm-sync` when explicit synchronization is requested.
 
 ---

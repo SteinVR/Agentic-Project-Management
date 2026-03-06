@@ -5,7 +5,7 @@ description: "Build and document a reproducible baseline model for machine learn
 ## What I do
 - Establish a **representative, domain-credible** baseline before experiments.
 - Ensure the baseline can realistically serve as the foundation for the pipeline.
-- Enforce explicit hyperparameter choices and logging.
+- Enforce explicit hyperparameter choices, quality gates, and logging.
 
 ## Baseline workflow
 1. Review `memory_bank/ARCHITECTURE.md`, `eda/reports/EDA-Report.md`, and `eda/reports/EDA-Insights.md`.
@@ -13,10 +13,17 @@ description: "Build and document a reproducible baseline model for machine learn
    - It should be strong enough to compare against, not a toy model.
    - Prefer a model class that could plausibly remain in the final pipeline.
 3. Implement baseline in `main.py` or a standalone script.
-4. Run a quick validation (or provide commands for the user to run).
-5. Save artifacts to `models/` and logs to `logs/`.
-6. If task tracking is active, reflect baseline status in `memory_bank/tasks/TASKS.md` and `memory_bank/tasks/{TASK_ID}.md`.
-7. Ensure baseline logs follow apm-logs.
+4. Run a quick validation (smoke/fast run) on the implemented baseline.
+5. Run `apm-code-simplifier` on changed files (via subagent when available; otherwise run equivalent inline refinement).
+6. Run `apm-code-reviewer` as an independent gate for:
+   - **Verification** (task/architecture alignment),
+   - **Code Review** (bugs, incorrectness, unsafe shortcuts, risks).
+7. Fix review findings and re-run quick validation.
+   - P0/P1 findings are mandatory to fix before handoff.
+   - P2/P3 findings may be deferred only with explicit rationale.
+8. Save artifacts to `models/` and logs to `logs/`.
+9. If task tracking is active, reflect baseline status in `memory_bank/tasks/TASKS.md` and `memory_bank/tasks/{TASK_ID}.md`.
+10. Prepare a PR-ready handoff with metrics, evidence, and residual risks.
 
 ## Conventions
 - Prefer simple, modular solutions (SOLID/DRY).

@@ -4,7 +4,7 @@ description: "Plan, execute, and document a hypothesis-driven experiment for mac
 ---
 ## What I do
 - Define experiment selection, planning, and reporting.
-- Enforce experiment hygiene and task traceability.
+- Enforce experiment hygiene, quality gates, and task traceability.
 
 ## Experiment workflow
 1. Read `memory_bank/ARCHITECTURE.md`, `memory_bank/tasks/TASKS.md`, and the active `memory_bank/tasks/{TASK_ID}.md`.
@@ -14,9 +14,17 @@ description: "Plan, execute, and document a hypothesis-driven experiment for mac
    - `main_exp.py`
    - `config.py`
    - `EXP-XXX_REPORT.md`
-5. Test the pipeline quickly, do smoke-test; **do not run full training unless the user asks**.
-6. Record results in `EXP-XXX_REPORT.md` and task files.
-7. `EXP-XXX_REPORT.md`should contain all information about the whole experiment (success and failures)
+5. Test the pipeline quickly (smoke-test); **do not run full training unless the user asks**.
+6. Run `apm-code-simplifier` on changed files (via subagent when available; otherwise run equivalent inline refinement).
+7. Run `apm-code-reviewer` as an independent gate for:
+   - **Verification** (task/architecture alignment),
+   - **Code Review** (bugs, incorrectness, unsafe shortcuts, risks).
+8. Fix review findings and re-run smoke-test on impacted paths.
+   - P0/P1 findings are mandatory to fix before handoff.
+   - P2/P3 findings may be deferred only with explicit rationale.
+9. Record results in `EXP-XXX_REPORT.md` and task files.
+10. Ensure `EXP-XXX_REPORT.md` contains success and failure outcomes for the whole experiment.
+11. Prepare a PR-ready handoff with experiment evidence, risks, and open items.
 
 ## Template
 Use `references/EXPERIMENT_REPORT_TMP.md` for `EXP-XXX_REPORT.md`.

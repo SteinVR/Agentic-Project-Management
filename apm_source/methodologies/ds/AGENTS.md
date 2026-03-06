@@ -12,7 +12,7 @@
 ## Project map
 - `memory_bank/` — stable project-level architecture, DS state, and task board.
 - `data/` — raw, processed, and external data layers.
-- `eda/` — EDA reports and deep feature engineering insights.
+- `eda/` — EDA scripts, results, high-level `EDA-Report.md`, and deep `EDA-Insights.md`.
 - `experiments/` — hypothesis implementation and reports.
 - `models/` — model artifacts and model reports.
 - `logs/` — split into `logs/project/` for project logs and `logs/agents/` for agent-session logs.
@@ -27,7 +27,7 @@
 - For complex DS work, decompose into independent experiment and implementation streams.
 - Parallelize experiments only when data handling and output ownership are explicit.
 - Define each delegation with required metrics, output format, and verification criteria.
-- Use `apm-orchestrate` for fan-out/fan-in planning and git worktree execution patterns.
+- Use `apm-orchestrate` for fan-out/fan-in planning.
 - Before final integration, normalize outputs and run comparison checks.
 
 ## Notes

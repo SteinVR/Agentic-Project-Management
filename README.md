@@ -141,17 +141,17 @@ alias apm-cd='cd /path/to/Agentic-Project-Management'
 
 1. **/apm-start** runs Vision Alignment (RAPID) or Problem Definition (DS).
 2. After your confirmation, APM creates the Memory Bank: `ARCHITECTURE.md`, `STATE.md`, and `tasks/` (`TASKS.md` + `TASK-001.md` starter).
-3. You continue with role-specific commands/skills (e.g., `/apm-develop`, `apm-code-simplifier`, `apm-eda`, `apm-deep-feature-engineering`, `apm-ds-exp`).
-4. Memory Bank synchronization is explicit and on-demand (e.g., `/apm-sync`).
+3. You continue with role-specific commands/skills (e.g., `/apm-develop`, `apm-eda`, `apm-deep-feature-engineering`, `apm-ds-exp`). Development and DS experiment loops use an explicit quality gate: `apm-code-simplifier -> apm-code-reviewer -> fix findings -> PR-ready handoff`.
+4. Memory Bank synchronization is explicit and on-demand (e.g., `/apm-sync`), with optional delegation to a dedicated sync subagent when configured.
 5. Logs are split into `logs/project/` for runtime and reports, and `logs/agents/` for main-session agent logs.
 
 ---
 
 ## Example flow
 
-**RAPID:** `/apm-start` -> `/apm-develop` -> `apm-code-simplifier` -> `/apm-test` -> `/apm-sync`
+**RAPID:** `/apm-start` -> `/apm-develop` (includes `simplify -> review -> fix -> PR-ready handoff`) -> `/apm-test` -> `/apm-sync`
 
-**DS:** `/apm-start` -> `/apm-eda` -> `/apm-deep-feature-engineering` -> `/apm-baseline` -> `/apm-experiment` -> `/apm-review`
+**DS:** `/apm-start` -> `/apm-eda` (`EDA-Report.md` + `EDA-Insights.md`) -> `/apm-deep-feature-engineering` -> `/apm-baseline` / `/apm-experiment` (same quality gate as above) -> `/apm-review`
 
 ---
 
@@ -213,7 +213,7 @@ Line budget:
 - OpenCode pack lives in `apm_source/packs/opencode_pack/`.
 - Shared CLI skills live in `apm_source/skills/`.
 - Example shared skills: `apm-dev`, `apm-code-simplifier`, `apm-test`, `apm-review`, `apm-logs`, `apm-report`.
-- Codex pack source lives in `apm_source/packs/codex_pack/` (subagent roles).
+- Codex pack source lives in `apm_source/packs/codex_pack/` (subagent roles), including dedicated sync/review roles (`apm-memory-bank-sync`, `apm-code-reviewer`) in source profiles.
 - Cursor agents/commands pack lives in `apm_source/packs/cursor_pack/`.
 - Methodology templates live in `apm_source/methodologies/{rapid,ds}/`.
 - Legacy FULL methodology is stored in `apm_source/_legacy/cursor_ide/full_deprecated/`.

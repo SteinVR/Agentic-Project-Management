@@ -1,26 +1,22 @@
 # EDA Report: [Project Name]
 
-**Date:** YYYY-MM-DD
-**Author:** Data Scientist
-**Data Version:** [e.g., v1.0, or date of data snapshot]
+**Date:** YYYY-MM-DD  
+**Author:** Data Scientist  
+**Data Version:** [e.g., v1.0 or snapshot date]
 
 ---
 
-## 1. Executive Summary
+## 1. Executive Summary (High-Level)
 
-[2-3 sentences summarizing the key findings from EDA]
+[2-5 concise sentences: what data looks like, what is risky, what is promising.]
 
 ---
 
-## 2. Dataset Overview
-
-### Data Architecture
+## 2. Data Architecture
 
 | Source | Type | Size | Update Frequency | Access Method |
 |--------|------|------|------------------|---------------|
 | [e.g., data/raw/train.parquet] | [Tabular/Image/Text] | [Rows/Files] | [Daily/Static] | [File/API/SQL] |
-
-### Basic Statistics
 
 | Attribute | Value |
 |-----------|-------|
@@ -31,122 +27,70 @@
 | Missing Values | [percentage] |
 | Duplicate Rows | [number] |
 
-### Feature Types
+---
 
-| Type | Count | Examples |
-|------|-------|----------|
-| Numerical | [n] | [feature1, feature2] |
-| Categorical | [n] | [feature3, feature4] |
-| DateTime | [n] | [feature5] |
-| Text | [n] | [feature6] |
+## 3. High-Level Risk Snapshot
+
+| Risk Area | Status | Severity | Action |
+|-----------|--------|----------|--------|
+| Missingness | [summary] | [low/med/high] | [next step] |
+| Leakage | [summary] | [low/med/high] | [next step] |
+| Shift/Drift | [summary] | [low/med/high] | [next step] |
+| Label Quality | [summary] | [low/med/high] | [next step] |
 
 ---
 
-## 3. Target Variable Analysis
+## 4. Top Findings
 
-### Distribution
+1. [Finding 1]
+2. [Finding 2]
+3. [Finding 3]
 
-[Description of target distribution - for classification: class balance; for regression: distribution shape]
-
-| Class/Range | Count | Percentage |
-|-------------|-------|------------|
-| [class 1] | [n] | [%] |
-| [class 2] | [n] | [%] |
-
-### Imbalance Assessment
-
-[Is the dataset imbalanced? What strategies might be needed?]
+| Theme | Short Insight | Why It Matters |
+|-------|---------------|----------------|
+| [target behavior] | [insight] | [modeling impact] |
+| [feature behavior] | [insight] | [impact] |
+| [data quality] | [insight] | [impact] |
 
 ---
 
-## 4. Feature Analysis
+## 5. Immediate Recommendations
 
-### Numerical Features
+### Data and preprocessing
 
-| Feature | Mean | Std | Min | Max | Missing % | Notes |
-|---------|------|-----|-----|-----|-----------|-------|
-| [feat1] | | | | | | [outliers, skewness] |
-| [feat2] | | | | | | |
+- [ ] [Action 1]
+- [ ] [Action 2]
 
-### Categorical Features
+### Baseline and validation
 
-| Feature | Unique Values | Top Value | Top % | Missing % | Notes |
-|---------|---------------|-----------|-------|-----------|-------|
-| [feat1] | | | | | [high cardinality?] |
-| [feat2] | | | | | |
+- [ ] [Baseline guidance]
+- [ ] [Validation guidance]
 
-### Correlations
+### Feature engineering direction
 
-[Top correlations with target, multicollinearity concerns]
-
-| Feature Pair | Correlation | Concern |
-|--------------|-------------|---------|
-| [feat1, feat2] | [value] | [if > 0.8, multicollinearity] |
+- [ ] [Highest-priority candidate]
+- [ ] [Candidate to defer/reject]
 
 ---
 
-## 5. Data Quality Issues
+## 6. Deep Analysis Link
 
-### Missing Values
+Low-level quantitative analysis is captured in:
+- `eda/reports/EDA-Insights.md`
 
-| Feature | Missing % | Pattern | Suggested Handling |
-|---------|-----------|---------|-------------------|
-| [feat1] | [%] | [Random/Systematic] | [Impute/Drop/Flag] |
-
-### Outliers
-
-| Feature | Outliers % | Method | Suggested Handling |
-|---------|------------|--------|-------------------|
-| [feat1] | [%] | [IQR/Z-score] | [Cap/Transform/Keep] |
-
-### Data Leakage
-
-- [ ] [Feature that might leak target information]
-- [ ] [Temporal leakage concerns]
+Use that report for exhaustive diagnostics, detailed evidence, and metric-aligned implications.
 
 ---
 
-## 6. Key Insights
-
-### Patterns Discovered
-
-1. [Insight 1 - e.g., "Feature X shows strong separation between classes"]
-2. [Insight 2 - e.g., "Users with high Y tend to have behavior Z"]
-3. [Insight 3]
-
-### Feature Engineering Opportunities
-
-| Idea | Source Features | Rationale |
-|------|-----------------|-----------|
-| [new_feat1] | [feat_a, feat_b] | [why this might help] |
-| [new_feat2] | [feat_c] | [transformation idea] |
-
----
-
-## 7. Recommendations
-
-### Data Preprocessing
-
-- [ ] [Preprocessing step 1]
-- [ ] [Preprocessing step 2]
-
-### Feature Selection
-
-- [ ] [Features to drop and why]
-- [ ] [Features to transform]
-
-### Modeling Considerations
-
-- [e.g., "Consider SMOTE for class imbalance"]
-- [e.g., "Tree-based models might handle missing values better"]
-
----
-
-## 8. Artifacts
+## 7. Artifacts
 
 | Artifact | Path | Description |
 |----------|------|-------------|
-| EDA Functions | `eda/src/eda.py` | Reusable EDA functions |
-| EDA Report | `eda/reports/EDA-Report.md` | EDA findings + data architecture |
-| Saved Plots | `eda/results/figures/` | Generated visualizations |
-| Saved Tables | `eda/results/tables/` | Generated EDA tables |
+| EDA script | `eda/src/eda.py` | Reproducible high-level EDA |
+| Deep EDA script | `eda/src/deep_eda.py` | Reproducible low-level diagnostics |
+| High-level report | `eda/reports/EDA-Report.md` | Decision-oriented summary |
+| Deep insights report | `eda/reports/EDA-Insights.md` | Exhaustive quantitative analysis |
+| Plots | `eda/results/figures/` | High-level visualizations |
+| Tables | `eda/results/tables/` | High-level numeric outputs |
+| Deep plots | `eda/results/deep/figures/` | Low-level diagnostics |
+| Deep tables | `eda/results/deep/tables/` | Low-level numeric outputs |
