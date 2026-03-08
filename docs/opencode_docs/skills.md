@@ -16,12 +16,14 @@ OpenCode searches these locations:
 - Global config: `~/.config/opencode/skills/<name>/SKILL.md`
 - Project Claude-compatible: `.claude/skills/<name>/SKILL.md`
 - Global Claude-compatible: `~/.claude/skills/<name>/SKILL.md`
+- Project agent-compatible: `.agents/skills/<name>/SKILL.md`
+- Global agent-compatible: `~/.agents/skills/<name>/SKILL.md`
 
 ## Understand discovery
 
-For project-local paths, OpenCode walks up from your current working directory until it reaches the git worktree. It loads any matching `skills/*/SKILL.md` in `.opencode/` and any matching `.claude/skills/*/SKILL.md` along the way.
+For project-local paths, OpenCode walks up from your current working directory until it reaches the git worktree. It loads any matching `skills/*/SKILL.md` in `.opencode/`, any matching `.claude/skills/*/SKILL.md`, and any matching `.agents/skills/*/SKILL.md` along the way.
 
-Global definitions are also loaded from `~/.config/opencode/skills/*/SKILL.md` and `~/.claude/skills/*/SKILL.md`.
+Global definitions are also loaded from `~/.config/opencode/skills/*/SKILL.md`, `~/.claude/skills/*/SKILL.md`, and `~/.agents/skills/*/SKILL.md`.
 
 ## Write frontmatter
 

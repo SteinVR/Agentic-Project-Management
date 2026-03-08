@@ -30,5 +30,8 @@
 - Use `apm-orchestrate` for fan-out/fan-in planning.
 - Before final integration, normalize outputs and run comparison checks.
 
+## Activity log
+- If project structure or code was modified, load and follow the apm-report skill to form the Activity log after completing the assigned task.
+
 ## Notes
 - If instructions conflict, prefer the closest (most specific) AGENTS.md.

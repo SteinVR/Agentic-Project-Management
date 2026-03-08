@@ -31,6 +31,9 @@
 - Use `apm-orchestrate` for fan-out/fan-in planning and git worktree execution patterns.
 - Before final integration, reconcile outputs and run verification.
 
+## Activity log
+- If project structure or code was modified, load and follow the apm-report skill to form the Activity log after completing the assigned task.
+
 ## Notes
 - If instructions conflict, prefer the closest (most specific) AGENTS.md.
 - In `apm-start`, wait for confirmation before writing `ARCHITECTURE.md`.

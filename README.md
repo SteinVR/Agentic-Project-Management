@@ -112,6 +112,7 @@ PowerShell equivalents:
 
 Codex install adds:
 - Skills to `.codex/skills/`
+- Codex-only primary-session skills from `apm_source/packs/codex_pack/skills/`
 - Subagent role configs to `.codex/agents/`
 - Missing APM sections in `.codex/config.toml` (`features.multi_agent`, `agents.max_threads`, `agents.apm-*`)
 
@@ -142,6 +143,9 @@ alias apm-cd='cd /path/to/Agentic-Project-Management'
 1. **/apm-start** runs Vision Alignment (RAPID) or Problem Definition (DS).
 2. After your confirmation, APM creates the Memory Bank: `ARCHITECTURE.md`, `STATE.md`, and `tasks/` (`TASKS.md` + `TASK-001.md` starter).
 3. You continue with role-specific commands/skills (e.g., `/apm-develop`, `apm-eda`, `apm-deep-feature-engineering`, `apm-ds-exp`). Development and DS experiment loops use an explicit quality gate: `apm-code-simplifier -> apm-code-reviewer -> fix findings -> PR-ready handoff`.
+   - OpenCode can run through the `apm-team-lead` primary agent for orchestration-heavy execution.
+   - Codex can enable Team Lead behavior by loading the `apm-team-lead` skill in the main session.
+   - Codex can enable goal-first spec challenge by loading `apm-critical-execution` in the main session; do not use it for specialist subagents.
 4. Memory Bank synchronization is explicit and on-demand (e.g., `/apm-sync`), with optional delegation to a dedicated sync subagent when configured.
 5. Logs are split into `logs/project/` for runtime and reports, and `logs/agents/` for main-session agent logs.
 
@@ -184,7 +188,7 @@ Line budget:
 | Command | Description |
 |---------|-------------|
 | `/apm-start` | Vision Alignment / Problem Definition + Memory Bank initialization + environment proposal |
-| `/apm-architect` | Architecture consultation or updates |
+| `/apm-architect` | Strategic architecture decisions, trade-off analysis, and architecture-governance updates (with user confirmation for major changes) |
 | `/apm-review` | Architecture review and recommendations |
 | `/apm-sync` | Explicit Memory Bank synchronization on request |
 | `/apm-report` | Write a consolidated agent log from the current main session |
@@ -212,8 +216,8 @@ Line budget:
 
 - OpenCode pack lives in `apm_source/packs/opencode_pack/`.
 - Shared CLI skills live in `apm_source/skills/`.
-- Example shared skills: `apm-dev`, `apm-code-simplifier`, `apm-test`, `apm-review`, `apm-logs`, `apm-report`.
-- Codex pack source lives in `apm_source/packs/codex_pack/` (subagent roles), including dedicated sync/review roles (`apm-memory-bank-sync`, `apm-code-reviewer`) in source profiles.
+- Example shared skills: `apm-dev`, `apm-team-lead`, `apm-code-simplifier`, `apm-test`, `apm-review`, `apm-logs`, `apm-report`.
+- Codex pack source lives in `apm_source/packs/codex_pack/` (subagent roles plus Codex-only primary-session skills), including `apm-critical-execution` and dedicated sync/review roles (`apm-memory-bank-sync`, `apm-code-reviewer`) in source profiles.
 - Cursor agents/commands pack lives in `apm_source/packs/cursor_pack/`.
 - Methodology templates live in `apm_source/methodologies/{rapid,ds}/`.
 - Legacy FULL methodology is stored in `apm_source/_legacy/cursor_ide/full_deprecated/`.
@@ -223,8 +227,8 @@ Line budget:
 ## OpenCode CLI architecture
 
 - **Commands** = playbooks the user runs (`/apm-*`). They set the phase and required context.
-- **Agents** = role profiles (Architect/Engineer/SDET/DS). They keep behavior consistent.
-- **Skills** = modular knowledge chunks loaded on demand (governance, arch, dev, simplification, test, logs, DS workflows).
+- **Agents** = role profiles plus optional Team Lead primary orchestrator (`apm-team-lead`) for delegation-first execution.
+- **Skills** = modular knowledge chunks loaded on demand (governance, arch, team-lead mode, dev, simplification, test, logs, DS workflows).
 - **Tools** = custom actions (e.g., `apm_init_structure`) used by commands.
 - **Install targets**:
   - Global: `~/.config/opencode/{commands,agents,skills,tools}`

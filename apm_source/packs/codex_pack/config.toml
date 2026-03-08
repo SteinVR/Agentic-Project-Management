@@ -5,7 +5,7 @@ multi_agent = true
 max_threads = 6
 
 [agents.apm-architect]
-description = "Designs system boundaries, aligns on project vision, maintains ARCHITECTURE.md as the source of truth, and conducts architecture reviews. Use for project initialization, architectural decisions, and structure reviews."
+description = "Strategic architecture owner. Keeps global project goals coherent, drives system-level decisions with explicit trade-offs, governs architecture consistency, and updates ARCHITECTURE.md with approval-gated major changes."
 config_file = "agents/apm-architect.toml"
 
 [agents.apm-engineer]

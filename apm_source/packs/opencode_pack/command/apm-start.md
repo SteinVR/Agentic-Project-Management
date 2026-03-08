@@ -17,14 +17,15 @@ $ARGUMENTS
 
 ## Required Outputs
 - memory_bank/ARCHITECTURE.md
-- memory_bank/tasks/TASKS.mdskills
+- memory_bank/tasks/TASKS.md
+- memory_bank/tasks/TASK-001.md
 - memory_bank/STATE.md
 
 ## Required Tool
 - apm_init_structure
 
 ## Skills to Load
-- apm-arch
+- apm-start
 
 ## Step 0: Determine methodology
 - If the user explicitly states RAPID or DS in $ARGUMENTS, use it.
@@ -36,7 +37,7 @@ $ARGUMENTS
 Call `apm_init_structure` with the chosen methodology before writing any files.
 
 ## Step 2: Vision Alignment
-Follow apm-arch for the correct flow.
+Follow apm-start for the correct flow.
 
 ### If RAPID
 - Output **Project Idea**, **Project Body**, **User Workflow**.
@@ -52,7 +53,7 @@ Ask the user to confirm before writing any files:
 "Does this accurately capture your vision? Please confirm or provide corrections before I proceed."
 
 ## Step 3: After confirmation
-- Fill `memory_bank/ARCHITECTURE.md` using the correct template (apm-arch).
+- Fill `memory_bank/ARCHITECTURE.md` using the correct template (apm-start).
 - Initialize `memory_bank/tasks/TASKS.md`, `memory_bank/tasks/TASK-001.md`, and `memory_bank/STATE.md` using the project templates if present; otherwise create minimal headers and refine with the user.
 
 ## Step 4: Environment setup (post Memory Bank)

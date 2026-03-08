@@ -2,8 +2,7 @@
 
 ## Metadata + Exact User Request
 - Logged at: [DD-MM-YYYY HH:MM]
-- Agent identity: [PrimarySession or config-backed agent name]
-- Agent role: [PrimarySession | apm-architect | apm-engineer | apm-data-scientist | apm-sdet | apm-code-simplifier | default | explorer | worker]
+- Agent identity: [agent name]
 - Task: [TASK_ID]
 - Scope: [one-line summary]
 - Exact user request:

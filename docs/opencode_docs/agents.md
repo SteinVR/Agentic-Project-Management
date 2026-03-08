@@ -63,6 +63,24 @@ A general-purpose agent for researching complex questions and executing multi-st
 
 A fast, read-only agent for exploring codebases. Cannot modify files. Use this when you need to quickly find files by patterns, search code for keywords, or answer questions about the codebase.
 
+### Compaction
+
+*Mode:* `primary` (hidden)
+
+A hidden system agent that compacts long context into a smaller summary. Runs automatically when needed; not selectable in the UI.
+
+### Title
+
+*Mode:* `primary` (hidden)
+
+A hidden system agent that generates short session titles. Runs automatically; not selectable in the UI.
+
+### Summary
+
+*Mode:* `primary` (hidden)
+
+A hidden system agent that creates session summaries. Runs automatically; not selectable in the UI.
+
 ## Usage
 
 1. For primary agents, use the **Tab** key to cycle through them during a session. You can also use your configured `switch_agent` keybind.
@@ -172,6 +190,19 @@ If no temperature is specified, OpenCode uses model-specific defaults; typically
 
 Control the maximum number of agentic iterations an agent can perform before being forced to respond with text only. This allows users who wish to control costs to set a limit on agentic actions.
 
+Use the `steps` field (the legacy `maxSteps` field is deprecated):
+
+```json
+{
+  "agent": {
+    "quick-thinker": {
+      "description": "Fast reasoning with limited iterations",
+      "steps": 5
+    }
+  }
+}
+```
+
 If this is not set, the agent will continue to iterate until the model chooses to stop or the user interrupts the session.
 
 When the limit is reached, the agent receives a special system prompt instructing it to respond with a summarization of its work and recommended remaining tasks.
@@ -223,6 +254,34 @@ Hide a subagent from the `@` autocomplete menu with `hidden: true`. Useful for i
 Control which subagents an agent can invoke via the Task tool with `permission.task`. Uses glob patterns for flexible matching. When set to `deny`, the subagent is removed from the Task tool description entirely.
 
 **Tip:** Rules are evaluated in order, and the **last matching rule wins**. Users can always invoke any subagent directly via the `@` autocomplete menu, even if the agent's task permissions would deny it.
+
+### Color
+
+Customize the agent's visual appearance in the UI. Accepts a valid hex color (e.g., `#FF5733`) or a theme token: `primary`, `secondary`, `accent`, `success`, `warning`, `error`, `info`.
+
+```json
+{
+  "agent": {
+    "code-reviewer": {
+      "color": "accent"
+    }
+  }
+}
+```
+
+### Top P
+
+Alternative to temperature for controlling response diversity. Values range from 0.0 to 1.0; lower values are more focused, higher values more diverse.
+
+```json
+{
+  "agent": {
+    "brainstorm": {
+      "top_p": 0.9
+    }
+  }
+}
+```
 
 ### Additional
 

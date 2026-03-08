@@ -8,7 +8,7 @@ Core Principles:
 - **Spec-Driven Development (SDD):** The specification is the Single Source of Truth (SSOT). Code must follow the documented architecture, not the other way around.
 - **Only Essential Memory Bank:** Maintain a minimal, highly structured set of Markdown files to preserve sustainable context across sessions without overwhelming the LLM.
 - **Context Engineering:** Emphasize declarative control, predictable determinism, and token efficiency to maximize AI output quality and consistency.
-- **Role-Based Execution:** Tasks are delegated to specialized agent profiles (e.g., Architect, Engineer, SDET, Data Scientist, Code Reviewer, Memory Bank Sync) acting sequentially or concurrently.
+- **Role-Based Execution:** Tasks are delegated to specialized agent profiles (e.g., Team Lead, Architect, Engineer, SDET, Data Scientist, Code Reviewer, Memory Bank Sync) acting sequentially or concurrently.
 
 ---
 
@@ -24,10 +24,12 @@ APM supports three distinct environments (or workflows), tailoring its component
 2. **Codex CLI (Terminal / Orchestrated):**
    - Utilizes `config.toml` for subagent declarations (`[agents.*]`) and parallel multi-agent threading.
    - Relies on standardized `.codex/skills/` following the `agentskills.io` specification.
+   - Supports optional primary-session operating modes such as `apm-team-lead` and `apm-critical-execution` while keeping specialist subagents narrow.
    - Memory Bank resides in `memory_bank/`.
 
 3. **OpenCode CLI (Terminal / Extensible):**
    - Implements custom `commands/`, `agents/`, `skills/`, and `tools/` either globally (`~/.config/opencode/`) or locally (`.opencode/`).
+   - Supports a Team Lead primary-agent mode (`apm-team-lead`) for orchestration-first execution.
    - Memory Bank resides in `memory_bank/`.
 
 ---
@@ -63,10 +65,11 @@ APM abstracts capabilities into distinct layers: Agents, Commands, and Skills.
 
 ### Agent Roles
 Agents represent specific "personas" with customized system prompts and constraints.
-- **Architect:** Designs system boundaries, reviews structure, updates `ARCHITECTURE.md`.
+- **Architect:** Strategic architecture owner. Keeps global project goals coherent, drives system-level decisions with explicit trade-offs, governs architecture consistency, and updates `ARCHITECTURE.md` (approval-gated for significant changes).
 - **Lead Engineer / Developer:** Focuses on implementation, adhering to specs.
 - **SDET (Software Development Engineer in Test):** Focuses entirely on QA, testing, and test automation.
 - **Data Scientist:** Executes the DS methodology loop.
+- **Team Lead:** Primary orchestration role for complex execution. Delegates to specialized subagents and integrates outputs, while handling small low-risk edits directly when delegation overhead is unjustified.
 - **Code Simplifier:** Refactors recently modified code for clarity and simplicity while preserving exact behavior. Applies project coding conventions. Activated via `/apm-simplify` (Cursor) or `apm-code-simplifier` skill.
 - **Code Reviewer:** Runs independent verification and review gates, checking task/architecture alignment and ranked code risks before PR handoff.
 - **Memory Bank Sync:** Runs explicit Memory Bank synchronization (`STATE`, `tasks/TASKS`, `{TASK_ID}`) with line-budget compression and approval-gated architecture updates.
@@ -83,7 +86,6 @@ Skills (`SKILL.md`) are discrete, self-contained capabilities loaded on demand. 
 | Skill | Purpose |
 |-------|---------|
 | `apm-start` | Vision Alignment (RAPID) or Problem Definition (DS); initializes the Memory Bank |
-| `apm-arch` | Architecture consultation and `ARCHITECTURE.md` updates |
 | `apm-dev` | Lead Engineer implementation loop |
 | `apm-code-simplifier` | Behavior-preserving simplification of recently modified code |
 | `apm-test` | SDET testing and QA workflow |
@@ -91,6 +93,8 @@ Skills (`SKILL.md`) are discrete, self-contained capabilities loaded on demand. 
 | `apm-sync` | Explicit Memory Bank synchronization on request |
 | `apm-report` | Write a consolidated agent log from the current main session |
 | `apm-logs` | Structured project-log and agent-log taxonomy management |
+| `apm-team-lead` | High-level Team Lead mode for delegation-first execution in Codex |
+| `apm-critical-execution` | Codex-only primary-session mode for intent reconstruction, spec challenge, and goal-first execution |
 | `apm-orchestrate` | Orchestrate complex tasks across subagents (fan-out/fan-in) |
 | `apm-eda` | Exploratory Data Analysis workflow |
 | `apm-deep-feature-engineering` | Deep post-EDA feature engineering analysis |
@@ -100,7 +104,7 @@ Skills (`SKILL.md`) are discrete, self-contained capabilities loaded on demand. 
 | `apm-skill-creator` | Guidance for creating and updating APM skills |
 
 ### Subagents and Orchestration
-In modern environments (Cursor 2.5+ and Codex CLI), APM leverages asynchronous/parallel subagents managed by the `apm-orchestrate` skill.
+In modern environments (Cursor 2.5+, Codex CLI, and OpenCode with Team Lead primary mode), APM leverages asynchronous/parallel subagents managed by the `apm-orchestrate` skill.
 
 **Orchestration paradigm (fan-out/fan-in):**
 1. **Plan (sequential):** Analyze the task, map subtask dependencies, choose execution mode (sequential / parallel / hybrid), define delegation contracts per subtask.
@@ -111,6 +115,8 @@ In modern environments (Cursor 2.5+ and Codex CLI), APM leverages asynchronous/p
 
 Every subagent invocation must include: concrete scope, file references, success criteria, expected output format, and constraints.
 In Codex workflows, subagents return handoff summaries and the primary session writes the single consolidated agent log.
+`apm-critical-execution` is primary-session only; do not load it into specialist subagents.
+In OpenCode Team Lead workflows, the primary agent orchestrates fan-out/fan-in and keeps delegation contracts explicit.
 For development and DS experiment loops, the default post-implementation quality gate is:
 `apm-code-simplifier -> apm-code-reviewer -> main-agent remediation -> PR-ready handoff`.
 For explicit synchronization requests, `apm-sync` may delegate reconciliation to `apm-memory-bank-sync`.

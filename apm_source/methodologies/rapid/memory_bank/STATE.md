@@ -10,7 +10,6 @@
 
 | Attribute | Value |
 |-----------|-------|
-| Current Goal | [Current delivery target] |
 | Active Task IDs | [e.g., TASK-001, TASK-002] |
 | Next Checkpoint | [YYYY-MM-DD or milestone] |
 | Blockers | [None / short list] |

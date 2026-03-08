@@ -38,6 +38,10 @@ Summary of key OpenCode file formats and locations based on docs in `docs/openco
 - **Locations:**
   - Global: `~/.config/opencode/skills/<name>/SKILL.md`
   - Project: `.opencode/skills/<name>/SKILL.md`
+  - Global Claude-compatible: `~/.claude/skills/<name>/SKILL.md`
+  - Project Claude-compatible: `.claude/skills/<name>/SKILL.md`
+  - Global agent-compatible: `~/.agents/skills/<name>/SKILL.md`
+  - Project agent-compatible: `.agents/skills/<name>/SKILL.md`
 - **Frontmatter (required):** `name`, `description`.
 - **Name rules:** lowercase alphanumeric + single hyphens, 1-64 chars.
 - **Optional folders:** `references/`, `scripts/`, `assets/`.

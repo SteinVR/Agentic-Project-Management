@@ -102,6 +102,24 @@ Read existing todo lists. Reads the current todo list state. Used by the LLM to 
 
 Fetch web content. Allows the LLM to fetch and read web pages. Useful for looking up documentation or researching online resources.
 
+### websearch
+
+Search the web for information.
+
+This tool is only available when using the OpenCode provider or when the `OPENCODE_ENABLE_EXA` environment variable is set to any truthy value (e.g., `true` or `1`).
+
+To enable when launching OpenCode:
+
+```bash
+OPENCODE_ENABLE_EXA=1 opencode
+```
+
+Performs web searches using Exa AI to find relevant information online. Useful for researching topics, finding current events, or gathering information beyond the training data cutoff.
+
+No API key is required — the tool connects directly to Exa AI's hosted MCP service without authentication.
+
+Use `websearch` when you need to find information (discovery), and `webfetch` when you need to retrieve content from a specific URL (retrieval).
+
 ### question
 
 Ask the user questions during execution. This tool allows the LLM to ask the user questions during a task. It's useful for:

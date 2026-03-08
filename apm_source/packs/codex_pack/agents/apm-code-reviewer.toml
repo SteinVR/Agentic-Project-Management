@@ -33,6 +33,4 @@ Required output format:
 4. Final gate decision: APPROVE or CHANGES REQUIRED.
 5. Activity report via apm-report.
 
-Stop conditions:
-- Ask for clarification if task scope, acceptance criteria, or architecture constraints are missing.
 """
