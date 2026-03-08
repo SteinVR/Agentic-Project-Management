@@ -7,7 +7,6 @@ description: "Orchestrate complex tasks with subagents: decide execution mode, d
 - Plan subagent fan-out/fan-in for complex work.
 - Define delegation contracts with precise invocations so outputs can be merged safely.
 - Handle subagent failures, partial results, and retries.
-- Provide worktree-oriented execution patterns for parallel streams.
 
 ## When to use
 - Multi-part tasks with independent implementation or experiment tracks.
@@ -131,3 +130,4 @@ Always run a maker-checker pass on aggregated results before finalizing.
 - Do not skip fan-in validation before final integration.
 - Escalate when requirements are ambiguous or contradictory.
 - Do not update Memory Bank files unless the user explicitly requests sync/update.
+- Do not run parallel write streams with overlapping mutable files.

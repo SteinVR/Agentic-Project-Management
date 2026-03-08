@@ -71,7 +71,7 @@ Agents represent specific "personas" with customized system prompts and constrai
 - **Data Scientist:** Executes the DS methodology loop.
 - **Team Lead:** Primary orchestration role for complex execution. Delegates to specialized subagents and integrates outputs, while handling small low-risk edits directly when delegation overhead is unjustified.
 - **Code Simplifier:** Refactors recently modified code for clarity and simplicity while preserving exact behavior. Applies project coding conventions. Activated via `/apm-simplify` (Cursor) or `apm-code-simplifier` skill.
-- **Code Reviewer:** Runs independent verification and review gates, checking task/architecture alignment and ranked code risks before PR handoff.
+- **Code Reviewer:** Runs independent verification and review gates, checking task/architecture alignment and ranked code risks before final handoff.
 - **Memory Bank Sync:** Runs explicit Memory Bank synchronization (`STATE`, `tasks/TASKS`, `{TASK_ID}`) with line-budget compression and approval-gated architecture updates.
 
 ### Skills (Dynamic Capabilities)
@@ -87,6 +87,7 @@ Skills (`SKILL.md`) are discrete, self-contained capabilities loaded on demand. 
 |-------|---------|
 | `apm-start` | Vision Alignment (RAPID) or Problem Definition (DS); initializes the Memory Bank |
 | `apm-dev` | Lead Engineer implementation loop |
+| `apm-git-taskflow` | Team Lead/manual git flow: task-scoped branch/worktree, PR flow, and conflict policy under explicit triggers |
 | `apm-code-simplifier` | Behavior-preserving simplification of recently modified code |
 | `apm-test` | SDET testing and QA workflow |
 | `apm-review` | Architecture and code review |
@@ -118,7 +119,8 @@ In Codex workflows, subagents return handoff summaries and the primary session w
 `apm-critical-execution` is primary-session only; do not load it into specialist subagents.
 In OpenCode Team Lead workflows, the primary agent orchestrates fan-out/fan-in and keeps delegation contracts explicit.
 For development and DS experiment loops, the default post-implementation quality gate is:
-`apm-code-simplifier -> apm-code-reviewer -> main-agent remediation -> PR-ready handoff`.
+`apm-code-simplifier -> apm-code-reviewer -> main-agent remediation -> completion handoff`.
+Git branch/worktree/PR flow is opt-in and is initialized manually by the user, or by Team Lead when explicit `TASK_ID` streams (or direct git-flow request) are provided.
 For explicit synchronization requests, `apm-sync` may delegate reconciliation to `apm-memory-bank-sync`.
 
 ---
@@ -156,8 +158,8 @@ APM/
 
 1. **Initialization:** Run the `apm.sh` configurator to stamp out the methodology, environment, and initial directory structure.
 2. **Setup Phase:** Run `/apm-start` to align on vision and generate the initial Memory Bank (`ARCHITECTURE.md`, `STATE.md`, `tasks/TASKS.md`, starter task file).
-3. **Execution Loop:** Work through role-specific commands (e.g., `/apm-develop`, `/apm-simplify`, `/apm-test` for RAPID; or `/apm-eda`, `/apm-deep-feature-engineering`, `/apm-experiment` for DS). Development and experiment tasks end with simplify/review/remediation quality gates before PR handoff.
-4. **Synchronization:** Invoke `/apm-sync` when explicit synchronization is requested.
+3. **Execution Loop:** Work through role-specific commands (e.g., `/apm-develop`, `/apm-simplify`, `/apm-test` for RAPID; or `/apm-eda`, `/apm-deep-feature-engineering`, `/apm-experiment` for DS). Write-capable tasks use simplify/review/remediation and end with a verified completion handoff.
+4. **Synchronization:** Run `/apm-sync` on explicit request whenever continuity updates are needed.
 
 ---
 
@@ -165,4 +167,5 @@ APM/
 
 - **File Naming:** Core instruction or agent context files strictly use **UPPERCASE** naming conventions (e.g., `AGENTS.md`, `SKILL.md`, `ARCHITECTURE.md`) to distinguish them from standard project documentation.
 - **Continuity Guarantee:** Use `tasks/{TASK_ID}.md` and agent logs as primary working memory during execution; sync into Memory Bank only when explicitly requested.
+- **Git Isolation:** Branch/worktree/PR flow is opt-in and managed manually by user or by Team Lead only under explicit triggers (`TASK_ID` streams or direct request).
 - **Skill Portability:** Whenever possible, logic should be encapsulated in reusable `.md` skills following the `agentskills.io` spec to ensure cross-compatibility between Cursor, Claude Code, and Codex.

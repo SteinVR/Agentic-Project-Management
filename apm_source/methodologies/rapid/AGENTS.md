@@ -28,7 +28,7 @@
 - For complex tasks, decompose work into independent subtasks and delegate to subagents.
 - Parallelize only tasks with low file overlap and explicit ownership boundaries.
 - Define each delegation with expected output format and acceptance checks.
-- Use `apm-orchestrate` for fan-out/fan-in planning and git worktree execution patterns.
+- Use `apm-orchestrate` for fan-out/fan-in planning and integration patterns.
 - Before final integration, reconcile outputs and run verification.
 
 ## Activity log

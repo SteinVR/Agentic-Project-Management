@@ -1,5 +1,7 @@
 # Task Board (DS): [Project Name]
 
+> Keep this file concise (max 150 lines). Store only grouped high-level tasks. Put implementation notes and detailed plans in `memory_bank/tasks/{TASK_ID}.md`.
+
 ## 1. Active Plan (Ordered)
 
 ### Wave 1: Foundation

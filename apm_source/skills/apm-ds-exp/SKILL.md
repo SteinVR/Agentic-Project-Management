@@ -25,7 +25,7 @@ description: "Plan, execute, and document a hypothesis-driven experiment for mac
    - P2/P3 findings may be deferred only with explicit rationale.
 10. Record results in `EXP-XXX_REPORT.md` and task files.
 11. Ensure `EXP-XXX_REPORT.md` contains success and failure outcomes for the whole experiment.
-12. Prepare a PR-ready handoff with experiment evidence, risks, and open items.
+12. Prepare a completion handoff with experiment evidence, risks, and open items.
 
 ## Template
 Use `references/EXPERIMENT_REPORT_TMP.md` for `EXP-XXX_REPORT.md`.

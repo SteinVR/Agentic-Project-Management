@@ -21,8 +21,7 @@ experiments/EXP-XXX_{description}/
 ## Running experiments
 Each `main_exp.py` uses cell-like separators (`# %%`) for block-by-block execution.
 Import reusable functions from `src/` modules (`src/data.py`, `src/features.py`, `src/models.py`, `src/evaluation.py`).
-After implementation/smoke execution, apply the quality gate:
-`apm-code-simplifier -> smoke execution -> apm-code-reviewer -> fix findings -> PR-ready handoff`.
+
 
 ## Conventions
 - Number experiments sequentially: `EXP-001`, `EXP-002`, etc.

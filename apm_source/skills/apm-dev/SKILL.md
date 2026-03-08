@@ -5,7 +5,7 @@ description: "Iterative development loop: plan, implement, verify, and log chang
 ## What I do
 - Provide a disciplined implementation loop.
 - Keep implementation scoped to active tasks.
-- Enforce a post-implementation quality gate: simplify -> review -> fix -> PR-ready handoff.
+- Enforce a post-implementation quality gate: simplify -> review -> fix -> verified handoff.
 
 ## When to use
 - Implementing features, bug fixes, refactors, or integration tasks in RAPID projects.
@@ -23,7 +23,7 @@ description: "Iterative development loop: plan, implement, verify, and log chang
 8. Fix review findings and re-run targeted verification.
    - P0/P1 findings are mandatory to fix before handoff.
    - P2/P3 findings may be deferred only with explicit rationale.
-9. Prepare a PR-ready handoff:
+9. Prepare a completion handoff:
    - change summary,
    - verification evidence,
    - residual risks / deferred findings.

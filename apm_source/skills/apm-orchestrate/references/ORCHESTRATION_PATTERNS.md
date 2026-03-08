@@ -69,7 +69,7 @@ Every subagent prompt must answer:
 - Keep one owner per mutable file in a parallel wave.
 - Prefer parallelizing read-only work (search, analysis, test generation).
 - Push shared integration changes to a dedicated fan-in stage.
-- For write-heavy parallel work: use worktree isolation (one branch per stream).
+- For write-heavy parallel work: enforce strict file ownership boundaries and deterministic integration order.
 
 ## 5) Fan-out examples
 
@@ -85,7 +85,7 @@ Every subagent prompt must answer:
 
 ### Hybrid workflow (common pattern)
 - Phase 1 (seq): Decompose task, define contracts, assign file ownership.
-- Phase 2 (par): Subagent A researches codebase (read-only). Subagent B drafts implementation in worktree. Subagent C generates test scaffolding in worktree.
+- Phase 2 (par): Subagent A researches codebase (read-only). Subagent B drafts implementation in owned paths. Subagent C generates test scaffolding in owned paths.
 - Phase 3 (seq): Collect outputs. Merge implementation patch. Run tests. Review. Finalize.
 
 ## 6) Error handling reference
@@ -132,21 +132,7 @@ After aggregation, always run a validation pass:
 - Re-run validation after each integration step.
 - Update Memory Bank with final decisions and follow-ups.
 
-## 9) Git worktree pattern
-```bash
-# Create independent worktrees for parallel streams
-git worktree add ../wt-feature-a -b feat/stream-a
-git worktree add ../wt-feature-b -b feat/stream-b
-
-# After each stream is complete, integrate in deterministic order
-git checkout main
-git merge --no-ff feat/stream-a
-# Run verification here before proceeding
-git merge --no-ff feat/stream-b
-# Run verification again after second merge
-```
-
-## 10) Output normalization pattern
+## 9) Output normalization pattern
 Require each subagent to return:
 1. What has been done
 2. Files touched

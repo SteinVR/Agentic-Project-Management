@@ -1,6 +1,6 @@
 ---
 name: apm-sync
-description: "Reconcile Memory Bank (`STATE`, `tasks/TASKS`, `ARCHITECTURE`) with the current project state. Use only when the user explicitly requests synchronization."
+description: "Reconcile Memory Bank (`STATE`, `tasks/TASKS`, `ARCHITECTURE`) with the current project state on explicit user request."
 ---
 ## What I do
 - Run explicit Memory Bank reconciliation when requested.
@@ -15,7 +15,7 @@ description: "Reconcile Memory Bank (`STATE`, `tasks/TASKS`, `ARCHITECTURE`) wit
 - repository status (`git status`, `git diff`, `git log`)
 
 ## Workflow
-1. Confirm the user explicitly requested synchronization.
+1. Confirm explicit user synchronization request.
 2. If subagents are available, delegate reconciliation to `apm-memory-bank-sync` with clear scope.
 3. Validate the sync result and ensure line-budget guardrails are satisfied.
 4. If `ARCHITECTURE.md` requires updates, apply changes only after explicit user confirmation.
@@ -43,6 +43,6 @@ When `memory_bank/tasks/TASKS.md` exceeds 150 lines:
 - `memory_bank/ARCHITECTURE.md` (only if user confirms changes)
 
 ## Guardrails
-- Do not run sync unless explicitly requested.
+- Do not run sync outside explicit user request.
 - Do not apply architecture changes without user approval.
 - Main session owns the final user response and consolidated activity report.

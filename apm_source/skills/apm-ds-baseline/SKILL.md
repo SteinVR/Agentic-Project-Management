@@ -24,7 +24,7 @@ description: "Build and document a reproducible baseline model for machine learn
    - P2/P3 findings may be deferred only with explicit rationale.
 9. Save artifacts to `models/` and logs to `logs/`.
 10. If task tracking is active, reflect baseline status in `memory_bank/tasks/TASKS.md` and `memory_bank/tasks/{TASK_ID}.md`.
-11. Prepare a PR-ready handoff with metrics, evidence, and residual risks.
+11. Prepare a completion handoff with metrics, evidence, and residual risks.
 
 ## Conventions
 - Prefer simple, modular solutions (SOLID/DRY).

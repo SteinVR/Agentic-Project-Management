@@ -142,20 +142,22 @@ alias apm-cd='cd /path/to/Agentic-Project-Management'
 
 1. **/apm-start** runs Vision Alignment (RAPID) or Problem Definition (DS).
 2. After your confirmation, APM creates the Memory Bank: `ARCHITECTURE.md`, `STATE.md`, and `tasks/` (`TASKS.md` + `TASK-001.md` starter).
-3. You continue with role-specific commands/skills (e.g., `/apm-develop`, `apm-eda`, `apm-deep-feature-engineering`, `apm-ds-exp`). Development and DS experiment loops use an explicit quality gate: `apm-code-simplifier -> apm-code-reviewer -> fix findings -> PR-ready handoff`.
+3. You continue with role-specific commands/skills (e.g., `/apm-develop`, `apm-eda`, `apm-deep-feature-engineering`, `apm-ds-exp`). Development and DS experiment loops use an explicit quality gate: `apm-code-simplifier -> apm-code-reviewer -> fix findings -> completion handoff`.
+   - Branch/worktree/PR flow is not part of standard specialist subagent loops.
+   - Branch/worktree may be initialized manually by the user, or by Team Lead when explicit `TASK_ID` subtasks (or explicit git-flow request) are provided.
    - OpenCode can run through the `apm-team-lead` primary agent for orchestration-heavy execution.
    - Codex can enable Team Lead behavior by loading the `apm-team-lead` skill in the main session.
    - Codex can enable goal-first spec challenge by loading `apm-critical-execution` in the main session; do not use it for specialist subagents.
-4. Memory Bank synchronization is explicit and on-demand (e.g., `/apm-sync`), with optional delegation to a dedicated sync subagent when configured.
+4. Memory Bank synchronization is explicit (`/apm-sync`) and can be delegated to a dedicated sync subagent when configured.
 5. Logs are split into `logs/project/` for runtime and reports, and `logs/agents/` for main-session agent logs.
 
 ---
 
 ## Example flow
 
-**RAPID:** `/apm-start` -> `/apm-develop` (includes `simplify -> review -> fix -> PR-ready handoff`) -> `/apm-test` -> `/apm-sync`
+**RAPID:** `/apm-start` -> `/apm-develop` (includes `simplify -> review -> fix -> completion handoff`) -> `/apm-test`
 
-**DS:** `/apm-start` -> `/apm-eda` (`EDA-Report.md` + `EDA-Insights.md`) -> `/apm-deep-feature-engineering` -> `/apm-baseline` / `/apm-experiment` (same quality gate as above) -> `/apm-review`
+**DS:** `/apm-start` -> `/apm-eda` (`EDA-Report.md` + `EDA-Insights.md`) -> `/apm-deep-feature-engineering` -> `/apm-baseline` / `/apm-experiment` (`simplify -> review -> fix -> completion handoff`) -> `/apm-review`
 
 ---
 
@@ -178,6 +180,12 @@ Line budget:
 - `logs/project/reports/` stores generated reports such as test, review, and model reports.
 - `logs/agents/` stores main-session agent logs written via `apm-report`.
 - In Codex, spawned roles get their human-readable identity only from their agent config files. The primary session is recorded as `PrimarySession`.
+
+## Git Isolation
+
+- Git flow is opt-in and outside standard specialist subagent skills.
+- Branch/worktree initialization is done manually by the user, or by Team Lead for explicitly assigned `TASK_ID` streams (or direct git-flow request).
+- Team Lead uses `apm-git-taskflow` only under those explicit triggers.
 
 ---
 
