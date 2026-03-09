@@ -15,17 +15,11 @@ description: "Plan, execute, and document a hypothesis-driven experiment for mac
    - `config.py`
    - `EXP-XXX_REPORT.md`
 5. Test the pipeline quickly (smoke-test); **do not run full training unless the user asks**.
-6. Run `apm-code-simplifier` on changed files (via subagent when available; otherwise run equivalent inline refinement).
-7. Re-run smoke-test — to ensure `apm-code-simplifier` did not break the implementation.
-8. Run `apm-code-reviewer` as an independent gate for:
-   - **Verification** (task/architecture alignment),
-   - **Code Review** (bugs, incorrectness, unsafe shortcuts, risks).
-9. Fix review findings and re-run smoke-test on impacted paths.
-   - P0/P1 findings are mandatory to fix before handoff.
-   - P2/P3 findings may be deferred only with explicit rationale.
-10. Record results in `EXP-XXX_REPORT.md` and task files.
-11. Ensure `EXP-XXX_REPORT.md` contains success and failure outcomes for the whole experiment.
-12. Prepare a completion handoff with experiment evidence, risks, and open items.
+6. Load and follow `apm-quality-gate` for the shared final quality gate and verified completion handoff.
+7. During the pre-handoff refresh step inside `apm-quality-gate`, ensure experiment-specific outputs are updated:
+   - Record results in `EXP-XXX_REPORT.md` and task files.
+   - Ensure `EXP-XXX_REPORT.md` contains success and failure outcomes for the whole experiment.
+   - Include experiment evidence, risks, and open items in the final handoff.
 
 ## Template
 Use `references/EXPERIMENT_REPORT_TMP.md` for `EXP-XXX_REPORT.md`.

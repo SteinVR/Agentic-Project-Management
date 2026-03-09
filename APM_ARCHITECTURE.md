@@ -107,6 +107,7 @@ Skills (`SKILL.md`) are discrete, self-contained capabilities loaded on demand. 
 | `apm-start` | Vision Alignment (RAPID) or Problem Definition (DS); initializes the Memory Bank |
 | `apm-dev` | Lead Engineer implementation loop |
 | `apm-git-taskflow` | Team Lead/manual git flow: task-scoped branch/worktree, PR flow, and conflict policy under explicit triggers |
+| `apm-quality-gate` | Shared final quality gate for code-writing flows: simplify, verify, review, fix, and handoff |
 | `apm-code-simplifier` | Behavior-preserving simplification of recently modified code |
 | `apm-test` | SDET testing and QA workflow |
 | `apm-review` | Architecture and code review |
@@ -115,7 +116,7 @@ Skills (`SKILL.md`) are discrete, self-contained capabilities loaded on demand. 
 | `apm-logs` | Structured project-log and agent-log taxonomy management |
 | `apm-team-lead` | High-level Team Lead mode for delegation-first execution in Codex |
 | `apm-critical-execution` | Codex-only primary-session mode for intent reconstruction, spec challenge, and goal-first execution |
-| `apm-orchestrate` | Orchestrate complex tasks across subagents (fan-out/fan-in) |
+| `apm-subagent` | Role-specific delegation contract skill for current specialist subagents |
 | `apm-eda` | Exploratory Data Analysis workflow |
 | `apm-deep-feature-engineering` | Deep post-EDA feature engineering analysis |
 | `apm-ds-baseline` | Build domain-credible baseline models |
@@ -124,7 +125,7 @@ Skills (`SKILL.md`) are discrete, self-contained capabilities loaded on demand. 
 | `apm-skill-creator` | Guidance for creating and updating APM skills |
 
 ### Subagents and Orchestration
-In modern environments (Cursor 2.5+, Codex CLI, and OpenCode with Team Lead primary mode), APM leverages asynchronous/parallel subagents managed by the `apm-orchestrate` skill.
+In modern environments (Cursor 2.5+, Codex CLI, and OpenCode with Team Lead primary mode), APM leverages asynchronous/parallel subagents coordinated by Team Lead. `apm-subagent` standardizes how delegation requests are framed for current specialist roles.
 
 **Orchestration paradigm (fan-out/fan-in):**
 1. **Plan (sequential):** Analyze the task, map subtask dependencies, choose execution mode (sequential / parallel / hybrid), define delegation contracts per subtask.
@@ -134,11 +135,13 @@ In modern environments (Cursor 2.5+, Codex CLI, and OpenCode with Team Lead prim
 **Default policy:** Hybrid — sequential planning phase, parallel read-mostly phase (research/analysis/drafts), sequential integration phase.
 
 Every subagent invocation must include: concrete scope, file references, success criteria, expected output format, and constraints.
+`apm-subagent` is the low-level skill for role-specific prompt framing; it does not choose execution mode or perform integration.
 In Codex workflows, subagents return handoff summaries and the primary session writes the single consolidated agent log.
 `apm-critical-execution` is primary-session only; do not load it into specialist subagents.
 In OpenCode Team Lead workflows, the primary agent orchestrates fan-out/fan-in and keeps delegation contracts explicit.
-For development and DS experiment loops, the default post-implementation quality gate is:
-`apm-code-simplifier -> apm-code-reviewer -> main-agent remediation -> completion handoff`.
+For development and DS code-writing loops, the default post-implementation quality gate is:
+`initial verification -> apm-quality-gate`, where `apm-quality-gate` runs
+`apm-code-simplifier -> verification -> apm-code-reviewer -> main-agent remediation -> completion handoff`.
 Git branch/worktree/PR flow is opt-in and is initialized manually by the user, or by Team Lead when explicit `TASK_ID` streams (or direct git-flow request) are provided.
 For explicit synchronization requests, `apm-sync` may delegate reconciliation to `apm-memory-bank-sync`.
 

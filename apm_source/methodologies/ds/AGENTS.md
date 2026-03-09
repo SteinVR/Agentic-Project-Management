@@ -27,7 +27,7 @@
 - For complex DS work, decompose into independent experiment and implementation streams.
 - Parallelize experiments only when data handling and output ownership are explicit.
 - Define each delegation with required metrics, output format, and verification criteria.
-- Use `apm-orchestrate` for fan-out/fan-in planning.
+- Use `apm-subagent` to form role-appropriate delegation requests.
 - Before final integration, normalize outputs and run comparison checks.
 
 ## Activity log

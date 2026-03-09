@@ -12,21 +12,10 @@ description: "Iterative development loop: plan, implement, verify, and log chang
 
 ## Workflow
 1. Read `memory_bank/ARCHITECTURE.md`, `memory_bank/tasks/TASKS.md`, and the active `memory_bank/tasks/{TASK_ID}.md`.
-2. Confirm the active task scope and write a short implementation checklist in `{TASK_ID}.md`.
+2. Confirm the active task scope and write a short implementation plan-checklist in `{TASK_ID}.md`.
 3. Implement changes in `src/` with clean structure.
 4. Verify with tests or targeted smoke checks.
-5. Run `apm-code-simplifier` on changed files (via subagent when available; otherwise run equivalent inline refinement).
-6. Verify with tests or targeted smoke checks — to ensure `apm-code-simplifier` did not break the implementation.
-7. Run `apm-code-reviewer` as an independent gate for:
-   - **Verification** (task/architecture alignment),
-   - **Code Review** (bugs, incorrectness, unsafe shortcuts, risks).
-8. Fix review findings and re-run targeted verification.
-   - P0/P1 findings are mandatory to fix before handoff.
-   - P2/P3 findings may be deferred only with explicit rationale.
-9. Prepare a completion handoff:
-   - change summary,
-   - verification evidence,
-   - residual risks / deferred findings.
+5. Load and follow `apm-quality-gate` for the shared final quality gate and verified completion handoff.
 
 ## Conventions
 - Prefer simple, modular solutions (SOLID/DRY).

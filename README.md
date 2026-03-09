@@ -142,7 +142,7 @@ alias apm-cd='cd /path/to/Agentic-Project-Management'
 
 1. **/apm-start** runs Vision Alignment (RAPID) or Problem Definition (DS).
 2. After your confirmation, APM creates the Memory Bank: `ARCHITECTURE.md`, `STATE.md`, and `tasks/` (`TASKS.md` + `TASK-001.md` starter).
-3. You continue with role-specific commands/skills (e.g., `/apm-develop`, `apm-eda`, `apm-deep-feature-engineering`, `apm-ds-exp`). Development and DS experiment loops use an explicit quality gate: `apm-code-simplifier -> apm-code-reviewer -> fix findings -> completion handoff`.
+3. You continue with role-specific commands/skills (e.g., `/apm-develop`, `apm-eda`, `apm-deep-feature-engineering`, `apm-ds-exp`). Development and DS code-writing loops use the shared `apm-quality-gate`: `apm-code-simplifier -> verification -> apm-code-reviewer -> fix findings -> completion handoff`.
    - Branch/worktree/PR flow is not part of standard specialist subagent loops.
    - Branch/worktree may be initialized manually by the user, or by Team Lead when explicit `TASK_ID` subtasks (or explicit git-flow request) are provided.
    - OpenCode can run through the `apm-team-lead` primary agent for orchestration-heavy execution.
@@ -155,9 +155,9 @@ alias apm-cd='cd /path/to/Agentic-Project-Management'
 
 ## Example flow
 
-**RAPID:** `/apm-start` -> `/apm-develop` (includes `simplify -> review -> fix -> completion handoff`) -> `/apm-test`
+**RAPID:** `/apm-start` -> `/apm-develop` (includes `apm-quality-gate`) -> `/apm-test`
 
-**DS:** `/apm-start` -> `/apm-eda` (`EDA-Report.md` + `EDA-Insights.md`) -> `/apm-deep-feature-engineering` -> `/apm-baseline` / `/apm-experiment` (`simplify -> review -> fix -> completion handoff`) -> `/apm-review`
+**DS:** `/apm-start` -> `/apm-eda` (`EDA-Report.md` + `EDA-Insights.md`) -> `/apm-deep-feature-engineering` -> `/apm-baseline` / `/apm-experiment` (includes `apm-quality-gate`) -> `/apm-review`
 
 ---
 
@@ -224,7 +224,7 @@ Line budget:
 
 - OpenCode pack lives in `apm_source/packs/opencode_pack/`.
 - Shared CLI skills live in `apm_source/skills/`.
-- Example shared skills: `apm-dev`, `apm-team-lead`, `apm-code-simplifier`, `apm-test`, `apm-review`, `apm-logs`, `apm-report`.
+- Example shared skills: `apm-dev`, `apm-team-lead`, `apm-subagent`, `apm-quality-gate`, `apm-code-simplifier`, `apm-test`, `apm-review`, `apm-logs`, `apm-report`.
 - Codex pack source lives in `apm_source/packs/codex_pack/` (subagent roles plus Codex-only primary-session skills), including `apm-critical-execution` and dedicated sync/review roles (`apm-memory-bank-sync`, `apm-code-reviewer`) in source profiles.
 - Cursor agents/commands pack lives in `apm_source/packs/cursor_pack/`.
 - Methodology templates live in `apm_source/methodologies/{rapid,ds}/`.
@@ -236,7 +236,7 @@ Line budget:
 
 - **Commands** = playbooks the user runs (`/apm-*`). They set the phase and required context.
 - **Agents** = role profiles plus optional Team Lead primary orchestrator (`apm-team-lead`) for delegation-first execution.
-- **Skills** = modular knowledge chunks loaded on demand (governance, arch, team-lead mode, dev, simplification, test, logs, DS workflows).
+- **Skills** = modular knowledge chunks loaded on demand (governance, arch, team-lead mode, subagent delegation contracts, dev, simplification, test, logs, DS workflows).
 - **Tools** = custom actions (e.g., `apm_init_structure`) used by commands.
 - **Install targets**:
   - Global: `~/.config/opencode/{commands,agents,skills,tools}`
