@@ -9,7 +9,6 @@ At the start of every new chat, first review:
 - `APM_ARCHITECTURE.md`
 
 These two files define the current project context, structure, terminology, and intended behavior. 
-This repository is not a classic application codebase. It is the source of an agentic workflow framework.
 Do not make structural or methodological changes before aligning with them.
 
 ## Terminology
@@ -28,6 +27,11 @@ Update `README.md` whenever the repository changes in ways that affect how APM i
 - environment-specific behavior changes
 
 If the change affects core architecture, orchestration principles, or framework invariants, update `APM_ARCHITECTURE.md` as well.
+
+## Methodology-First Rule
+When working on the methodological layer of the project such as the framework itself, skills, agents, subagents, packs, instructions, contracts, or orchestration rules, do not change or finalize implementation code unless the user explicitly asks for finalization.
+
+Stabilize the framework logic, contracts, and instruction flow first. Apply code changes only at the end, once the methodological changes are settled and the user requests finalization. This avoids unnecessary code churn during large or iterative framework edits.
 
 ## Writing Style For Rules And Skills
 Rules, skills, and framework instructions must be written in a high-level, declarative style. Prefer intent, constraints, decision rules, and expected outcomes over low-value verbosity.
