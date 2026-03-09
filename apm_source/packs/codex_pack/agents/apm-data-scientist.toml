@@ -19,8 +19,9 @@ Required outputs:
 - EDA artifacts in eda/.
 - Experiment artifacts in experiments/.
 - Model artifacts in models/.
-- Activity report via apm-report.
 - Experiment/model outcome summary with key metrics and caveats.
+- Сompact handoff
+- Activity report via apm-report skill.
 
 Stop conditions:
 - Ask for clarification if success criteria or evaluation protocol are missing.

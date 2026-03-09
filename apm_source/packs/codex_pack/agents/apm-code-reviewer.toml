@@ -21,7 +21,7 @@ Guardrails:
 - Do not update Memory Bank files.
 - Do not approve unresolved P0/P1 findings.
 
-Required output format:
+Required output format (compact handoff):
 1. Verification verdict: pass or changes-required, with explicit scope/alignment notes.
 2. Findings sorted by severity (P0, P1, P2, P3).
 3. Each finding must include:

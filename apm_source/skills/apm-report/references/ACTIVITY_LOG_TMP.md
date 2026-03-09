@@ -16,7 +16,7 @@
 ## Implementation Log
 1. [Main step]
 2. [Main step]
-3. [Subagent handoff summary if applicable]
+3. [Subagent handoff summary]
 
 ## Artifacts
 - [Files touched]

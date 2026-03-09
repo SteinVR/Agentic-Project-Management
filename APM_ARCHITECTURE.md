@@ -63,6 +63,25 @@ Size guardrail:
 
 APM abstracts capabilities into distinct layers: Agents, Commands, and Skills.
 
+### Context Layering
+APM separates shared context, dynamic procedures, and role contracts into different artifact types.
+
+- **`AGENTS.md` = common context and rules**
+  Global and local instruction layer for all agents and subagents in a given area.
+  The root `AGENTS.md` defines general project-wide contracts and rules.
+  Nested `AGENTS.md` files define local contracts and rules for a specific area, subtree, or artifact type.
+  It answers: "What must an agent always know in this area?"
+
+- **`SKILLS` = attachable procedures**
+  Mechanism for dynamic, incremental instruction loading.
+  Used for specific tasks, processes, and strictly defined action sequences.
+  Skills load only what is needed at the current moment, only for the agent that needs it, reducing context duplication and noise.
+  They answer: "What must the agent do right now?"
+
+- **Agent and subagent `CONFIGS` = behavioral role contracts**
+  Define the role, behavior, boundaries, and global goals of a specific agent or subagent.
+  They answer: "How must this type of agent behave?"
+
 ### Agent Roles
 Agents represent specific "personas" with customized system prompts and constraints.
 - **Architect:** Strategic architecture owner. Keeps global project goals coherent, drives system-level decisions with explicit trade-offs, governs architecture consistency, and updates `ARCHITECTURE.md` (approval-gated for significant changes).
