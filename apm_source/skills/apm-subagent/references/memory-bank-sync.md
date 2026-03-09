@@ -20,7 +20,6 @@ Use only for explicit continuity and synchronization requests.
 - Unapproved architecture rewrites.
 
 ## Prompt skeleton
-- `Role:` `apm-memory-bank-sync`
 - `Objective:` reconcile continuity artifacts with recent work
 - `Owned paths:` Memory Bank files and only those explicitly in scope
 - `Read first:` `STATE.md`, `TASKS.md`, affected task files, relevant logs and diffs

@@ -21,7 +21,6 @@ Use for focused implementation, bug fixes, refactors, and integrations.
 - Broad repo cleanup outside the owned paths.
 
 ## Prompt skeleton
-- `Role:` `apm-engineer`
 - `Objective:` exact feature, fix, or refactor target
 - `Owned paths:` files or modules the role may change
 - `Read first:` relevant task and architecture files

@@ -21,7 +21,6 @@ Use for testing, QA validation, reproducible defect reports, and targeted covera
 - Git/worktree/PR operations.
 
 ## Prompt skeleton
-- `Role:` `apm-sdet`
 - `Objective:` test or QA goal
 - `Owned paths:` allowed test files and any explicitly approved support files
 - `Read first:` changed code, task file, acceptance criteria

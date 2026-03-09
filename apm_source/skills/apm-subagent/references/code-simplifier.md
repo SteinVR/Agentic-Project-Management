@@ -20,7 +20,6 @@ Use for behavior-preserving cleanup of recently changed code.
 - Git/worktree/PR operations.
 
 ## Prompt skeleton
-- `Role:` `apm-code-simplifier`
 - `Objective:` simplify recently changed code without behavior changes
 - `Owned paths:` touched files only
 - `Read first:` nearest conventions and active workflow conventions

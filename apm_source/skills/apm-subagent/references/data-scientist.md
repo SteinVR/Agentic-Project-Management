@@ -21,7 +21,6 @@ Use for EDA, baseline implementation, experiment execution planning, and model-o
 - Git/worktree/PR operations.
 
 ## Prompt skeleton
-- `Role:` `apm-data-scientist`
 - `Objective:` exact DS task and expected artifact
 - `Owned paths:` DS directories the role may modify
 - `Read first:` task file, architecture, existing EDA or experiment reports

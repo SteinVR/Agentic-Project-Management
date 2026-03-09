@@ -20,7 +20,6 @@ Use for independent verification and code review after implementation is already
 - Git/worktree/PR operations.
 
 ## Prompt skeleton
-- `Role:` `apm-code-reviewer`
 - `Objective:` independent verification and code review gate
 - `Owned scope:` review only; no implementation unless explicitly requested
 - `Read first:` task file, architecture, changed files, verification evidence
