@@ -5,15 +5,13 @@
 ## Expected structure
 - `logs/project/runtime/` -- training logs, evaluation logs, metrics, and errors.
 - `logs/project/reports/` -- generated reports (test, review, model, general).
-- `logs/agents/{TASK_REF}/` -- delegated task-stream agent logs.
-- `logs/agents/PrimarySession/` -- main-session consolidated logs.
+- `logs/agents/{TASK_ID}/` -- task-scoped agent logs.
 
 ## Conventions
 - Log format: `[YYYY-MM-DD HH:MM:SS] [LEVEL] - Message`.
 - Store DS runtime output under `logs/project/runtime/`.
 - Store generated reports under `logs/project/reports/`.
-- Keep agent-session history separate in the appropriate `logs/agents/...` folder.
+- Keep agent logs in `logs/agents/...`.
 
 ## Guardrails
 - Do not store model artifacts here (use `models/`).
-- Do not store EDA outputs here (use `eda/results/`).

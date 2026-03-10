@@ -163,12 +163,50 @@ These examples are explicitly shown in the official multi-agent documentation.
 
 The role schema is explicitly documented:
 
-- `agents.max_threads`: maximum number of concurrently open agent threads.
-- `[agents.<name>]`: declares a role (used as `agent_type` when spawning).
-- `agents.<name>.description`: guidance string.
-- `agents.<name>.config_file`: TOML config layer.
+| Field | Type | Required | Default | Purpose |
+|---|---|---|---|---|
+| `agents.max_threads` | number | No | `6` | Concurrent open agent thread cap. |
+| `agents.max_depth` | number | No | `1` | Maximum nesting depth for spawned agents. Root session starts at depth 0; default `1` allows direct child agents but prevents deeper nesting. Set to `2` to allow one additional layer (subagent spawns subagent). |
+| `agents.job_max_runtime_seconds` | number | No | `1800` | Default per-worker timeout for `spawn_agents_on_csv` jobs. |
+| `[agents.<name>]` | table | No | -- | Role declaration. `<name>` becomes the `agent_type` when spawning. |
+| `agents.<name>.description` | string | No | -- | Human-facing role guidance shown to Codex when deciding which role to use. |
+| `agents.<name>.config_file` | string (path) | No | -- | Path to a TOML config layer applied to spawned agents for that role. |
+| `agents.<name>.nickname_candidates` | array | No | -- | Optional pool of display nicknames for spawned agents in that role. |
 
-Notes include: unknown fields rejected; relative `config_file` paths resolved relative to the declaring `config.toml`; and failure to load a role config file can cause spawns to fail.
+Notes:
+
+- The spawned agent inherits any configuration that the role does not override from the parent session.
+- Unknown fields in `[agents.<name>]` are rejected.
+- Relative `config_file` paths are resolved relative to the declaring `config.toml`.
+- Failure to load a role config file causes agent spawns to fail.
+- If a role name matches a built-in role (e.g. `explorer`), the user-defined role takes precedence.
+
+### Hyperparameters in Role Configurations
+
+When defining a role in a TOML config layer (e.g., `agents/reviewer.toml`), you can specify model hyperparameters to control the subagent's generation behavior. As of March 2026, Codex CLI supports several standard and provider-specific hyperparameters:
+
+- `temperature` (float): Controls randomness. Lower values (e.g., `0.0` - `0.2`) make the subagent more deterministic and focused, ideal for strict analytical tasks. Higher values increase creativity.
+- `top_p` (float): An alternative to temperature for nucleus sampling.
+- `max_tokens` (integer): Limits the maximum number of tokens generated in the response.
+- `model_reasoning_effort` (string): For models that support variable reasoning effort (like OpenAI's `o1` or `gpt-5.3-codex`), accepted values are typically `"low"`, `"medium"`, or `"high"`.
+- `presence_penalty` / `frequency_penalty` (float): Penalizes new tokens based on their existing presence or frequency in the text so far.
+
+Example of a hyperparameter-rich config:
+
+```toml
+# ~/.codex/agents/analytical-reviewer.toml
+
+model = "gpt-5.3-codex"
+temperature = 0.1
+top_p = 0.95
+max_tokens = 4096
+model_reasoning_effort = "high"
+presence_penalty = 0.0
+frequency_penalty = 0.0
+developer_instructions = "Strictly analyze the code without creative deviations."
+```
+
+These parameters are passed down to the underlying LLM provider when the subagent thread executes its turns.
 
 ### Collaboration tools API: exact parameter schemas
 
@@ -229,8 +267,16 @@ From the multi-agent docs and open-source implementation:
   - minimum 10 seconds
   - default 30 seconds
   - maximum 5 minutes   
-- Codex enforces a **max-depth guardrail** for spawning to avoid unbounded recursive fan-out; when the depth limit is reached, `spawn_agent` fails with a “depth limit reached, solve yourself” style error. The changelog also calls out “max-depth guardrails.”   
-- The Codex changelog records that the **maximum allowed number of sub-agents was reduced to 6** (fan-out limit) to tighten resource usage and guardrails.
+- Codex enforces a **max-depth guardrail** via the `agents.max_depth` config key. The root session starts at depth 0. When a spawned agent reaches the depth limit, `spawn_agent` fails with a "depth limit reached, solve yourself" style error. The default `max_depth` is `1`: direct child agents can be spawned but they cannot spawn further subagents. Set `max_depth = 2` to allow one additional nesting layer (subagent-of-subagent).
+- The Codex changelog records that the **maximum allowed number of sub-agents was reduced to 6** (fan-out limit, controlled by `agents.max_threads`) to tighten resource usage and guardrails.
+
+Example configuration enabling one layer of subagent nesting:
+
+```toml
+[agents]
+max_threads = 6
+max_depth = 2
+```
 
 ## Configuration, Deployment, and Runtime Controls
 

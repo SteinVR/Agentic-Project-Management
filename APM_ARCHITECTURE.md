@@ -112,9 +112,9 @@ Skills (`SKILL.md`) are discrete, self-contained capabilities loaded on demand. 
 | `apm-test` | SDET testing and QA workflow |
 | `apm-review` | Architecture and code review |
 | `apm-sync` | Explicit Memory Bank synchronization on request |
-| `apm-report` | Write a structured agent log for a delegated task stream or the primary session |
+| `apm-report` | Write a structured agent session log for the current work |
 | `apm-logs` | Structured project-log and agent-log taxonomy management |
-| `apm-team-lead` | High-level Team Lead mode for delegation-first execution in Codex |
+| `apm-team-lead` | Team Lead orchestration mode for delegation-first execution in Codex and OpenCode |
 | `apm-critical-execution` | Codex-only primary-session mode for intent reconstruction, spec challenge, and goal-first execution |
 | `apm-subagent` | Role-specific delegation contract skill for current specialist subagents |
 | `apm-eda` | Exploratory Data Analysis workflow |
@@ -125,24 +125,31 @@ Skills (`SKILL.md`) are discrete, self-contained capabilities loaded on demand. 
 | `apm-skill-creator` | Guidance for creating and updating APM skills |
 
 ### Subagents and Orchestration
-In modern environments (Cursor 2.5+, Codex CLI, and OpenCode with Team Lead primary mode), APM leverages asynchronous/parallel subagents coordinated by Team Lead. `apm-subagent` standardizes how delegation requests are framed for current specialist roles.
+In modern environments (Cursor 2.5+, Codex CLI, and OpenCode), APM leverages subagents coordinated by the orchestrating session. Subagent configs are mode-agnostic: they work identically whether the orchestrator is Team Lead, a standard main session, or a workflow skill. `apm-subagent` standardizes how delegation requests are framed for current specialist roles.
+
+**Two interaction modes:**
+1. **Standard mode (sequential):** The user drives work through the main session, which delegates to specialist subagents for localized execution via workflow skills. One task at a time, user validates between steps.
+2. **Team Lead mode (orchestration-first):** The user assigns one or more tasks to Team Lead, which orchestrates parallel subagent streams, validates results, integrates outputs, and returns one compact final handoff. Activated via Shift+Tab in OpenCode (cycle to Team Lead primary agent) or by loading the `apm-team-lead` skill in Codex.
 
 **Orchestration paradigm (fan-out/fan-in):**
-1. **Plan (sequential):** Analyze the task, map subtask dependencies, choose execution mode (sequential / parallel / hybrid), define delegation contracts per subtask.
-2. **Execute (fan-out):** Delegate subtasks to subagents with precise invocations. Each contract specifies scope, owned file paths, done criteria, output format, and constraints.
-3. **Integrate (fan-in):** Collect outputs, apply aggregation strategy (diff merge by ownership, set-union for findings, LLM synthesis for narratives), run verification, update Memory Bank.
+1. **Frame (sequential):** Analyze the task, identify scope, success criteria, and dependencies.
+2. **Decompose (when needed):** Split multi-part work into delegation units with explicit TASK_ID boundaries. Skip when tasks arrive pre-decomposed.
+3. **Delegate (fan-out):** Assign units to subagents with precise invocations. Each contract specifies scope, owned file paths, done criteria, output format, and constraints.
+4. **Validate:** Review returned handoffs, inspect diffs, artifacts, and verification evidence.
+5. **Integrate (fan-in):** Merge results, resolve mechanical conflicts, run integration verification.
+6. **Handoff:** Return compact final handoff to the user.
 
-**Default policy:** Hybrid — sequential planning phase, parallel read-mostly phase (research/analysis/drafts), sequential integration phase.
+**Default policy:** Hybrid -- sequential framing/decomposition, parallel execution where ownership zones do not overlap, sequential integration.
 
 Every subagent invocation must include: concrete scope, file references, success criteria, expected output format, and constraints.
 `apm-subagent` is the low-level skill for role-specific prompt framing; it does not choose execution mode or perform integration.
-In Team Lead-driven workflows, subagents return handoff summaries and write task-stream `apm-report` logs under `logs/agents/{TASK_REF}/`, while the primary session writes the consolidated log under `logs/agents/PrimarySession/`. The Team Lead final user-facing handoff is a separate artifact: compact, decision-ready, and organized by task stream rather than by raw execution log.
+Subagents return compact handoffs and write `apm-report` logs under `logs/agents/{TASK_ID}/`. The orchestrating session writes its consolidated log under `logs/agents/{TASK_ID}/` (single-task) or `logs/agents/` root (multi-task). In Team Lead mode, the final user-facing handoff is a separate artifact: compact, decision-ready, and organized by task.
 `apm-critical-execution` is primary-session only; do not load it into specialist subagents.
-In OpenCode Team Lead workflows, the primary agent orchestrates fan-out/fan-in and keeps delegation contracts explicit.
 For development and DS code-writing loops, the default post-implementation quality gate is:
 `initial verification -> apm-quality-gate`, where `apm-quality-gate` runs
 `apm-code-simplifier -> verification -> apm-code-reviewer -> main-agent remediation -> completion handoff`.
-Git branch/worktree/PR flow is opt-in and is initialized manually by the user, or by Team Lead when explicit `TASK_ID` streams (or direct git-flow request) are provided.
+Specialist subagents that run quality-gate-prescribing skills (e.g., `apm-dev`, `apm-ds-baseline`) may spawn sub-subagents for the quality gate chain (max 1 additional layer).
+Git branch/worktree/PR flow is opt-in and is initialized manually by the user, or by Team Lead when explicit TASK_ID subtasks (or direct git-flow request) are provided.
 For explicit synchronization requests, `apm-sync` may delegate reconciliation to `apm-memory-bank-sync`.
 
 ---

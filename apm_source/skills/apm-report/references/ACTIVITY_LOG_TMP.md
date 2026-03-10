@@ -1,9 +1,9 @@
-# [TASK_REF or PrimarySession] [short-title]
+# [TASK_ID] [short-title]
 
 ## Metadata + Exact Request
 - Logged at: [DD-MM-YYYY HH:MM]
 - Agent identity: [agent name]
-- Task or stream: [TASK_REF or PrimarySession]
+- Task: [TASK_ID]
 - Branch / worktree: [branch and worktree if applicable]
 - Scope: [one-line summary]
 - Exact user request or delegated objective:

@@ -24,8 +24,8 @@ description: "Logging taxonomy and conventions for software and data science pro
 - If work maps to a task, reference the task id in `memory_bank/tasks/{TASK_ID}.md`.
 
 ## Agent logs
-- `logs/agents/{TASK_REF}/` stores delegated task-stream agent logs.
-- `logs/agents/PrimarySession/` stores main-session consolidated logs.
+- `logs/agents/{TASK_ID}/` stores task-scoped agent logs. Each agent working on a task writes here.
+- For cross-task consolidated logs (e.g., multi-task Team Lead orchestration), store under `logs/agents/` root.
 - Use `apm-report` for filename, template, and writer rules.
 - Treat agent logs as execution history, not as storage for project runtime output.
 

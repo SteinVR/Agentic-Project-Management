@@ -255,6 +255,50 @@ Control which subagents an agent can invoke via the Task tool with `permission.t
 
 **Tip:** Rules are evaluated in order, and the **last matching rule wins**. Users can always invoke any subagent directly via the `@` autocomplete menu, even if the agent's task permissions would deny it.
 
+### Subagent-to-subagent delegation (nesting)
+
+As of early 2026, OpenCode supports subagent-to-subagent delegation: a subagent can invoke other subagents via the Task tool, creating nested session hierarchies. This enables multi-layer orchestration patterns (e.g. an engineer subagent spawning an explore subagent for codebase search).
+
+OpenCode does not expose a numeric `max_depth` config key. Instead, nesting depth is controlled structurally through `permission.task` rules on each agent. To allow exactly one additional layer of delegation (subagent spawns subagent, but that child cannot spawn further), grant task permissions only to the agents that need delegation and deny task permissions on the leaf-level agents:
+
+```json
+{
+  "agent": {
+    "engineer": {
+      "mode": "subagent",
+      "permission": {
+        "task": {
+          "*": "deny",
+          "explore": "allow"
+        }
+      }
+    },
+    "explore": {
+      "mode": "subagent",
+      "permission": {
+        "task": {
+          "*": "deny"
+        }
+      }
+    }
+  }
+}
+```
+
+In Markdown agent files the same pattern applies:
+
+```markdown
+---
+description: Leaf subagent with no delegation
+mode: subagent
+permission:
+  task:
+    "*": deny
+---
+```
+
+Navigation between nested sessions uses **Leader+Right** / **Leader+Left** (or `session_child_cycle` / `session_child_cycle_reverse` keybinds) to cycle through the parent and all child sessions.
+
 ### Color
 
 Customize the agent's visual appearance in the UI. Accepts a valid hex color (e.g., `#FF5733`) or a theme token: `primary`, `secondary`, `accent`, `success`, `warning`, `error`, `info`.
@@ -283,9 +327,31 @@ Alternative to temperature for controlling response diversity. Values range from
 }
 ```
 
-### Additional
+### Additional Hyperparameters
 
-Any other options you specify in your agent configuration will be **passed through directly** to the provider as model options. This allows you to use provider-specific features and parameters (e.g. `reasoningEffort`, `textVerbosity` for OpenAI).
+Any other options you specify in your agent configuration will be **passed through directly** to the provider as model options. This allows you to use standard and provider-specific hyperparameters to fine-tune the agent's behavior (as of March 2026):
+
+- `max_tokens`: Limit the maximum number of tokens generated.
+- `presence_penalty` / `frequency_penalty`: Adjust the likelihood of the model repeating itself.
+- `reasoningEffort`: For models that support variable reasoning effort (e.g. OpenAI's `o1` or `o3-mini`), typically `"low"`, `"medium"`, or `"high"`.
+- `textVerbosity`: Provider-specific option to control the length and detail of responses.
+
+Example of advanced hyperparameter configuration:
+
+```json
+{
+  "agent": {
+    "deep-thinker": {
+      "model": "openai/o3-mini",
+      "temperature": 0.2,
+      "top_p": 0.95,
+      "max_tokens": 8192,
+      "reasoningEffort": "high",
+      "presence_penalty": 0.1
+    }
+  }
+}
+```
 
 **Tip:** Run `opencode models` to see a list of the available models.
 

@@ -3,6 +3,7 @@ multi_agent = true
 
 [agents]
 max_threads = 6
+max_depth = 2
 
 [agents.apm-architect]
 description = "Strategic architecture owner. Keeps global project goals coherent, drives system-level decisions with explicit trade-offs, governs architecture consistency, and updates ARCHITECTURE.md with approval-gated major changes."
