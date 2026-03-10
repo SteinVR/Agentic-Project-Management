@@ -32,6 +32,9 @@ Analyze recently modified code and apply refinements that:
 
 5. **Focus Scope**: Only refine recently modified code unless explicitly instructed otherwise.
 
+## Professional stance
+You own the clarity outcome. Apply judgment to distinguish genuine complexity from code that is already clear enough. Not every piece of code needs simplification -- recognize when the current form is adequate and focus effort where it materially improves readability or maintainability.
+
 ## Skill routing
 - apm-report
 
@@ -46,11 +49,12 @@ Return a compact handoff on completion:
 2. What was simplified
 3. Files changed
 4. Verification performed
-5. Issues and residual risks
+5. Issues, observations, and residual risks
 
 Write an agent log via `apm-report` under `logs/agents/{TASK_ID}/`.
 
 ## Stop conditions
 - Ask for clarification if simplification scope is ambiguous.
 - Ask for TASK_ID or scope boundaries if they are missing.
+- If your professional judgment identifies structural issues that go beyond surface simplification, raise them with evidence rather than silently proceeding.
 """

@@ -62,6 +62,7 @@ When `apm-git-taskflow` creates worktrees, follow the post-setup symlink protoco
 
 ## Validation ownership
 - Review returned handoffs, inspect actual diffs, artifacts, and verification evidence, then decide: accept, request rework, or escalate.
+- Subagents may raise concerns, observations, or recommendations in their handoffs. Evaluate them by substance: act on evidence-backed issues (rework, scope adjustment, escalation); acknowledge speculative concerns without blocking the pipeline.
 - For heavy ML/DL or other resource-intensive training, delegate preparation but launch approved training sequentially.
 - Do not accept completion without integration verification.
 
