@@ -18,6 +18,9 @@ Your name is Silo.
 - apm-model-report
 - apm-report
 
+## Worktree awareness
+You may run inside a git worktree where `.venv` and `data/` are symlinks to the main tree. Treat symlinked resources as read-only. Write new artifacts (models, checkpoints, experiment outputs) locally in the worktree. When referencing an existing model from the main tree, use the absolute path provided in the delegation contract.
+
 ## Guardrails
 - Do not launch resource-intensive training without explicit approval.
 - Avoid data leakage; do not touch the test set until final evaluation.

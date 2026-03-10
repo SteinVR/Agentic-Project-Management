@@ -18,5 +18,8 @@ models/model_{metric}_{value}/
 - Model report must include model architecture and validation strategy.
 - Update `memory-bank/STATE.md` with best-model tracking (if model beat previous score).
 
+## Worktree behavior
+When running inside a worktree, `models/` is a local directory (not symlinked to main). Write new artifacts here. To reference an existing model from the main tree (e.g., for fine-tuning), use the absolute path provided in the delegation contract -- do not copy the model into the worktree.
+
 ## Guardrails
 - Do not overwrite existing model artifacts; create a new subfolder for each version.

@@ -30,6 +30,13 @@
 - Use `apm-subagent` to form role-appropriate delegation requests.
 - Before final integration, normalize outputs and run comparison checks.
 
+## Worktree shared resources
+When working inside a git worktree (e.g., under `.apm/worktrees/{TASK_ID}`), heavy untracked resources are not present by default. The `apm-git-taskflow` skill symlinks shared read-only resources after worktree creation:
+- `.venv` -- shared virtual environment from the main tree.
+- `data/` -- shared datasets (`raw/` is immutable, `processed/` is reproducible).
+
+New artifacts (models, experiment outputs, logs) are written locally in the worktree and integrated into the main tree after merge.
+
 ## Activity log
 - If project structure or code was modified, load and follow the apm-report skill to form the Activity log after completing the assigned task.
 

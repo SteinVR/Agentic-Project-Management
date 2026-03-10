@@ -106,7 +106,7 @@ Skills (`SKILL.md`) are discrete, self-contained capabilities loaded on demand. 
 |-------|---------|
 | `apm-start` | Vision Alignment (RAPID) or Problem Definition (DS); initializes the Memory Bank |
 | `apm-dev` | Lead Engineer implementation loop |
-| `apm-git-taskflow` | Team Lead/manual git flow: task-scoped branch/worktree, PR flow, and conflict policy under explicit triggers |
+| `apm-git-taskflow` | Team Lead/manual git flow: task-scoped branch/worktree, PR flow, conflict policy, and worktree resource management (symlink protocol for heavy assets) under explicit triggers |
 | `apm-quality-gate` | Shared final quality gate for code-writing flows: simplify, verify, review, fix, and handoff |
 | `apm-code-simplifier` | Behavior-preserving simplification of recently modified code |
 | `apm-test` | SDET testing and QA workflow |
@@ -196,5 +196,5 @@ APM/
 
 - **File Naming:** Core instruction or agent context files strictly use **UPPERCASE** naming conventions (e.g., `AGENTS.md`, `SKILL.md`, `ARCHITECTURE.md`) to distinguish them from standard project documentation.
 - **Continuity Guarantee:** Use `tasks/{TASK_ID}.md` and agent logs as primary working memory during execution; sync into Memory Bank only when explicitly requested.
-- **Git Isolation:** Branch/worktree/PR flow is opt-in and managed manually by user or by Team Lead only under explicit triggers (`TASK_ID` streams or direct request).
+- **Git Isolation:** Branch/worktree/PR flow is opt-in and managed manually by user or by Team Lead only under explicit triggers (`TASK_ID` streams or direct request). Worktrees contain only tracked files; heavy untracked resources (`.venv`, `data/`, model artifacts) are linked from the main tree via the symlink protocol in `apm-git-taskflow`. New artifacts are produced locally in the worktree and migrated to the main tree during integration.
 - **Skill Portability:** Whenever possible, logic should be encapsulated in reusable `.md` skills following the `agentskills.io` spec to ensure cross-compatibility between Cursor, Claude Code, and Codex.

@@ -39,6 +39,53 @@ description: "Task-scoped git execution contract: create or reuse one branch/wor
    - Task branch
    - Worktree path
 
+## Worktree resource management
+
+Git worktrees check out only tracked files. Heavy untracked resources (virtual environments, datasets, model artifacts, caches) are absent in a new worktree by default.
+
+### Resource classification
+
+| Category | Examples | Worktree strategy |
+|---|---|---|
+| Shared read-only | `.venv`, `data/raw/`, `data/external/` | Symlink to main tree |
+| Shared derived | `data/processed/` | Symlink when preprocessing is shared; otherwise regenerate locally |
+| Read-reference artifacts | Existing trained models needed for fine-tuning or inference | Explicit absolute path in delegation contract, or point symlink to specific artifact directory |
+| Task-local outputs | New models, checkpoints, experiment results, logs | Created locally in worktree |
+
+### Post-setup symlink protocol
+
+After step 5 (worktree creation) in **Required setup workflow**, link shared resources:
+
+```bash
+MAIN_TREE="$(git -C .apm/worktrees/{TASK_ID} rev-parse --path-format=absolute --git-common-dir | xargs -I{} dirname {})"
+WT_DIR=".apm/worktrees/{TASK_ID}"
+
+# Virtual environment
+[ -d "$MAIN_TREE/.venv" ] && ln -sfn "$MAIN_TREE/.venv" "$WT_DIR/.venv"
+
+# Data directories
+[ -d "$MAIN_TREE/data" ]  && ln -sfn "$MAIN_TREE/data"  "$WT_DIR/data"
+```
+
+Adapt paths to the project layout documented in `memory_bank/ARCHITECTURE.md`. If the project uses DVC, `dvc checkout` inside the worktree resolves data references from the shared DVC cache automatically -- symlinks are not needed.
+
+### Model artifact referencing
+
+Do not symlink the entire `models/` directory. Instead:
+- **Reading an existing model** (fine-tuning, inference): include the absolute path to the artifact in the delegation contract so the subagent references the original without copying.
+- **Writing new artifacts**: the subagent creates `models/` locally inside the worktree and writes there.
+
+### Artifact integration after merge
+
+After merging a task branch into the base branch, untracked task-local artifacts (new models, reports, generated data) remain only in the worktree directory. Before `git worktree remove`:
+1. Copy new untracked artifacts from the worktree to the corresponding locations in the main tree.
+2. Verify artifact integrity (checksums, config snapshots).
+3. Remove the worktree.
+
+### Configuration
+
+Projects may override the default symlink list via `memory_bank/ARCHITECTURE.md` (section "Shared resources" or equivalent). If present, follow the project-specific list instead of the defaults above.
+
 ## PR contract
 Create PR when:
 - the task is complete, or
