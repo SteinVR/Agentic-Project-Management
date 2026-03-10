@@ -149,7 +149,7 @@ alias apm-cd='cd /path/to/Agentic-Project-Management'
    - Codex can enable Team Lead behavior by loading the `apm-team-lead` skill in the main session.
    - Codex can enable goal-first spec challenge by loading `apm-critical-execution` in the main session; do not use it for specialist subagents.
 4. Memory Bank synchronization is explicit (`/apm-sync`) and can be delegated to a dedicated sync subagent when configured.
-5. Logs are split into `logs/project/` for runtime and reports, and `logs/agents/` for main-session agent logs.
+5. Logs are split into `logs/project/` for runtime and reports, and `logs/agents/` for delegated task-stream logs plus main-session consolidated logs. In Team Lead flows, the final user handoff stays separate from these logs and summarizes validated outcomes per task stream.
 
 ---
 
@@ -178,7 +178,9 @@ Line budget:
 
 - `logs/project/runtime/` stores runtime, training, evaluation, metrics, and error logs.
 - `logs/project/reports/` stores generated reports such as test, review, and model reports.
-- `logs/agents/` stores main-session agent logs written via `apm-report`.
+- `logs/agents/{TASK_REF}/` stores delegated task-stream logs written via `apm-report`.
+- `logs/agents/PrimarySession/` stores main-session consolidated logs written via `apm-report`.
+- Team Lead returns a separate compact final handoff to the user; `apm-report` remains the execution log layer.
 - In Codex, spawned roles get their human-readable identity only from their agent config files. The primary session is recorded as `PrimarySession`.
 
 ## Git Isolation
@@ -199,7 +201,7 @@ Line budget:
 | `/apm-architect` | Strategic architecture decisions, trade-off analysis, and architecture-governance updates (with user confirmation for major changes) |
 | `/apm-review` | Architecture review and recommendations |
 | `/apm-sync` | Explicit Memory Bank synchronization on request |
-| `/apm-report` | Write a consolidated agent log from the current main session |
+| `/apm-report` | Write a structured agent log for a delegated task stream or the primary session |
 
 ### RAPID
 

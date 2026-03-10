@@ -88,7 +88,7 @@ Agents represent specific "personas" with customized system prompts and constrai
 - **Lead Engineer / Developer:** Focuses on implementation, adhering to specs.
 - **SDET (Software Development Engineer in Test):** Focuses entirely on QA, testing, and test automation.
 - **Data Scientist:** Executes the DS methodology loop.
-- **Team Lead:** Primary orchestration role for complex execution. Delegates to specialized subagents and integrates outputs, while handling small low-risk edits directly when delegation overhead is unjustified.
+- **Team Lead:** Primary orchestration role for complex execution. Delegates execution to specialized subagents, validates what they return, integrates outputs, and handles only small low-risk direct edits when delegation overhead is unjustified.
 - **Code Simplifier:** Refactors recently modified code for clarity and simplicity while preserving exact behavior. Applies project coding conventions. Activated via `/apm-simplify` (Cursor) or `apm-code-simplifier` skill.
 - **Code Reviewer:** Runs independent verification and review gates, checking task/architecture alignment and ranked code risks before final handoff.
 - **Memory Bank Sync:** Runs explicit Memory Bank synchronization (`STATE`, `tasks/TASKS`, `{TASK_ID}`) with line-budget compression and approval-gated architecture updates.
@@ -112,7 +112,7 @@ Skills (`SKILL.md`) are discrete, self-contained capabilities loaded on demand. 
 | `apm-test` | SDET testing and QA workflow |
 | `apm-review` | Architecture and code review |
 | `apm-sync` | Explicit Memory Bank synchronization on request |
-| `apm-report` | Write a consolidated agent log from the current main session |
+| `apm-report` | Write a structured agent log for a delegated task stream or the primary session |
 | `apm-logs` | Structured project-log and agent-log taxonomy management |
 | `apm-team-lead` | High-level Team Lead mode for delegation-first execution in Codex |
 | `apm-critical-execution` | Codex-only primary-session mode for intent reconstruction, spec challenge, and goal-first execution |
@@ -136,7 +136,7 @@ In modern environments (Cursor 2.5+, Codex CLI, and OpenCode with Team Lead prim
 
 Every subagent invocation must include: concrete scope, file references, success criteria, expected output format, and constraints.
 `apm-subagent` is the low-level skill for role-specific prompt framing; it does not choose execution mode or perform integration.
-In Codex workflows, subagents return handoff summaries and the primary session writes the single consolidated agent log.
+In Team Lead-driven workflows, subagents return handoff summaries and write task-stream `apm-report` logs under `logs/agents/{TASK_REF}/`, while the primary session writes the consolidated log under `logs/agents/PrimarySession/`. The Team Lead final user-facing handoff is a separate artifact: compact, decision-ready, and organized by task stream rather than by raw execution log.
 `apm-critical-execution` is primary-session only; do not load it into specialist subagents.
 In OpenCode Team Lead workflows, the primary agent orchestrates fan-out/fan-in and keeps delegation contracts explicit.
 For development and DS code-writing loops, the default post-implementation quality gate is:

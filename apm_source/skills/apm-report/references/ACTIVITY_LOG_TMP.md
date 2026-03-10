@@ -1,11 +1,12 @@
-# [TASK_ID] [short-title]
+# [TASK_REF or PrimarySession] [short-title]
 
-## Metadata + Exact User Request
+## Metadata + Exact Request
 - Logged at: [DD-MM-YYYY HH:MM]
 - Agent identity: [agent name]
-- Task: [TASK_ID]
+- Task or stream: [TASK_REF or PrimarySession]
+- Branch / worktree: [branch and worktree if applicable]
 - Scope: [one-line summary]
-- Exact user request:
+- Exact user request or delegated objective:
   > [quote or exact paraphrase]
 
 ## Task Setup
@@ -17,6 +18,14 @@
 1. [Main step]
 2. [Main step]
 3. [Subagent handoff summary]
+
+## Verification
+- [Checks run]
+- [Result]
+
+## Issues / Resolutions
+- [Issue, blocker, or risk]
+- [How it was resolved or what remains open]
 
 ## Artifacts
 - [Files touched]
