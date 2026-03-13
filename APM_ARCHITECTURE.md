@@ -88,7 +88,8 @@ Agents represent specific "personas" with customized system prompts and constrai
 - **Lead Engineer / Developer:** Focuses on implementation, adhering to specs.
 - **SDET (Software Development Engineer in Test):** Focuses entirely on QA, testing, and test automation.
 - **Data Scientist:** Executes the DS methodology loop.
-- **Team Lead:** Primary orchestration role for complex execution. Delegates execution to specialized subagents, validates what they return, integrates outputs, and handles only small low-risk direct edits when delegation overhead is unjustified.
+- **Co-Founder:** Primary project partner who co-owns vision, architecture, and direction. Combines strategic thinking with orchestration capability in natural, collaborative interaction. Delegates to specialist subagents when work benefits from it, acts directly otherwise. Available as a primary agent in OpenCode (`apm-co-founder`) or as a skill in Codex (`apm-co-founder`).
+- **Team Lead:** Formalized orchestration role for structured multi-task execution. Delegates execution to specialized subagents, validates what they return, integrates outputs, and handles only small low-risk direct edits when delegation overhead is unjustified.
 - **Code Simplifier:** Refactors recently modified code for clarity and simplicity while preserving exact behavior. Applies project coding conventions. Activated via `/apm-simplify` (Cursor) or `apm-code-simplifier` skill.
 - **Code Reviewer:** Runs independent verification and review gates, checking task/architecture alignment and ranked code risks before final handoff.
 - **Memory Bank Sync:** Runs explicit Memory Bank synchronization (`STATE`, `tasks/TASKS`, `{TASK_ID}`) with line-budget compression and approval-gated architecture updates.
@@ -114,6 +115,7 @@ Skills (`SKILL.md`) are discrete, self-contained capabilities loaded on demand. 
 | `apm-sync` | Explicit Memory Bank synchronization on request |
 | `apm-report` | Write a structured agent session log for the current work |
 | `apm-logs` | Structured project-log and agent-log taxonomy management |
+| `apm-co-founder` | Co-Founder collaborative mode: primary project partner with strategic thinking and orchestration capability |
 | `apm-team-lead` | Team Lead orchestration mode for delegation-first execution in Codex and OpenCode |
 | `apm-critical-execution` | Codex-only primary-session mode for intent reconstruction, spec challenge, and goal-first execution |
 | `apm-subagent` | Role-specific delegation contract skill for current specialist subagents |
@@ -127,9 +129,10 @@ Skills (`SKILL.md`) are discrete, self-contained capabilities loaded on demand. 
 ### Subagents and Orchestration
 In modern environments (Cursor 2.5+, Codex CLI, and OpenCode), APM leverages subagents coordinated by the orchestrating session. Subagent configs are mode-agnostic: they work identically whether the orchestrator is Team Lead, a standard main session, or a workflow skill. `apm-subagent` standardizes how delegation requests are framed for current specialist roles.
 
-**Two interaction modes:**
+**Three interaction modes:**
 1. **Standard mode (sequential):** The user drives work through the main session, which delegates to specialist subagents for localized execution via workflow skills. One task at a time, user validates between steps.
-2. **Team Lead mode (orchestration-first):** The user assigns one or more tasks to Team Lead, which orchestrates parallel subagent streams, validates results, integrates outputs, and returns one compact final handoff. Activated via Shift+Tab in OpenCode (cycle to Team Lead primary agent) or by loading the `apm-team-lead` skill in Codex.
+2. **Co-Founder mode (collaborative):** The user works with an equal project partner who co-owns vision, architecture, and direction. Natural, informal communication. Orchestration and delegation happen when the work calls for it, not as a default protocol. Activated via Shift+Tab in OpenCode (cycle to Co-Founder primary agent) or by loading the `apm-co-founder` skill in Codex.
+3. **Team Lead mode (orchestration-first):** The user assigns one or more tasks to Team Lead, which orchestrates parallel subagent streams, validates results, integrates outputs, and returns one compact final handoff. Activated via Shift+Tab in OpenCode (cycle to Team Lead primary agent) or by loading the `apm-team-lead` skill in Codex.
 
 **Orchestration paradigm (fan-out/fan-in):**
 1. **Frame (sequential):** Analyze the task, identify scope, success criteria, and dependencies.

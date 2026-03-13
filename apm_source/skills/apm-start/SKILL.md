@@ -55,24 +55,18 @@ Then provide:
 - **Suggested Details** (metrics, validation, baseline, scope)
 - **Tech Stack Proposal**
 
-## WAIT FOR CONFIRMATION
-Ask the user to confirm before writing any files.
+Wait for user confirmation before proceeding.
 
-"Does this accurately capture your vision? Please confirm or provide corrections before I proceed."
-
-## Step 3: After confirmation
+## Step 3: Create Memory Bank
 - Fill `memory_bank/ARCHITECTURE.md` using the correct template
 - Initialize `memory_bank/tasks/TASKS.md`, `memory_bank/tasks/TASK-001.md`, and `memory_bank/STATE.md` using project templates if present; otherwise create minimal headers and refine with the user.
 
-
-## Step 4: Environment setup (post Memory Bank)
+## Step 4: Environment setup
 - Read the Technology Stack and Deployment sections in `memory_bank/ARCHITECTURE.md`.
 - Propose the environment (runtime versions, package manager, core deps).
 - If approved, create or update config files (pyproject, package.json, etc.).
 - Provide setup commands for the user.
-- Summarize what was created and suggest the next skill:
-  - RAPID: `apm-dev`
-  - DS: `apm-eda`
+- Summarize what was created.
 
 ## Guardrails
 - Do not implement code unless explicitly requested.

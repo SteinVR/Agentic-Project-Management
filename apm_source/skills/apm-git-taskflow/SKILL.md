@@ -8,10 +8,9 @@ description: "Task-scoped git execution contract: create or reuse one branch/wor
 - Standardize PR creation, PR content, and conflict handling.
 
 ## Activation rule
-- Use this skill only when git flow is explicitly requested.
-- Valid triggers:
-  - the user explicitly requests branch/worktree/PR flow, or
-  - You are Team Lead and receive multiple explicit TASK_ID subtasks that require isolated execution.
+Valid triggers:
+- The user explicitly requests branch/worktree/PR flow.
+- The orchestrating agent receives multiple explicit TASK_ID subtasks that require isolated execution.
 
 ## TASK_ID contract
 - `TASK_ID` is the identifier used for branch/worktree naming.

@@ -145,7 +145,8 @@ alias apm-cd='cd /path/to/Agentic-Project-Management'
 3. You continue with role-specific commands/skills (e.g., `/apm-develop`, `apm-eda`, `apm-deep-feature-engineering`, `apm-ds-exp`). Development and DS code-writing loops use the shared `apm-quality-gate`: `apm-code-simplifier -> verification -> apm-code-reviewer -> fix findings -> completion handoff`.
    - Branch/worktree/PR flow is not part of standard specialist subagent loops.
    - Branch/worktree may be initialized manually by the user, or by Team Lead when explicit `TASK_ID` subtasks (or explicit git-flow request) are provided.
-   - **Team Lead mode** enables orchestration-first execution for one or more tasks: Team Lead decomposes, delegates to specialist subagents, validates, integrates, and returns one compact final handoff. Activate via Shift+Tab in OpenCode (cycle to Team Lead primary agent) or by loading the `apm-team-lead` skill in Codex.
+   - **Co-Founder mode** provides a collaborative primary partner who co-owns project vision, architecture, and direction. Natural communication, strategic thinking, orchestration when needed. Activate via Shift+Tab in OpenCode (cycle to Co-Founder primary agent) or by loading the `apm-co-founder` skill in Codex.
+   - **Team Lead mode** enables formalized orchestration-first execution for one or more structured tasks: Team Lead decomposes, delegates to specialist subagents, validates, integrates, and returns one compact final handoff. Activate via Shift+Tab in OpenCode (cycle to Team Lead primary agent) or by loading the `apm-team-lead` skill in Codex.
    - Codex can enable goal-first spec challenge by loading `apm-critical-execution` in the main session; do not use it for specialist subagents.
 4. Memory Bank synchronization is explicit (`/apm-sync`) and can be delegated to a dedicated sync subagent when configured.
 5. Logs are split into `logs/project/` for runtime and reports, and `logs/agents/{TASK_ID}/` for task-scoped agent logs. In Team Lead flows, the final user handoff stays separate from these logs and summarizes validated outcomes per task.
@@ -225,7 +226,7 @@ Line budget:
 
 - OpenCode pack lives in `apm_source/packs/opencode_pack/`.
 - Shared CLI skills live in `apm_source/skills/`.
-- Example shared skills: `apm-dev`, `apm-team-lead`, `apm-subagent`, `apm-quality-gate`, `apm-code-simplifier`, `apm-test`, `apm-review`, `apm-logs`, `apm-report`.
+- Example shared skills: `apm-dev`, `apm-co-founder`, `apm-team-lead`, `apm-subagent`, `apm-quality-gate`, `apm-code-simplifier`, `apm-test`, `apm-review`, `apm-logs`, `apm-report`.
 - Codex pack source lives in `apm_source/packs/codex_pack/` (subagent roles plus Codex-only primary-session skills), including `apm-critical-execution` and dedicated sync/review roles (`apm-memory-bank-sync`, `apm-code-reviewer`) in source profiles.
 - Cursor agents/commands pack lives in `apm_source/packs/cursor_pack/`.
 - Methodology templates live in `apm_source/methodologies/{rapid,ds}/`.
@@ -236,7 +237,7 @@ Line budget:
 ## OpenCode CLI architecture
 
 - **Commands** = playbooks the user runs (`/apm-*`). They set the phase and required context.
-- **Agents** = role profiles plus optional Team Lead primary orchestrator (`apm-team-lead`) for orchestration-first execution. Switch to Team Lead via Shift+Tab (cycle primary agents).
+- **Agents** = role profiles plus primary agents: Co-Founder (`apm-co-founder`) for collaborative project partnership, Team Lead (`apm-team-lead`) for formalized orchestration. Switch via Shift+Tab (cycle primary agents).
 - **Skills** = modular knowledge chunks loaded on demand (governance, arch, team-lead mode, subagent delegation contracts, dev, simplification, test, logs, DS workflows).
 - **Tools** = custom actions (e.g., `apm_init_structure`) used by commands.
 - **Install targets**:
