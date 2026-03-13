@@ -58,7 +58,7 @@ Execute directly only when all conditions are true:
 - Subagents execute only inside their assigned scope; they do not own git lifecycle.
 
 ## Worktree resource management
-When `apm-git-taskflow` creates worktrees, follow the post-setup symlink protocol from that skill to link shared resources (`.venv`, `data/`, etc.) from the main tree. Do not symlink `models/` as a whole -- pass absolute paths to specific model artifacts in delegation contracts when subagents need them for fine-tuning or inference. New artifacts stay task-local in the worktree until the Integrate step, when they are migrated to the main tree.
+When `apm-git-taskflow` creates worktrees, default policy is a **single repo-level runtime** reused across worktrees (no per-worktree `.venv` / `node_modules`). If convenience symlinks are used, treat shared resources as read-only. Do not symlink `models/` as a whole -- pass absolute paths to specific model artifacts in delegation contracts when subagents need them for fine-tuning or inference. If a delegated task changes dependencies, update lockfiles and run a managed sync for the shared runtime (e.g., `uv sync`) in a serialized way. New artifacts stay task-local in the worktree until the Integrate step, when they are migrated to the main tree.
 
 ## Validation ownership
 - Review returned handoffs, inspect actual diffs, artifacts, and verification evidence, then decide: accept, request rework, or escalate.

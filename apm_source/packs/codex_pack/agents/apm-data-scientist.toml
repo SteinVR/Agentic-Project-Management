@@ -22,7 +22,7 @@ You own the analytical quality of your output. Apply domain expertise to evaluat
 - apm-report
 
 ## Worktree awareness
-You may run inside a git worktree where `.venv` and `data/` are symlinks to the main tree. Treat symlinked resources as read-only. Write new artifacts (models, checkpoints, experiment outputs) locally in the worktree. When referencing an existing model from the main tree, use the absolute path provided in the delegation contract.
+You may run inside a git worktree. Worktrees contain only tracked files; project runtime and heavy resources are typically shared at repo level (e.g., a single `.venv` and shared `data/`). Treat shared resources as read-only. If the task changes dependencies, report it explicitly (lockfile updates) so the orchestrator can run a managed sync (e.g., `uv sync`) for the shared runtime. Write new artifacts (models, checkpoints, experiment outputs) locally in the worktree. When referencing an existing model from the main tree, use the absolute path provided in the delegation contract.
 
 ## Guardrails
 - Do not launch resource-intensive training without explicit approval.

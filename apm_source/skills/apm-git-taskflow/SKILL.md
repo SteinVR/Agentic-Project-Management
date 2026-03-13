@@ -46,27 +46,35 @@ Git worktrees check out only tracked files. Heavy untracked resources (virtual e
 
 | Category | Examples | Worktree strategy |
 |---|---|---|
-| Shared read-only | `.venv`, `data/raw/`, `data/external/` | Symlink to main tree |
-| Shared derived | `data/processed/` | Symlink when preprocessing is shared; otherwise regenerate locally |
+| Shared runtime (single per repo) | `.venv`, `node_modules` | Use the shared runtime from the main tree (no per-worktree envs) |
+| Shared data | `data/raw/`, `data/external/`, `data/processed/` | Reference the main-tree data (do not copy) |
 | Read-reference artifacts | Existing trained models needed for fine-tuning or inference | Explicit absolute path in delegation contract, or point symlink to specific artifact directory |
 | Task-local outputs | New models, checkpoints, experiment results, logs | Created locally in worktree |
 
-### Post-setup symlink protocol
+### Shared runtime protocol (default)
 
-After step 5 (worktree creation) in **Required setup workflow**, link shared resources:
+Default policy: keep a **single** repo-level runtime and reuse it across all worktrees. Do not create a separate `.venv` (or separate `node_modules`) per worktree.
+
+If your environment/tooling expects paths to exist inside the worktree, you may create **convenience symlinks** after step 5 (worktree creation):
 
 ```bash
 MAIN_TREE="$(git -C .apm/worktrees/{TASK_ID} rev-parse --path-format=absolute --git-common-dir | xargs -I{} dirname {})"
 WT_DIR=".apm/worktrees/{TASK_ID}"
 
-# Virtual environment
 [ -d "$MAIN_TREE/.venv" ] && ln -sfn "$MAIN_TREE/.venv" "$WT_DIR/.venv"
-
-# Data directories
-[ -d "$MAIN_TREE/data" ]  && ln -sfn "$MAIN_TREE/data"  "$WT_DIR/data"
+[ -d "$MAIN_TREE/node_modules" ] && ln -sfn "$MAIN_TREE/node_modules" "$WT_DIR/node_modules"
+[ -d "$MAIN_TREE/data" ] && ln -sfn "$MAIN_TREE/data" "$WT_DIR/data"
 ```
 
-Adapt paths to the project layout documented in `memory_bank/ARCHITECTURE.md`. If the project uses DVC, `dvc checkout` inside the worktree resolves data references from the shared DVC cache automatically -- symlinks are not needed.
+Adapt paths to the project layout documented in `memory_bank/ARCHITECTURE.md`. If the project uses DVC, `dvc checkout` inside the worktree resolves data references from the shared DVC cache automatically.
+
+### Dependency change handling (safe updates)
+
+When a task changes dependencies (`pyproject.toml`, `requirements*.txt`, `package.json`, lockfiles), update the **shared** runtime using a managed toolchain:
+- Prefer a lockfile-driven approach (e.g., `uv.lock`, `pnpm-lock.yaml`, etc.).
+- Apply changes via safe sync tools (e.g., `uv sync`, package-manager install) to update the shared `.venv` / `node_modules`.
+- Serialize updates: do not run concurrent dependency updates across parallel tasks.
+- After sync, run a short verification relevant to the task scope.
 
 ### Model artifact referencing
 

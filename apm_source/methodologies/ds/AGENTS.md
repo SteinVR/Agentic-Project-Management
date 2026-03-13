@@ -31,9 +31,7 @@
 - Before final integration, normalize outputs and run comparison checks.
 
 ## Worktree shared resources
-When working inside a git worktree (e.g., under `.apm/worktrees/{TASK_ID}`), heavy untracked resources are not present by default. The `apm-git-taskflow` skill symlinks shared read-only resources after worktree creation:
-- `.venv` -- shared virtual environment from the main tree.
-- `data/` -- shared datasets (`raw/` is immutable, `processed/` is reproducible).
+When working inside a git worktree (e.g., under `.apm/worktrees/{TASK_ID}`), heavy untracked resources are not present by default. Default policy is a **single repo-level runtime** (e.g., `.venv`) and shared `data/` reused across worktrees (no per-worktree environments). If a task changes dependencies, update lockfiles and run a managed sync for the shared runtime (e.g., `uv sync`) in a serialized way.
 
 New artifacts (models, experiment outputs, logs) are written locally in the worktree and integrated into the main tree after merge.
 
