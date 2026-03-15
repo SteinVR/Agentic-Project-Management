@@ -288,10 +288,10 @@ select_dev_environment() {
     echo -e "      \033[90mUses Cursor agents/commands pack and methodology assets\033[0m" >&2
     echo "" >&2
     echo -e "  \033[33m[2] \033[32mOpenCode CLI\033[0m - CLI-first workflow" >&2
-    echo -e "      \033[90mUses OpenCode agents/commands/skills pack and memory-bank/\033[0m" >&2
+    echo -e "      \033[90mUses OpenCode agents/commands/skills pack and memory_bank/\033[0m" >&2
     echo "" >&2
     echo -e "  \033[33m[3] \033[35mCodex CLI\033[0m - CLI-first workflow" >&2
-    echo -e "      \033[90mUses Codex skills, subagent roles, and AGENTS chain with memory-bank/\033[0m" >&2
+    echo -e "      \033[90mUses Codex skills, subagent roles, and AGENTS chain with memory_bank/\033[0m" >&2
     echo "" >&2
     
     while true; do
@@ -610,14 +610,14 @@ rename_project_placeholders() {
         write_info "Updated ARCHITECTURE.md with project name"
     fi
 
-    local memory_bank_dir="$project_path/memory-bank"
+    local memory_bank_dir="$project_path/memory_bank"
     local mb_file
-    for mb_file in "$memory_bank_dir/ARCHITECTURE.md" "$memory_bank_dir/TASK.md" "$memory_bank_dir/STATE.md"; do
-        if [[ -f "$mb_file" ]]; then
+    if [[ -d "$memory_bank_dir" ]]; then
+        while IFS= read -r -d '' mb_file; do
             replace_in_file "$mb_file"
-            write_info "Updated $(basename "$mb_file") in memory-bank/ with project name"
-        fi
-    done
+            write_info "Updated ${mb_file#$project_path/} with project name"
+        done < <(find "$memory_bank_dir" -type f -name "*.md" -print0)
+    fi
 }
 
 initialize_memory_bank() {
@@ -629,32 +629,65 @@ initialize_memory_bank() {
         return 0
     fi
     
-    local memory_bank_dir="$project_path/memory-bank"
+    local memory_bank_dir="$project_path/memory_bank"
     
-    # Flat methodology templates already include memory-bank/ with all files
+    # Flat methodology templates already include memory_bank/ with all files
     if [[ -d "$memory_bank_dir" ]]; then
+        mkdir -p "$memory_bank_dir/tasks"
+        if [[ -f "$memory_bank_dir/TASK.md" && ! -f "$memory_bank_dir/tasks/TASKS.md" ]]; then
+            mv "$memory_bank_dir/TASK.md" "$memory_bank_dir/tasks/TASKS.md"
+            write_info "Migrated memory_bank/TASK.md to memory_bank/tasks/TASKS.md"
+        fi
         return 0
     fi
     
-    # Fallback: create memory-bank/ if missing
-    mkdir -p "$memory_bank_dir"
+    # Fallback: create memory_bank/ if missing
+    mkdir -p "$memory_bank_dir/tasks"
     
     local file_name
-    for file_name in ARCHITECTURE.md STATE.md TASK.md; do
+    for file_name in ARCHITECTURE.md STATE.md; do
         local root_file="$project_path/$file_name"
         local bank_file="$memory_bank_dir/$file_name"
         
         if [[ -f "$root_file" && ! -f "$bank_file" ]]; then
             mv "$root_file" "$bank_file"
-            write_info "Moved $file_name to memory-bank/"
+            write_info "Moved $file_name to memory_bank/"
             continue
         fi
         
         if [[ ! -f "$bank_file" ]]; then
             echo "# ${file_name%.md}" > "$bank_file"
-            write_warning "Initialized memory-bank/$file_name as empty file"
+            write_warning "Initialized memory_bank/$file_name as empty file"
         fi
     done
+
+    local root_tasks_file="$project_path/TASKS.md"
+    local root_task_file="$project_path/TASK.md"
+    local tasks_file="$memory_bank_dir/tasks/TASKS.md"
+    if [[ -f "$root_tasks_file" && ! -f "$tasks_file" ]]; then
+        mv "$root_tasks_file" "$tasks_file"
+        write_info "Moved TASKS.md to memory_bank/tasks/"
+    elif [[ -f "$root_task_file" && ! -f "$tasks_file" ]]; then
+        mv "$root_task_file" "$tasks_file"
+        write_info "Moved TASK.md to memory_bank/tasks/TASKS.md"
+    elif [[ ! -f "$tasks_file" ]]; then
+        echo "# TASKS" > "$tasks_file"
+        write_warning "Initialized memory_bank/tasks/TASKS.md as empty file"
+    fi
+
+    local task_detail_file="$memory_bank_dir/tasks/TASK-001.md"
+    if [[ ! -f "$task_detail_file" ]]; then
+        cat > "$task_detail_file" << 'EOF'
+# Task: TASK-001
+
+## 1. Summary (Copied from TASKS.md)
+
+**Title:** [Task title]
+**Description:** [High-level description copied from TASKS.md]
+**Status:** [Planned / In Progress / Blocked / Done]
+EOF
+        write_warning "Initialized memory_bank/tasks/TASK-001.md as starter task file"
+    fi
 }
 
 initialize_agent_reports() {

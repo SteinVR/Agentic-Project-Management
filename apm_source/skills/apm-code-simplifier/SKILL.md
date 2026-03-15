@@ -15,7 +15,7 @@ description: "Simplify and refine recently modified code for clarity, consistenc
 ## Standards source order
 Follow coding conventions from the nearest available source, in this order:
 1. Nearest `AGENTS.md` in the target directory tree.
-2. `memory-bank/ARCHITECTURE.md` sections such as "Code Style" and "Code Organization & Conventions".
+2. `memory_bank/ARCHITECTURE.md` sections such as "Code Style" and "Code Organization & Conventions".
 3. Active skill `Conventions` section (for example: `apm-dev`, `apm-ds-baseline`, `apm-ds-exp`).
 4. If no explicit conventions exist, preserve existing local style and apply language-standard best practices.
 

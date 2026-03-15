@@ -241,13 +241,14 @@ test_rapid_methodology_deployment() {
     assert_path_exists "$project_path/external" "external directory" "RAPID-External"
     assert_path_exists "$project_path/AGENTS.md" "AGENTS.md" "RAPID-Agents"
     
-    # Test memory-bank directory
-    write_test_name "Verifying RAPID memory-bank"
-    local mb_dir="$project_path/memory-bank"
-    assert_path_exists "$mb_dir" "memory-bank directory" "RAPID-MemoryBank"
-    assert_path_exists "$mb_dir/ARCHITECTURE.md" "memory-bank/ARCHITECTURE.md" "RAPID-MBArch"
-    assert_path_exists "$mb_dir/STATE.md" "memory-bank/STATE.md" "RAPID-MBState"
-    assert_path_exists "$mb_dir/TASK.md" "memory-bank/TASK.md" "RAPID-MBTask"
+    # Test memory_bank directory
+    write_test_name "Verifying RAPID memory_bank"
+    local mb_dir="$project_path/memory_bank"
+    assert_path_exists "$mb_dir" "memory_bank directory" "RAPID-MemoryBank"
+    assert_path_exists "$mb_dir/ARCHITECTURE.md" "memory_bank/ARCHITECTURE.md" "RAPID-MBArch"
+    assert_path_exists "$mb_dir/STATE.md" "memory_bank/STATE.md" "RAPID-MBState"
+    assert_path_exists "$mb_dir/tasks/TASKS.md" "memory_bank/tasks/TASKS.md" "RAPID-MBTasks"
+    assert_path_exists "$mb_dir/tasks/TASK-001.md" "memory_bank/tasks/TASK-001.md" "RAPID-MBTask001"
     
     # Verify project name was substituted in ARCHITECTURE.md
     assert_file_contains "$mb_dir/ARCHITECTURE.md" "$project_name" \
@@ -258,6 +259,7 @@ test_rapid_methodology_deployment() {
     assert_path_not_exists "$project_path/.apm" ".apm directory" "RAPID-NoAPM"
     assert_path_not_exists "$project_path/ARCHITECTURE.md" "Root ARCHITECTURE.md" "RAPID-NoRootArch"
     assert_path_not_exists "$project_path/TASK.md" "Root TASK.md" "RAPID-NoRootTask"
+    assert_path_not_exists "$project_path/TASKS.md" "Root TASKS.md" "RAPID-NoRootTASKS"
     assert_path_not_exists "$project_path/{project-name}" "{project-name} placeholder" "RAPID-NoPlaceholder"
     
     # Test cursor pack installation
@@ -321,13 +323,14 @@ test_ds_methodology_deployment() {
     assert_path_exists "$project_path/config.py" "config.py" "DS-Config"
     assert_path_exists "$project_path/main.py" "main.py" "DS-Main"
     
-    # Test memory-bank
-    write_test_name "Verifying DS memory-bank"
-    local mb_dir="$project_path/memory-bank"
-    assert_path_exists "$mb_dir" "memory-bank directory" "DS-MemoryBank"
-    assert_path_exists "$mb_dir/ARCHITECTURE.md" "memory-bank/ARCHITECTURE.md" "DS-MBArch"
-    assert_path_exists "$mb_dir/STATE.md" "memory-bank/STATE.md" "DS-MBState"
-    assert_path_exists "$mb_dir/TASK.md" "memory-bank/TASK.md" "DS-MBTask"
+    # Test memory_bank
+    write_test_name "Verifying DS memory_bank"
+    local mb_dir="$project_path/memory_bank"
+    assert_path_exists "$mb_dir" "memory_bank directory" "DS-MemoryBank"
+    assert_path_exists "$mb_dir/ARCHITECTURE.md" "memory_bank/ARCHITECTURE.md" "DS-MBArch"
+    assert_path_exists "$mb_dir/STATE.md" "memory_bank/STATE.md" "DS-MBState"
+    assert_path_exists "$mb_dir/tasks/TASKS.md" "memory_bank/tasks/TASKS.md" "DS-MBTasks"
+    assert_path_exists "$mb_dir/tasks/TASK-001.md" "memory_bank/tasks/TASK-001.md" "DS-MBTask001"
     
     # No legacy artifacts
     write_test_name "Verifying no legacy artifacts"
@@ -339,6 +342,7 @@ test_ds_methodology_deployment() {
     assert_path_exists "$project_path/.cursor/agents/apm-data-scientist.md" "apm-data-scientist agent" "DS-DSAgent"
     assert_path_exists "$project_path/.cursor/commands/apm-start.md" "apm-start command" "DS-StartCmd"
     assert_path_exists "$project_path/.cursor/commands/apm-eda.md" "apm-eda command" "DS-EDACmd"
+    assert_path_exists "$project_path/.cursor/commands/apm-deep-feature-engineering.md" "apm-deep-feature-engineering command" "DS-DeepFECmd"
     assert_path_exists "$project_path/.cursor/commands/apm-baseline.md" "apm-baseline command" "DS-BaselineCmd"
     assert_path_exists "$project_path/.cursor/commands/apm-experiment.md" "apm-experiment command" "DS-ExpCmd"
 }
@@ -454,8 +458,9 @@ test_rapid_opencode_deployment() {
     fi
     
     write_test_name "Verifying OpenCode RAPID structure"
-    assert_path_exists "$project_path/memory-bank" "memory-bank directory" "RAPID-OC-MB"
-    assert_path_exists "$project_path/memory-bank/ARCHITECTURE.md" "ARCHITECTURE.md" "RAPID-OC-Arch"
+    assert_path_exists "$project_path/memory_bank" "memory_bank directory" "RAPID-OC-MB"
+    assert_path_exists "$project_path/memory_bank/ARCHITECTURE.md" "ARCHITECTURE.md" "RAPID-OC-Arch"
+    assert_path_exists "$project_path/memory_bank/tasks/TASKS.md" "TASKS.md" "RAPID-OC-Tasks"
     assert_path_exists "$project_path/src" "src directory" "RAPID-OC-Src"
     assert_path_exists "$project_path/tests" "tests directory" "RAPID-OC-Tests"
     assert_path_exists "$project_path/AGENTS.md" "AGENTS.md" "RAPID-OC-Agents"
@@ -463,6 +468,118 @@ test_rapid_opencode_deployment() {
     # No Cursor-specific artifacts
     assert_path_not_exists "$project_path/.cursor" ".cursor directory" "RAPID-OC-NoCursor"
     assert_path_not_exists "$project_path/.apm" ".apm directory" "RAPID-OC-NoAPM"
+}
+
+# ============================================================================
+# CODEX ENVIRONMENT TESTS
+# ============================================================================
+
+test_rapid_codex_deployment() {
+    local test_dir="$1"
+    
+    write_test_header "RAPID Codex CLI Deployment Tests"
+    
+    local project_name="test-rapid-codex"
+    local project_path="$test_dir/$project_name"
+    
+    write_test_name "Creating RAPID Codex project"
+    
+    if bash "$APM_SCRIPT" \
+        --project-name "$project_name" \
+        --project-path "$test_dir" \
+        --codex \
+        --rapid \
+        --local \
+        --non-interactive \
+        --skip-cursor; then
+        write_test_pass "apm.sh executed successfully"
+    else
+        write_test_fail "apm.sh execution failed" "RAPID-CX-Creation"
+        return
+    fi
+    
+    write_test_name "Verifying Codex RAPID structure"
+    assert_path_exists "$project_path/memory_bank" "memory_bank directory" "RAPID-CX-MB"
+    assert_path_exists "$project_path/memory_bank/ARCHITECTURE.md" "ARCHITECTURE.md" "RAPID-CX-Arch"
+    assert_path_exists "$project_path/memory_bank/tasks/TASKS.md" "TASKS.md" "RAPID-CX-Tasks"
+    assert_path_exists "$project_path/memory_bank/tasks/TASK-001.md" "TASK-001.md" "RAPID-CX-Task001"
+    assert_path_exists "$project_path/src" "src directory" "RAPID-CX-Src"
+    assert_path_exists "$project_path/tests" "tests directory" "RAPID-CX-Tests"
+    assert_path_exists "$project_path/AGENTS.md" "AGENTS.md" "RAPID-CX-Agents"
+    
+    # No Cursor-specific artifacts
+    assert_path_not_exists "$project_path/.cursor" ".cursor directory" "RAPID-CX-NoCursor"
+    assert_path_not_exists "$project_path/.apm" ".apm directory" "RAPID-CX-NoAPM"
+    
+    # Codex assets
+    write_test_name "Verifying Codex assets"
+    assert_path_exists "$project_path/.codex/skills" ".codex/skills directory" "RAPID-CX-Skills"
+    assert_path_exists "$project_path/.codex/agents" ".codex/agents directory" "RAPID-CX-Agents"
+    assert_path_exists "$project_path/.codex/config.toml" ".codex/config.toml" "RAPID-CX-Config"
+    
+    # Verify all agent TOML files
+    assert_path_exists "$project_path/.codex/agents/apm-architect.toml" "apm-architect agent" "RAPID-CX-ArchitectAgent"
+    assert_path_exists "$project_path/.codex/agents/apm-engineer.toml" "apm-engineer agent" "RAPID-CX-EngineerAgent"
+    assert_path_exists "$project_path/.codex/agents/apm-sdet.toml" "apm-sdet agent" "RAPID-CX-SDETAgent"
+    assert_path_exists "$project_path/.codex/agents/apm-code-simplifier.toml" "apm-code-simplifier agent" "RAPID-CX-SimplifierAgent"
+    assert_path_exists "$project_path/.codex/agents/apm-code-reviewer.toml" "apm-code-reviewer agent" "RAPID-CX-ReviewerAgent"
+    assert_path_exists "$project_path/.codex/agents/apm-memory-bank-sync.toml" "apm-memory-bank-sync agent" "RAPID-CX-SyncAgent"
+    
+    # Verify config.toml has all role sections
+    assert_file_contains "$project_path/.codex/config.toml" "\\[agents.apm-architect\\]" \
+        "config.toml has architect section" "RAPID-CX-ConfigArch"
+    assert_file_contains "$project_path/.codex/config.toml" "\\[agents.apm-code-reviewer\\]" \
+        "config.toml has reviewer section" "RAPID-CX-ConfigReviewer"
+    assert_file_contains "$project_path/.codex/config.toml" "\\[agents.apm-memory-bank-sync\\]" \
+        "config.toml has sync section" "RAPID-CX-ConfigSync"
+    
+    # Verify shared skills were copied
+    assert_path_exists "$project_path/.codex/skills/apm-dev/SKILL.md" "apm-dev skill" "RAPID-CX-DevSkill"
+    assert_path_exists "$project_path/.codex/skills/apm-report/SKILL.md" "apm-report skill" "RAPID-CX-ReportSkill"
+    assert_path_exists "$project_path/.codex/skills/apm-team-lead/SKILL.md" "apm-team-lead skill" "RAPID-CX-TeamLeadSkill"
+}
+
+test_ds_opencode_deployment() {
+    local test_dir="$1"
+    
+    write_test_header "DS OpenCode CLI Deployment Tests"
+    
+    local project_name="test-ds-opencode"
+    local project_path="$test_dir/$project_name"
+    
+    write_test_name "Creating DS OpenCode project"
+    
+    if bash "$APM_SCRIPT" \
+        --project-name "$project_name" \
+        --project-path "$test_dir" \
+        --opencode \
+        --ds \
+        --none \
+        --non-interactive; then
+        write_test_pass "apm.sh executed successfully"
+    else
+        write_test_fail "apm.sh execution failed" "DS-OC-Creation"
+        return
+    fi
+    
+    # DS-specific directories
+    write_test_name "Verifying DS OpenCode structure"
+    assert_path_exists "$project_path/memory_bank" "memory_bank directory" "DS-OC-MB"
+    assert_path_exists "$project_path/memory_bank/ARCHITECTURE.md" "ARCHITECTURE.md" "DS-OC-Arch"
+    assert_path_exists "$project_path/memory_bank/tasks/TASKS.md" "TASKS.md" "DS-OC-Tasks"
+    assert_path_exists "$project_path/src" "src directory" "DS-OC-Src"
+    assert_path_exists "$project_path/eda" "eda directory" "DS-OC-EDA"
+    assert_path_exists "$project_path/experiments" "experiments directory" "DS-OC-Experiments"
+    assert_path_exists "$project_path/data" "data directory" "DS-OC-Data"
+    assert_path_exists "$project_path/models" "models directory" "DS-OC-Models"
+    assert_path_exists "$project_path/logs" "logs directory" "DS-OC-Logs"
+    assert_path_exists "$project_path/AGENTS.md" "AGENTS.md" "DS-OC-Agents"
+    assert_path_exists "$project_path/config.py" "config.py" "DS-OC-Config"
+    assert_path_exists "$project_path/main.py" "main.py" "DS-OC-Main"
+    
+    # No Cursor-specific artifacts
+    assert_path_not_exists "$project_path/.cursor" ".cursor directory" "DS-OC-NoCursor"
+    assert_path_not_exists "$project_path/.apm" ".apm directory" "DS-OC-NoAPM"
 }
 
 # ============================================================================
@@ -511,7 +628,7 @@ test_project_overwrite() {
     assert_path_not_exists "$marker_file" "Marker file after overwrite" "Overwrite-Marker"
     
     # Verify project structure is intact
-    assert_path_exists "$project_path/memory-bank/ARCHITECTURE.md" "memory-bank/ARCHITECTURE.md after overwrite" "Overwrite-Structure"
+    assert_path_exists "$project_path/memory_bank/ARCHITECTURE.md" "memory_bank/ARCHITECTURE.md after overwrite" "Overwrite-Structure"
 }
 
 test_error_handling() {
@@ -644,6 +761,8 @@ main() {
             test_ds_methodology_deployment "$test_dir"
             test_full_methodology_deployment "$test_dir"
             test_rapid_opencode_deployment "$test_dir"
+            test_rapid_codex_deployment "$test_dir"
+            test_ds_opencode_deployment "$test_dir"
             test_project_overwrite "$test_dir"
             test_error_handling "$test_dir"
             ;;

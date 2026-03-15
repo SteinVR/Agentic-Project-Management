@@ -35,7 +35,29 @@
 
 ---
 
-## 3. Performance Metrics
+## 3. Model Architecture & Validation Strategy
+
+### Model Architecture
+
+| Element | Value |
+|---------|-------|
+| Input Contract | [features/shape] |
+| Core Components | [layers/blocks/pipeline stages] |
+| Output Contract | [targets and output format] |
+| Training Objective | [loss/objective and metric alignment] |
+
+### Validation Strategy
+
+| Item | Value |
+|------|-------|
+| Split Strategy | [e.g., GroupKFold / stratified holdout / time split] |
+| Cross-Validation | [fold count and protocol] |
+| Holdout/Test Usage | [when and how used] |
+| Overfitting Controls | [early stop, regularization, etc.] |
+
+---
+
+## 4. Performance Metrics
 
 ### Validation Set Performance
 
@@ -64,7 +86,7 @@
 
 ---
 
-## 4. Feature Analysis
+## 5. Feature Analysis
 
 ### Feature Importance (Top 10)
 
@@ -83,7 +105,7 @@
 
 ---
 
-## 5. Error Analysis
+## 6. Error Analysis
 
 ### Confusion Matrix (Classification)
 
@@ -107,7 +129,7 @@ Actual Neg  [TN]   [FP]
 
 ---
 
-## 6. Model Characteristics
+## 7. Model Characteristics
 
 ### Strengths
 
@@ -129,7 +151,7 @@ Actual Neg  [TN]   [FP]
 
 ---
 
-## 7. Reproducibility
+## 8. Reproducibility
 
 ### Environment
 
@@ -150,7 +172,7 @@ Key Libraries:
 
 ---
 
-## 8. Artifacts
+## 9. Artifacts
 
 | Artifact | Path | Description |
 |----------|------|-------------|
@@ -161,7 +183,7 @@ Key Libraries:
 
 ---
 
-## 9. Deployment Considerations
+## 10. Deployment Considerations
 
 ### Requirements
 
@@ -180,7 +202,7 @@ Key Libraries:
 
 ---
 
-## 10. Approval
+## 11. Approval
 
 | Role | Name | Date | Status |
 |------|------|------|--------|

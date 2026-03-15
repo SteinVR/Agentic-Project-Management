@@ -1,16 +1,17 @@
 ## Skill
-- Follow **apm-logs** for logging conventions and activity report standards.
+- Follow `apm-logs` for logging taxonomy and conventions.
+- Use `apm-report` when the current session needs to write an agent log.
 
 ## Expected structure
-- Root `logs/` -- core runtime logs (start/stop, user actions, errors).
-- `logs/activity/<Role>/` -- session activity reports (per agent role).
-- `logs/reports/` -- generated reports (test, review, general).
+- `logs/project/runtime/` -- core runtime logs (start/stop, user actions, errors).
+- `logs/project/reports/` -- generated reports (test, review, general).
+- `logs/agents/{TASK_ID}/` -- task-scoped agent logs.
 
 ## Conventions
 - Log format: `[YYYY-MM-DD HH:MM:SS] [LEVEL] - Message`.
-- Activity report filename: `<Role>_YYYY-MM-DD_HH-mm_short-title.md`.
 - Include identifiers when available (request id, task id, file names).
-- Summarize logging outcomes in `memory-bank/STATE.md`.
+- If work maps to a task, reference the task id in `memory_bank/tasks/{TASK_ID}.md`.
+- Keep project logs in `logs/project/...` and agent logs in `logs/agents/...`.
 
 ## Guardrails
 - Do not store test artifacts here (use `tests/`).

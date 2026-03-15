@@ -34,9 +34,9 @@ Usage: run the TUI configurator (`apm.sh`) to generate a project, then drive wor
 
 ## Environments
 
-- **Cursor IDE** (interactive): methodology assets, `.cursor/` agents and commands, shared skills, `memory-bank/`.
-- **Codex CLI** (global or per-project): skills + subagent roles installed into `.codex/`; APM blocks merged into `.codex/config.toml`; projects use `memory-bank/` and minimal structure.
-- **OpenCode CLI** (global or per-project): commands/agents/skills installed into OpenCode; projects use `memory-bank/` and minimal structure.
+- **Cursor IDE** (interactive): methodology assets, `.cursor/` agents and commands, shared skills, `memory_bank/`.
+- **Codex CLI** (global or per-project): skills + subagent roles installed into `.codex/`; APM blocks merged into `.codex/config.toml`; projects use `memory_bank/` and minimal structure.
+- **OpenCode CLI** (global or per-project): commands/agents/skills installed into OpenCode; projects use `memory_bank/` and minimal structure.
 
 ---
 
@@ -112,6 +112,7 @@ PowerShell equivalents:
 
 Codex install adds:
 - Skills to `.codex/skills/`
+- Codex-only primary-session skills from `apm_source/packs/codex_pack/skills/`
 - Subagent role configs to `.codex/agents/`
 - Missing APM sections in `.codex/config.toml` (`features.multi_agent`, `agents.max_threads`, `agents.apm-*`)
 
@@ -132,7 +133,7 @@ alias apm-cd='cd /path/to/Agentic-Project-Management'
 ## Methodologies
 
 - **RAPID**: fast product iterations, minimal ceremony.
-- **DS**: data science workflow (EDA -> baseline -> experiments -> evaluation -> finalize).
+- **DS**: data science workflow (EDA -> Deep Feature Engineering -> baseline -> experiments -> evaluation -> finalize).
 - **FULL**: deprecated (Cursor-only).
 
 ---
@@ -140,28 +141,53 @@ alias apm-cd='cd /path/to/Agentic-Project-Management'
 ## How it works
 
 1. **/apm-start** runs Vision Alignment (RAPID) or Problem Definition (DS).
-2. After your confirmation, APM creates the Memory Bank: `ARCHITECTURE.md`, `TASK.md`, `STATE.md`.
-3. You continue with role-specific commands/skills (e.g., `/apm-develop`, `apm-code-simplifier`, `apm-eda`, `apm-ds-exp`).
-4. Every session ends with an update to `STATE.md` (project continuity).
+2. After your confirmation, APM creates the Memory Bank: `ARCHITECTURE.md`, `STATE.md`, and `tasks/` (`TASKS.md` + `TASK-001.md` starter).
+3. You continue with role-specific commands/skills (e.g., `/apm-develop`, `apm-eda`, `apm-deep-feature-engineering`, `apm-ds-exp`). Development and DS code-writing loops use the shared `apm-quality-gate`: `apm-code-simplifier -> verification -> apm-code-reviewer -> fix findings -> completion handoff`.
+   - Branch/worktree/PR flow is not part of standard specialist subagent loops.
+   - Branch/worktree may be initialized manually by the user, or by Team Lead when explicit `TASK_ID` subtasks (or explicit git-flow request) are provided.
+   - **Co-Founder mode** provides a collaborative primary partner who co-owns project vision, architecture, and direction. Natural communication, strategic thinking, orchestration when needed. Activate via Shift+Tab in OpenCode (cycle to Co-Founder primary agent) or by loading the `apm-co-founder` skill in Codex.
+   - **Team Lead mode** enables formalized orchestration-first execution for one or more structured tasks: Team Lead decomposes, delegates to specialist subagents, validates, integrates, and returns one compact final handoff. Activate via Shift+Tab in OpenCode (cycle to Team Lead primary agent) or by loading the `apm-team-lead` skill in Codex.
+   - Codex can enable goal-first spec challenge by loading `apm-critical-execution` in the main session; do not use it for specialist subagents.
+4. Memory Bank synchronization is explicit (`/apm-sync`) and can be delegated to a dedicated sync subagent when configured.
+5. Logs are split into `logs/project/` for runtime and reports, and `logs/agents/{TASK_ID}/` for task-scoped agent logs. In Team Lead flows, the final user handoff stays separate from these logs and summarizes validated outcomes per task.
 
 ---
 
 ## Example flow
 
-**RAPID:** `/apm-start` -> `/apm-develop` -> `apm-code-simplifier` -> `/apm-test` -> `/apm-sync`
+**RAPID:** `/apm-start` -> `/apm-develop` (includes `apm-quality-gate`) -> `/apm-test`
 
-**DS:** `/apm-start` -> `/apm-eda` -> `/apm-baseline` -> `/apm-experiment` -> `/apm-review`
+**DS:** `/apm-start` -> `/apm-eda` (`EDA-Report.md` + `EDA-Insights.md`) -> `/apm-deep-feature-engineering` -> `/apm-baseline` / `/apm-experiment` (includes `apm-quality-gate`) -> `/apm-review`
 
 ---
 
 ## Memory Bank
 
-- All environments: `memory-bank/`
+- All environments: `memory_bank/`
 
 Core files:
 - `ARCHITECTURE.md`
-- `TASK.md`
 - `STATE.md`
+- `tasks/TASKS.md`
+- `tasks/{TASK_ID}.md`
+
+Line budget:
+- Keep `STATE.md` and `tasks/TASKS.md` under 150 lines (compress when exceeded).
+
+## Logs
+
+- `logs/project/runtime/` stores runtime, training, evaluation, metrics, and error logs.
+- `logs/project/reports/` stores generated reports such as test, review, and model reports.
+- `logs/agents/{TASK_ID}/` stores task-scoped agent logs written via `apm-report`. Each agent working on a task writes here.
+- For cross-task consolidated logs (e.g., multi-task Team Lead orchestration), store under `logs/agents/` root.
+- Team Lead returns a separate compact final handoff to the user; `apm-report` remains the execution log layer.
+- In Codex, spawned roles get their human-readable identity only from their agent config files.
+
+## Git Isolation
+
+- Git flow is opt-in and outside standard specialist subagent skills.
+- Branch/worktree initialization is done manually by the user, or by Team Lead for explicitly assigned TASK_ID subtasks (or direct git-flow request).
+- Team Lead uses `apm-git-taskflow` only under those explicit triggers.
 
 ---
 
@@ -172,10 +198,10 @@ Core files:
 | Command | Description |
 |---------|-------------|
 | `/apm-start` | Vision Alignment / Problem Definition + Memory Bank initialization + environment proposal |
-| `/apm-architect` | Architecture consultation or updates |
+| `/apm-architect` | Strategic architecture decisions, trade-off analysis, and architecture-governance updates (with user confirmation for major changes) |
 | `/apm-review` | Architecture review and recommendations |
-| `/apm-sync` | Sync current project state into `STATE.md` |
-| `/apm-report` | Generate reports from templates |
+| `/apm-sync` | Explicit Memory Bank synchronization on request |
+| `/apm-report` | Write a structured agent log for a delegated task stream or the primary session |
 
 ### RAPID
 
@@ -190,6 +216,7 @@ Core files:
 | Command | Description |
 |---------|-------------|
 | `/apm-eda` | Exploratory Data Analysis workflow |
+| `/apm-deep-feature-engineering` | Deep post-EDA feature engineering analysis |
 | `/apm-baseline` | Build a domain-credible baseline model |
 | `/apm-experiment` | Hypothesis-driven experiment cycle |
 
@@ -199,8 +226,8 @@ Core files:
 
 - OpenCode pack lives in `apm_source/packs/opencode_pack/`.
 - Shared CLI skills live in `apm_source/skills/`.
-- Example shared skills: `apm-dev`, `apm-code-simplifier`, `apm-test`, `apm-review`, `apm-logs`.
-- Codex subagent config source lives in `apm_source/packs/codex_pack/`.
+- Example shared skills: `apm-dev`, `apm-co-founder`, `apm-team-lead`, `apm-subagent`, `apm-quality-gate`, `apm-code-simplifier`, `apm-test`, `apm-review`, `apm-logs`, `apm-report`.
+- Codex pack source lives in `apm_source/packs/codex_pack/` (subagent roles plus Codex-only primary-session skills), including `apm-critical-execution` and dedicated sync/review roles (`apm-memory-bank-sync`, `apm-code-reviewer`) in source profiles.
 - Cursor agents/commands pack lives in `apm_source/packs/cursor_pack/`.
 - Methodology templates live in `apm_source/methodologies/{rapid,ds}/`.
 - Legacy FULL methodology is stored in `apm_source/_legacy/cursor_ide/full_deprecated/`.
@@ -210,8 +237,8 @@ Core files:
 ## OpenCode CLI architecture
 
 - **Commands** = playbooks the user runs (`/apm-*`). They set the phase and required context.
-- **Agents** = role profiles (Architect/Engineer/SDET/DS). They keep behavior consistent.
-- **Skills** = modular knowledge chunks loaded on demand (governance, arch, dev, simplification, test, logs, DS workflows).
+- **Agents** = role profiles plus primary agents: Co-Founder (`apm-co-founder`) for collaborative project partnership, Team Lead (`apm-team-lead`) for formalized orchestration. Switch via Shift+Tab (cycle primary agents).
+- **Skills** = modular knowledge chunks loaded on demand (governance, arch, team-lead mode, subagent delegation contracts, dev, simplification, test, logs, DS workflows).
 - **Tools** = custom actions (e.g., `apm_init_structure`) used by commands.
 - **Install targets**:
   - Global: `~/.config/opencode/{commands,agents,skills,tools}`
