@@ -1,6 +1,6 @@
 # Git Workflow Notes
 
-## Merging Codex-CLI into main
+## Merging Codex-CLI into main (squash)
 
 ### Что нужно знать
 
@@ -12,39 +12,46 @@
 | `external/` | отслеживается | игнорируется (`.gitignore`) |
 | `APM_ARCHITECTURE.md` | отслеживается | игнорируется (`.gitignore`) |
 
-### Сценарий: modify/delete конфликты
+Используется `--squash`, чтобы история `main` оставалась линейной: один атомарный коммит на каждое обновление, промежуточные коммиты `Codex-CLI` не попадают в `main`.
 
-Если в `Codex-CLI` были изменения в `docs/` или `external/`, при мерже в `main` возникнут конфликты вида:
-```
-CONFLICT (modify/delete): docs/some-file.md deleted in HEAD and modified in Codex-CLI.
-```
-Это штатная ситуация -- `main` удалял эти файлы, Codex-CLI их менял.
+### Процедура
 
-### Процедура мержа
+```bash
+# 1. Squash-merge в main
+git checkout main
+git merge --squash Codex-CLI
+git rm -r --cached docs/ external/ APM_ARCHITECTURE.md 2>/dev/null
+rm -rf docs/ external/ APM_ARCHITECTURE.md 2>/dev/null
+git reset HEAD -- .gitignore
+git checkout -- .gitignore
+git commit -m "squash Codex-CLI into main -- <краткое описание>"
+
+# 2. Обратный merge для поддержания merge-base
+git checkout Codex-CLI
+git merge main -m "sync merge-base after squash into main"
+```
+
+Шаг 2 нужен, потому что `--squash` не записывает факт слияния (нет merge-parent). Без обратного merge следующий squash приведёт к конфликтам от уже применённых изменений.
+
+### Если возникли конфликты
 
 ```bash
 git checkout main
-git merge --no-commit --no-ff Codex-CLI   # мержим без авто-коммита
-git rm -r --cached docs/ external/        # убираем из индекса
-rm -rf docs/ external/                    # убираем из файловой системы (если осталось)
-git commit
-```
+git merge --squash Codex-CLI                          # могут быть конфликты
+# разрешить конфликты, затем:
+git rm -r --cached docs/ external/ APM_ARCHITECTURE.md 2>/dev/null
+rm -rf docs/ external/ APM_ARCHITECTURE.md 2>/dev/null
+git reset HEAD -- .gitignore
+git checkout -- .gitignore
+git commit -m "squash Codex-CLI into main -- <краткое описание>"
 
-### Если возникли конфликты вручную
-
-```bash
-git checkout main
-git merge Codex-CLI                        # будут конфликты
-git checkout HEAD -- docs/ external/       # разрешаем в пользу main (удаляем)
-git rm -r --cached docs/ external/ 2>/dev/null
-git commit
+# обратный merge
+git checkout Codex-CLI
+git merge main -m "sync merge-base after squash into main"
 ```
 
 ### Commit message шаблон
 
 ```
-merge Codex-CLI into main
-
-<краткое описание изменений из Codex-CLI>
-Excluded docs/ and external/ from main (branch-specific content).
+squash Codex-CLI into main -- <краткое описание изменений>
 ```
