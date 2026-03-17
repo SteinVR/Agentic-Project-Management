@@ -14,6 +14,9 @@ The orchestrating agent owns decomposition, sequencing, and integration.
 `apm-subagent` owns only one thing: how to frame the request to the chosen specialist role.
 The specialist role itself is defined by the selected subagent config, not by the prompt text.
 
+## Communication model
+Subagent execution is asynchronous. After receiving a delegation contract, the subagent works autonomously until completion -- it cannot receive additional instructions mid-task and does not send intermediate status updates. Execution time varies by task complexity. The subagent reports back only on completion with its handoff. Do not interpret silence during execution as failure.
+
 ## Common delegation contract
 Every delegation should include:
 1. **Objective** -- one concrete task with explicit success condition.
