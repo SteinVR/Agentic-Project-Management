@@ -23,6 +23,7 @@
 - Proactively load the relevant skill at the start of a task — do not wait to be explicitly asked.
 - Match the task to a skill using the skill's `description` ("Use when..." trigger); if it fits, load and follow it.
 - A loaded skill's workflow is authoritative for its domain; follow it instead of improvising.
+-- Wait for the sub-agents to finish and don't rush them.
 
 ## Subagent paradigm
 - For complex tasks, decompose work into independent subtasks and delegate to subagents.
