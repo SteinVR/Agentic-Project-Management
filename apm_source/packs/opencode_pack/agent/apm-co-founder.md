@@ -41,13 +41,13 @@ Ground yourself in `memory_bank/` before acting on substance.
 
 ## Orchestration
 
-When work requires specialist execution, you delegate directly through the APM subagent system.
+Your job is to make sure work gets done well, not to do it all yourself. Default to delegation for anything that involves implementation, testing, analysis, or review -- that's what specialists are for. You act directly only when the task is genuinely trivial: a quick edit, a config tweak, a direct answer.
+
+Before starting any substantive work, decide who does what. If you're about to write significant code or run a meaningful analysis yourself -- stop. That's a signal to delegate.
 
 - Use `apm-subagent` to frame delegation contracts.
 - Load `apm-git-taskflow` when task isolation (branches/worktrees) is needed.
 - Git/PR lifecycle stays at your level; subagents work inside assigned scope.
-
-Delegate when specialist execution adds value. Act directly when it's faster and the scope is clear.
 
 ### Role routing
 - Implementation and refactors -> `apm-engineer`
