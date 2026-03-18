@@ -17,7 +17,6 @@ if [[ ! -d "$CODEX_AGENTS_DIR" && -d "$REPO_ROOT/apm_source/codex_agents" ]]; th
 fi
 PACK_SKILLS_DIR="$CODEX_AGENTS_DIR/skills"
 SOURCE_AGENTS_DIR="$CODEX_AGENTS_DIR/agents"
-SOURCE_CONFIG_FILE="$CODEX_AGENTS_DIR/config.toml"
 
 usage() {
   cat << 'EOF'
@@ -69,10 +68,6 @@ if [[ ! -d "$SKILLS_DIR" ]]; then
 fi
 if [[ ! -d "$SOURCE_AGENTS_DIR" ]]; then
   echo "[ERROR] Codex agents not found: $SOURCE_AGENTS_DIR" >&2
-  exit 1
-fi
-if [[ ! -f "$SOURCE_CONFIG_FILE" ]]; then
-  echo "[ERROR] Codex config source not found: $SOURCE_CONFIG_FILE" >&2
   exit 1
 fi
 
@@ -176,69 +171,14 @@ ensure_key_in_section() {
   insert_key_after_section_header "$file_path" "$section_name" "$key_line"
 }
 
-extract_section_block() {
-  local source_file="$1"
-  local section_name="$2"
-  awk -v section="[$section_name]" '
-    BEGIN { in_section=0 }
-    {
-      line=$0
-      trimmed=$0
-      sub(/^[[:space:]]+/, "", trimmed)
-      sub(/[[:space:]]+$/, "", trimmed)
-
-      if (trimmed == section) {
-        in_section=1
-      } else if (in_section && trimmed ~ /^\[[^]]+\]$/) {
-        exit
-      }
-
-      if (in_section) {
-        print line
-      }
-    }
-  ' "$source_file"
-}
-
-ensure_section_block() {
-  local file_path="$1"
-  local section_name="$2"
-  local block_content="$3"
-  if has_section "$file_path" "$section_name"; then
-    return
-  fi
-  if [[ -s "$file_path" ]]; then
-    printf '\n' >> "$file_path"
-  fi
-  printf '%s\n' "$block_content" >> "$file_path"
-}
-
 merge_apm_config() {
-  local source_config="$1"
-  local target_config="$2"
-  local role_section
-  local block
+  local target_config="$1"
 
   touch "$target_config"
 
   ensure_key_in_section "$target_config" "features" "multi_agent" "multi_agent = true"
   ensure_key_in_section "$target_config" "agents" "max_threads" "max_threads = 6"
-
-  for role_section in \
-    "agents.apm-architect" \
-    "agents.apm-engineer" \
-    "agents.apm-sdet" \
-    "agents.apm-data-scientist" \
-    "agents.apm-code-simplifier" \
-    "agents.apm-memory-bank-sync" \
-    "agents.apm-code-reviewer"; do
-    block="$(extract_section_block "$source_config" "$role_section")"
-    if [[ -z "$block" ]]; then
-      echo "[WARN] Missing section in source config: [$role_section]" >&2
-      continue
-    fi
-    ensure_section_block "$target_config" "$role_section" "$block"
-  done
+  ensure_key_in_section "$target_config" "agents" "max_depth" "max_depth = 2"
 }
 
 mkdir -p "$CODEX_DIR/skills" "$CODEX_DIR/agents"
@@ -248,7 +188,7 @@ if [[ -d "$PACK_SKILLS_DIR" ]]; then
 fi
 cp -R "$SOURCE_AGENTS_DIR/." "$CODEX_DIR/agents/"
 
-merge_apm_config "$SOURCE_CONFIG_FILE" "$CODEX_DIR/config.toml"
+merge_apm_config "$CODEX_DIR/config.toml"
 
 echo "APM Codex assets installed to $CODEX_DIR"
 echo "  - skills: $CODEX_DIR/skills"

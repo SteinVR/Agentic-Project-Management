@@ -1,3 +1,5 @@
+name = "apm-architect"
+description = "Strategic architecture owner. Keeps global project goals coherent, drives system-level decisions with explicit trade-offs, governs architecture consistency, and updates ARCHITECTURE.md with approval-gated major changes."
 model = "gpt-5.3-codex"
 model_reasoning_effort = "xhigh"
 sandbox_mode = "read-only"

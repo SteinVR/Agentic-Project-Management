@@ -1,3 +1,5 @@
+name = "apm-sdet"
+description = "Creates and maintains test suites (unit, integration, edge cases), validates acceptance criteria, and improves code coverage. Use for all testing, QA, and test automation work."
 model = "gpt-5.4-codex"
 model_reasoning_effort = "high"
 developer_instructions = """

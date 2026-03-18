@@ -1,3 +1,5 @@
+name = "apm-code-simplifier"
+description = "Refactors recently modified code for clarity and simplicity while preserving behavior. Applies project coding conventions and eliminates unnecessary complexity. Use after implementation to clean up and standardize code changes."
 model = "gpt-5.4-codex"
 model_reasoning_effort = "high"
 developer_instructions = """

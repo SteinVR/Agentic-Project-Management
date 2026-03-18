@@ -99,17 +99,13 @@ Where IPC *does* appear in the Codex ecosystem is mainly in **integration surfac
 
 “Authoring” in Codex CLI subagents primarily means **defining agent roles** (configuration-layer authoring) and understanding the **collaboration tool APIs** that the system uses when multi-agent is enabled.
 
-### Step-by-step: define agent roles
+### Step-by-step: define custom agents
 
-Codex CLI supports a dedicated `[agents]` section, where each role can define:
+Custom agents are standalone TOML files placed in `~/.codex/agents/` (personal) or `.codex/agents/` (project-scoped). Each file defines one agent. Codex auto-discovers these files.
 
-- `description` (role guidance used by Codex when deciding/spawning)
-- `config_file` (path to a TOML layer applied to the spawned agent of that role)
-- global concurrency constraint: `agents.max_threads`
+Codex ships with built-in agents (`default`, `worker`, `explorer`). User-defined agents with a matching name override built-ins.
 
-Codex ships with built-in roles such as `default`, `worker`, and `explorer`, and user-defined roles can override built-ins by name.
-
-Example directory layout (typical):
+Example directory layout:
 
 ```text
 ~/.codex/
@@ -119,28 +115,26 @@ Example directory layout (typical):
     custom-explorer.toml
 ```
 
-The multi-agent docs include the concrete example below (reproduced as code; adapt paths as needed).
+Global subagent settings live in `config.toml`:
 
 ```toml
 # ~/.codex/config.toml
 
-[agents.default]
-description = "General-purpose helper."
+[features]
+multi_agent = true
 
-[agents.reviewer]
-description = "Find security, correctness, and test risks in code."
-config_file = "agents/reviewer.toml"
-
-[agents.explorer]
-description = "Fast codebase explorer for read-heavy tasks."
-config_file = "agents/custom-explorer.toml"
+[agents]
+max_threads = 6
+max_depth = 2
 ```
 
-Role-specific config layering files are normal TOML config layers. For example:
+Each standalone agent file must define three required fields: `name`, `description`, `developer_instructions`. Optional fields (`model`, `model_reasoning_effort`, `sandbox_mode`, `mcp_servers`, `skills.config`, `nickname_candidates`) inherit from the parent session when omitted.
 
 ```toml
 # ~/.codex/agents/reviewer.toml
 
+name = "reviewer"
+description = "Find security, correctness, and test risks in code."
 model = "gpt-5.3-codex"
 model_reasoning_effort = "high"
 developer_instructions = """
@@ -152,34 +146,44 @@ When finding security issues give concrete steps on how to reproduce the vulnera
 ```toml
 # ~/.codex/agents/custom-explorer.toml
 
+name = "custom-explorer"
+description = "Fast codebase explorer for read-heavy tasks."
 model = "gpt-5.3-codex-spark"
 model_reasoning_effort = "medium"
 sandbox_mode = "read-only"
+developer_instructions = """
+Stay in exploration mode. Trace execution paths, cite files and symbols, avoid proposing fixes.
+"""
 ```
 
-These examples are explicitly shown in the official multi-agent documentation.
+Codex identifies the agent by its `name` field, not the filename.
 
-### Agent role schema and constraints
+### Agent schema and constraints
 
-The role schema is explicitly documented:
+#### Global settings (in `config.toml`)
 
 | Field | Type | Required | Default | Purpose |
 |---|---|---|---|---|
 | `agents.max_threads` | number | No | `6` | Concurrent open agent thread cap. |
 | `agents.max_depth` | number | No | `1` | Maximum nesting depth for spawned agents. Root session starts at depth 0; default `1` allows direct child agents but prevents deeper nesting. Set to `2` to allow one additional layer (subagent spawns subagent). |
 | `agents.job_max_runtime_seconds` | number | No | `1800` | Default per-worker timeout for `spawn_agents_on_csv` jobs. |
-| `[agents.<name>]` | table | No | -- | Role declaration. `<name>` becomes the `agent_type` when spawning. |
-| `agents.<name>.description` | string | No | -- | Human-facing role guidance shown to Codex when deciding which role to use. |
-| `agents.<name>.config_file` | string (path) | No | -- | Path to a TOML config layer applied to spawned agents for that role. |
-| `agents.<name>.nickname_candidates` | array | No | -- | Optional pool of display nicknames for spawned agents in that role. |
+
+#### Standalone agent file schema (in `agents/*.toml`)
+
+| Field | Type | Required | Purpose |
+|---|---|---|---|
+| `name` | string | Yes | Agent name Codex uses when spawning or referring to this agent. |
+| `description` | string | Yes | Human-facing guidance for when Codex should use this agent. |
+| `developer_instructions` | string | Yes | Core instructions that define the agent's behavior. |
+| `nickname_candidates` | string[] | No | Optional pool of display nicknames for spawned agents. |
+
+Other supported `config.toml` keys (`model`, `model_reasoning_effort`, `sandbox_mode`, `mcp_servers`, `skills.config`) can also be used in standalone agent files.
 
 Notes:
 
-- The spawned agent inherits any configuration that the role does not override from the parent session.
-- Unknown fields in `[agents.<name>]` are rejected.
-- Relative `config_file` paths are resolved relative to the declaring `config.toml`.
-- Failure to load a role config file causes agent spawns to fail.
-- If a role name matches a built-in role (e.g. `explorer`), the user-defined role takes precedence.
+- The spawned agent inherits any configuration that the agent file does not override from the parent session.
+- Codex identifies agents by the `name` field, not the filename.
+- If an agent name matches a built-in agent (e.g. `explorer`), the user-defined agent takes precedence.
 
 ### Hyperparameters in Role Configurations
 

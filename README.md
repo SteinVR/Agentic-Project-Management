@@ -113,8 +113,8 @@ PowerShell equivalents:
 Codex install adds:
 - Skills to `.codex/skills/`
 - Codex-only primary-session skills from `apm_source/packs/codex_pack/skills/`
-- Subagent role configs to `.codex/agents/`
-- Missing APM sections in `.codex/config.toml` (`features.multi_agent`, `agents.max_threads`, `agents.apm-*`)
+- Standalone subagent role configs to `.codex/agents/` (each file includes `name`, `description`, `developer_instructions`)
+- Global multi-agent settings in `.codex/config.toml` (`features.multi_agent`, `agents.max_threads`, `agents.max_depth`)
 
 ---
 

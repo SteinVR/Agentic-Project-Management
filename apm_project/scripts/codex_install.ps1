@@ -23,18 +23,12 @@ if (-not (Test-Path $CodexAgentsDir)) {
 }
 $PackSkillsDir = Join-Path $CodexAgentsDir "skills"
 $AgentsSourceDir = Join-Path $CodexAgentsDir "agents"
-$ConfigSourceFile = Join-Path $CodexAgentsDir "config.toml"
-
 if (-not (Test-Path $SkillsDir)) {
   Write-Error "Codex skills not found: $SkillsDir"
   exit 1
 }
 if (-not (Test-Path $AgentsSourceDir)) {
   Write-Error "Codex agents not found: $AgentsSourceDir"
-  exit 1
-}
-if (-not (Test-Path $ConfigSourceFile)) {
-  Write-Error "Codex config source not found: $ConfigSourceFile"
   exit 1
 }
 
@@ -109,43 +103,6 @@ function Ensure-KeyInSection {
   return $Content
 }
 
-function Get-SectionBlock {
-  param(
-    [string]$SourceContent,
-    [string]$Section
-  )
-
-  $sectionEsc = [regex]::Escape($Section)
-  $pattern = "(?ms)^\[$sectionEsc\]\s*\r?\n.*?(?=^\[[^\]]+\]\s*$|\z)"
-  $sectionMatch = [regex]::Match($SourceContent, $pattern)
-  if ($sectionMatch.Success) {
-    return $sectionMatch.Value.TrimEnd("`r", "`n")
-  }
-  return $null
-}
-
-function Ensure-SectionBlock {
-  param(
-    [string]$Content,
-    [string]$Section,
-    [string]$Block
-  )
-
-  $sectionEsc = [regex]::Escape($Section)
-  $headerPattern = "(?m)^\[$sectionEsc\]\s*$"
-  if ([regex]::IsMatch($Content, $headerPattern)) {
-    return $Content
-  }
-
-  $Content = Ensure-TrailingNewLine $Content
-  if ($Content.Length -gt 0) {
-    $Content += "`r`n"
-  }
-  $Content += "$Block`r`n"
-  return $Content
-}
-
-$sourceConfigContent = Get-Content -Path $ConfigSourceFile -Raw -Encoding UTF8
 $targetConfigContent = ""
 if (Test-Path $targetConfigFile) {
   $targetConfigContent = Get-Content -Path $targetConfigFile -Raw -Encoding UTF8
@@ -153,25 +110,7 @@ if (Test-Path $targetConfigFile) {
 
 $targetConfigContent = Ensure-KeyInSection $targetConfigContent "features" "multi_agent" "multi_agent = true"
 $targetConfigContent = Ensure-KeyInSection $targetConfigContent "agents" "max_threads" "max_threads = 6"
-
-$roleSections = @(
-  "agents.apm-architect",
-  "agents.apm-engineer",
-  "agents.apm-sdet",
-  "agents.apm-data-scientist",
-  "agents.apm-code-simplifier",
-  "agents.apm-memory-bank-sync",
-  "agents.apm-code-reviewer"
-)
-
-foreach ($roleSection in $roleSections) {
-  $block = Get-SectionBlock $sourceConfigContent $roleSection
-  if ([string]::IsNullOrWhiteSpace($block)) {
-    Write-Warning "Missing section in source config: [$roleSection]"
-    continue
-  }
-  $targetConfigContent = Ensure-SectionBlock $targetConfigContent $roleSection $block
-}
+$targetConfigContent = Ensure-KeyInSection $targetConfigContent "agents" "max_depth" "max_depth = 2"
 
 Set-Content -Path $targetConfigFile -Value $targetConfigContent -Encoding UTF8
 
