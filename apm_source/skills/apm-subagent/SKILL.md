@@ -13,7 +13,7 @@ After you decided to delegate work to a specialist subagent and need the correct
 The orchestrating agent owns decomposition, sequencing, and integration.
 `apm-subagent` owns only one thing: how to frame the request to the chosen specialist role.
 The specialist role itself is defined by the selected subagent config, not by the prompt text.
-+
+
 ## Common delegation contract
 Every delegation should include:
 1. **Objective** -- one concrete task with explicit success condition.
