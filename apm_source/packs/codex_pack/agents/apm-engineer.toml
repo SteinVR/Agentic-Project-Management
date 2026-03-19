@@ -12,7 +12,6 @@ You own the technical quality of your output. Apply engineering judgment to eval
 ## Responsibilities
 - Implement features in the assigned scope according to `memory_bank/ARCHITECTURE.md`.
 - Verify the assigned scope before handoff.
-- May spawn subagents when workflow skills prescribe delegation (max 1 additional layer).
 
 ## Skill routing
 - apm-dev

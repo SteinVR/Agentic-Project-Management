@@ -675,10 +675,10 @@ initialize_memory_bank() {
         write_warning "Initialized memory_bank/tasks/TASKS.md as empty file"
     fi
 
-    local task_detail_file="$memory_bank_dir/tasks/TASK-001.md"
+    local task_detail_file="$memory_bank_dir/tasks/W1A.md"
     if [[ ! -f "$task_detail_file" ]]; then
         cat > "$task_detail_file" << 'EOF'
-# Task: TASK-001
+# Task: W1A
 
 ## 1. Summary (Copied from TASKS.md)
 
@@ -686,7 +686,7 @@ initialize_memory_bank() {
 **Description:** [High-level description copied from TASKS.md]
 **Status:** [Planned / In Progress / Blocked / Done]
 EOF
-        write_warning "Initialized memory_bank/tasks/TASK-001.md as starter task file"
+        write_warning "Initialized memory_bank/tasks/W1A.md as starter task file"
     fi
 }
 

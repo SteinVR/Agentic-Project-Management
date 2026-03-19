@@ -1,28 +1,25 @@
 ---
 name: apm-subagent
-description: "Frame precise delegation requests for APM specialist subagents. Use after you already decided to delegate work to a specific role."
+description: "Frame delegation requests for APM specialist subagents. Use to delegate work to a specific role."
 ---
 ## What I do
-- Standardize delegation requests for APM specialist subagents.
-- Keep delegation prompts scoped, explicit, and role-appropriate.
+Standardize delegation to APM specialist subagents with a minimal contract.
 
 ## When to use
-After you decided to delegate work to a specialist subagent and need the correct contract structure for that role.
+After you decided to delegate work to a specialist subagent.
 
 ## Scope boundary
 The orchestrating agent owns decomposition, sequencing, and integration.
-`apm-subagent` owns only one thing: how to frame the request to the chosen specialist role.
-The specialist role itself is defined by the selected subagent config, not by the prompt text.
+`apm-subagent` owns only one thing: how to frame the request to the chosen specialist.
+The specialist role is defined by the subagent config, not by the prompt text. Subagents self-orient from `memory_bank/` and task files.
 
-## Common delegation contract
-Every delegation should include:
-1. **Objective** -- one concrete task with explicit success condition.
-2. **Owned scope** -- paths, files, modules, or artifacts the subagent owns.
-3. **Required context** -- only the files and facts needed for the task.
-4. **Non-goals** -- forbidden files, actions, or adjacent responsibilities.
-5. **Verification target** -- what must be checked before handoff.
-6. **Handoff format** -- what the subagent must return to the orchestrator.
-7. **Blocker rule** -- what to do when requirements are missing or contradictory.
+## Delegation contract
+Every delegation includes:
+1. **TASK_ID** -- the task to execute (references `memory_bank/tasks/{TASK_ID}.md`).
+2. **Worktree path** -- if the task runs in a worktree, specify the path.
+3. **Clarification** -- only if something is non-obvious or task-specific. Do not restate what the task file and subagent config already cover.
+
+Do not pre-gather context, file lists, or scope boundaries for the subagent. Subagents read the task file, architecture, and project state themselves.
 
 ## Role guides
 - `apm-engineer`: see `references/engineer.md`
@@ -36,6 +33,4 @@ Every delegation should include:
 ## Guardrails
 - Do not mix multiple specialist responsibilities in one delegation.
 - Do not pass orchestration, git-flow, or PR management to specialist subagents.
-- Specialist subagents may invoke downstream roles only when the active workflow explicitly prescribes it (e.g., through `apm-quality-gate`).
-- Do not ask implementation roles for final approval decisions.
-- Do not ask review or sync roles to do implementation unless explicitly overriding the default role boundary.
+- Do not pre-collect context for the subagent -- they self-orient.

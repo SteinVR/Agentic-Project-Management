@@ -248,7 +248,7 @@ test_rapid_methodology_deployment() {
     assert_path_exists "$mb_dir/ARCHITECTURE.md" "memory_bank/ARCHITECTURE.md" "RAPID-MBArch"
     assert_path_exists "$mb_dir/STATE.md" "memory_bank/STATE.md" "RAPID-MBState"
     assert_path_exists "$mb_dir/tasks/TASKS.md" "memory_bank/tasks/TASKS.md" "RAPID-MBTasks"
-    assert_path_exists "$mb_dir/tasks/TASK-001.md" "memory_bank/tasks/TASK-001.md" "RAPID-MBTask001"
+    assert_path_exists "$mb_dir/tasks/W1A.md" "memory_bank/tasks/W1A.md" "RAPID-MBTask001"
     
     # Verify project name was substituted in ARCHITECTURE.md
     assert_file_contains "$mb_dir/ARCHITECTURE.md" "$project_name" \
@@ -330,7 +330,7 @@ test_ds_methodology_deployment() {
     assert_path_exists "$mb_dir/ARCHITECTURE.md" "memory_bank/ARCHITECTURE.md" "DS-MBArch"
     assert_path_exists "$mb_dir/STATE.md" "memory_bank/STATE.md" "DS-MBState"
     assert_path_exists "$mb_dir/tasks/TASKS.md" "memory_bank/tasks/TASKS.md" "DS-MBTasks"
-    assert_path_exists "$mb_dir/tasks/TASK-001.md" "memory_bank/tasks/TASK-001.md" "DS-MBTask001"
+    assert_path_exists "$mb_dir/tasks/W1A.md" "memory_bank/tasks/W1A.md" "DS-MBTask001"
     
     # No legacy artifacts
     write_test_name "Verifying no legacy artifacts"
@@ -502,7 +502,7 @@ test_rapid_codex_deployment() {
     assert_path_exists "$project_path/memory_bank" "memory_bank directory" "RAPID-CX-MB"
     assert_path_exists "$project_path/memory_bank/ARCHITECTURE.md" "ARCHITECTURE.md" "RAPID-CX-Arch"
     assert_path_exists "$project_path/memory_bank/tasks/TASKS.md" "TASKS.md" "RAPID-CX-Tasks"
-    assert_path_exists "$project_path/memory_bank/tasks/TASK-001.md" "TASK-001.md" "RAPID-CX-Task001"
+    assert_path_exists "$project_path/memory_bank/tasks/W1A.md" "W1A.md" "RAPID-CX-Task001"
     assert_path_exists "$project_path/src" "src directory" "RAPID-CX-Src"
     assert_path_exists "$project_path/tests" "tests directory" "RAPID-CX-Tests"
     assert_path_exists "$project_path/AGENTS.md" "AGENTS.md" "RAPID-CX-Agents"

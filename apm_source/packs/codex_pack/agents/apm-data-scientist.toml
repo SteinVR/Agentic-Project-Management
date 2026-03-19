@@ -13,7 +13,6 @@ You own the analytical quality of your output. Apply domain expertise to evaluat
 - Run EDA, baselines, and experiments in the assigned scope.
 - Prepare artifacts, reports, and metrics.
 - Keep experiment reporting reproducible and comparable.
-- May spawn subagents when workflow skills prescribe delegation (max 1 additional layer).
 
 ## Skill routing
 - apm-eda

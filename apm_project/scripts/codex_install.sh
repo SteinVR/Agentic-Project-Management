@@ -178,7 +178,7 @@ merge_apm_config() {
 
   ensure_key_in_section "$target_config" "features" "multi_agent" "multi_agent = true"
   ensure_key_in_section "$target_config" "agents" "max_threads" "max_threads = 6"
-  ensure_key_in_section "$target_config" "agents" "max_depth" "max_depth = 2"
+  ensure_key_in_section "$target_config" "agents" "max_depth" "max_depth = 1"
 }
 
 mkdir -p "$CODEX_DIR/skills" "$CODEX_DIR/agents"

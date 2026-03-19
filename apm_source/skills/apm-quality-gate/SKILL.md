@@ -1,34 +1,27 @@
 ---
 name: apm-quality-gate
-description: "Run the shared final quality gate for code-writing tasks: simplify changed code, re-verify, review independently, fix findings, and prepare a verified completion handoff. Use at the end of implementation, baseline, or experiment flows."
+description: "Run the shared final quality gate for code-writing tasks: simplify changed code, re-verify, review independently, fix findings, and prepare a verified completion handoff. Use at the end of implementation, or experiment flows."
 ---
 ## What I do
 - Run the standard final quality gate for code-writing workflows.
 - Keep the gate consistent across RAPID and DS implementation paths.
-- End with a verified completion handoff.
+- Define the quality gate sequence that Team Lead runs on each completed task before integration.
 
 ## When to use
 - After implementation is complete and initial validation has already passed.
 - At the end of flows that changed code and need a standard simplify/review/fix/handoff gate.
-- In `apm-dev`, `apm-ds-baseline`, `apm-ds-exp`, or equivalent write-capable workflows.
 
-## Shared quality gate
-1. Confirm the gate scope: recently changed files, affected verification paths, and required outputs from the active workflow.
-2. Run `apm-code-simplifier` on changed files (via subagent when available; otherwise apply equivalent inline refinement).
-3. Re-run targeted verification to ensure simplification did not break the implementation.
-4. Run `apm-code-reviewer` as an independent gate for:
-   - **Verification** (task and architecture alignment),
-   - **Code Review** (bugs, incorrectness, unsafe shortcuts, risks).
-5. Fix review findings and re-run targeted verification on impacted paths.
-   - P0/P1 findings are mandatory before handoff.
-   - P2/P3 findings may be deferred only with explicit rationale.
-6. Before the final handoff, refresh any workflow-specific artifacts, reports, metrics, or task updates required by the invoking skill so they reflect the post-fix state.
-7. Prepare a completion handoff with:
-   - change summary,
-   - verification evidence,
-   - residual risks or deferred findings.
+## Quality gate sequence
+1. **Spawn `apm-code-simplifier`** on the task's changed files in the task worktree.
+2. **Verify** that simplification preserved behavior (run relevant tests/checks).
+3. **Spawn `apm-code-reviewer`** with only the TASK_ID. The reviewer independently determines review scope, reads the task spec, and assesses completeness and correctness.
+4. **Evaluate findings**:
+   - P0/P1: mandatory fix before integration.
+   - P2/P3: defer with explicit rationale or fix if low-effort.
+5. **Fix or re-delegate**: apply minor fixes directly (mechanical only); re-delegate significant issues to the original specialist subagent.
+6. **Re-verify** after fixes.
+7. **Accept** the task for wave integration.
 
 ## Guardrails
-- Do not skip re-verification after simplification or after material fixes.
-- Keep the gate scoped to the active implementation stream.
-- Do not treat `apm-critical-review` as a substitute for `apm-code-reviewer` in this flow.
+- Do not skip re-verification after simplification or after fixes.
+- The code reviewer determines its own scope -- do not pre-scope the review.

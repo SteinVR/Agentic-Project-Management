@@ -141,15 +141,13 @@ alias apm-cd='cd /path/to/Agentic-Project-Management'
 ## How it works
 
 1. **/apm-start** runs Vision Alignment (RAPID) or Problem Definition (DS).
-2. After your confirmation, APM creates the Memory Bank: `ARCHITECTURE.md`, `STATE.md`, and `tasks/` (`TASKS.md` + `TASK-001.md` starter).
-3. You continue with role-specific commands/skills (e.g., `/apm-develop`, `apm-eda`, `apm-deep-feature-engineering`, `apm-ds-exp`). Development and DS code-writing loops use the shared `apm-quality-gate`: `apm-code-simplifier -> verification -> apm-code-reviewer -> fix findings -> completion handoff`.
-   - Branch/worktree/PR flow is not part of standard specialist subagent loops.
-   - Branch/worktree may be initialized manually by the user, or by Team Lead when explicit `TASK_ID` subtasks (or explicit git-flow request) are provided.
-   - **Co-Founder mode** provides a collaborative primary partner who co-owns project vision, architecture, and direction. Natural communication, strategic thinking, orchestration when needed. Activate via Shift+Tab in OpenCode (cycle to Co-Founder primary agent) or by loading the `apm-co-founder` skill in Codex.
-   - **Team Lead mode** enables formalized orchestration-first execution for one or more structured tasks: Team Lead decomposes, delegates to specialist subagents, validates, integrates, and returns one compact final handoff. Activate via Shift+Tab in OpenCode (cycle to Team Lead primary agent) or by loading the `apm-team-lead` skill in Codex.
+2. After your confirmation, APM creates the Memory Bank: `ARCHITECTURE.md`, `STATE.md`, and `tasks/` (`TASKS.md` + `W1A.md` starter).
+3. You continue with role-specific commands/skills (e.g., `/apm-develop`, `apm-eda`, `apm-deep-feature-engineering`, `apm-ds-exp`).
+   - **Co-Founder mode** provides a collaborative primary partner who co-owns project vision, architecture, and direction. Strategic discussion partner -- does not orchestrate by default. Activate via Shift+Tab in OpenCode or by loading `apm-co-founder` in Codex.
+   - **Team Lead mode** enables WAVE-based orchestration: Team Lead creates worktrees, delegates with minimal contracts, waits, runs quality gate per task (simplify + review), integrates per wave, and returns one compact final handoff. Activate via Shift+Tab in OpenCode or by loading `apm-team-lead` in Codex.
    - Codex can enable goal-first spec challenge by loading `apm-critical-execution` in the main session; do not use it for specialist subagents.
 4. Memory Bank synchronization is explicit (`/apm-sync`) and can be delegated to a dedicated sync subagent when configured.
-5. Logs are split into `logs/project/` for runtime and reports, and `logs/agents/{TASK_ID}/` for task-scoped agent logs. In Team Lead flows, the final user handoff stays separate from these logs and summarizes validated outcomes per task.
+5. Logs are split into `logs/project/` for runtime and reports, and `logs/agents/{TASK_ID}/` for task-scoped agent logs. Team Lead writes consolidated logs under `logs/agents/` root.
 
 ---
 
@@ -171,6 +169,8 @@ Core files:
 - `tasks/TASKS.md`
 - `tasks/{TASK_ID}.md`
 
+WAVE naming: `W1A`, `W1B`, `W2A`, etc. Waves are sequential; tasks within a wave are parallel. Backlog items use `BL-NNN`.
+
 Line budget:
 - Keep `STATE.md` and `tasks/TASKS.md` under 150 lines (compress when exceeded).
 
@@ -179,15 +179,15 @@ Line budget:
 - `logs/project/runtime/` stores runtime, training, evaluation, metrics, and error logs.
 - `logs/project/reports/` stores generated reports such as test, review, and model reports.
 - `logs/agents/{TASK_ID}/` stores task-scoped agent logs written via `apm-report`. Each agent working on a task writes here.
-- For cross-task consolidated logs (e.g., multi-task Team Lead orchestration), store under `logs/agents/` root.
-- Team Lead returns a separate compact final handoff to the user; `apm-report` remains the execution log layer.
+- Team Lead writes consolidated orchestration logs under `logs/agents/` root.
 - In Codex, spawned roles get their human-readable identity only from their agent config files.
 
 ## Git Isolation
 
-- Git flow is opt-in and outside standard specialist subagent skills.
-- Branch/worktree initialization is done manually by the user, or by Team Lead for explicitly assigned TASK_ID subtasks (or direct git-flow request).
-- Team Lead uses `apm-git-taskflow` only under those explicit triggers.
+- Git flow is managed by Team Lead during WAVE execution via `apm-git-taskflow`.
+- One branch per task: `wave/{TASK_ID}`. One worktree per task: `.apm/worktrees/{TASK_ID}`.
+- Heavy untracked resources (runtime, data, models) are shared at repo level -- not copied per worktree.
+- New artifacts are produced locally in the worktree and migrated during wave integration.
 
 ---
 
@@ -226,8 +226,7 @@ Line budget:
 
 - OpenCode pack lives in `apm_source/packs/opencode_pack/`.
 - Shared CLI skills live in `apm_source/skills/`.
-- Example shared skills: `apm-dev`, `apm-co-founder`, `apm-team-lead`, `apm-subagent`, `apm-quality-gate`, `apm-code-simplifier`, `apm-test`, `apm-review`, `apm-logs`, `apm-report`.
-- Codex pack source lives in `apm_source/packs/codex_pack/` (subagent roles plus Codex-only primary-session skills), including `apm-critical-execution` and dedicated sync/review roles (`apm-memory-bank-sync`, `apm-code-reviewer`) in source profiles.
+- Codex pack source lives in `apm_source/packs/codex_pack/` (subagent roles plus Codex-only primary-session skills).
 - Cursor agents/commands pack lives in `apm_source/packs/cursor_pack/`.
 - Methodology templates live in `apm_source/methodologies/{rapid,ds}/`.
 - Legacy FULL methodology is stored in `apm_source/_legacy/cursor_ide/full_deprecated/`.
@@ -237,7 +236,7 @@ Line budget:
 ## OpenCode CLI architecture
 
 - **Commands** = playbooks the user runs (`/apm-*`). They set the phase and required context.
-- **Agents** = role profiles plus primary agents: Co-Founder (`apm-co-founder`) for collaborative project partnership, Team Lead (`apm-team-lead`) for formalized orchestration. Switch via Shift+Tab (cycle primary agents).
+- **Agents** = role profiles plus primary agents: Co-Founder (`apm-co-founder`) for strategic partnership, Team Lead (`apm-team-lead`) for WAVE orchestration. Switch via Shift+Tab (cycle primary agents).
 - **Skills** = modular knowledge chunks loaded on demand (governance, arch, team-lead mode, subagent delegation contracts, dev, simplification, test, logs, DS workflows).
 - **Tools** = custom actions (e.g., `apm_init_structure`) used by commands.
 - **Install targets**:

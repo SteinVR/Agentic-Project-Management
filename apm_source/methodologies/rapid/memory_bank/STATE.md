@@ -10,7 +10,7 @@
 
 | Attribute | Value |
 |-----------|-------|
-| Active Task IDs | [e.g., TASK-001, TASK-002] |
+| Active Task IDs | [e.g., W1A, W1B, W2A] |
 | Next Checkpoint | [YYYY-MM-DD or milestone] |
 | Blockers | [None / short list] |
 

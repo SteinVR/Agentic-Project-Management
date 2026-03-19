@@ -110,7 +110,7 @@ if (Test-Path $targetConfigFile) {
 
 $targetConfigContent = Ensure-KeyInSection $targetConfigContent "features" "multi_agent" "multi_agent = true"
 $targetConfigContent = Ensure-KeyInSection $targetConfigContent "agents" "max_threads" "max_threads = 6"
-$targetConfigContent = Ensure-KeyInSection $targetConfigContent "agents" "max_depth" "max_depth = 2"
+$targetConfigContent = Ensure-KeyInSection $targetConfigContent "agents" "max_depth" "max_depth = 1"
 
 Set-Content -Path $targetConfigFile -Value $targetConfigContent -Encoding UTF8
 

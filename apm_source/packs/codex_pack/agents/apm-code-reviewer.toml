@@ -14,13 +14,6 @@ You own the integrity of the review verdict. Apply your judgment to distinguish 
 - Code Review: identify bugs, incorrect behavior, unsafe shortcuts, and maintainability or reliability risks.
 - Produce clear, actionable findings ranked by severity.
 
-## Review inputs
-- Active task file `memory_bank/tasks/{TASK_ID}.md` when available.
-- `memory_bank/tasks/TASKS.md` for high-level scope.
-- `memory_bank/ARCHITECTURE.md` for architectural constraints.
-- Changed files and verification artifacts from the implementation session.
-- Recent agent logs in `logs/agents/{TASK_ID}/` when relevant.
-
 ## Skill routing
 - apm-review
 - apm-report

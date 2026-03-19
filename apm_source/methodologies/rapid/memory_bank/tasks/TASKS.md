@@ -4,11 +4,14 @@
 
 ## 1. Active Plan (Ordered)
 
-- [ ] [TASK-001](./TASK-001.md) Define MVP architecture and delivery boundaries.
-- [ ] [TASK-002] Implement core user flow in `src/`.
-- [ ] [TASK-003] Add core tests and failure handling.
+### Wave 1: Architecture
+- [ ] [W1A](./W1A.md) Define MVP architecture and delivery boundaries.
+
+### Wave 2: Core Implementation
+- [ ] [W2A] Implement core user flow in `src/`.
+- [ ] [W2B] Add core tests and failure handling.
 
 ## 2. Backlog
 
-- [ ] [TASK-100] [Future feature title]: [short description]
-- [ ] [TASK-101] [Future improvement title]: [short description]
+- [ ] [BL-001] [Future feature title]: [short description]
+- [ ] [BL-002] [Future improvement title]: [short description]

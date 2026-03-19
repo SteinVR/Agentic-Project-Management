@@ -26,9 +26,9 @@
 
 | ID | Date | Task | Approach | Primary | Result | Notes |
 |----|------|------|----------|---------|--------|-------|
-| EXP-002 | YYYY-MM-DD | [TASK-00X] | [Brief approach] | [value] | [+/-] | [Key insight] |
-| EXP-001 | YYYY-MM-DD | [TASK-00X] | [Brief approach] | [value] | [+/-] | [Key insight] |
-| Baseline | YYYY-MM-DD | [TASK-000] | [Naive/Simple model] | [value] | - | Reference point |
+| EXP-002 | YYYY-MM-DD | [W1A] | [Brief approach] | [value] | [+/-] | [Key insight] |
+| EXP-001 | YYYY-MM-DD | [W1A] | [Brief approach] | [value] | [+/-] | [Key insight] |
+| Baseline | YYYY-MM-DD | [W1A] | [Naive/Simple model] | [value] | - | Reference point |
 
 **Legend:** Result column: + = improvement, - = regression
 

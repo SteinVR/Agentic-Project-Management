@@ -5,21 +5,21 @@
 ## 1. Active Plan (Ordered)
 
 ### Wave 1: Foundation
-- [ ] [TASK-001](./TASK-001.md) Setup reproducible baseline and evaluator: establish first trusted benchmark and artifact contract.
-- [ ] [TASK-002] Complete EDA package: finalize `EDA-Report.md`, charts, and core risk findings.
+- [ ] [W1A](./W1A.md) Setup reproducible baseline and evaluator: establish first trusted benchmark and artifact contract.
+- [ ] [W1B] Complete EDA package: finalize `EDA-Report.md`, charts, and core risk findings.
 
 ### Wave 2: Deep Feature Engineering
-- [ ] [TASK-003] Produce deep feature candidates: rank feature ideas by expected impact, leakage risk, and runtime cost.
-- [ ] [TASK-004] Select production-safe feature subset: confirm top candidates for baseline and experiment loops.
+- [ ] [W2A] Produce deep feature candidates: rank feature ideas by expected impact, leakage risk, and runtime cost.
+- [ ] [W2B] Select production-safe feature subset: confirm top candidates for baseline and experiment loops.
 
 ### Wave 3: Experimentation
-- [ ] [TASK-005] Run first hypothesis cycle: implement and evaluate one controlled experiment against baseline.
+- [ ] [W3A] Run first hypothesis cycle: implement and evaluate one controlled experiment against baseline.
 
 ## 2. Low Priority / Ideas
-- [ ] [TASK-900] [Idea title]: [1-2 line description]
+- [ ] [BL-001] [Idea title]: [1-2 line description]
 
 
-## 4. Quick Reference: Metrics Progress
+## 3. Quick Reference: Metrics Progress
 
 | Run | Date | Primary Metric | Notes |
 |-----|------|----------------|-------|

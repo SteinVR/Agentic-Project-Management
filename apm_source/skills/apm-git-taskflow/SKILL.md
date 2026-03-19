@@ -1,6 +1,6 @@
 ---
 name: apm-git-taskflow
-description: "Task-scoped git execution contract: create or reuse one branch/worktree per TASK_ID, prepare PR content, and handle merge conflicts."
+description: "Task-scoped git execution contract: create or reuse one branch/worktree per TASK_ID, prepare PR content, and handle merge conflicts. Designed for WAVE-based orchestration."
 ---
 ## What I do
 - Enforce one git branch and one worktree per active TASK_ID.
@@ -10,17 +10,16 @@ description: "Task-scoped git execution contract: create or reuse one branch/wor
 ## Activation rule
 Valid triggers:
 - The user explicitly requests branch/worktree/PR flow.
-- The orchestrating agent receives multiple explicit TASK_ID subtasks that require isolated execution.
+- The orchestrating agent receives a wave of tasks that require isolated execution.
 
 ## TASK_ID contract
 - `TASK_ID` is the identifier used for branch/worktree naming.
-- Default: formal task file reference from `memory_bank/tasks/{TASK_ID}.md` when available.
-- Alternative: short explicit identifier assigned at delegation time.
+- WAVE naming: `W1A`, `W1B`, `W2A`, etc. (wave number + task letter).
+- Fallback: short explicit identifier assigned at delegation time.
 
 ## Naming contract
-- Task branch: `task/{TASK_ID}-{slug}`
+- Task branch: `wave/{TASK_ID}`
 - Worktree path: `.apm/worktrees/{TASK_ID}`
-- `slug` must be short, lowercase, and hyphenated.
 - Reuse existing task branch/worktree if already initialized.
 
 ## Required setup workflow
@@ -48,7 +47,7 @@ Git worktrees check out only tracked files. Heavy untracked resources (virtual e
 |---|---|---|
 | Shared runtime (single per repo) | `.venv`, `node_modules` | Use the shared runtime from the main tree (no per-worktree envs) |
 | Shared data | `data/raw/`, `data/external/`, `data/processed/` | Reference the main-tree data (do not copy) |
-| Read-reference artifacts | Existing trained models needed for fine-tuning or inference | Explicit absolute path in delegation contract, or point symlink to specific artifact directory |
+| Read-reference artifacts | Existing trained models needed for fine-tuning or inference | Subagent references via project structure or absolute path |
 | Task-local outputs | New models, checkpoints, experiment results, logs | Created locally in worktree |
 
 ### Shared runtime protocol (default)
@@ -75,12 +74,6 @@ When a task changes dependencies (`pyproject.toml`, `requirements*.txt`, `packag
 - Apply changes via safe sync tools (e.g., `uv sync`, package-manager install) to update the shared `.venv` / `node_modules`.
 - Serialize updates: do not run concurrent dependency updates across parallel tasks.
 - After sync, run a short verification relevant to the task scope.
-
-### Model artifact referencing
-
-Do not symlink the entire `models/` directory. Instead:
-- **Reading an existing model** (fine-tuning, inference): include the absolute path to the artifact in the delegation contract so the subagent references the original without copying.
-- **Writing new artifacts**: the subagent creates `models/` locally inside the worktree and writes there.
 
 ### Artifact integration after merge
 

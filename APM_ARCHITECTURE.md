@@ -24,12 +24,12 @@ APM supports three distinct environments (or workflows), tailoring its component
 2. **Codex CLI (Terminal / Orchestrated):**
    - Utilizes `config.toml` for subagent declarations (`[agents.*]`) and parallel multi-agent threading.
    - Relies on standardized `.codex/skills/` following the `agentskills.io` specification.
-   - Supports optional primary-session operating modes such as `apm-team-lead` and `apm-critical-execution` while keeping specialist subagents narrow.
+   - Supports primary-session operating modes: `apm-co-founder` (collaborative partner) and `apm-team-lead` (WAVE orchestrator).
    - Memory Bank resides in `memory_bank/`.
 
 3. **OpenCode CLI (Terminal / Extensible):**
    - Implements custom `commands/`, `agents/`, `skills/`, and `tools/` either globally (`~/.config/opencode/`) or locally (`.opencode/`).
-   - Supports a Team Lead primary-agent mode (`apm-team-lead`) for orchestration-first execution.
+   - Supports Co-Founder (`apm-co-founder`) and Team Lead (`apm-team-lead`) primary agents.
    - Memory Bank resides in `memory_bank/`.
 
 ---
@@ -51,8 +51,10 @@ The Memory Bank is the heartbeat of any APM project, ensuring context continuity
 **Core Files:**
 - `ARCHITECTURE.md` — The SSOT for the project's technical architecture, stack, patterns, and overarching design decisions.
 - `STATE.md` — Compact operational status and continuity context.
-- `tasks/TASKS.md` — Grouped high-level project tasks.
+- `tasks/TASKS.md` — Grouped high-level tasks organized by waves.
 - `tasks/{TASK_ID}.md` — Per-task execution notes and working plan.
+
+**WAVE naming:** Tasks use wave-based IDs: `W1A`, `W1B`, `W2A`, etc. Waves are sequential; tasks within a wave are parallel.
 
 Size guardrail:
 - Keep `STATE.md` and `tasks/TASKS.md` under 150 lines; compress when limits are exceeded.
@@ -88,10 +90,10 @@ Agents represent specific "personas" with customized system prompts and constrai
 - **Lead Engineer / Developer:** Focuses on implementation, adhering to specs.
 - **SDET (Software Development Engineer in Test):** Focuses entirely on QA, testing, and test automation.
 - **Data Scientist:** Executes the DS methodology loop.
-- **Co-Founder:** Primary project partner who co-owns vision, architecture, and direction. Combines strategic thinking with orchestration capability in natural, collaborative interaction. Delegates to specialist subagents when work benefits from it, acts directly otherwise. Available as a primary agent in OpenCode (`apm-co-founder`) or as a skill in Codex (`apm-co-founder`).
-- **Team Lead:** Formalized orchestration role for structured multi-task execution. Delegates execution to specialized subagents, validates what they return, integrates outputs, and handles only small low-risk direct edits when delegation overhead is unjustified.
-- **Code Simplifier:** Refactors recently modified code for clarity and simplicity while preserving exact behavior. Applies project coding conventions. Activated via `/apm-simplify` (Cursor) or `apm-code-simplifier` skill.
-- **Code Reviewer:** Runs independent verification and review gates, checking task/architecture alignment and ranked code risks before final handoff.
+- **Co-Founder:** Primary project partner who co-owns vision, architecture, and direction. Strategic discussion partner with deep project understanding. Does not orchestrate by default -- orchestration goes through Team Lead. Available as a primary agent in OpenCode (`apm-co-founder`) or as a skill in Codex (`apm-co-founder`).
+- **Team Lead:** Formalized WAVE-based orchestrator. Receives task waves, creates worktrees per task, delegates to specialist subagents with minimal contracts, runs quality gate per task, integrates per wave. Does not write implementation code (mechanical fixes only). Available as a primary agent in OpenCode (`apm-team-lead`) or as a skill in Codex (`apm-team-lead`).
+- **Code Simplifier:** Refactors recently modified code for clarity and simplicity while preserving exact behavior. Applies project coding conventions.
+- **Code Reviewer:** Fully independent verification and review gate. Receives only TASK_ID and independently determines review scope, checking task/architecture alignment and ranked code risks.
 - **Memory Bank Sync:** Runs explicit Memory Bank synchronization (`STATE`, `tasks/TASKS`, `{TASK_ID}`) with line-budget compression and approval-gated architecture updates.
 
 ### Skills (Dynamic Capabilities)
@@ -107,18 +109,18 @@ Skills (`SKILL.md`) are discrete, self-contained capabilities loaded on demand. 
 |-------|---------|
 | `apm-start` | Vision Alignment (RAPID) or Problem Definition (DS); initializes the Memory Bank |
 | `apm-dev` | Lead Engineer implementation loop |
-| `apm-git-taskflow` | Team Lead/manual git flow: task-scoped branch/worktree, PR flow, conflict policy, and worktree resource management (shared runtime + safe dependency sync) under explicit triggers |
-| `apm-quality-gate` | Shared final quality gate for code-writing flows: simplify, verify, review, fix, and handoff |
+| `apm-git-taskflow` | WAVE-based git flow: one branch/worktree per TASK_ID, PR flow, conflict policy, and worktree resource management |
+| `apm-quality-gate` | Post-task quality gate orchestrated by Team Lead: simplify, verify, review, fix, accept |
 | `apm-code-simplifier` | Behavior-preserving simplification of recently modified code |
 | `apm-test` | SDET testing and QA workflow |
 | `apm-review` | Architecture and code review |
 | `apm-sync` | Explicit Memory Bank synchronization on request |
 | `apm-report` | Write a structured agent session log for the current work |
 | `apm-logs` | Structured project-log and agent-log taxonomy management |
-| `apm-co-founder` | Co-Founder collaborative mode: primary project partner with strategic thinking and orchestration capability |
-| `apm-team-lead` | Team Lead orchestration mode for delegation-first execution in Codex and OpenCode |
+| `apm-co-founder` | Co-Founder mode: strategic project partner for collaborative discussion |
+| `apm-team-lead` | Team Lead mode: WAVE-based orchestration with delegation, quality gate, and integration |
 | `apm-critical-execution` | Codex-only primary-session mode for intent reconstruction, spec challenge, and goal-first execution |
-| `apm-subagent` | Role-specific delegation contract skill for current specialist subagents |
+| `apm-subagent` | Minimal delegation contract for specialist subagents (TASK_ID + worktree path + optional clarification) |
 | `apm-eda` | Exploratory Data Analysis workflow |
 | `apm-deep-feature-engineering` | Deep post-EDA feature engineering analysis |
 | `apm-ds-baseline` | Build domain-credible baseline models |
@@ -131,29 +133,26 @@ In modern environments (Cursor 2.5+, Codex CLI, and OpenCode), APM leverages sub
 
 **Three interaction modes:**
 1. **Standard mode (sequential):** The user drives work through the main session, which delegates to specialist subagents for localized execution via workflow skills. One task at a time, user validates between steps.
-2. **Co-Founder mode (collaborative):** The user works with an equal project partner who co-owns vision, architecture, and direction. Natural, informal communication. Orchestration and delegation happen when the work calls for it, not as a default protocol. Activated via Shift+Tab in OpenCode (cycle to Co-Founder primary agent) or by loading the `apm-co-founder` skill in Codex.
-3. **Team Lead mode (orchestration-first):** The user assigns one or more tasks to Team Lead, which orchestrates parallel subagent streams, validates results, integrates outputs, and returns one compact final handoff. Activated via Shift+Tab in OpenCode (cycle to Team Lead primary agent) or by loading the `apm-team-lead` skill in Codex.
+2. **Co-Founder mode (collaborative):** The user works with an equal project partner who co-owns vision, architecture, and direction. Natural, informal communication. Does not orchestrate by default; task execution goes through Team Lead. Activated via Shift+Tab in OpenCode (cycle to Co-Founder primary agent) or by loading the `apm-co-founder` skill in Codex.
+3. **Team Lead mode (WAVE orchestration):** The user assigns a wave of tasks to Team Lead. Team Lead creates worktrees, delegates with minimal contracts, waits for completion, runs quality gate per task (simplify + review), integrates per wave, and returns one compact final handoff. Activated via Shift+Tab in OpenCode (cycle to Team Lead primary agent) or by loading the `apm-team-lead` skill in Codex.
 
-**Orchestration paradigm (fan-out/fan-in):**
-1. **Frame (sequential):** Analyze the task, identify scope, success criteria, and dependencies.
-2. **Decompose (when needed):** Split multi-part work into delegation units with explicit TASK_ID boundaries. Skip when tasks arrive pre-decomposed.
-3. **Delegate (fan-out):** Assign units to subagents with precise invocations. Each contract specifies scope, owned file paths, done criteria, output format, and constraints.
-4. **Validate:** Review returned handoffs, inspect diffs, artifacts, and verification evidence.
-5. **Integrate (fan-in):** Merge results, resolve mechanical conflicts, run integration verification.
-6. **Handoff:** Return compact final handoff to the user.
+**WAVE execution protocol:**
+1. **Setup:** Create a worktree per task via `apm-git-taskflow`.
+2. **Delegate (fan-out):** Spawn a specialist subagent per task with a minimal contract: TASK_ID + worktree path + optional clarification. Do not pre-gather context for subagents.
+3. **Wait:** Do not rush subagents. Do not write code.
+4. **Quality gate (per task):** As each subagent completes, run `apm-quality-gate` (simplify -> verify -> review -> fix/re-delegate).
+5. **Integrate wave (fan-in):** Merge branches, resolve mechanical conflicts, migrate untracked artifacts.
+6. **Next wave / Final handoff.**
 
-**Default policy:** Hybrid -- sequential framing/decomposition, parallel execution where ownership zones do not overlap, sequential integration.
+**Delegation contract:** Minimal -- TASK_ID, worktree path, and optional clarification only. Subagents self-orient from task files and `memory_bank/`. Orchestrators do not pre-collect context.
 
-Every subagent invocation must include: concrete scope, file references, success criteria, expected output format, and constraints.
-`apm-subagent` is the low-level skill for role-specific prompt framing; it does not choose execution mode or perform integration.
-Subagents return compact handoffs and write `apm-report` logs under `logs/agents/{TASK_ID}/`. The orchestrating session writes its consolidated log under `logs/agents/{TASK_ID}/` (single-task) or `logs/agents/` root (multi-task). In Team Lead mode, the final user-facing handoff is a separate artifact: compact, decision-ready, and organized by task.
+**Subagent constraints:**
+- Max 3 concurrent subagents per orchestrating agent.
+- Max depth 1 (subagents do not spawn sub-subagents).
+
+Subagents return compact handoffs and write `apm-report` logs under `logs/agents/{TASK_ID}/`. Team Lead writes a consolidated log under `logs/agents/` root.
 `apm-critical-execution` is primary-session only; do not load it into specialist subagents.
-For development and DS code-writing loops, the default post-implementation quality gate is:
-`initial verification -> apm-quality-gate`, where `apm-quality-gate` runs
-`apm-code-simplifier -> verification -> apm-code-reviewer -> main-agent remediation -> completion handoff`.
-Specialist subagents that run quality-gate-prescribing skills (e.g., `apm-dev`, `apm-ds-baseline`) may spawn sub-subagents for the quality gate chain (max 1 additional layer).
-Git branch/worktree/PR flow is opt-in and is initialized manually by the user, or by Team Lead when explicit TASK_ID subtasks (or direct git-flow request) are provided.
-For explicit synchronization requests, `apm-sync` may delegate reconciliation to `apm-memory-bank-sync`.
+Git branch/worktree/PR flow is managed by Team Lead via `apm-git-taskflow` when processing waves.
 
 ---
 
@@ -190,14 +189,16 @@ APM/
 
 1. **Initialization:** Run the `apm.sh` configurator to stamp out the methodology, environment, and initial directory structure.
 2. **Setup Phase:** Run `/apm-start` to align on vision and generate the initial Memory Bank (`ARCHITECTURE.md`, `STATE.md`, `tasks/TASKS.md`, starter task file).
-3. **Execution Loop:** Work through role-specific commands (e.g., `/apm-develop`, `/apm-simplify`, `/apm-test` for RAPID; or `/apm-eda`, `/apm-deep-feature-engineering`, `/apm-experiment` for DS). Write-capable tasks use simplify/review/remediation and end with a verified completion handoff.
-4. **Synchronization:** Run `/apm-sync` on explicit request whenever continuity updates are needed.
+3. **Execution Loop:** Work through role-specific commands (e.g., `/apm-develop`, `/apm-simplify`, `/apm-test` for RAPID; or `/apm-eda`, `/apm-deep-feature-engineering`, `/apm-experiment` for DS). Quality gate is orchestrated by Team Lead after each task completes.
+4. **WAVE Orchestration:** Assign a wave of tasks to Team Lead. Team Lead creates worktrees, delegates, waits, runs quality gate per task, integrates per wave, returns final handoff.
+5. **Synchronization:** Run `/apm-sync` on explicit request whenever continuity updates are needed.
 
 ---
 
 ## 8. Core Conventions
 
 - **File Naming:** Core instruction or agent context files strictly use **UPPERCASE** naming conventions (e.g., `AGENTS.md`, `SKILL.md`, `ARCHITECTURE.md`) to distinguish them from standard project documentation.
+- **WAVE Naming:** Tasks use wave-based IDs (`W1A`, `W1B`, `W2A`). Waves are sequential; tasks within a wave are parallel. Backlog items use `BL-NNN`.
 - **Continuity Guarantee:** Use `tasks/{TASK_ID}.md` and agent logs as primary working memory during execution; sync into Memory Bank only when explicitly requested.
-- **Git Isolation:** Branch/worktree/PR flow is opt-in and managed manually by user or by Team Lead only under explicit triggers (`TASK_ID` streams or direct request). Worktrees contain only tracked files; heavy untracked resources (runtime, data, model artifacts) are shared at repo level (no per-worktree environments). When a task changes dependencies, update lockfiles and run a managed sync (e.g., `uv sync`) for the shared runtime in a serialized way. New artifacts are produced locally in the worktree and migrated to the main tree during integration.
+- **Git Isolation:** Branch/worktree flow is managed by Team Lead during WAVE execution. One branch per task (`wave/{TASK_ID}`), one worktree per task (`.apm/worktrees/{TASK_ID}`). Heavy untracked resources are shared at repo level. New artifacts are produced locally in the worktree and migrated during integration.
 - **Skill Portability:** Whenever possible, logic should be encapsulated in reusable `.md` skills following the `agentskills.io` spec to ensure cross-compatibility between Cursor, Claude Code, and Codex.
