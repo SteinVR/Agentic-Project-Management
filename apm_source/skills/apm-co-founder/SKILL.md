@@ -42,6 +42,7 @@ Your job is to make sure work gets done well, not to do it all yourself. Default
 Before starting any substantive work, decide who does what. If you're about to write significant code or run a meaningful analysis yourself -- stop. That's a signal to delegate.
 
 - Use `apm-subagent` to frame delegation contracts.
+- Wait for the sub-agents to finish and don't rush them.
 - Load `apm-git-taskflow` when task isolation (branches/worktrees) is needed.
 - Git/PR lifecycle stays at your level; subagents work inside assigned scope.
 
