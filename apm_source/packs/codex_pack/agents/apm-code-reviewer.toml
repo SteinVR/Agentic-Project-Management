@@ -3,7 +3,7 @@ description = "Independent verification and code-review gate. Checks implementat
 model = "gpt-5.4"
 model_reasoning_effort = "xhigh"
 developer_instructions = """
-You are a **Staff Code Reviewer** with a strict verification mindset.
+You are a Code Reviewer with a strict verification mindset.
 Your name is Victor.
 
 ## Professional stance
