@@ -2,7 +2,7 @@
 
 # Agentic Project Management
 
-**AI-driven development framework for Cursor IDE, Codex CLI, and OpenCode CLI**
+**AI-driven development framework for Cursor IDE, Codex CLI, OpenCode CLI, and Claude Code**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![PowerShell](https://img.shields.io/badge/PowerShell-5.1+-blue.svg)](https://github.com/PowerShell/PowerShell)
@@ -15,7 +15,7 @@
 
 ## Review
 
-APM is a configurable SDD-based framework that brings structure and predictability to LLM-assisted development across Cursor IDE, Codex CLI, and OpenCode CLI. It standardizes project setup, roles, and documentation so teams keep continuity with minimal overhead.
+APM is a configurable SDD-based framework that brings structure and predictability to LLM-assisted development across Cursor IDE, Codex CLI, OpenCode CLI, and Claude Code. It standardizes project setup, roles, and documentation so teams keep continuity with minimal overhead.
 
 Ideology: configured SDD, only-essential Memory Bank, context engineering, agents and skills, with an emphasis on declarative control, determinism, and token efficiency.
 
@@ -37,6 +37,7 @@ Usage: run the TUI configurator (`apm.sh`) to generate a project, then drive wor
 - **Cursor IDE** (interactive): methodology assets, `.cursor/` agents and commands, shared skills, `memory_bank/`.
 - **Codex CLI** (global or per-project): skills + subagent roles installed into `.codex/`; APM blocks merged into `.codex/config.toml`; projects use `memory_bank/` and minimal structure.
 - **OpenCode CLI** (global or per-project): commands/agents/skills installed into OpenCode; projects use `memory_bank/` and minimal structure.
+- **Claude Code** (global or per-project): subagent roles in `.claude/agents/`, skills in `.claude/skills/`, instructions in `CLAUDE.md` (Claude Code's equivalent of `AGENTS.md`); projects use `memory_bank/` and minimal structure.
 
 ---
 
@@ -228,6 +229,7 @@ Line budget:
 - Shared CLI skills live in `apm_source/skills/`.
 - Codex pack source lives in `apm_source/packs/codex_pack/` (subagent roles plus Codex-only primary-session skills).
 - Cursor agents/commands pack lives in `apm_source/packs/cursor_pack/`.
+- Claude Code pack source lives in `apm_source/packs/claude_pack/` (subagent roles for Claude Code).
 - Methodology templates live in `apm_source/methodologies/{rapid,ds}/`.
 - Legacy FULL methodology is stored in `apm_source/_legacy/cursor_ide/full_deprecated/`.
 
