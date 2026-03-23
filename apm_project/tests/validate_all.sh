@@ -13,6 +13,7 @@ E2E_SCRIPT="$REPO_ROOT/apm_project/tests/e2e_tests.sh"
 CODEX_INSTALL="$REPO_ROOT/apm_project/scripts/codex_install.sh"
 OPENCODE_INSTALL="$REPO_ROOT/apm_project/scripts/opencode_install.sh"
 CURSOR_INSTALL="$REPO_ROOT/apm_project/scripts/cursor_install.sh"
+CLAUDE_INSTALL="$REPO_ROOT/apm_project/scripts/claude_install.sh"
 
 VERBOSE=false
 KEEP_TEMP=false
@@ -108,6 +109,7 @@ run_syntax_checks() {
     bash -n "$CODEX_INSTALL"
     bash -n "$OPENCODE_INSTALL"
     bash -n "$CURSOR_INSTALL"
+    bash -n "$CLAUDE_INSTALL"
     bash -n "$E2E_SCRIPT"
     log_pass "bash -n checks"
 }
@@ -184,6 +186,19 @@ run_interactive_stdin_cases() {
     assert_file_contains "$tmp_parent/int-codex-rapid/.codex/config.toml" "\\[agents.apm-memory-bank-sync\\]" "Codex config sync role section"
     assert_file_contains "$tmp_parent/int-codex-rapid/.codex/config.toml" "\\[agents.apm-code-reviewer\\]" "Codex config reviewer role section"
     log_pass "interactive Codex RAPID local"
+
+    # Claude Code + RAPID + local install
+    out_file="$tmp_parent/int_claude_rapid_local.out"
+    err_file="$tmp_parent/int_claude_rapid_local.err"
+    printf "%b" "${tmp_parent}\nint-claude-rapid\n4\n1\ny\nlocal\n" | HOME="$tmp_home" TERM=xterm bash "$APM_SCRIPT" >"$out_file" 2>"$err_file"
+    assert_path_exists "$tmp_parent/int-claude-rapid/memory_bank" "Claude RAPID memory_bank"
+    assert_path_exists "$tmp_parent/int-claude-rapid/memory_bank/tasks/TASKS.md" "Claude RAPID TASKS.md"
+    assert_path_exists "$tmp_parent/int-claude-rapid/.claude/agents" "Claude RAPID agents"
+    assert_path_exists "$tmp_parent/int-claude-rapid/.claude/agents/apm-engineer.md" "Claude RAPID engineer agent file"
+    assert_path_exists "$tmp_parent/int-claude-rapid/.claude/agents/apm-team-lead.md" "Claude RAPID team-lead agent file"
+    assert_path_exists "$tmp_parent/int-claude-rapid/.claude/skills" "Claude RAPID skills"
+    assert_path_not_exists "$tmp_parent/int-claude-rapid/.cursor" "Claude RAPID .cursor"
+    log_pass "interactive Claude Code RAPID local"
 
     # Invalid input loops then valid values (OpenCode + RAPID + skip)
     out_file="$tmp_parent/int_invalid_loops.out"
@@ -277,9 +292,21 @@ run_non_interactive_matrix_and_installers() {
     assert_path_exists "$tmp_home/.codex/config.toml" "global codex config"
     log_pass "non-interactive Codex RAPID global"
 
+    HOME="$tmp_home" TERM=xterm bash "$APM_SCRIPT" --claude --rapid --project-name ni-claude-rapid-local --project-path "$projects_dir" --non-interactive --local --skip-cursor
+    assert_path_exists "$projects_dir/ni-claude-rapid-local/.claude/agents" "ni claude rapid local agents"
+    assert_path_exists "$projects_dir/ni-claude-rapid-local/.claude/skills" "ni claude rapid local skills"
+    assert_path_exists "$projects_dir/ni-claude-rapid-local/.claude/agents/apm-engineer.md" "ni claude rapid engineer agent"
+    assert_path_exists "$projects_dir/ni-claude-rapid-local/.claude/agents/apm-team-lead.md" "ni claude rapid team-lead agent"
+    log_pass "non-interactive Claude Code RAPID local"
+
+    HOME="$tmp_home" TERM=xterm bash "$APM_SCRIPT" --claude --rapid --project-name ni-claude-rapid-global --project-path "$projects_dir" --non-interactive --global --skip-cursor
+    assert_path_exists "$tmp_home/.claude/agents" "global claude agents"
+    assert_path_exists "$tmp_home/.claude/skills" "global claude skills"
+    log_pass "non-interactive Claude Code RAPID global"
+
     local installer_projects
     installer_projects="$tmp_root/installers"
-    mkdir -p "$installer_projects/p1" "$installer_projects/p2" "$installer_projects/p3"
+    mkdir -p "$installer_projects/p1" "$installer_projects/p2" "$installer_projects/p3" "$installer_projects/p4"
 
     HOME="$tmp_home" TERM=xterm bash "$CODEX_INSTALL" --local "$installer_projects/p1"
     assert_path_exists "$installer_projects/p1/.codex/skills" "codex_install local skills"
@@ -326,6 +353,21 @@ run_non_interactive_matrix_and_installers() {
     assert_path_exists "$tmp_home/.cursor/commands" "cursor_install global commands"
     assert_path_exists "$tmp_home/.cursor/skills" "cursor_install global skills"
     log_pass "cursor_install global"
+
+    HOME="$tmp_home" TERM=xterm bash "$CLAUDE_INSTALL" --local "$installer_projects/p4"
+    assert_path_exists "$installer_projects/p4/.claude/agents" "claude_install local agents"
+    assert_path_exists "$installer_projects/p4/.claude/agents/apm-engineer.md" "claude_install local engineer agent file"
+    assert_path_exists "$installer_projects/p4/.claude/agents/apm-code-reviewer.md" "claude_install local reviewer agent file"
+    assert_path_exists "$installer_projects/p4/.claude/agents/apm-team-lead.md" "claude_install local team-lead agent file"
+    assert_path_exists "$installer_projects/p4/.claude/skills" "claude_install local skills"
+    assert_path_exists "$installer_projects/p4/.claude/skills/apm-report/SKILL.md" "claude_install local apm-report skill"
+    assert_path_exists "$installer_projects/p4/.claude/skills/apm-team-lead/SKILL.md" "claude_install local apm-team-lead skill"
+    log_pass "claude_install local"
+
+    HOME="$tmp_home" TERM=xterm bash "$CLAUDE_INSTALL" --global
+    assert_path_exists "$tmp_home/.claude/agents" "claude_install global agents"
+    assert_path_exists "$tmp_home/.claude/skills" "claude_install global skills"
+    log_pass "claude_install global"
 }
 
 main() {

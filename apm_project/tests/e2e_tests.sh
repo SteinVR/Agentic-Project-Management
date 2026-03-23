@@ -539,6 +539,85 @@ test_rapid_codex_deployment() {
     assert_path_exists "$project_path/.codex/skills/apm-team-lead/SKILL.md" "apm-team-lead skill" "RAPID-CX-TeamLeadSkill"
 }
 
+# ============================================================================
+# CLAUDE CODE ENVIRONMENT TESTS
+# ============================================================================
+
+test_rapid_claude_deployment() {
+    local test_dir="$1"
+
+    write_test_header "RAPID Claude Code Deployment Tests"
+
+    local project_name="test-rapid-claude"
+    local project_path="$test_dir/$project_name"
+
+    write_test_name "Creating RAPID Claude Code project"
+
+    if bash "$APM_SCRIPT" \
+        --project-name "$project_name" \
+        --project-path "$test_dir" \
+        --claude \
+        --rapid \
+        --local \
+        --non-interactive \
+        --skip-cursor; then
+        write_test_pass "apm.sh executed successfully"
+    else
+        write_test_fail "apm.sh execution failed" "RAPID-CC-Creation"
+        return
+    fi
+
+    write_test_name "Verifying Claude Code RAPID structure"
+    assert_path_exists "$project_path/memory_bank" "memory_bank directory" "RAPID-CC-MB"
+    assert_path_exists "$project_path/memory_bank/ARCHITECTURE.md" "ARCHITECTURE.md" "RAPID-CC-Arch"
+    assert_path_exists "$project_path/memory_bank/tasks/TASKS.md" "TASKS.md" "RAPID-CC-Tasks"
+    assert_path_exists "$project_path/memory_bank/tasks/W1A.md" "W1A.md" "RAPID-CC-Task001"
+    assert_path_exists "$project_path/src" "src directory" "RAPID-CC-Src"
+    assert_path_exists "$project_path/tests" "tests directory" "RAPID-CC-Tests"
+    assert_path_exists "$project_path/AGENTS.md" "AGENTS.md" "RAPID-CC-Agents"
+
+    # No Cursor-specific artifacts
+    assert_path_not_exists "$project_path/.cursor" ".cursor directory" "RAPID-CC-NoCursor"
+    assert_path_not_exists "$project_path/.apm" ".apm directory" "RAPID-CC-NoAPM"
+
+    # Claude Code assets
+    write_test_name "Verifying Claude Code agents"
+    assert_path_exists "$project_path/.claude/agents" ".claude/agents directory" "RAPID-CC-AgentsDir"
+    assert_path_exists "$project_path/.claude/agents/apm-architect.md" "apm-architect agent" "RAPID-CC-ArchitectAgent"
+    assert_path_exists "$project_path/.claude/agents/apm-engineer.md" "apm-engineer agent" "RAPID-CC-EngineerAgent"
+    assert_path_exists "$project_path/.claude/agents/apm-sdet.md" "apm-sdet agent" "RAPID-CC-SDETAgent"
+    assert_path_exists "$project_path/.claude/agents/apm-code-simplifier.md" "apm-code-simplifier agent" "RAPID-CC-SimplifierAgent"
+    assert_path_exists "$project_path/.claude/agents/apm-code-reviewer.md" "apm-code-reviewer agent" "RAPID-CC-ReviewerAgent"
+    assert_path_exists "$project_path/.claude/agents/apm-memory-bank-sync.md" "apm-memory-bank-sync agent" "RAPID-CC-SyncAgent"
+    assert_path_exists "$project_path/.claude/agents/apm-co-founder.md" "apm-co-founder agent" "RAPID-CC-CoFounderAgent"
+    assert_path_exists "$project_path/.claude/agents/apm-team-lead.md" "apm-team-lead agent" "RAPID-CC-TeamLeadAgent"
+    assert_path_exists "$project_path/.claude/agents/apm-data-scientist.md" "apm-data-scientist agent" "RAPID-CC-DataScientistAgent"
+
+    # Verify agent frontmatter contains Claude Code-specific fields
+    write_test_name "Verifying agent frontmatter format"
+    assert_file_contains "$project_path/.claude/agents/apm-engineer.md" "^name: apm-engineer" \
+        "engineer agent has name field" "RAPID-CC-EngineerName"
+    assert_file_contains "$project_path/.claude/agents/apm-engineer.md" "model: sonnet" \
+        "engineer agent has model field" "RAPID-CC-EngineerModel"
+    assert_file_contains "$project_path/.claude/agents/apm-engineer.md" "permissionMode: acceptEdits" \
+        "engineer agent has permissionMode" "RAPID-CC-EngineerPerm"
+    assert_file_contains "$project_path/.claude/agents/apm-code-reviewer.md" "memory: project" \
+        "reviewer agent has persistent memory" "RAPID-CC-ReviewerMemory"
+    assert_file_contains "$project_path/.claude/agents/apm-team-lead.md" "Agent(apm-engineer" \
+        "team-lead has scoped Agent tool" "RAPID-CC-TeamLeadAgent"
+
+    # Verify shared skills were copied
+    write_test_name "Verifying Claude Code skills"
+    assert_path_exists "$project_path/.claude/skills" ".claude/skills directory" "RAPID-CC-Skills"
+    assert_path_exists "$project_path/.claude/skills/apm-dev/SKILL.md" "apm-dev skill" "RAPID-CC-DevSkill"
+    assert_path_exists "$project_path/.claude/skills/apm-report/SKILL.md" "apm-report skill" "RAPID-CC-ReportSkill"
+    assert_path_exists "$project_path/.claude/skills/apm-team-lead/SKILL.md" "apm-team-lead skill" "RAPID-CC-TeamLeadSkill"
+}
+
+# ============================================================================
+# DS OPENCODE TESTS
+# ============================================================================
+
 test_ds_opencode_deployment() {
     local test_dir="$1"
     
@@ -762,6 +841,7 @@ main() {
             test_full_methodology_deployment "$test_dir"
             test_rapid_opencode_deployment "$test_dir"
             test_rapid_codex_deployment "$test_dir"
+            test_rapid_claude_deployment "$test_dir"
             test_ds_opencode_deployment "$test_dir"
             test_project_overwrite "$test_dir"
             test_error_handling "$test_dir"

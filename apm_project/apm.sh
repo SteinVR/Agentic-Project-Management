@@ -2,7 +2,7 @@
 #
 # APM (Agentic Project Management) - Project Configurator
 # Interactive CLI wizard for creating new projects with APM methodology.
-# Supports FULL/RAPID/DS methodologies for Cursor, OpenCode CLI, and Codex CLI environments.
+# Supports FULL/RAPID/DS methodologies for Cursor, OpenCode CLI, Codex CLI, and Claude Code environments.
 #
 # Author: APM Team
 # Version: 1.0.0
@@ -82,6 +82,10 @@ parse_args() {
                 ;;
             --codex)
                 DEV_ENV="CODEX"
+                shift
+                ;;
+            --claude)
+                DEV_ENV="CLAUDE"
                 shift
                 ;;
             --cursor)
@@ -293,11 +297,14 @@ select_dev_environment() {
     echo -e "  \033[33m[3] \033[35mCodex CLI\033[0m - CLI-first workflow" >&2
     echo -e "      \033[90mUses Codex skills, subagent roles, and AGENTS chain with memory_bank/\033[0m" >&2
     echo "" >&2
-    
+    echo -e "  \033[33m[4] \033[34mClaude Code\033[0m - CLI agentic workflow" >&2
+    echo -e "      \033[90mUses Claude Code subagents, skills, and CLAUDE.md with memory_bank/\033[0m" >&2
+    echo "" >&2
+
     while true; do
         local choice
-        choice=$(read_user_input "Select environment (1, 2, or 3)" "1")
-        
+        choice=$(read_user_input "Select environment (1, 2, 3, or 4)" "1")
+
         case "$choice" in
             1|CURSOR|cursor)
                 echo "CURSOR"
@@ -311,8 +318,12 @@ select_dev_environment() {
                 echo "CODEX"
                 return 0
                 ;;
+            4|CLAUDE|claude|Claude|ClaudeCode|claude-code)
+                echo "CLAUDE"
+                return 0
+                ;;
             *)
-                write_error "Invalid choice. Enter 1, 2, or 3"
+                write_error "Invalid choice. Enter 1, 2, 3, or 4"
                 ;;
         esac
     done
@@ -419,6 +430,8 @@ show_summary() {
         env_label="Codex CLI"
     elif [[ "$dev_env" == "CURSOR" ]]; then
         env_label="Cursor IDE"
+    elif [[ "$dev_env" == "CLAUDE" ]]; then
+        env_label="Claude Code"
     fi
     echo -n "  Environment:  "
     echo -e "\033[32m$env_label\033[0m"
@@ -578,6 +591,25 @@ install_codex_skills() {
     else
         bash "$installer_path" --global
         write_success "Codex assets installed to $HOME/.codex"
+    fi
+}
+
+install_claude_pack() {
+    local mode="$1"
+    local project_path="$2"
+    local installer_path="$SCRIPT_DIR/scripts/claude_install.sh"
+
+    if [[ ! -f "$installer_path" ]]; then
+        write_warning "Claude Code installer not found: $installer_path"
+        return 0
+    fi
+
+    if [[ "$mode" == "local" ]]; then
+        bash "$installer_path" --local "$project_path"
+        write_success "Claude Code pack installed to $project_path/.claude"
+    else
+        bash "$installer_path" --global
+        write_success "Claude Code pack installed to $HOME/.claude"
     fi
 }
 
@@ -748,6 +780,7 @@ Options:
 Non-Interactive Mode (for automation/testing):
     --opencode          Shorthand for --dev-env OPENCODE
     --codex             Shorthand for --dev-env CODEX
+    --claude            Shorthand for --dev-env CLAUDE
     --cursor            Shorthand for --dev-env CURSOR
     --rapid             Shorthand for --methodology RAPID
     --ds                Shorthand for --methodology DS
@@ -755,7 +788,7 @@ Non-Interactive Mode (for automation/testing):
     --project-name      Project name (defaults to current directory name)
     --project-path      Target directory or parent directory (default: current directory)
     --methodology       FULL, RAPID, or DS
-    --dev-env           CURSOR, OPENCODE, or CODEX (default: CURSOR)
+    --dev-env           CURSOR, OPENCODE, CODEX, or CLAUDE (default: CURSOR)
     --local             Install CLI pack/assets locally into project config directory
     --global            Install CLI pack/assets globally into user config directory
     --none              Skip CLI pack/assets install (default when OPENCODE/CODEX)
@@ -809,8 +842,8 @@ EOF
         if [[ -z "$DEV_ENV" ]]; then
             DEV_ENV="CURSOR"
         fi
-        if [[ "$DEV_ENV" != "CURSOR" && "$DEV_ENV" != "OPENCODE" && "$DEV_ENV" != "CODEX" ]]; then
-            write_error "Invalid --dev-env: $DEV_ENV. Use CURSOR, OPENCODE, or CODEX."
+        if [[ "$DEV_ENV" != "CURSOR" && "$DEV_ENV" != "OPENCODE" && "$DEV_ENV" != "CODEX" && "$DEV_ENV" != "CLAUDE" ]]; then
+            write_error "Invalid --dev-env: $DEV_ENV. Use CURSOR, OPENCODE, CODEX, or CLAUDE."
             exit 1
         fi
         if [[ "$DEV_ENV" != "CURSOR" && -z "$PACK_INSTALL" ]]; then
@@ -832,7 +865,7 @@ EOF
             exit 1
         fi
         if [[ "$DEV_ENV" != "CURSOR" && "$METHODOLOGY" == "FULL" ]]; then
-            write_error "FULL methodology is not available for OpenCode/Codex CLI projects."
+            write_error "FULL methodology is not available for OpenCode/Codex/Claude Code CLI projects."
             exit 1
         fi
         
@@ -974,6 +1007,8 @@ EOF
             local install_prompt
             if [[ "$dev_env" == "OPENCODE" ]]; then
                 install_prompt="Install OpenCode pack? (local/global/skip)"
+            elif [[ "$dev_env" == "CLAUDE" ]]; then
+                install_prompt="Install Claude Code pack? (local/global/skip)"
             else
                 install_prompt="Install Codex assets? (local/global/skip)"
             fi
@@ -994,12 +1029,16 @@ EOF
         if [[ "$PACK_INSTALL" == "local" ]]; then
             if [[ "$dev_env" == "OPENCODE" ]]; then
                 install_opencode_pack "local" "$project_path"
+            elif [[ "$dev_env" == "CLAUDE" ]]; then
+                install_claude_pack "local" "$project_path"
             else
                 install_codex_skills "local" "$project_path"
             fi
         elif [[ "$PACK_INSTALL" == "global" ]]; then
             if [[ "$dev_env" == "OPENCODE" ]]; then
                 install_opencode_pack "global" ""
+            elif [[ "$dev_env" == "CLAUDE" ]]; then
+                install_claude_pack "global" ""
             else
                 install_codex_skills "global" ""
             fi

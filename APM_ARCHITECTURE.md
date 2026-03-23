@@ -2,7 +2,7 @@
 
 ## 1. Overview and Core Principles
 
-**Agentic Project Management (APM)** is an AI-driven development framework designed to standardize and streamline LLM-assisted workflows across multiple environments: **Cursor IDE**, **Codex CLI**, and **OpenCode CLI**.
+**Agentic Project Management (APM)** is an AI-driven development framework designed to standardize and streamline LLM-assisted workflows across multiple environments: **Cursor IDE**, **Codex CLI**, **OpenCode CLI**, and **Claude Code**.
 
 Core Principles:
 - **Spec-Driven Development (SDD):** The specification is the Single Source of Truth (SSOT). Code must follow the documented architecture, not the other way around.
@@ -14,7 +14,7 @@ Core Principles:
 
 ## 2. Environments and Modalities
 
-APM supports three distinct environments (or workflows), tailoring its components for each ecosystem:
+APM supports four distinct environments (or workflows), tailoring its components for each ecosystem:
 
 1. **Cursor IDE (Interactive UI):**
    - Utilizes `.cursor/agents/`, `.cursor/commands/`, and shared skills.
@@ -30,6 +30,14 @@ APM supports three distinct environments (or workflows), tailoring its component
 3. **OpenCode CLI (Terminal / Extensible):**
    - Implements custom `commands/`, `agents/`, `skills/`, and `tools/` either globally (`~/.config/opencode/`) or locally (`.opencode/`).
    - Supports Co-Founder (`apm-co-founder`) and Team Lead (`apm-team-lead`) primary agents.
+   - Memory Bank resides in `memory_bank/`.
+
+4. **Claude Code (Terminal / Agentic):**
+   - Subagent roles in `.claude/agents/` (Markdown + YAML frontmatter) with explicit tool allowlists, permission modes, and turn limits.
+   - Skills in `.claude/skills/` following the `agentskills.io` specification (shared with Cursor).
+   - Project instructions in `CLAUDE.md` (Claude Code's equivalent of `AGENTS.md`; `AGENTS.md` support pending).
+   - Supports Co-Founder (`apm-co-founder`) and Team Lead (`apm-team-lead`) primary agents via `claude --agent <name>`.
+   - Native worktree isolation (`isolation: worktree`) and persistent subagent memory (`memory: project`).
    - Memory Bank resides in `memory_bank/`.
 
 ---
@@ -90,8 +98,8 @@ Agents represent specific "personas" with customized system prompts and constrai
 - **Lead Engineer / Developer:** Focuses on implementation, adhering to specs.
 - **SDET (Software Development Engineer in Test):** Focuses entirely on QA, testing, and test automation.
 - **Data Scientist:** Executes the DS methodology loop.
-- **Co-Founder:** Primary project partner who co-owns vision, architecture, and direction. Strategic discussion partner with deep project understanding. Does not orchestrate by default -- orchestration goes through Team Lead. Available as a primary agent in OpenCode (`apm-co-founder`) or as a skill in Codex (`apm-co-founder`).
-- **Team Lead:** Formalized WAVE-based orchestrator. Receives task waves, creates worktrees per task, delegates to specialist subagents with minimal contracts, runs quality gate per task, integrates per wave. Does not write implementation code (mechanical fixes only). Available as a primary agent in OpenCode (`apm-team-lead`) or as a skill in Codex (`apm-team-lead`).
+- **Co-Founder:** Primary project partner who co-owns vision, architecture, and direction. Strategic discussion partner with deep project understanding. Does not orchestrate by default -- orchestration goes through Team Lead. Available as a primary agent in OpenCode (`apm-co-founder`), Claude Code (`claude --agent apm-co-founder`), or as a skill in Codex (`apm-co-founder`).
+- **Team Lead:** Formalized WAVE-based orchestrator. Receives task waves, creates worktrees per task, delegates to specialist subagents with minimal contracts, runs quality gate per task, integrates per wave. Does not write implementation code (mechanical fixes only). Available as a primary agent in OpenCode (`apm-team-lead`), Claude Code (`claude --agent apm-team-lead`), or as a skill in Codex (`apm-team-lead`).
 - **Code Simplifier:** Refactors recently modified code for clarity and simplicity while preserving exact behavior. Applies project coding conventions.
 - **Code Reviewer:** Fully independent verification and review gate. Receives only TASK_ID and independently determines review scope, checking task/architecture alignment and ranked code risks.
 - **Memory Bank Sync:** Runs explicit Memory Bank synchronization (`STATE`, `tasks/TASKS`, `{TASK_ID}`) with line-budget compression and approval-gated architecture updates.
@@ -129,12 +137,12 @@ Skills (`SKILL.md`) are discrete, self-contained capabilities loaded on demand. 
 | `apm-skill-creator` | Guidance for creating and updating APM skills |
 
 ### Subagents and Orchestration
-In modern environments (Cursor 2.5+, Codex CLI, and OpenCode), APM leverages subagents coordinated by the orchestrating session. Subagent configs are mode-agnostic: they work identically whether the orchestrator is Team Lead, a standard main session, or a workflow skill. `apm-subagent` standardizes how delegation requests are framed for current specialist roles.
+In modern environments (Cursor 2.5+, Codex CLI, OpenCode, and Claude Code), APM leverages subagents coordinated by the orchestrating session. Subagent configs are mode-agnostic: they work identically whether the orchestrator is Team Lead, a standard main session, or a workflow skill. `apm-subagent` standardizes how delegation requests are framed for current specialist roles.
 
 **Three interaction modes:**
 1. **Standard mode (sequential):** The user drives work through the main session, which delegates to specialist subagents for localized execution via workflow skills. One task at a time, user validates between steps.
-2. **Co-Founder mode (collaborative):** The user works with an equal project partner who co-owns vision, architecture, and direction. Natural, informal communication. Does not orchestrate by default; task execution goes through Team Lead. Activated via Shift+Tab in OpenCode (cycle to Co-Founder primary agent) or by loading the `apm-co-founder` skill in Codex.
-3. **Team Lead mode (WAVE orchestration):** The user assigns a wave of tasks to Team Lead. Team Lead creates worktrees, delegates with minimal contracts, waits for completion, runs quality gate per task (simplify + review), integrates per wave, and returns one compact final handoff. Activated via Shift+Tab in OpenCode (cycle to Team Lead primary agent) or by loading the `apm-team-lead` skill in Codex.
+2. **Co-Founder mode (collaborative):** The user works with an equal project partner who co-owns vision, architecture, and direction. Natural, informal communication. Does not orchestrate by default; task execution goes through Team Lead. Activated via Shift+Tab in OpenCode (cycle to Co-Founder primary agent), `claude --agent apm-co-founder` in Claude Code, or by loading the `apm-co-founder` skill in Codex.
+3. **Team Lead mode (WAVE orchestration):** The user assigns a wave of tasks to Team Lead. Team Lead creates worktrees, delegates with minimal contracts, waits for completion, runs quality gate per task (simplify + review), integrates per wave, and returns one compact final handoff. Activated via Shift+Tab in OpenCode (cycle to Team Lead primary agent), `claude --agent apm-team-lead` in Claude Code, or by loading the `apm-team-lead` skill in Codex.
 
 **WAVE execution protocol:**
 1. **Setup:** Create a worktree per task via `apm-git-taskflow`.
@@ -174,6 +182,7 @@ APM/
 │   ├── packs/                   # Environment-specific packs
 │   │   ├── codex_pack/          # Subagent roles for Codex CLI
 │   │   ├── opencode_pack/       # Native OpenCode agents/commands/tools
+│   │   ├── claude_pack/         # Subagent roles for Claude Code
 │   │   └── cursor_pack/         # Cursor agents and command wrappers
 │   └── _legacy/                 # Frozen legacy assets
 │       └── cursor_ide/
