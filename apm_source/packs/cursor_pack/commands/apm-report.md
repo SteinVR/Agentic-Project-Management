@@ -10,5 +10,5 @@ $ARGUMENTS
 
 ## Instructions
 - Use `apm-architect`.
-- Load and follow the `apm-report` skill.
+- Load and follow skill `apm-report`.
 - Keep report format consistent with project templates.

@@ -10,5 +10,5 @@ $ARGUMENTS
 
 ## Instructions
 - Use `apm-architect`.
-- Load and follow the `apm-sync` skill.
+- Load and follow skill `apm-sync`.
 - Capture current status, decisions, and blockers precisely.

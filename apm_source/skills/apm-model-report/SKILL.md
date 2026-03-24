@@ -4,7 +4,7 @@ description: "Document a trained model with metrics, configuration, data details
 ---
 ## What I do
 - Document a specific model: metrics, data, config, and artifacts.
-- Ensure the report captures reproducibility notes and comparisons.
+- Ensure the report captures reproducibility notes, model architecture, validation strategy, and comparisons.
 
 ## When to use
 - When a model is ready to be documented for comparison or delivery.
@@ -16,5 +16,6 @@ Use `references/MODEL_REPORT_TMP.md` to create `models/MODEL_REPORT.md`.
 - `models/model_<metric>_<value>/model_<metric>_<value>.pkl` (or equivalent)
 - `models/model_<metric>_<value>/preprocessor.pkl` (if applicable)
 - `models/model_<metric>_<value>/config.json` (or equivalent config)
+- `models/model_<metric>_<value>/src` (optional source snapshot)
 - `models/model_<metric>_<value>/MODEL_REPORT.md`
 - `models/model_<metric>_<value>/etc`

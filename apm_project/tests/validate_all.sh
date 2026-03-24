@@ -13,6 +13,7 @@ E2E_SCRIPT="$REPO_ROOT/apm_project/tests/e2e_tests.sh"
 CODEX_INSTALL="$REPO_ROOT/apm_project/scripts/codex_install.sh"
 OPENCODE_INSTALL="$REPO_ROOT/apm_project/scripts/opencode_install.sh"
 CURSOR_INSTALL="$REPO_ROOT/apm_project/scripts/cursor_install.sh"
+CLAUDE_INSTALL="$REPO_ROOT/apm_project/scripts/claude_install.sh"
 
 VERBOSE=false
 KEEP_TEMP=false
@@ -108,6 +109,7 @@ run_syntax_checks() {
     bash -n "$CODEX_INSTALL"
     bash -n "$OPENCODE_INSTALL"
     bash -n "$CURSOR_INSTALL"
+    bash -n "$CLAUDE_INSTALL"
     bash -n "$E2E_SCRIPT"
     log_pass "bash -n checks"
 }
@@ -139,7 +141,8 @@ run_interactive_stdin_cases() {
     out_file="$tmp_parent/int_cursor_rapid.out"
     err_file="$tmp_parent/int_cursor_rapid.err"
     printf "%b" "${tmp_parent}\nint-cursor-rapid\n1\n2\ny\n" | HOME="$tmp_home" TERM=xterm bash "$APM_SCRIPT" >"$out_file" 2>"$err_file"
-    assert_path_exists "$tmp_parent/int-cursor-rapid/memory-bank" "Cursor RAPID memory-bank"
+    assert_path_exists "$tmp_parent/int-cursor-rapid/memory_bank" "Cursor RAPID memory_bank"
+    assert_path_exists "$tmp_parent/int-cursor-rapid/memory_bank/TASKS.md" "Cursor RAPID TASKS.md"
     assert_path_exists "$tmp_parent/int-cursor-rapid/.cursor/agents" "Cursor RAPID agents"
     assert_path_exists "$tmp_parent/int-cursor-rapid/.cursor/commands" "Cursor RAPID commands"
     log_pass "interactive Cursor RAPID"
@@ -157,7 +160,8 @@ run_interactive_stdin_cases() {
     out_file="$tmp_parent/int_opencode_ds_local.out"
     err_file="$tmp_parent/int_opencode_ds_local.err"
     printf "%b" "${tmp_parent}\nint-opencode-ds\n2\n2\ny\nlocal\n" | HOME="$tmp_home" TERM=xterm bash "$APM_SCRIPT" >"$out_file" 2>"$err_file"
-    assert_path_exists "$tmp_parent/int-opencode-ds/memory-bank" "OpenCode DS memory-bank"
+    assert_path_exists "$tmp_parent/int-opencode-ds/memory_bank" "OpenCode DS memory_bank"
+    assert_path_exists "$tmp_parent/int-opencode-ds/memory_bank/TASKS.md" "OpenCode DS TASKS.md"
     assert_path_exists "$tmp_parent/int-opencode-ds/.opencode/agents" "OpenCode DS agents"
     assert_path_exists "$tmp_parent/int-opencode-ds/.opencode/commands" "OpenCode DS commands"
     assert_path_exists "$tmp_parent/int-opencode-ds/.opencode/skills" "OpenCode DS skills"
@@ -169,20 +173,71 @@ run_interactive_stdin_cases() {
     out_file="$tmp_parent/int_codex_rapid_local.out"
     err_file="$tmp_parent/int_codex_rapid_local.err"
     printf "%b" "${tmp_parent}\nint-codex-rapid\n3\n1\ny\nlocal\n" | HOME="$tmp_home" TERM=xterm bash "$APM_SCRIPT" >"$out_file" 2>"$err_file"
-    assert_path_exists "$tmp_parent/int-codex-rapid/memory-bank" "Codex RAPID memory-bank"
+    assert_path_exists "$tmp_parent/int-codex-rapid/memory_bank" "Codex RAPID memory_bank"
+    assert_path_exists "$tmp_parent/int-codex-rapid/memory_bank/TASKS.md" "Codex RAPID TASKS.md"
     assert_path_exists "$tmp_parent/int-codex-rapid/.codex/skills" "Codex RAPID skills"
     assert_path_exists "$tmp_parent/int-codex-rapid/.codex/agents" "Codex RAPID agents"
     assert_path_exists "$tmp_parent/int-codex-rapid/.codex/agents/apm-code-simplifier.toml" "Codex RAPID simplifier agent file"
+    assert_path_exists "$tmp_parent/int-codex-rapid/.codex/agents/apm-code-reviewer.toml" "Codex RAPID reviewer agent file"
+    assert_path_exists "$tmp_parent/int-codex-rapid/.codex/agents/apm-memory-bank-sync.toml" "Codex RAPID sync agent file"
     assert_path_exists "$tmp_parent/int-codex-rapid/.codex/config.toml" "Codex RAPID config.toml"
-    assert_file_contains "$tmp_parent/int-codex-rapid/.codex/config.toml" "\\[agents.apm-architect\\]" "Codex config role section"
-    assert_file_contains "$tmp_parent/int-codex-rapid/.codex/config.toml" "\\[agents.apm-code-simplifier\\]" "Codex config simplifier role section"
+    assert_file_contains "$tmp_parent/int-codex-rapid/.codex/config.toml" "multi_agent" "Codex config multi_agent setting"
+    assert_file_contains "$tmp_parent/int-codex-rapid/.codex/config.toml" "max_threads" "Codex config max_threads setting"
+    assert_file_contains "$tmp_parent/int-codex-rapid/.codex/config.toml" "max_depth" "Codex config max_depth setting"
     log_pass "interactive Codex RAPID local"
+
+    # Claude Code + RAPID + local install
+    out_file="$tmp_parent/int_claude_rapid_local.out"
+    err_file="$tmp_parent/int_claude_rapid_local.err"
+    printf "%b" "${tmp_parent}\nint-claude-rapid\n4\n1\ny\nlocal\n" | HOME="$tmp_home" TERM=xterm bash "$APM_SCRIPT" >"$out_file" 2>"$err_file"
+    assert_path_exists "$tmp_parent/int-claude-rapid/memory_bank" "Claude RAPID memory_bank"
+    assert_path_exists "$tmp_parent/int-claude-rapid/memory_bank/TASKS.md" "Claude RAPID TASKS.md"
+    assert_path_exists "$tmp_parent/int-claude-rapid/.claude/agents" "Claude RAPID agents"
+    assert_path_exists "$tmp_parent/int-claude-rapid/.claude/agents/apm-engineer.md" "Claude RAPID engineer agent file"
+    assert_path_exists "$tmp_parent/int-claude-rapid/.claude/agents/apm-team-lead.md" "Claude RAPID team-lead agent file"
+    assert_path_exists "$tmp_parent/int-claude-rapid/.claude/skills" "Claude RAPID skills"
+    assert_path_not_exists "$tmp_parent/int-claude-rapid/.cursor" "Claude RAPID .cursor"
+    log_pass "interactive Claude Code RAPID local"
+
+    # Multi-env: comma-separated "2,4" (OpenCode + Claude) + RAPID + local
+    out_file="$tmp_parent/int_multi_comma.out"
+    err_file="$tmp_parent/int_multi_comma.err"
+    printf "%b" "${tmp_parent}\nint-multi-comma\n2,4\n1\ny\nlocal\nlocal\n" | HOME="$tmp_home" TERM=xterm bash "$APM_SCRIPT" >"$out_file" 2>"$err_file"
+    assert_path_exists "$tmp_parent/int-multi-comma/memory_bank" "multi-env comma memory_bank"
+    assert_path_exists "$tmp_parent/int-multi-comma/.opencode/agents" "multi-env comma OpenCode agents"
+    assert_path_exists "$tmp_parent/int-multi-comma/.claude/agents" "multi-env comma Claude agents"
+    assert_path_not_exists "$tmp_parent/int-multi-comma/.cursor" "multi-env comma no .cursor"
+    log_pass "interactive multi-env comma-separated"
+
+    # Multi-env: space-separated "2 4" (OpenCode + Claude) + RAPID + local
+    out_file="$tmp_parent/int_multi_space.out"
+    err_file="$tmp_parent/int_multi_space.err"
+    printf "%b" "${tmp_parent}\nint-multi-space\n2 4\n1\ny\nlocal\nlocal\n" | HOME="$tmp_home" TERM=xterm bash "$APM_SCRIPT" >"$out_file" 2>"$err_file"
+    assert_path_exists "$tmp_parent/int-multi-space/.opencode/agents" "multi-env space OpenCode agents"
+    assert_path_exists "$tmp_parent/int-multi-space/.claude/agents" "multi-env space Claude agents"
+    log_pass "interactive multi-env space-separated"
+
+    # Multi-env: comma+space "2, 4" (OpenCode + Claude) + RAPID + local
+    out_file="$tmp_parent/int_multi_commaspce.out"
+    err_file="$tmp_parent/int_multi_commaspce.err"
+    printf "%b" "${tmp_parent}\nint-multi-commaspace\n2, 4\n1\ny\nlocal\nlocal\n" | HOME="$tmp_home" TERM=xterm bash "$APM_SCRIPT" >"$out_file" 2>"$err_file"
+    assert_path_exists "$tmp_parent/int-multi-commaspace/.opencode/agents" "multi-env comma-space OpenCode agents"
+    assert_path_exists "$tmp_parent/int-multi-commaspace/.claude/agents" "multi-env comma-space Claude agents"
+    log_pass "interactive multi-env comma+space separated"
+
+    # Multi-env with Cursor: "1,4" (Cursor + Claude) — Cursor gets pack auto, Claude prompted
+    out_file="$tmp_parent/int_multi_cursor.out"
+    err_file="$tmp_parent/int_multi_cursor.err"
+    printf "%b" "${tmp_parent}\nint-multi-cursor\n1,4\n2\ny\nlocal\n" | HOME="$tmp_home" TERM=xterm bash "$APM_SCRIPT" >"$out_file" 2>"$err_file"
+    assert_path_exists "$tmp_parent/int-multi-cursor/.cursor/agents" "multi-env cursor+claude Cursor agents"
+    assert_path_exists "$tmp_parent/int-multi-cursor/.claude/agents" "multi-env cursor+claude Claude agents"
+    log_pass "interactive multi-env with Cursor"
 
     # Invalid input loops then valid values (OpenCode + RAPID + skip)
     out_file="$tmp_parent/int_invalid_loops.out"
     err_file="$tmp_parent/int_invalid_loops.err"
     printf "%b" "${tmp_parent}\nint-invalid-loops\n9\n2\n9\n1\ny\nfoo\nskip\n" | HOME="$tmp_home" TERM=xterm bash "$APM_SCRIPT" >"$out_file" 2>"$err_file"
-    assert_path_exists "$tmp_parent/int-invalid-loops/memory-bank" "invalid-loop project"
+    assert_path_exists "$tmp_parent/int-invalid-loops/memory_bank" "invalid-loop project"
     assert_path_not_exists "$tmp_parent/int-invalid-loops/.opencode" "invalid-loop skip install"
     assert_file_contains "$err_file" "Invalid choice" "invalid choice prompt"
     log_pass "interactive invalid-input loops"
@@ -222,7 +277,7 @@ run_optional_tty_case() {
     printf "%b" "${tmp_parent}\ntty-cursor-rapid\n1\n2\ny\n" | script -q -c "$cmd" /dev/null >/dev/null
 
     assert_path_exists "$tmp_parent/tty-cursor-rapid/.cursor/agents" "TTY Cursor agents"
-    assert_path_exists "$tmp_parent/tty-cursor-rapid/memory-bank/ARCHITECTURE.md" "TTY memory-bank"
+    assert_path_exists "$tmp_parent/tty-cursor-rapid/memory_bank/ARCHITECTURE.md" "TTY memory_bank"
     log_pass "interactive pseudo-TTY Cursor RAPID"
 }
 
@@ -246,13 +301,18 @@ run_non_interactive_matrix_and_installers() {
     log_pass "non-interactive Codex RAPID local"
 
     HOME="$tmp_home" TERM=xterm bash "$APM_SCRIPT" --codex --ds --project-name ni-codex-ds-skip --project-path "$projects_dir" --non-interactive --none --skip-cursor
-    assert_path_exists "$projects_dir/ni-codex-ds-skip/memory-bank" "ni codex ds memory-bank"
+    assert_path_exists "$projects_dir/ni-codex-ds-skip/memory_bank" "ni codex ds memory_bank"
+    assert_path_exists "$projects_dir/ni-codex-ds-skip/memory_bank/TASKS.md" "ni codex ds TASKS.md"
+    assert_file_contains "$projects_dir/ni-codex-ds-skip/AGENTS.md" "Activity log" "ni codex ds activity log section"
+    assert_file_contains "$projects_dir/ni-codex-ds-skip/AGENTS.md" "apm-report" "ni codex ds apm-report skill mention"
+    assert_file_contains "$projects_dir/ni-codex-ds-skip/logs/AGENTS.md" "logs/agents/" "ni codex ds agent log path"
     assert_path_not_exists "$projects_dir/ni-codex-ds-skip/.codex" "ni codex ds skip install"
     log_pass "non-interactive Codex DS skip"
 
     HOME="$tmp_home" TERM=xterm bash "$APM_SCRIPT" --opencode --ds --project-name ni-opencode-ds-local --project-path "$projects_dir" --non-interactive --local --skip-cursor
     assert_path_exists "$projects_dir/ni-opencode-ds-local/.opencode/commands" "ni opencode ds local commands"
-    assert_path_exists "$projects_dir/ni-opencode-ds-local/memory-bank" "ni opencode ds memory-bank"
+    assert_path_exists "$projects_dir/ni-opencode-ds-local/memory_bank" "ni opencode ds memory_bank"
+    assert_path_exists "$projects_dir/ni-opencode-ds-local/memory_bank/TASKS.md" "ni opencode ds TASKS.md"
     log_pass "non-interactive OpenCode DS local"
 
     HOME="$tmp_home" TERM=xterm bash "$APM_SCRIPT" --opencode --rapid --project-name ni-opencode-rapid-global --project-path "$projects_dir" --non-interactive --global --skip-cursor
@@ -265,16 +325,34 @@ run_non_interactive_matrix_and_installers() {
     assert_path_exists "$tmp_home/.codex/config.toml" "global codex config"
     log_pass "non-interactive Codex RAPID global"
 
+    HOME="$tmp_home" TERM=xterm bash "$APM_SCRIPT" --claude --rapid --project-name ni-claude-rapid-local --project-path "$projects_dir" --non-interactive --local --skip-cursor
+    assert_path_exists "$projects_dir/ni-claude-rapid-local/.claude/agents" "ni claude rapid local agents"
+    assert_path_exists "$projects_dir/ni-claude-rapid-local/.claude/skills" "ni claude rapid local skills"
+    assert_path_exists "$projects_dir/ni-claude-rapid-local/.claude/agents/apm-engineer.md" "ni claude rapid engineer agent"
+    assert_path_exists "$projects_dir/ni-claude-rapid-local/.claude/agents/apm-team-lead.md" "ni claude rapid team-lead agent"
+    log_pass "non-interactive Claude Code RAPID local"
+
+    HOME="$tmp_home" TERM=xterm bash "$APM_SCRIPT" --claude --rapid --project-name ni-claude-rapid-global --project-path "$projects_dir" --non-interactive --global --skip-cursor
+    assert_path_exists "$tmp_home/.claude/agents" "global claude agents"
+    assert_path_exists "$tmp_home/.claude/skills" "global claude skills"
+    log_pass "non-interactive Claude Code RAPID global"
+
     local installer_projects
     installer_projects="$tmp_root/installers"
-    mkdir -p "$installer_projects/p1" "$installer_projects/p2" "$installer_projects/p3"
+    mkdir -p "$installer_projects/p1" "$installer_projects/p2" "$installer_projects/p3" "$installer_projects/p4"
 
     HOME="$tmp_home" TERM=xterm bash "$CODEX_INSTALL" --local "$installer_projects/p1"
     assert_path_exists "$installer_projects/p1/.codex/skills" "codex_install local skills"
     assert_path_exists "$installer_projects/p1/.codex/agents" "codex_install local agents"
     assert_path_exists "$installer_projects/p1/.codex/agents/apm-code-simplifier.toml" "codex_install local simplifier agent file"
+    assert_path_exists "$installer_projects/p1/.codex/agents/apm-code-reviewer.toml" "codex_install local reviewer agent file"
+    assert_path_exists "$installer_projects/p1/.codex/agents/apm-memory-bank-sync.toml" "codex_install local sync agent file"
     assert_path_exists "$installer_projects/p1/.codex/config.toml" "codex_install local config"
-    assert_file_contains "$installer_projects/p1/.codex/config.toml" "\\[agents.apm-code-simplifier\\]" "codex_install local simplifier config section"
+    assert_file_contains "$installer_projects/p1/.codex/config.toml" "multi_agent" "codex_install local multi_agent setting"
+    assert_file_contains "$installer_projects/p1/.codex/config.toml" "max_threads" "codex_install local max_threads setting"
+    assert_file_contains "$installer_projects/p1/.codex/config.toml" "max_depth" "codex_install local max_depth setting"
+    assert_file_contains "$installer_projects/p1/.codex/skills/apm-report/SKILL.md" "logs/agents/" "codex_install local apm-report log path"
+    assert_file_contains "$installer_projects/p1/.codex/skills/apm-team-lead/SKILL.md" "apm-subagent" "codex_install local team-lead delegation skill"
     log_pass "codex_install local"
 
     HOME="$tmp_home" TERM=xterm bash "$CODEX_INSTALL" --global
@@ -308,6 +386,21 @@ run_non_interactive_matrix_and_installers() {
     assert_path_exists "$tmp_home/.cursor/commands" "cursor_install global commands"
     assert_path_exists "$tmp_home/.cursor/skills" "cursor_install global skills"
     log_pass "cursor_install global"
+
+    HOME="$tmp_home" TERM=xterm bash "$CLAUDE_INSTALL" --local "$installer_projects/p4"
+    assert_path_exists "$installer_projects/p4/.claude/agents" "claude_install local agents"
+    assert_path_exists "$installer_projects/p4/.claude/agents/apm-engineer.md" "claude_install local engineer agent file"
+    assert_path_exists "$installer_projects/p4/.claude/agents/apm-code-reviewer.md" "claude_install local reviewer agent file"
+    assert_path_exists "$installer_projects/p4/.claude/agents/apm-team-lead.md" "claude_install local team-lead agent file"
+    assert_path_exists "$installer_projects/p4/.claude/skills" "claude_install local skills"
+    assert_path_exists "$installer_projects/p4/.claude/skills/apm-report/SKILL.md" "claude_install local apm-report skill"
+    assert_path_exists "$installer_projects/p4/.claude/skills/apm-team-lead/SKILL.md" "claude_install local apm-team-lead skill"
+    log_pass "claude_install local"
+
+    HOME="$tmp_home" TERM=xterm bash "$CLAUDE_INSTALL" --global
+    assert_path_exists "$tmp_home/.claude/agents" "claude_install global agents"
+    assert_path_exists "$tmp_home/.claude/skills" "claude_install global skills"
+    log_pass "claude_install global"
 }
 
 main() {

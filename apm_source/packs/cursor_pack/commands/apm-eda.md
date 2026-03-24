@@ -10,5 +10,5 @@ $ARGUMENTS
 
 ## Instructions
 - Use `apm-data-scientist`.
-- Load and follow the `apm-eda` skill.
+- Load and follow skill `apm-eda`.
 - Ensure outputs are reproducible and documented.

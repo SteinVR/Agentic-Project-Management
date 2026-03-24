@@ -6,8 +6,6 @@
 ## Conventions
 - Never modify files in `raw/`; treat them as immutable.
 - Processed data should be reproducible from raw via scripts in `src/`.
-- Document data versions and snapshot dates in `memory-bank/STATE.md`.
 
 ## Guardrails
 - Do not commit large data files to version control; use `.gitignore`.
-- Do not store model artifacts here (use `models/`).

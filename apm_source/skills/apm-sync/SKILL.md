@@ -1,35 +1,15 @@
 ---
 name: apm-sync
-description: "Reconcile Memory Bank (STATE, TASK, ARCHITECTURE) with the current project state. Use after a work session, before switching context, or when Memory Bank feels outdated."
+description: "Reconcile Memory Bank with the current project state on explicit user request. Use when the user asks to sync or update Memory Bank."
 ---
 ## What I do
-- Reconcile recent work with `memory-bank/STATE.md`.
-- Propose updates to `memory-bank/TASK.md` and `memory-bank/ARCHITECTURE.md` if they are stale.
-- Apply ARCHITECTURE updates only with explicit user confirmation.
-
-## Required reads
-- `memory-bank/STATE.md`
-- `memory-bank/ARCHITECTURE.md`
-- `memory-bank/TASK.md`
+- Trigger Memory Bank reconciliation by spawning `apm-memory-bank-sync` subagent.
 
 ## Workflow
-1. Scan recent changes in code, tests, logs, and reports.
-2. Update `STATE.md` with the current context and decisions.
-3. If `TASK.md` is stale, propose updates and ask for approval.
-4. If `ARCHITECTURE.md` is outdated, propose updates and ask for approval.
+1. Confirm explicit user synchronization request.
+2. Spawn `apm-memory-bank-sync` with the sync scope (full or specific TASK_IDs).
+3. Validate the result and confirm with user if architecture changes are proposed.
 
-## Memory Bank maintenance
-When **Session History** in `STATE.md` exceeds 7 entries:
-1. Summarize the oldest entries into 2-3 sentences (key outcomes and decisions).
-2. Append the summary to the **Accumulated Context** section.
-3. Remove the summarized entries from Session History, keeping only the 7 most recent.
-
-When **Experiment History** (DS only) exceeds 15 rows:
-1. Summarize the oldest experiments into a compact paragraph (trends, key learnings).
-2. Append to **Accumulated Context**.
-3. Keep only the 15 most recent rows in the table.
-
-## Required outputs
-- `memory-bank/STATE.md` (updated)
-- `memory-bank/TASK.md` (updated)
-- `memory-bank/ARCHITECTURE.md` (only if user confirms changes)
+## Guardrails
+- Do not run sync outside explicit user request.
+- Do not apply architecture changes without user approval.

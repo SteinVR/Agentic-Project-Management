@@ -10,14 +10,15 @@ description: "Project kickoff: initialize directory structure, run Vision Alignm
 - Propose environment setup from ARCHITECTURE after Memory Bank is formed.
 
 ## Required reads
-- `memory-bank/STATE.md` (if exists)
-- `memory-bank/ARCHITECTURE.md` (if exists)
-- `memory-bank/TASK.md` (if exists)
+- `memory_bank/STATE.md` (if exists)
+- `memory_bank/ARCHITECTURE.md` (if exists)
+- `memory_bank/TASKS.md` (if exists)
 
 ## Required outputs
-- `memory-bank/ARCHITECTURE.md`
-- `memory-bank/TASK.md`
-- `memory-bank/STATE.md`
+- `memory_bank/ARCHITECTURE.md`
+- `memory_bank/TASKS.md`
+- `memory_bank/tasks/W1A.md`
+- `memory_bank/STATE.md`
 
 ## Step 0: Determine methodology
 - If the user explicitly states RAPID or DS, use it.
@@ -29,8 +30,8 @@ description: "Project kickoff: initialize directory structure, run Vision Alignm
 Run the `apm_init_structure` script bundled with this skill (see `scripts/apm_init_structure.sh`).
 If the script location is unknown, create the directories manually:
 
-- RAPID: `src/`, `tests/`, `logs/`, `memory-bank/`
-- DS: `src/`, `experiments/`, `eda/`, `models/`, `logs/`, `memory-bank/`, `data/raw/`, `data/processed/`, `data/external/`
+- RAPID: `src/`, `tests/`, `logs/`, `memory_bank/`, `memory_bank/tasks/`
+- DS: `src/`, `experiments/`, `eda/`, `models/`, `logs/`, `memory_bank/`, `memory_bank/tasks/`, `data/raw/`, `data/processed/`, `data/external/`
 
 ## Step 2: Vision Alignment / Problem Definition
 
@@ -54,27 +55,20 @@ Then provide:
 - **Suggested Details** (metrics, validation, baseline, scope)
 - **Tech Stack Proposal**
 
-## WAIT FOR CONFIRMATION
-Ask the user to confirm before writing any files.
+Wait for user confirmation before proceeding.
 
-"Does this accurately capture your vision? Please confirm or provide corrections before I proceed."
+## Step 3: Create Memory Bank
+- Fill `memory_bank/ARCHITECTURE.md` using the correct template
+- Initialize `memory_bank/TASKS.md`, `memory_bank/tasks/W1A.md`, and `memory_bank/STATE.md` using methodology templates; if templates are unavailable, create minimal headers and refine with the user.
 
-## Step 3: After confirmation
-- Fill `memory-bank/ARCHITECTURE.md` using the correct template
-- Initialize `memory-bank/TASK.md` and `memory-bank/STATE.md` using the project templates if present; otherwise create minimal headers and refine with the user.
-
-
-## Step 4: Environment setup (post Memory Bank)
-- Read the Technology Stack and Deployment sections in `memory-bank/ARCHITECTURE.md`.
+## Step 4: Environment setup
+- Read the Technology Stack and Deployment sections in `memory_bank/ARCHITECTURE.md`.
 - Propose the environment (runtime versions, package manager, core deps).
 - If approved, create or update config files (pyproject, package.json, etc.).
 - Provide setup commands for the user.
-- Update `memory-bank/STATE.md` with environment notes.
-- Summarize what was created and suggest the next skill:
-  - RAPID: `apm-dev`
-  - DS: `apm-eda` or `apm-ds-baseline`
+- Summarize what was created.
 
 ## Guardrails
 - Do not implement code unless explicitly requested.
 - Preserve main headers in templates; add sub-sections only.
-- Update `memory-bank/STATE.md` after meaningful changes.
+- Outside the initialization steps above, do not update Memory Bank files unless the user explicitly asks.

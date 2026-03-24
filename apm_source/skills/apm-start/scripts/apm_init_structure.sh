@@ -9,10 +9,10 @@ fi
 
 case "${method^^}" in
   RAPID)
-    dirs=("src" "tests" "logs" "memory-bank")
+    dirs=("src" "tests" "logs" "memory_bank" "memory_bank/tasks")
     ;;
   DS)
-    dirs=("src" "experiments" "eda" "models" "logs" "memory-bank" "data/raw" "data/processed" "data/external")
+    dirs=("src" "experiments" "eda" "models" "logs" "memory_bank" "memory_bank/tasks" "data/raw" "data/processed" "data/external")
     ;;
   *)
     echo "Unknown methodology: $method"

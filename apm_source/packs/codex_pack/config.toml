@@ -2,24 +2,5 @@
 multi_agent = true
 
 [agents]
-max_threads = 6
-
-[agents.apm-architect]
-description = "Designs system boundaries, aligns on project vision, maintains ARCHITECTURE.md as the source of truth, and conducts architecture reviews. Use for project initialization, architectural decisions, and structure reviews."
-config_file = "agents/apm-architect.toml"
-
-[agents.apm-engineer]
-description = "Implements features and integrations following the architecture spec, maintains task backlog, and delivers production-quality code. Use for feature development, bug fixes, and code integration tasks."
-config_file = "agents/apm-engineer.toml"
-
-[agents.apm-sdet]
-description = "Creates and maintains test suites (unit, integration, edge cases), validates acceptance criteria, and improves code coverage. Use for all testing, QA, and test automation work."
-config_file = "agents/apm-sdet.toml"
-
-[agents.apm-data-scientist]
-description = "Executes data science workflows: exploratory data analysis, baseline modeling, and experiments. Maintains experiment tracking and model artifacts. Use for ML projects, statistical analysis, and model evaluation."
-config_file = "agents/apm-data-scientist.toml"
-
-[agents.apm-code-simplifier]
-description = "Refactors recently modified code for clarity and simplicity while preserving behavior. Applies project coding conventions and eliminates unnecessary complexity. Use after implementation to clean up and standardize code changes."
-config_file = "agents/apm-code-simplifier.toml"
+max_threads = 5
+max_depth = 1

@@ -10,5 +10,5 @@ $ARGUMENTS
 
 ## Instructions
 - Use `apm-sdet`.
-- Load and follow the `apm-test` skill.
+- Load and follow skill `apm-test`.
 - Report failures with reproducible steps and impact.
