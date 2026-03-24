@@ -8,7 +8,7 @@ description: "Write and run tests (unit, integration, e2e). Defines test strateg
 - Provide report templates for test outcomes.
 
 ## Test workflow
-1. Read `memory_bank/ARCHITECTURE.md`, `memory_bank/tasks/TASKS.md`, and active `memory_bank/tasks/{TASK_ID}.md`.
+1. Read `memory_bank/ARCHITECTURE.md`, `memory_bank/TASKS.md`, and active `memory_bank/tasks/{TASK_ID}.md`.
 2. Identify acceptance criteria and edge cases.
 3. Write tests in `tests/` (unit, integration, edge, smoke, e2e if applicable).
 4. Run tests and record results.
@@ -23,4 +23,4 @@ description: "Write and run tests (unit, integration, e2e). Defines test strateg
 - Use `references/TEST_REPORT_TMP.md` for test reports.
 - Use `references/E2E_REPORT_TMP.md` for end-to-end/system test reports.
 - Store reports under `logs/project/reports/`.
-- Follow apm-logs for logging test runs and failures when applicable.
+- Follow skill `apm-logs` for logging test runs and failures when applicable.

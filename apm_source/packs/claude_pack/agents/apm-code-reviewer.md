@@ -37,7 +37,7 @@ Return a compact handoff on completion:
 4. Final gate decision: APPROVE or CHANGES REQUIRED
 5. Issues, observations, and residual risks
 
-Write an agent log via `apm-report` under `logs/agents/{TASK_ID}/`.
+Write an agent log via skill `apm-report` under `logs/agents/{TASK_ID}/`.
 
 ## Stop conditions
 - Ask for clarification if task scope, architecture constraints, or required evidence are ambiguous.

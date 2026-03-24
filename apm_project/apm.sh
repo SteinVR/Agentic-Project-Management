@@ -666,9 +666,9 @@ initialize_memory_bank() {
     # Flat methodology templates already include memory_bank/ with all files
     if [[ -d "$memory_bank_dir" ]]; then
         mkdir -p "$memory_bank_dir/tasks"
-        if [[ -f "$memory_bank_dir/TASK.md" && ! -f "$memory_bank_dir/tasks/TASKS.md" ]]; then
-            mv "$memory_bank_dir/TASK.md" "$memory_bank_dir/tasks/TASKS.md"
-            write_info "Migrated memory_bank/TASK.md to memory_bank/tasks/TASKS.md"
+        if [[ -f "$memory_bank_dir/TASK.md" && ! -f "$memory_bank_dir/TASKS.md" ]]; then
+            mv "$memory_bank_dir/TASK.md" "$memory_bank_dir/TASKS.md"
+            write_info "Migrated memory_bank/TASK.md to memory_bank/TASKS.md"
         fi
         return 0
     fi
@@ -695,16 +695,16 @@ initialize_memory_bank() {
 
     local root_tasks_file="$project_path/TASKS.md"
     local root_task_file="$project_path/TASK.md"
-    local tasks_file="$memory_bank_dir/tasks/TASKS.md"
+    local tasks_file="$memory_bank_dir/TASKS.md"
     if [[ -f "$root_tasks_file" && ! -f "$tasks_file" ]]; then
         mv "$root_tasks_file" "$tasks_file"
-        write_info "Moved TASKS.md to memory_bank/tasks/"
+        write_info "Moved TASKS.md to memory_bank/"
     elif [[ -f "$root_task_file" && ! -f "$tasks_file" ]]; then
         mv "$root_task_file" "$tasks_file"
-        write_info "Moved TASK.md to memory_bank/tasks/TASKS.md"
+        write_info "Moved TASK.md to memory_bank/TASKS.md"
     elif [[ ! -f "$tasks_file" ]]; then
         echo "# TASKS" > "$tasks_file"
-        write_warning "Initialized memory_bank/tasks/TASKS.md as empty file"
+        write_warning "Initialized memory_bank/TASKS.md as empty file"
     fi
 
     local task_detail_file="$memory_bank_dir/tasks/W1A.md"

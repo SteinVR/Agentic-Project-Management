@@ -1,5 +1,5 @@
 ## Skill
-- Use **apm-ds-exp** for hypothesis-driven experiments.
+- Use skill `apm-ds-exp` for hypothesis-driven experiments.
 
 ## Expected structure
 Each experiment lives in its own directory:
@@ -16,7 +16,7 @@ experiments/EXP-XXX_{description}/
 ## Creating a new experiment
 1. Create directory: `experiments/EXP-XXX_{description}/`
 2. Create or copy template files: `config.py`, `main_exp.py`, `REPORT.md`
-3. Link the run to a task in `memory_bank/tasks/TASKS.md` and mirror details in `memory_bank/tasks/{TASK_ID}.md`
+3. Link the run to a task in `memory_bank/TASKS.md` and mirror details in `memory_bank/tasks/{TASK_ID}.md`
 
 ## Running experiments
 Each `main_exp.py` uses cell-like separators (`# %%`) for block-by-block execution.
@@ -26,7 +26,7 @@ Import reusable functions from `src/` modules (`src/data.py`, `src/features.py`,
 ## Conventions
 - Number experiments sequentially: `EXP-001`, `EXP-002`, etc.
 - Always set and log random seeds for reproducibility.
-- Keep high-level task status in `memory_bank/tasks/TASKS.md`.
+- Keep high-level task status in `memory_bank/TASKS.md`.
 - Keep experiment-level planning and notes in `memory_bank/tasks/{TASK_ID}.md`.
 
 ## Guardrails

@@ -32,7 +32,7 @@ Guardrails:
 Required outputs:
 - Decision-ready architecture guidance and strategic recommendations.
 - Updated memory_bank/ARCHITECTURE.md when architecture scope changes and the user confirms.
-- Activity report via apm-report.
+- Activity report via skill `apm-report`.
 - Architecture review summary with assumptions, risks, and recommendations.
 
 Stop conditions:

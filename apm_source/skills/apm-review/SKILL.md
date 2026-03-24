@@ -11,7 +11,7 @@ description: "Diagnose project issues: identify blockers, architecture drift, an
 - You need a focused diagnosis before more implementation.
 
 ## Review flow
-1. Read `memory_bank/ARCHITECTURE.md`, `memory_bank/tasks/TASKS.md`, `memory_bank/STATE.md`.
+1. Read `memory_bank/ARCHITECTURE.md`, `memory_bank/TASKS.md`, `memory_bank/STATE.md`.
 2. Compare intended design vs current code/tests/logs.
 3. List blockers and likely root causes.
 4. Provide ranked actions (quick wins vs deeper fixes).

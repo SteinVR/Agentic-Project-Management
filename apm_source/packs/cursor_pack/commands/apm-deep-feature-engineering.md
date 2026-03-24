@@ -10,5 +10,5 @@ $ARGUMENTS
 
 ## Instructions
 - Use `apm-data-scientist`.
-- Load and follow the `apm-deep-feature-engineering` skill.
+- Load and follow skill `apm-deep-feature-engineering`.
 - Produce ranked, testable feature candidates with clear risks and expected impact.

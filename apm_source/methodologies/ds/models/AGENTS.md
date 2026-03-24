@@ -1,5 +1,5 @@
 ## Skill
-- Use **apm-model-report** for model reporting and artifact summaries.
+- Use skill `apm-model-report` for model reporting and artifact summaries.
 
 ## Expected structure
 Each model gets a separate subfolder:

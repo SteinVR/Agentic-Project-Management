@@ -10,5 +10,5 @@ $ARGUMENTS
 
 ## Instructions
 - Use `apm-data-scientist`.
-- Load and follow the `apm-ds-baseline` skill.
+- Load and follow skill `apm-ds-baseline`.
 - Record assumptions, metrics, and constraints.

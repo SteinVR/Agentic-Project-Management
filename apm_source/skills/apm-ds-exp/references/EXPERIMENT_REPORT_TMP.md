@@ -8,7 +8,7 @@
 
 ## 1. Hypothesis
 
-**ID:** [TASK-XXX from memory_bank/tasks/TASKS.md]
+**ID:** [TASK-XXX from memory_bank/TASKS.md]
 
 **Statement:** [Clear hypothesis being tested]
 

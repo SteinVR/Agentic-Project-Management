@@ -142,7 +142,7 @@ run_interactive_stdin_cases() {
     err_file="$tmp_parent/int_cursor_rapid.err"
     printf "%b" "${tmp_parent}\nint-cursor-rapid\n1\n2\ny\n" | HOME="$tmp_home" TERM=xterm bash "$APM_SCRIPT" >"$out_file" 2>"$err_file"
     assert_path_exists "$tmp_parent/int-cursor-rapid/memory_bank" "Cursor RAPID memory_bank"
-    assert_path_exists "$tmp_parent/int-cursor-rapid/memory_bank/tasks/TASKS.md" "Cursor RAPID TASKS.md"
+    assert_path_exists "$tmp_parent/int-cursor-rapid/memory_bank/TASKS.md" "Cursor RAPID TASKS.md"
     assert_path_exists "$tmp_parent/int-cursor-rapid/.cursor/agents" "Cursor RAPID agents"
     assert_path_exists "$tmp_parent/int-cursor-rapid/.cursor/commands" "Cursor RAPID commands"
     log_pass "interactive Cursor RAPID"
@@ -161,7 +161,7 @@ run_interactive_stdin_cases() {
     err_file="$tmp_parent/int_opencode_ds_local.err"
     printf "%b" "${tmp_parent}\nint-opencode-ds\n2\n2\ny\nlocal\n" | HOME="$tmp_home" TERM=xterm bash "$APM_SCRIPT" >"$out_file" 2>"$err_file"
     assert_path_exists "$tmp_parent/int-opencode-ds/memory_bank" "OpenCode DS memory_bank"
-    assert_path_exists "$tmp_parent/int-opencode-ds/memory_bank/tasks/TASKS.md" "OpenCode DS TASKS.md"
+    assert_path_exists "$tmp_parent/int-opencode-ds/memory_bank/TASKS.md" "OpenCode DS TASKS.md"
     assert_path_exists "$tmp_parent/int-opencode-ds/.opencode/agents" "OpenCode DS agents"
     assert_path_exists "$tmp_parent/int-opencode-ds/.opencode/commands" "OpenCode DS commands"
     assert_path_exists "$tmp_parent/int-opencode-ds/.opencode/skills" "OpenCode DS skills"
@@ -174,7 +174,7 @@ run_interactive_stdin_cases() {
     err_file="$tmp_parent/int_codex_rapid_local.err"
     printf "%b" "${tmp_parent}\nint-codex-rapid\n3\n1\ny\nlocal\n" | HOME="$tmp_home" TERM=xterm bash "$APM_SCRIPT" >"$out_file" 2>"$err_file"
     assert_path_exists "$tmp_parent/int-codex-rapid/memory_bank" "Codex RAPID memory_bank"
-    assert_path_exists "$tmp_parent/int-codex-rapid/memory_bank/tasks/TASKS.md" "Codex RAPID TASKS.md"
+    assert_path_exists "$tmp_parent/int-codex-rapid/memory_bank/TASKS.md" "Codex RAPID TASKS.md"
     assert_path_exists "$tmp_parent/int-codex-rapid/.codex/skills" "Codex RAPID skills"
     assert_path_exists "$tmp_parent/int-codex-rapid/.codex/agents" "Codex RAPID agents"
     assert_path_exists "$tmp_parent/int-codex-rapid/.codex/agents/apm-code-simplifier.toml" "Codex RAPID simplifier agent file"
@@ -192,7 +192,7 @@ run_interactive_stdin_cases() {
     err_file="$tmp_parent/int_claude_rapid_local.err"
     printf "%b" "${tmp_parent}\nint-claude-rapid\n4\n1\ny\nlocal\n" | HOME="$tmp_home" TERM=xterm bash "$APM_SCRIPT" >"$out_file" 2>"$err_file"
     assert_path_exists "$tmp_parent/int-claude-rapid/memory_bank" "Claude RAPID memory_bank"
-    assert_path_exists "$tmp_parent/int-claude-rapid/memory_bank/tasks/TASKS.md" "Claude RAPID TASKS.md"
+    assert_path_exists "$tmp_parent/int-claude-rapid/memory_bank/TASKS.md" "Claude RAPID TASKS.md"
     assert_path_exists "$tmp_parent/int-claude-rapid/.claude/agents" "Claude RAPID agents"
     assert_path_exists "$tmp_parent/int-claude-rapid/.claude/agents/apm-engineer.md" "Claude RAPID engineer agent file"
     assert_path_exists "$tmp_parent/int-claude-rapid/.claude/agents/apm-team-lead.md" "Claude RAPID team-lead agent file"
@@ -269,7 +269,7 @@ run_non_interactive_matrix_and_installers() {
 
     HOME="$tmp_home" TERM=xterm bash "$APM_SCRIPT" --codex --ds --project-name ni-codex-ds-skip --project-path "$projects_dir" --non-interactive --none --skip-cursor
     assert_path_exists "$projects_dir/ni-codex-ds-skip/memory_bank" "ni codex ds memory_bank"
-    assert_path_exists "$projects_dir/ni-codex-ds-skip/memory_bank/tasks/TASKS.md" "ni codex ds TASKS.md"
+    assert_path_exists "$projects_dir/ni-codex-ds-skip/memory_bank/TASKS.md" "ni codex ds TASKS.md"
     assert_file_contains "$projects_dir/ni-codex-ds-skip/AGENTS.md" "Activity log" "ni codex ds activity log section"
     assert_file_contains "$projects_dir/ni-codex-ds-skip/AGENTS.md" "apm-report" "ni codex ds apm-report skill mention"
     assert_file_contains "$projects_dir/ni-codex-ds-skip/logs/AGENTS.md" "logs/agents/" "ni codex ds agent log path"
@@ -279,7 +279,7 @@ run_non_interactive_matrix_and_installers() {
     HOME="$tmp_home" TERM=xterm bash "$APM_SCRIPT" --opencode --ds --project-name ni-opencode-ds-local --project-path "$projects_dir" --non-interactive --local --skip-cursor
     assert_path_exists "$projects_dir/ni-opencode-ds-local/.opencode/commands" "ni opencode ds local commands"
     assert_path_exists "$projects_dir/ni-opencode-ds-local/memory_bank" "ni opencode ds memory_bank"
-    assert_path_exists "$projects_dir/ni-opencode-ds-local/memory_bank/tasks/TASKS.md" "ni opencode ds TASKS.md"
+    assert_path_exists "$projects_dir/ni-opencode-ds-local/memory_bank/TASKS.md" "ni opencode ds TASKS.md"
     log_pass "non-interactive OpenCode DS local"
 
     HOME="$tmp_home" TERM=xterm bash "$APM_SCRIPT" --opencode --rapid --project-name ni-opencode-rapid-global --project-path "$projects_dir" --non-interactive --global --skip-cursor

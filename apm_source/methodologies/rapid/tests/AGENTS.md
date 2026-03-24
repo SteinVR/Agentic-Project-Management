@@ -1,5 +1,5 @@
 ## Skill
-- Use **apm-test** for test strategy, execution, and reporting.
+- Use skill `apm-test` for test strategy, execution, and reporting.
 
 ## Expected structure
 - `tests/` -- unit, integration, edge-case, and smoke tests.

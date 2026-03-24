@@ -10,5 +10,5 @@ $ARGUMENTS
 
 ## Instructions
 - Use `apm-engineer`.
-- Load and follow the `apm-dev` skill.
+- Load and follow skill `apm-dev`.
 - Keep implementation scoped and verifiable.

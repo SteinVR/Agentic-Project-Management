@@ -31,7 +31,7 @@ Return a compact handoff on completion:
 4. Verification outcome
 5. Defects found, issues, observations, and residual risks
 
-Write an agent log via `apm-report` under `logs/agents/{TASK_ID}/`.
+Write an agent log via skill `apm-report` under `logs/agents/{TASK_ID}/`.
 
 ## Stop conditions
 - Ask for clarification if acceptance criteria are missing or conflicting.

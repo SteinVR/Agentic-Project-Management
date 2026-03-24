@@ -3,8 +3,8 @@
 
 ## Memory Bank (SSOT)
 - Directory name is `memory_bank/`.
-- **TASKS.md:** grouped, ordered high-level tasks only.
-- **{TASK_ID}.md:** each active task has its own file with implementation plan, notes, and execution details.
+- **TASKS.md:** grouped, ordered high-level tasks only (lives directly in `memory_bank/`, not inside `tasks/`).
+- **tasks/{TASK_ID}.md:** each active task has its own file with implementation plan, notes, and execution details.
 - **STATE.md:** compact operational status for experiments and blockers.
 - Do not update Memory Bank files unless the user explicitly asks.
 - Keep main headers from templates intact; add sub-sections only when needed.
@@ -28,7 +28,7 @@
 - For complex DS work, decompose into independent experiment and implementation streams.
 - Parallelize experiments only when data handling and output ownership are explicit.
 - Define each delegation with required metrics, output format, and verification criteria.
-- Use `apm-subagent` to form role-appropriate delegation requests.
+- Use skill `apm-subagent` to form role-appropriate delegation requests.
 - Before final integration, normalize outputs and run comparison checks.
 
 ## Worktree shared resources
@@ -37,7 +37,14 @@ When working inside a git worktree (e.g., under `.apm/worktrees/{TASK_ID}`), hea
 New artifacts (models, experiment outputs, logs) are written locally in the worktree and integrated into the main tree after merge.
 
 ## Activity log
-- If project structure or code was modified, load and follow the apm-report skill to form the Activity log after completing the assigned task.
+- After meaningful work load and follow skill `apm-report` to form the Activity log after completing the assigned task.
+
+## Protocol glossary
+- **Quality Gate** — load skill `apm-quality-gate`. Post-implementation verification sequence: simplify, review, fix, accept.
+- **Worktree Protocol** — load skill `apm-git-taskflow`. Task-scoped branch and worktree isolation for parallel work.
+- **Wave Protocol** — task grouping described in `memory_bank/TASKS.md`. Waves execute sequentially; tasks within a wave execute in parallel.
+- **Activity Log** — load skill `apm-report`. Structured agent session log written after meaningful work.
+- **Delegation Contract** — load skill `apm-subagent`. Minimal framing for specialist subagent requests.
 
 ## Notes
 - If instructions conflict, prefer the closest (most specific) AGENTS.md.

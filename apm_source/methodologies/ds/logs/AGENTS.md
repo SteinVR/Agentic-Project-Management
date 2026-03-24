@@ -1,17 +1,15 @@
 ## Skill
-- Follow `apm-logs` for logging taxonomy and conventions.
-- Use `apm-report` when the current session needs to write an agent log.
+- Follow skill `apm-logs` for application logging conventions.
 
 ## Expected structure
-- `logs/project/runtime/` -- training logs, evaluation logs, metrics, and errors.
-- `logs/project/reports/` -- generated reports (test, review, model, general).
-- `logs/agents/{TASK_ID}/` -- task-scoped agent logs.
+- `logs/project/runtime/` -- application runtime logs produced by code (training, evaluation, metrics, errors).
+- `logs/project/reports/` -- report documents (test, review, model, general).
+- `logs/agents/{TASK_ID}/` -- agent session logs.
 
 ## Conventions
-- Log format: `[YYYY-MM-DD HH:MM:SS] [LEVEL] - Message`.
-- Store DS runtime output under `logs/project/runtime/`.
-- Store generated reports under `logs/project/reports/`.
-- Keep agent logs in `logs/agents/...`.
+- Log format for application logs: `[YYYY-MM-DD HH:MM:SS] [LEVEL] - Message`.
+- Store DS application runtime output under `logs/project/runtime/`.
+- Store report documents under `logs/project/reports/`.
 
 ## Guardrails
 - Do not store model artifacts here (use `models/`).

@@ -1,5 +1,5 @@
 ## Skill
-- Use **apm-eda** for the workflow and report format.
+- Use skill `apm-eda` for the workflow and report format.
 
 ## Expected structure
 - `src/` -- main EDA scripts folder

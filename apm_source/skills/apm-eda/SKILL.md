@@ -27,7 +27,7 @@ eda/
 
 ## Required reads
 - `memory_bank/ARCHITECTURE.md`
-- `memory_bank/tasks/TASKS.md`
+- `memory_bank/TASKS.md`
 - active `memory_bank/tasks/{TASK_ID}.md` (if present)
 - dataset metadata and available data contracts
 
@@ -61,7 +61,7 @@ eda/
 - When a prior deep report exists (for example `external/EDA-Insights.md`), keep its strongest analytical patterns and expand where useful.
 
 ## Required updates
-- Log notable EDA runs and outputs per apm-logs when applicable.
+- Log notable EDA runs and outputs per skill `apm-logs` when applicable.
 
 ## Guardrails
 - Do not run full model experiments in this stage.

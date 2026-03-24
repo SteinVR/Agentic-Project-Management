@@ -11,7 +11,7 @@ description: "Deep Feature Engineering stage for DS: convert EDA findings into r
 - `memory_bank/ARCHITECTURE.md`
 - `eda/reports/EDA-Report.md`
 - `eda/reports/EDA-Insights.md`
-- `memory_bank/tasks/TASKS.md`
+- `memory_bank/TASKS.md`
 
 ## Required outputs
 - `eda/reports/Feature-Engineering.md`
@@ -29,7 +29,7 @@ description: "Deep Feature Engineering stage for DS: convert EDA findings into r
    - **Now:** safe, high-value features for baseline and next experiments.
    - **Later:** promising but expensive/risky candidates.
    - **Reject:** ideas with poor signal or unacceptable risk.
-5. Map approved candidates to task IDs in `memory_bank/tasks/TASKS.md` and create/update `memory_bank/tasks/{TASK_ID}.md` as needed.
+5. Map approved candidates to task IDs in `memory_bank/TASKS.md` and create/update `memory_bank/tasks/{TASK_ID}.md` as needed.
 
 ## Template
 Use `references/Feature-Engineering_TMP.md`.

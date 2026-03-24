@@ -247,7 +247,7 @@ test_rapid_methodology_deployment() {
     assert_path_exists "$mb_dir" "memory_bank directory" "RAPID-MemoryBank"
     assert_path_exists "$mb_dir/ARCHITECTURE.md" "memory_bank/ARCHITECTURE.md" "RAPID-MBArch"
     assert_path_exists "$mb_dir/STATE.md" "memory_bank/STATE.md" "RAPID-MBState"
-    assert_path_exists "$mb_dir/tasks/TASKS.md" "memory_bank/tasks/TASKS.md" "RAPID-MBTasks"
+    assert_path_exists "$mb_dir/tasks/TASKS.md" "memory_bank/TASKS.md" "RAPID-MBTasks"
     assert_path_exists "$mb_dir/tasks/W1A.md" "memory_bank/tasks/W1A.md" "RAPID-MBTask001"
     
     # Verify project name was substituted in ARCHITECTURE.md
@@ -329,7 +329,7 @@ test_ds_methodology_deployment() {
     assert_path_exists "$mb_dir" "memory_bank directory" "DS-MemoryBank"
     assert_path_exists "$mb_dir/ARCHITECTURE.md" "memory_bank/ARCHITECTURE.md" "DS-MBArch"
     assert_path_exists "$mb_dir/STATE.md" "memory_bank/STATE.md" "DS-MBState"
-    assert_path_exists "$mb_dir/tasks/TASKS.md" "memory_bank/tasks/TASKS.md" "DS-MBTasks"
+    assert_path_exists "$mb_dir/tasks/TASKS.md" "memory_bank/TASKS.md" "DS-MBTasks"
     assert_path_exists "$mb_dir/tasks/W1A.md" "memory_bank/tasks/W1A.md" "DS-MBTask001"
     
     # No legacy artifacts
@@ -460,7 +460,7 @@ test_rapid_opencode_deployment() {
     write_test_name "Verifying OpenCode RAPID structure"
     assert_path_exists "$project_path/memory_bank" "memory_bank directory" "RAPID-OC-MB"
     assert_path_exists "$project_path/memory_bank/ARCHITECTURE.md" "ARCHITECTURE.md" "RAPID-OC-Arch"
-    assert_path_exists "$project_path/memory_bank/tasks/TASKS.md" "TASKS.md" "RAPID-OC-Tasks"
+    assert_path_exists "$project_path/memory_bank/TASKS.md" "TASKS.md" "RAPID-OC-Tasks"
     assert_path_exists "$project_path/src" "src directory" "RAPID-OC-Src"
     assert_path_exists "$project_path/tests" "tests directory" "RAPID-OC-Tests"
     assert_path_exists "$project_path/AGENTS.md" "AGENTS.md" "RAPID-OC-Agents"
@@ -501,7 +501,7 @@ test_rapid_codex_deployment() {
     write_test_name "Verifying Codex RAPID structure"
     assert_path_exists "$project_path/memory_bank" "memory_bank directory" "RAPID-CX-MB"
     assert_path_exists "$project_path/memory_bank/ARCHITECTURE.md" "ARCHITECTURE.md" "RAPID-CX-Arch"
-    assert_path_exists "$project_path/memory_bank/tasks/TASKS.md" "TASKS.md" "RAPID-CX-Tasks"
+    assert_path_exists "$project_path/memory_bank/TASKS.md" "TASKS.md" "RAPID-CX-Tasks"
     assert_path_exists "$project_path/memory_bank/tasks/W1A.md" "W1A.md" "RAPID-CX-Task001"
     assert_path_exists "$project_path/src" "src directory" "RAPID-CX-Src"
     assert_path_exists "$project_path/tests" "tests directory" "RAPID-CX-Tests"
@@ -570,7 +570,7 @@ test_rapid_claude_deployment() {
     write_test_name "Verifying Claude Code RAPID structure"
     assert_path_exists "$project_path/memory_bank" "memory_bank directory" "RAPID-CC-MB"
     assert_path_exists "$project_path/memory_bank/ARCHITECTURE.md" "ARCHITECTURE.md" "RAPID-CC-Arch"
-    assert_path_exists "$project_path/memory_bank/tasks/TASKS.md" "TASKS.md" "RAPID-CC-Tasks"
+    assert_path_exists "$project_path/memory_bank/TASKS.md" "TASKS.md" "RAPID-CC-Tasks"
     assert_path_exists "$project_path/memory_bank/tasks/W1A.md" "W1A.md" "RAPID-CC-Task001"
     assert_path_exists "$project_path/src" "src directory" "RAPID-CC-Src"
     assert_path_exists "$project_path/tests" "tests directory" "RAPID-CC-Tests"
@@ -645,7 +645,7 @@ test_ds_opencode_deployment() {
     write_test_name "Verifying DS OpenCode structure"
     assert_path_exists "$project_path/memory_bank" "memory_bank directory" "DS-OC-MB"
     assert_path_exists "$project_path/memory_bank/ARCHITECTURE.md" "ARCHITECTURE.md" "DS-OC-Arch"
-    assert_path_exists "$project_path/memory_bank/tasks/TASKS.md" "TASKS.md" "DS-OC-Tasks"
+    assert_path_exists "$project_path/memory_bank/TASKS.md" "TASKS.md" "DS-OC-Tasks"
     assert_path_exists "$project_path/src" "src directory" "DS-OC-Src"
     assert_path_exists "$project_path/eda" "eda directory" "DS-OC-EDA"
     assert_path_exists "$project_path/experiments" "experiments directory" "DS-OC-Experiments"

@@ -13,11 +13,11 @@ $ARGUMENTS
 ## Required Reads
 @memory_bank/STATE.md
 @memory_bank/ARCHITECTURE.md
-@memory_bank/tasks/TASKS.md
+@memory_bank/TASKS.md
 
 ## Required Outputs
 - memory_bank/ARCHITECTURE.md
-- memory_bank/tasks/TASKS.md
+- memory_bank/TASKS.md
 - memory_bank/tasks/W1A.md
 - memory_bank/STATE.md
 
@@ -54,7 +54,7 @@ Ask the user to confirm before writing any files:
 
 ## Step 3: After confirmation
 - Fill `memory_bank/ARCHITECTURE.md` using the correct template (apm-start).
-- Initialize `memory_bank/tasks/TASKS.md`, `memory_bank/tasks/W1A.md`, and `memory_bank/STATE.md` using the project templates if present; otherwise create minimal headers and refine with the user.
+- Initialize `memory_bank/TASKS.md`, `memory_bank/tasks/W1A.md`, and `memory_bank/STATE.md` using the project templates if present; otherwise create minimal headers and refine with the user.
 
 ## Step 4: Environment setup (post Memory Bank)
 - Read the Technology Stack and Deployment sections in `memory_bank/ARCHITECTURE.md`.

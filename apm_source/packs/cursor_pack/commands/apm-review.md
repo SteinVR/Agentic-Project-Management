@@ -10,5 +10,5 @@ $ARGUMENTS
 
 ## Instructions
 - Use `apm-architect`.
-- Load and follow the `apm-review` skill.
+- Load and follow skill `apm-review`.
 - Prioritize risks, regressions, and missing validations.

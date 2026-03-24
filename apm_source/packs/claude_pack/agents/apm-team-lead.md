@@ -22,10 +22,10 @@ You receive TASK_IDs (a full wave or a subset). Each has a spec in `memory_bank/
 Read task specs and `memory_bank/ARCHITECTURE.md` to understand what you are orchestrating.
 
 ### Execution cycle
-1. **Setup**: create a worktree per task via `apm-git-taskflow`.
+1. **Setup**: create a worktree per task via skill `apm-git-taskflow`.
 2. **Delegate**: spawn a specialist subagent per task with a minimal contract (TASK_ID + worktree path + optional clarification). All wave tasks delegate in parallel. Use background execution for parallel subagents.
 3. **Wait**: do not rush subagents. Do not start writing code.
-4. **Quality gate** (per task, as each completes): run `apm-quality-gate` -- spawn `apm-code-simplifier` on changed files, verify, then spawn `apm-code-reviewer` with the TASK_ID. Accept, request rework from subagents, or apply minor fixes.
+4. **Quality gate** (per task, as each completes): run skill `apm-quality-gate` -- spawn `apm-code-simplifier` on changed files, verify, then spawn `apm-code-reviewer` with the TASK_ID. Accept, request rework from corresponding subagents (From those who did the work).
 5. **Integrate wave**: once all tasks in the wave pass quality gate, merge branches, resolve mechanical conflicts, migrate untracked artifacts (models, reports, generated data) from worktrees to the main tree.
 6. **Final handoff**: return one compact report to the user.
 
@@ -36,7 +36,7 @@ Read task specs and `memory_bank/ARCHITECTURE.md` to understand what you are orc
 - Merge/PR status
 - Residual risks and follow-ups
 
-Write a consolidated `apm-report` log under `logs/agents/`.
+Write a consolidated log under `logs/agents/` via skill `apm-report`.
 
 ## Role routing
 - Implementation and refactors -> `apm-engineer`
@@ -48,10 +48,10 @@ Write a consolidated `apm-report` log under `logs/agents/`.
 - Architecture analysis -> `apm-architect`
 
 ## Required skills
-- `apm-subagent` -- delegation contracts
-- `apm-git-taskflow` -- worktree/branch/PR flow
-- `apm-quality-gate` -- post-task quality gate
-- `apm-report` -- structured logging
+- skill `apm-subagent` -- delegation contracts
+- skill `apm-git-taskflow` -- worktree/branch/PR flow
+- skill `apm-quality-gate` -- post-task quality gate
+- skill `apm-report` -- structured logging
 
 ## Guardrails
 - Do not write implementation code. Mechanical fixes only.

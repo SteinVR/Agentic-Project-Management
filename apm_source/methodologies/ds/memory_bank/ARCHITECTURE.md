@@ -57,7 +57,7 @@
    - Save benchmark artifacts and logs for comparison
 
 5. **Experimentation Cycle**
-   - Formulate hypothesis/task in `memory_bank/tasks/TASKS.md`
+   - Formulate hypothesis/task in `memory_bank/TASKS.md`
    - Keep working notes in `memory_bank/tasks/{TASK_ID}.md`
    - Implement experiment in `experiments/EXP-XXX/`
    - Train and evaluate using `main_exp.py`

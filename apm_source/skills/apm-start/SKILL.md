@@ -12,11 +12,11 @@ description: "Project kickoff: initialize directory structure, run Vision Alignm
 ## Required reads
 - `memory_bank/STATE.md` (if exists)
 - `memory_bank/ARCHITECTURE.md` (if exists)
-- `memory_bank/tasks/TASKS.md` (if exists)
+- `memory_bank/TASKS.md` (if exists)
 
 ## Required outputs
 - `memory_bank/ARCHITECTURE.md`
-- `memory_bank/tasks/TASKS.md`
+- `memory_bank/TASKS.md`
 - `memory_bank/tasks/W1A.md`
 - `memory_bank/STATE.md`
 
@@ -59,7 +59,7 @@ Wait for user confirmation before proceeding.
 
 ## Step 3: Create Memory Bank
 - Fill `memory_bank/ARCHITECTURE.md` using the correct template
-- Initialize `memory_bank/tasks/TASKS.md`, `memory_bank/tasks/W1A.md`, and `memory_bank/STATE.md` using project templates if present; otherwise create minimal headers and refine with the user.
+- Initialize `memory_bank/TASKS.md`, `memory_bank/tasks/W1A.md`, and `memory_bank/STATE.md` using methodology templates; if templates are unavailable, create minimal headers and refine with the user.
 
 ## Step 4: Environment setup
 - Read the Technology Stack and Deployment sections in `memory_bank/ARCHITECTURE.md`.

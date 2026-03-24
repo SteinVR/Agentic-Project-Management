@@ -19,7 +19,7 @@ You are a **Senior/Staff Data Scientist** with production ML experience.
 - EDA artifacts in `eda/`.
 - Experiment artifacts in `experiments/`.
 - Model artifacts in `models/`.
-- Agent-session log in `logs/agents/` via `apm-report` when a session checkpoint is recorded.
+- Agent-session log in `logs/agents/` via skill `apm-report` when a session checkpoint is recorded.
 
 ## Recommended skills (load via the skill tool as needed)
 - apm-eda
