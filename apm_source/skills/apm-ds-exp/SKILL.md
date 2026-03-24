@@ -14,11 +14,18 @@ description: "Plan, execute, and document a hypothesis-driven experiment for mac
    - `main_exp.py`
    - `config.py`
    - `EXP-XXX_REPORT.md`
-5. Test the pipeline quickly (smoke-test); **do not run full training unless the user asks**.
-6. Load and follow skill `apm-quality-gate` for the shared final quality gate and verified completion handoff.
-7. During the pre-handoff refresh step inside skill `apm-quality-gate`, ensure experiment-specific outputs are updated:
-   - Record results in `EXP-XXX_REPORT.md` and task files.
-   - Ensure `EXP-XXX_REPORT.md` contains success and failure outcomes for the whole experiment.
+5. **Smoke-test**: run the pipeline on a small subset to verify it executes end-to-end without errors. The only goal is stability — do not record metrics, do not update state, do not analyze results. If it fails, fix and re-run.
+6. **Full run**: do not start without user approval.
+7. **Post-run analysis** (mandatory after full run only):
+   - Produce diagnostic artifacts in `experiments/EXP-XXX/results/`: training curves (loss, metrics vs epoch/iteration), confusion matrix, error distribution, feature importance — whatever is relevant to the model type.
+   - Produce readable summary tables: per-fold/per-split metrics, comparison against baseline and prior experiments.
+   - Analyze training dynamics: convergence speed, overfitting signals, anomalies, metric plateaus, gradient issues.
+   - Write analytical conclusions in `EXP-XXX_REPORT.md`: what the results mean, why the model behaves this way, what signals point to.
+   - Formulate next-step recommendations: new hypotheses, hyperparameter adjustments, architectural changes, data preprocessing ideas — grounded in the analysis above.
+   - **Decision gate:** if analysis reveals the original plan is suboptimal, update the Implementation Plan in `{TASK_ID}.md` with adjusted steps and rationale before proceeding.
+8. Load and follow skill `apm-quality-gate` for the shared final quality gate and verified completion handoff.
+9. During the pre-handoff refresh step inside skill `apm-quality-gate`, ensure experiment-specific outputs are updated:
+   - Ensure `EXP-XXX_REPORT.md` contains the full post-run analysis, success and failure outcomes, and next-step recommendations.
    - Include experiment evidence, risks, and open items in the final handoff.
 
 ## Template

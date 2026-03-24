@@ -21,15 +21,6 @@ Every delegation includes:
 
 Do not pre-gather context, file lists, or scope boundaries for the subagent. Subagents read the task file, architecture, and project state themselves.
 
-## Role guides
-- `apm-engineer`: see `references/engineer.md`
-- `apm-sdet`: see `references/sdet.md`
-- `apm-data-scientist`: see `references/data-scientist.md`
-- `apm-code-simplifier`: see `references/code-simplifier.md`
-- `apm-code-reviewer`: see `references/code-reviewer.md`
-- `apm-memory-bank-sync`: see `references/memory-bank-sync.md`
-- `apm-architect`: see `references/architect.md`
-
 ## Guardrails
 - Do not mix multiple specialist responsibilities in one delegation.
 - Do not pass orchestration, git-flow, or PR management to specialist subagents.
