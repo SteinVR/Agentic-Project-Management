@@ -24,6 +24,7 @@ PROJECT_NAME_SET=false
 PROJECT_PATH_SET=false
 METHODOLOGY=""
 DEV_ENV=""
+DEV_ENVS=()
 PACK_INSTALL=""
 SKIP_CURSOR=false
 FORCE=false
@@ -73,23 +74,23 @@ parse_args() {
                 shift
                 ;;
             --dev-env)
-                DEV_ENV="$2"
+                DEV_ENVS+=("$2")
                 shift 2
                 ;;
             --opencode)
-                DEV_ENV="OPENCODE"
+                DEV_ENVS+=("OPENCODE")
                 shift
                 ;;
             --codex)
-                DEV_ENV="CODEX"
+                DEV_ENVS+=("CODEX")
                 shift
                 ;;
             --claude)
-                DEV_ENV="CLAUDE"
+                DEV_ENVS+=("CLAUDE")
                 shift
                 ;;
             --cursor)
-                DEV_ENV="CURSOR"
+                DEV_ENVS+=("CURSOR")
                 shift
                 ;;
             --local)
@@ -286,7 +287,8 @@ maybe_install_apm_alias() {
 
 select_dev_environment() {
     echo "" >&2
-    echo "Select Development Environment:" >&2
+    echo "Select Development Environment(s):" >&2
+    echo -e "\033[90mYou can select multiple environments (comma-separated, e.g. 2,4)\033[0m" >&2
     echo "" >&2
     echo -e "  \033[33m[1] \033[36mCursor IDE\033[0m - Interactive IDE workflow" >&2
     echo -e "      \033[90mUses Cursor agents/commands pack and methodology assets\033[0m" >&2
@@ -302,30 +304,33 @@ select_dev_environment() {
     echo "" >&2
 
     while true; do
-        local choice
-        choice=$(read_user_input "Select environment (1, 2, 3, or 4)" "1")
+        local raw_choice
+        raw_choice=$(read_user_input "Select environment(s)" "1")
 
-        case "$choice" in
-            1|CURSOR|cursor)
-                echo "CURSOR"
-                return 0
-                ;;
-            2|OPENCODE|opencode|OpenCode|OpenCodeCLI)
-                echo "OPENCODE"
-                return 0
-                ;;
-            3|CODEX|codex|Codex|CodexCLI)
-                echo "CODEX"
-                return 0
-                ;;
-            4|CLAUDE|claude|Claude|ClaudeCode|claude-code)
-                echo "CLAUDE"
-                return 0
-                ;;
-            *)
-                write_error "Invalid choice. Enter 1, 2, 3, or 4"
-                ;;
-        esac
+        # Normalize: replace commas and spaces with single delimiter
+        local normalized
+        normalized="$(echo "$raw_choice" | tr ',' ' ' | xargs)"
+
+        local valid=true
+        local results=()
+        for token in $normalized; do
+            case "$token" in
+                1|CURSOR|cursor)        results+=("CURSOR") ;;
+                2|OPENCODE|opencode)    results+=("OPENCODE") ;;
+                3|CODEX|codex)          results+=("CODEX") ;;
+                4|CLAUDE|claude)        results+=("CLAUDE") ;;
+                *)
+                    write_error "Invalid choice: $token. Use 1-4 or environment names."
+                    valid=false
+                    break
+                    ;;
+            esac
+        done
+
+        if [[ "$valid" == "true" && ${#results[@]} -gt 0 ]]; then
+            echo "${results[*]}"
+            return 0
+        fi
     done
 }
 
@@ -407,12 +412,23 @@ select_methodology() {
     done
 }
 
+env_to_label() {
+    case "$1" in
+        OPENCODE) echo "OpenCode CLI" ;;
+        CODEX)    echo "Codex CLI" ;;
+        CURSOR)   echo "Cursor IDE" ;;
+        CLAUDE)   echo "Claude Code" ;;
+        *)        echo "$1" ;;
+    esac
+}
+
 show_summary() {
     local project_path="$1"
     local project_name="$2"
     local methodology="$3"
-    local dev_env="$4"
-    
+    shift 3
+    local envs=("$@")
+
     echo ""
     echo -e "\033[90m==================================================\033[0m"
     echo "Configuration Summary"
@@ -423,20 +439,15 @@ show_summary() {
     echo -e "\033[32m$project_path\033[0m"
     echo -n "  Methodology:   "
     echo -e "\033[32m$methodology\033[0m"
-    local env_label="$dev_env"
-    if [[ "$dev_env" == "OPENCODE" ]]; then
-        env_label="OpenCode CLI"
-    elif [[ "$dev_env" == "CODEX" ]]; then
-        env_label="Codex CLI"
-    elif [[ "$dev_env" == "CURSOR" ]]; then
-        env_label="Cursor IDE"
-    elif [[ "$dev_env" == "CLAUDE" ]]; then
-        env_label="Claude Code"
-    fi
+    local env_labels=""
+    for _env in "${envs[@]}"; do
+        if [[ -n "$env_labels" ]]; then env_labels+=", "; fi
+        env_labels+="$(env_to_label "$_env")"
+    done
     echo -n "  Environment:  "
-    echo -e "\033[32m$env_label\033[0m"
+    echo -e "\033[32m$env_labels\033[0m"
     echo -e "\033[90m==================================================\033[0m"
-    
+
     local confirm
     confirm=$(read_user_input "Proceed with these settings? (y/n)" "y")
     if [[ "$confirm" == "y" || "$confirm" == "Y" ]]; then
@@ -778,29 +789,29 @@ Options:
     -v, --version       Show version information
 
 Non-Interactive Mode (for automation/testing):
-    --opencode          Shorthand for --dev-env OPENCODE
-    --codex             Shorthand for --dev-env CODEX
-    --claude            Shorthand for --dev-env CLAUDE
-    --cursor            Shorthand for --dev-env CURSOR
+    --opencode          Add OPENCODE environment (can combine multiple)
+    --codex             Add CODEX environment (can combine multiple)
+    --claude            Add CLAUDE environment (can combine multiple)
+    --cursor            Add CURSOR environment (can combine multiple)
     --rapid             Shorthand for --methodology RAPID
     --ds                Shorthand for --methodology DS
     --full              Shorthand for --methodology FULL
     --project-name      Project name (defaults to current directory name)
     --project-path      Target directory or parent directory (default: current directory)
     --methodology       FULL, RAPID, or DS
-    --dev-env           CURSOR, OPENCODE, CODEX, or CLAUDE (default: CURSOR)
-    --local             Install CLI pack/assets locally into project config directory
+    --dev-env           CURSOR, OPENCODE, CODEX, or CLAUDE (repeatable for multiple envs)
+    --local             Install CLI pack/assets locally into project config directory (default)
     --global            Install CLI pack/assets globally into user config directory
-    --none              Skip CLI pack/assets install (default when OPENCODE/CODEX)
+    --none              Skip CLI pack/assets install
     --skip-github       Deprecated no-op (kept for backward compatibility)
     --skip-cursor       Deprecated (no auto-open)
     --force             Overwrite existing project without prompting
     --non-interactive   Run without any user prompts
 
 Example:
-    ./apm.sh --opencode --rapid --project-name "my-app" --project-path "/projects" --non-interactive --skip-cursor
-    ./apm.sh --opencode --ds --project-name "ml-project" --project-path "/projects" --non-interactive --skip-cursor
-    ./apm.sh --codex --rapid --project-name "my-codex-app" --project-path "/projects" --non-interactive --skip-cursor
+    ./apm.sh --opencode --rapid --project-name "my-app" --project-path "/projects" --non-interactive
+    ./apm.sh --opencode --claude --ds --project-name "ml-project" --project-path "/projects" --non-interactive
+    ./apm.sh --codex --rapid --project-name "my-codex-app" --project-path "/projects" --non-interactive
 
 This interactive wizard will guide you through creating a new APM project.
 EOF
@@ -839,26 +850,32 @@ EOF
             write_error "--methodology is required in non-interactive mode"
             exit 1
         fi
-        if [[ -z "$DEV_ENV" ]]; then
-            DEV_ENV="CURSOR"
+        # Resolve DEV_ENVS array into DEV_ENV (primary) and validate
+        if [[ ${#DEV_ENVS[@]} -eq 0 ]]; then
+            DEV_ENVS=("CURSOR")
         fi
-        if [[ "$DEV_ENV" != "CURSOR" && "$DEV_ENV" != "OPENCODE" && "$DEV_ENV" != "CODEX" && "$DEV_ENV" != "CLAUDE" ]]; then
-            write_error "Invalid --dev-env: $DEV_ENV. Use CURSOR, OPENCODE, CODEX, or CLAUDE."
-            exit 1
+        for _env in "${DEV_ENVS[@]}"; do
+            if [[ "$_env" != "CURSOR" && "$_env" != "OPENCODE" && "$_env" != "CODEX" && "$_env" != "CLAUDE" ]]; then
+                write_error "Invalid --dev-env: $_env. Use CURSOR, OPENCODE, CODEX, or CLAUDE."
+                exit 1
+            fi
+        done
+        # Primary env: CURSOR if present, otherwise first in list
+        DEV_ENV="${DEV_ENVS[0]}"
+        for _env in "${DEV_ENVS[@]}"; do
+            if [[ "$_env" == "CURSOR" ]]; then DEV_ENV="CURSOR"; break; fi
+        done
+        if [[ -z "$PACK_INSTALL" ]]; then
+            PACK_INSTALL="local"
         fi
-        if [[ "$DEV_ENV" != "CURSOR" && -z "$PACK_INSTALL" ]]; then
-            PACK_INSTALL="skip"
-        fi
-        if [[ "$DEV_ENV" != "CURSOR" ]]; then
-            case "$PACK_INSTALL" in
-                local|global|skip|"") ;;
-                *)
-                    write_error "Invalid install option. Use --local, --global, or --none."
-                    exit 1
-                    ;;
-            esac
-        fi
-        
+        case "$PACK_INSTALL" in
+            local|global|skip) ;;
+            *)
+                write_error "Invalid install option. Use --local, --global, or --none."
+                exit 1
+                ;;
+        esac
+
         # Validate methodology
         if [[ "$METHODOLOGY" != "FULL" && "$METHODOLOGY" != "RAPID" && "$METHODOLOGY" != "DS" ]]; then
             write_error "Invalid methodology: $METHODOLOGY. Use FULL, RAPID, or DS."
@@ -900,8 +917,8 @@ EOF
         methodology="$METHODOLOGY"
         dev_env="$DEV_ENV"
         directory="$resolved_parent"
-        
-        write_info "Non-interactive mode: Creating $methodology project '$project_name' ($dev_env)"
+
+        write_info "Non-interactive mode: Creating $methodology project '$project_name' (${DEV_ENVS[*]})"
         
         # Check if project exists
         if [[ -d "$project_path" ]]; then
@@ -961,16 +978,23 @@ EOF
             fi
         fi
         
-        # Step 3: Select development environment
-        write_step "Step 3: Select Development Environment"
-        dev_env=$(select_dev_environment)
-        
+        # Step 3: Select development environment(s)
+        write_step "Step 3: Select Development Environment(s)"
+        local env_selection
+        env_selection=$(select_dev_environment)
+        read -ra DEV_ENVS <<< "$env_selection"
+        # Primary env: CURSOR if present, otherwise first
+        dev_env="${DEV_ENVS[0]}"
+        for _env in "${DEV_ENVS[@]}"; do
+            if [[ "$_env" == "CURSOR" ]]; then dev_env="CURSOR"; break; fi
+        done
+
         # Step 4: Select methodology
         write_step "Step 4: Select Methodology"
         methodology=$(select_methodology "$dev_env")
         
         # Show summary and confirm
-        if ! show_summary "$project_path" "$project_name" "$methodology" "$dev_env"; then
+        if ! show_summary "$project_path" "$project_name" "$methodology" "${DEV_ENVS[@]}"; then
             echo ""
             echo -e "\033[33mAborted.\033[0m"
             exit 0
@@ -996,28 +1020,23 @@ EOF
     initialize_memory_bank "$project_path" "$methodology" "$dev_env"
     initialize_agent_reports "$project_path" "$methodology" "$dev_env"
 
-    # Cursor projects always receive local Cursor agents/commands pack.
-    if [[ "$dev_env" == "CURSOR" ]]; then
-        install_cursor_pack "local" "$project_path"
-    fi
+    # Install packs for each selected environment
+    for _env in "${DEV_ENVS[@]}"; do
+        if [[ "$_env" == "CURSOR" ]]; then
+            install_cursor_pack "local" "$project_path"
+            continue
+        fi
 
-    # Optional: install CLI pack/assets
-    if [[ "$dev_env" != "CURSOR" ]]; then
-        if [[ "$NON_INTERACTIVE" != "true" ]]; then
-            local install_prompt
-            if [[ "$dev_env" == "OPENCODE" ]]; then
-                install_prompt="Install OpenCode pack? (local/global/skip)"
-            elif [[ "$dev_env" == "CLAUDE" ]]; then
-                install_prompt="Install Claude Code pack? (local/global/skip)"
-            else
-                install_prompt="Install Codex assets? (local/global/skip)"
-            fi
+        # Determine pack install mode
+        local pack_mode="$PACK_INSTALL"
+        if [[ "$NON_INTERACTIVE" != "true" && -z "$pack_mode" ]]; then
+            local install_prompt="Install $(env_to_label "$_env") pack? (local/global/skip)"
             while true; do
                 local install_choice
-                install_choice=$(read_user_input "$install_prompt" "skip")
+                install_choice=$(read_user_input "$install_prompt" "local")
                 case "$install_choice" in
                     local|global|skip)
-                        PACK_INSTALL="$install_choice"
+                        pack_mode="$install_choice"
                         break
                         ;;
                     *)
@@ -1026,24 +1045,17 @@ EOF
                 esac
             done
         fi
-        if [[ "$PACK_INSTALL" == "local" ]]; then
-            if [[ "$dev_env" == "OPENCODE" ]]; then
-                install_opencode_pack "local" "$project_path"
-            elif [[ "$dev_env" == "CLAUDE" ]]; then
-                install_claude_pack "local" "$project_path"
-            else
-                install_codex_skills "local" "$project_path"
-            fi
-        elif [[ "$PACK_INSTALL" == "global" ]]; then
-            if [[ "$dev_env" == "OPENCODE" ]]; then
-                install_opencode_pack "global" ""
-            elif [[ "$dev_env" == "CLAUDE" ]]; then
-                install_claude_pack "global" ""
-            else
-                install_codex_skills "global" ""
-            fi
+
+        if [[ "$pack_mode" == "skip" ]]; then
+            continue
         fi
-    fi
+
+        case "$_env" in
+            OPENCODE) install_opencode_pack "$pack_mode" "$project_path" ;;
+            CODEX)    install_codex_skills "$pack_mode" "$project_path" ;;
+            CLAUDE)   install_claude_pack "$pack_mode" "$project_path" ;;
+        esac
+    done
     
     # Success message
     echo ""

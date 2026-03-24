@@ -247,7 +247,7 @@ test_rapid_methodology_deployment() {
     assert_path_exists "$mb_dir" "memory_bank directory" "RAPID-MemoryBank"
     assert_path_exists "$mb_dir/ARCHITECTURE.md" "memory_bank/ARCHITECTURE.md" "RAPID-MBArch"
     assert_path_exists "$mb_dir/STATE.md" "memory_bank/STATE.md" "RAPID-MBState"
-    assert_path_exists "$mb_dir/tasks/TASKS.md" "memory_bank/TASKS.md" "RAPID-MBTasks"
+    assert_path_exists "$mb_dir/TASKS.md" "memory_bank/TASKS.md" "RAPID-MBTasks"
     assert_path_exists "$mb_dir/tasks/W1A.md" "memory_bank/tasks/W1A.md" "RAPID-MBTask001"
     
     # Verify project name was substituted in ARCHITECTURE.md
@@ -329,7 +329,7 @@ test_ds_methodology_deployment() {
     assert_path_exists "$mb_dir" "memory_bank directory" "DS-MemoryBank"
     assert_path_exists "$mb_dir/ARCHITECTURE.md" "memory_bank/ARCHITECTURE.md" "DS-MBArch"
     assert_path_exists "$mb_dir/STATE.md" "memory_bank/STATE.md" "DS-MBState"
-    assert_path_exists "$mb_dir/tasks/TASKS.md" "memory_bank/TASKS.md" "DS-MBTasks"
+    assert_path_exists "$mb_dir/TASKS.md" "memory_bank/TASKS.md" "DS-MBTasks"
     assert_path_exists "$mb_dir/tasks/W1A.md" "memory_bank/tasks/W1A.md" "DS-MBTask001"
     
     # No legacy artifacts
@@ -525,13 +525,13 @@ test_rapid_codex_deployment() {
     assert_path_exists "$project_path/.codex/agents/apm-code-reviewer.toml" "apm-code-reviewer agent" "RAPID-CX-ReviewerAgent"
     assert_path_exists "$project_path/.codex/agents/apm-memory-bank-sync.toml" "apm-memory-bank-sync agent" "RAPID-CX-SyncAgent"
     
-    # Verify config.toml has all role sections
-    assert_file_contains "$project_path/.codex/config.toml" "\\[agents.apm-architect\\]" \
-        "config.toml has architect section" "RAPID-CX-ConfigArch"
-    assert_file_contains "$project_path/.codex/config.toml" "\\[agents.apm-code-reviewer\\]" \
-        "config.toml has reviewer section" "RAPID-CX-ConfigReviewer"
-    assert_file_contains "$project_path/.codex/config.toml" "\\[agents.apm-memory-bank-sync\\]" \
-        "config.toml has sync section" "RAPID-CX-ConfigSync"
+    # Verify config.toml has required APM sections
+    assert_file_contains "$project_path/.codex/config.toml" "multi_agent" \
+        "config.toml has multi_agent setting" "RAPID-CX-ConfigMultiAgent"
+    assert_file_contains "$project_path/.codex/config.toml" "max_threads" \
+        "config.toml has max_threads setting" "RAPID-CX-ConfigThreads"
+    assert_file_contains "$project_path/.codex/config.toml" "max_depth" \
+        "config.toml has max_depth setting" "RAPID-CX-ConfigDepth"
     
     # Verify shared skills were copied
     assert_path_exists "$project_path/.codex/skills/apm-dev/SKILL.md" "apm-dev skill" "RAPID-CX-DevSkill"
