@@ -79,7 +79,7 @@
 
 ### Global Specifications
 
-> Detailed module-level specs live in `memory_bank/specs/SPEC-{module}.md`. Each global spec covers one domain/subsystem: its contracts, invariants, data formats, and rules. These are reference documents — frozen after design, updated only with explicit approval.
+> Detailed module-level specs live in `memory_bank/design/SPEC-{module}.md`. Each covers one domain/subsystem: contracts, invariants, data formats, rules. Frozen after design, updated only with explicit approval.
 
 | Spec | Scope |
 |------|-------|
@@ -156,8 +156,9 @@ experiments/                  # Isolated experiments
 memory_bank/
 ├── ARCHITECTURE.md
 ├── STATE.md
+├── design/
+│   └── SPEC-{module}.md
 ├── specs/
-│   ├── SPEC-{module}.md
 │   └── SPEC_{TASK_ID}.md
 └── tasks/
     ├── TASKS.md

@@ -14,7 +14,7 @@ description: "Run the shared final quality gate for code-writing tasks: simplify
 ## Quality gate sequence
 1. **Spawn `apm-code-simplifier`** on the task's changed files in the task worktree.
 2. **Verify** that simplification preserved behavior (run relevant tests/checks).
-3. **Spawn `apm-code-reviewer`** with only the TASK_ID. The reviewer independently determines review scope, reads the task spec, and assesses completeness and correctness.
+3. **Spawn `apm-reviewer`** with only the TASK_ID. The reviewer independently determines review scope, reads the task spec, and assesses completeness and correctness.
 4. **Evaluate findings**:
    - P0/P1: mandatory fix before integration.
    - P2/P3: defer with explicit rationale or fix if low-effort.

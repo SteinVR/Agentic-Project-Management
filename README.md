@@ -168,8 +168,9 @@ Core files:
 - `ARCHITECTURE.md`
 - `STATE.md`
 - `tasks/TASKS.md`
-- `specs/SPEC_{TASK_ID}.md` — frozen task specification (goal, approach, contracts, DoD). Read-only during execution.
-- `tasks/{TASK_ID}.md` — working journal (implementation plan, notes, review findings, outcome).
+- `design/SPEC-{module}.md` — global module specifications (contracts, invariants, data formats). Updated only with approval.
+- `specs/SPEC_{TASK_ID}.md` — frozen task specification (goal, pipeline, contracts, DoD). Read-only during execution.
+- `tasks/{TASK_ID}.md` — working journal (notes, review findings, outcome).
 
 WAVE naming: `W1A`, `W1B`, `W2A`, etc. Waves are sequential; tasks within a wave are parallel. Backlog items use `BL-NNN`. SPECs and cross-task contracts are frozen before wave delegation begins.
 
@@ -255,7 +256,7 @@ Line budget:
 - **Skills** = shared `agentskills.io` skills in `.claude/skills/`. User-invocable via `/apm-*`. Same format as Cursor.
 - **Instructions** = `CLAUDE.md` (equivalent of `AGENTS.md`). Supports subdirectory discovery, `@import` syntax, and `.claude/rules/` for path-scoped modular rules.
 - **Tool control** = per-subagent `tools` (allowlist) and `disallowedTools` (denylist). Code-reviewer gets read-only tools; Team Lead gets scoped `Agent()` for known specialists only.
-- **Persistent memory** = `memory: project` gives subagents cross-session learning (e.g., code-reviewer accumulates project patterns).
+- **Persistent memory** = `memory: project` gives subagents cross-session learning (e.g., reviewer accumulates project patterns).
 - **Install targets**:
   - Global: `~/.claude/{agents,skills}`
   - Local: `.claude/{agents,skills}` inside a project

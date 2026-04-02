@@ -522,7 +522,7 @@ test_rapid_codex_deployment() {
     assert_path_exists "$project_path/.codex/agents/apm-engineer.toml" "apm-engineer agent" "RAPID-CX-EngineerAgent"
     assert_path_exists "$project_path/.codex/agents/apm-sdet.toml" "apm-sdet agent" "RAPID-CX-SDETAgent"
     assert_path_exists "$project_path/.codex/agents/apm-code-simplifier.toml" "apm-code-simplifier agent" "RAPID-CX-SimplifierAgent"
-    assert_path_exists "$project_path/.codex/agents/apm-code-reviewer.toml" "apm-code-reviewer agent" "RAPID-CX-ReviewerAgent"
+    assert_path_exists "$project_path/.codex/agents/apm-reviewer.toml" "apm-reviewer agent" "RAPID-CX-ReviewerAgent"
     assert_path_exists "$project_path/.codex/agents/apm-memory-bank-sync.toml" "apm-memory-bank-sync agent" "RAPID-CX-SyncAgent"
     
     # Verify config.toml has required APM sections
@@ -587,7 +587,7 @@ test_rapid_claude_deployment() {
     assert_path_exists "$project_path/.claude/agents/apm-engineer.md" "apm-engineer agent" "RAPID-CC-EngineerAgent"
     assert_path_exists "$project_path/.claude/agents/apm-sdet.md" "apm-sdet agent" "RAPID-CC-SDETAgent"
     assert_path_exists "$project_path/.claude/agents/apm-code-simplifier.md" "apm-code-simplifier agent" "RAPID-CC-SimplifierAgent"
-    assert_path_exists "$project_path/.claude/agents/apm-code-reviewer.md" "apm-code-reviewer agent" "RAPID-CC-ReviewerAgent"
+    assert_path_exists "$project_path/.claude/agents/apm-reviewer.md" "apm-reviewer agent" "RAPID-CC-ReviewerAgent"
     assert_path_exists "$project_path/.claude/agents/apm-memory-bank-sync.md" "apm-memory-bank-sync agent" "RAPID-CC-SyncAgent"
     assert_path_exists "$project_path/.claude/agents/apm-co-founder.md" "apm-co-founder agent" "RAPID-CC-CoFounderAgent"
     assert_path_exists "$project_path/.claude/agents/apm-team-lead.md" "apm-team-lead agent" "RAPID-CC-TeamLeadAgent"
@@ -601,7 +601,7 @@ test_rapid_claude_deployment() {
         "engineer agent has model field" "RAPID-CC-EngineerModel"
     assert_file_contains "$project_path/.claude/agents/apm-engineer.md" "permissionMode: acceptEdits" \
         "engineer agent has permissionMode" "RAPID-CC-EngineerPerm"
-    assert_file_contains "$project_path/.claude/agents/apm-code-reviewer.md" "memory: project" \
+    assert_file_contains "$project_path/.claude/agents/apm-reviewer.md" "memory: project" \
         "reviewer agent has persistent memory" "RAPID-CC-ReviewerMemory"
     assert_file_contains "$project_path/.claude/agents/apm-team-lead.md" "Agent(apm-engineer" \
         "team-lead has scoped Agent tool" "RAPID-CC-TeamLeadAgent"

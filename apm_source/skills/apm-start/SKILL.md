@@ -31,8 +31,8 @@ description: "Project kickoff: initialize directory structure, run Vision Alignm
 Run the `apm_init_structure` script bundled with this skill (see `scripts/apm_init_structure.sh`).
 If the script location is unknown, create the directories manually:
 
-- RAPID: `src/`, `tests/`, `logs/`, `memory_bank/`, `memory_bank/specs/`, `memory_bank/tasks/`
-- DS: `src/`, `experiments/`, `eda/`, `models/`, `logs/`, `memory_bank/`, `memory_bank/specs/`, `memory_bank/tasks/`, `data/raw/`, `data/processed/`, `data/external/`
+- RAPID: `src/`, `tests/`, `logs/`, `memory_bank/`, `memory_bank/design/`, `memory_bank/specs/`, `memory_bank/tasks/`
+- DS: `src/`, `experiments/`, `eda/`, `models/`, `logs/`, `memory_bank/`, `memory_bank/design/`, `memory_bank/specs/`, `memory_bank/tasks/`, `data/raw/`, `data/processed/`, `data/external/`
 
 ## Step 2: Vision Alignment / Problem Definition
 

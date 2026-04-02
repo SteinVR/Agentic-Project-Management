@@ -666,7 +666,7 @@ A Claude Code pack for APM should follow the pattern:
 claude_pack/
 ├── agents/                    # Subagent role definitions (.md)
 │   ├── apm-architect.md
-│   ├── apm-code-reviewer.md
+│   ├── apm-reviewer.md
 │   ├── apm-code-simplifier.md
 │   ├── apm-data-scientist.md
 │   ├── apm-engineer.md

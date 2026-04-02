@@ -59,7 +59,7 @@
 
 ### Global Specifications
 
-> Detailed module-level specs live in `memory_bank/specs/SPEC-{module}.md`. Each global spec covers one domain/subsystem: its contracts, invariants, data formats, and rules. These are reference documents — frozen after design, updated only with explicit approval.
+> Detailed module-level specs live in `memory_bank/design/SPEC-{module}.md`. Each covers one domain/subsystem: contracts, invariants, data formats, rules. Frozen after design, updated only with explicit approval.
 
 | Spec | Scope |
 |------|-------|
@@ -79,29 +79,7 @@
 
 ---
 
-## 6. Component Design
-
-> Context: Description of the logical modules (Classes/Files) within the src/ folder. Do not use physical blocks; use logical separation (Classes, Interfaces).
-### A
-...
-
-### B
-...
-
-### C
-...
-
-> 
-- **[Component/Class Name 1]**
-    - **Responsibility:** [What does this class do?]
-    - **Key Methods:** [e.g., `analyze_task()`, `generate_report()`]
-    - **Interactions:** [Which other components does it call?]
-- **[Component/Class Name 2]**
-    - **Responsibility:** ...
-
----
-
-## 7. Code Organization Pattern
+## 6. Code Organization Pattern
 
 > The mandatory file and code structure within the src/ directory. This pattern promotes a clear separation of concerns.
 > 
@@ -117,21 +95,7 @@
 
 ---
 
-## 8. Core Data Models (Optional)(If implied in the project)
-
-> A brief description of the main data entities.
-> 
-
-[Example:
-
-- **[Model 1: e.g., Task]**
-- **Purpose:** Represents a single to-do item with an ID, title, and completion status. Will be modeled as a Pydantic class.
-
-]
-
----
-
-## 9. Key Conventions & Logging
+## 7. Key Conventions & Logging
 
 - **Modularity:** Code must be logically separated into classes and modules within `src/`.
 - **Logging:** All significant events must be logged to `logs/`.

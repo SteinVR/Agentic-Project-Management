@@ -21,15 +21,16 @@ You receive TASK_IDs (a full wave or a subset). Each has a frozen spec in `memor
 Read SPECs and `memory_bank/ARCHITECTURE.md` to understand what you are orchestrating.
 
 ### Execution cycle
-1. **Validate SPECs**: read `specs/SPEC_{TASK_ID}.md` for every task in the wave. Verify: Goal defined, Approach concrete, Contracts table present (even if empty), DoD checklist present. If cross-task contracts reference Protocol files — verify those files exist and are committed.
-2. **Contract freeze**: announce freeze. No SPEC or contract file changes after this point until wave integration completes.
-3. **Setup**: create a worktree per task via skill `apm-git-taskflow`.
-4. **Delegate**: spawn a specialist subagent per task. Contract: TASK_ID + worktree path + SPEC reference. All wave tasks delegate in parallel. Use background execution for parallel subagents.
-5. **Wait**: do not rush subagents. Do not start writing code.
-6. **Quality gate** (per task, as each completes): run skill `apm-quality-gate` -- simplify, verify, review, contract compliance (DoD + interface match), fix/re-delegate, accept.
-7. **Integrate wave**: once all tasks pass quality gate, merge branches, resolve mechanical conflicts, migrate untracked artifacts from worktrees to the main tree.
-8. **Wave Integration Gate**: run post-merge verification via skill `apm-git-taskflow` (Wave Integration Gate section). Build, typecheck, tests, dependency/environment audit. If gate fails -- fix before proceeding.
-9. **Final handoff**: return one compact report to the user.
+1. **Validate SPECs**: read `specs/SPEC_{TASK_ID}.md` for every task in the wave. Verify: Goal defined, Pipeline concrete, Contracts table present (even if empty), DoD checklist present. If cross-task contracts reference Protocol files — verify those files exist and are committed.
+2. **Spec review**: spawn `apm-reviewer` in spec-review mode on all wave SPECs. Reviewer checks completeness, cross-spec consistency, architecture alignment, DoD verifiability, contract feasibility. Fix findings before proceeding.
+3. **Contract freeze**: announce freeze. No SPEC or contract file changes after this point until wave integration completes.
+4. **Setup**: create a worktree per task via skill `apm-git-taskflow`.
+5. **Delegate**: spawn a specialist subagent per task. Contract: TASK_ID + worktree path + SPEC reference. All wave tasks delegate in parallel. Use background execution for parallel subagents.
+6. **Wait**: do not rush subagents. Do not start writing code.
+7. **Quality gate** (per task, as each completes): run skill `apm-quality-gate` -- simplify, verify, review, contract compliance (DoD + interface match), fix/re-delegate, accept.
+8. **Integrate wave**: once all tasks pass quality gate, merge branches, resolve mechanical conflicts, migrate untracked artifacts from worktrees to the main tree.
+9. **Wave Integration Gate**: run post-merge verification via skill `apm-git-taskflow` (Wave Integration Gate section). Build, typecheck, tests, dependency/environment audit. If gate fails -- fix before proceeding.
+10. **Final handoff**: return one compact report to the user.
 
 ### Final handoff
 - Overall outcome
@@ -46,7 +47,7 @@ Write a consolidated log under `logs/agents/` via skill `apm-report`.
 - Testing and QA -> `apm-sdet`
 - DS workflows (EDA, baselines, experiments, ML/DL) -> `apm-data-scientist`
 - Simplification -> `apm-code-simplifier`
-- Independent review -> `apm-code-reviewer`
+- Spec review and code review -> `apm-reviewer`
 - Memory Bank sync -> `apm-memory-bank-sync`
 
 ## Required skills

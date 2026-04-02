@@ -8,7 +8,7 @@ Core Principles:
 - **Spec-Driven Development (SDD):** The specification is the Single Source of Truth (SSOT). Code must follow the documented architecture, not the other way around.
 - **Only Essential Memory Bank:** Maintain a minimal, highly structured set of Markdown files to preserve sustainable context across sessions without overwhelming the LLM.
 - **Context Engineering:** Emphasize declarative control, predictable determinism, and token efficiency to maximize AI output quality and consistency.
-- **Role-Based Execution:** Tasks are delegated to specialized agent profiles (e.g., Team Lead, Architect, Engineer, SDET, Data Scientist, Code Reviewer, Memory Bank Sync) acting sequentially or concurrently.
+- **Role-Based Execution:** Tasks are delegated to specialized agent profiles (e.g., Team Lead, Architect, Engineer, SDET, Data Scientist, Reviewer, Memory Bank Sync) acting sequentially or concurrently.
 
 ---
 
@@ -60,8 +60,9 @@ The Memory Bank is the heartbeat of any APM project, ensuring context continuity
 - `ARCHITECTURE.md` — The SSOT for the project's technical architecture, stack, patterns, and overarching design decisions.
 - `STATE.md` — Compact operational status and continuity context.
 - `tasks/TASKS.md` — Grouped high-level tasks organized by waves.
-- `specs/SPEC_{TASK_ID}.md` — Frozen task specification: goal, approach, contracts, frozen decisions, output, Definition of Done. **Read-only during execution** — agents must not modify SPEC files after contract freeze.
-- `tasks/{TASK_ID}.md` — Working journal: implementation plan, notes, review findings, outcome.
+- `design/SPEC-{module}.md` — Global module specifications: contracts, invariants, data formats, rules. Updated only with explicit approval.
+- `specs/SPEC_{TASK_ID}.md` — Frozen task specification: goal, pipeline, contracts, frozen decisions, output, Definition of Done. **Read-only during execution** — agents must not modify SPEC files after contract freeze.
+- `tasks/{TASK_ID}.md` — Working journal: notes, review findings, outcome.
 
 **WAVE naming:** Tasks use wave-based IDs: `W1A`, `W1B`, `W2A`, etc. Waves are sequential; tasks within a wave are parallel.
 
@@ -104,7 +105,7 @@ Agents represent specific "personas" with customized system prompts and constrai
 - **Co-Founder:** Primary project partner who co-owns vision, architecture, and direction. Strategic discussion partner with deep project understanding. Does not orchestrate by default -- orchestration goes through Team Lead. Available as a primary agent in OpenCode (`apm-co-founder`), Claude Code (`claude --agent apm-co-founder`), or as a skill in Codex (`apm-co-founder`).
 - **Team Lead:** Formalized WAVE-based orchestrator. Receives task waves, creates worktrees per task, delegates to specialist subagents with minimal contracts, runs quality gate per task, integrates per wave. Does not write implementation code (mechanical fixes only). Available as a primary agent in OpenCode (`apm-team-lead`), Claude Code (`claude --agent apm-team-lead`), or as a skill in Codex (`apm-team-lead`).
 - **Code Simplifier:** Refactors recently modified code for clarity and simplicity while preserving exact behavior. Applies project coding conventions.
-- **Code Reviewer:** Fully independent verification and review gate. Receives only TASK_ID and independently determines review scope, checking task/architecture alignment and ranked code risks.
+- **Reviewer:** Fully independent verification and review gate. Receives only TASK_ID and independently determines review scope, checking task/architecture alignment and ranked code risks.
 - **Memory Bank Sync:** Runs explicit Memory Bank synchronization (`STATE`, `tasks/TASKS`, `{TASK_ID}`) with line-budget compression and approval-gated architecture updates.
 
 ### Skills (Dynamic Capabilities)
