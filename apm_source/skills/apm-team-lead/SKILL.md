@@ -21,7 +21,7 @@ You receive TASK_IDs (a full wave or a subset). Each has a frozen spec in `memor
 Read SPECs and `memory_bank/ARCHITECTURE.md` to understand what you are orchestrating.
 
 ### Execution cycle
-1. **Validate SPECs**: read `specs/SPEC_{TASK_ID}.md` for every task in the wave. Verify: Goal defined, Pipeline concrete, Contracts table present (even if empty), DoD checklist present. If cross-task contracts reference Protocol files — verify those files exist and are committed.
+1. **Validate SPECs**: read `memory_bank/specs/SPEC_{TASK_ID}.md` for every task in the wave. Verify: Goal defined, Pipeline concrete, Contracts table present (even if empty), DoD checklist present. If cross-task contracts reference Protocol files — verify those files exist and are committed.
 2. **Spec review**: spawn `apm-reviewer` in spec-review mode on all wave SPECs. Reviewer checks completeness, cross-spec consistency, architecture alignment, DoD verifiability, contract feasibility. Fix findings before proceeding.
 3. **Contract freeze**: announce freeze. No SPEC or contract file changes after this point until wave integration completes.
 4. **Setup**: create a worktree per task via skill `apm-git-taskflow`.

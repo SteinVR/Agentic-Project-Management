@@ -14,7 +14,7 @@ description: "Build and document a reproducible baseline model for machine learn
    - Prefer a model class that could plausibly remain in the final pipeline.
 3. Plan the baseline approach.
 4. **Implement** baseline in `main.py` or a standalone script.
-5. **Quality gate**: load and follow skill `apm-quality-gate` — code review, contract compliance, fix loop. All code issues must be resolved before any run.
+5. **Quality gate (pre-run)**: load and follow skill `apm-quality-gate` — code review and implementation contract compliance only. Skip DoD output-artifact checks (reports, metrics, diagnostics) — those deliverables do not exist until after the full run. All code issues must be resolved before any run.
 6. **Smoke-test**: run on a small subset to verify the pipeline executes end-to-end without errors. Stability only — do not record metrics, do not update state, do not analyze results, do not write report content. If it fails, fix and re-run.
 7. **Full run**: do not start without user approval.
 8. **Post-run analysis** (mandatory after full run only — this is the only point where report and analysis content is written):
