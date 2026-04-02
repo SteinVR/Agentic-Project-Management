@@ -52,6 +52,7 @@ Write a consolidated log under `logs/agents/` via skill `apm-report`.
 - Simplification -> `apm-code-simplifier`
 - Spec review and code review -> `apm-reviewer`
 - Memory Bank sync -> `apm-memory-bank-sync`
+- Architecture analysis -> `apm-architect`
 
 ## Required skills
 - skill `apm-subagent` -- delegation contracts
