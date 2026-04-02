@@ -51,7 +51,35 @@
 
 ---
 
-## 5. Component Design
+## 5. System Design
+
+> Context: High-level architecture of the system — how modules interact, data flows between them, and what each subsystem is responsible for.
+
+[Describe the system's major subsystems, their responsibilities, and how they connect. Include data flow direction and key boundaries.]
+
+### Global Specifications
+
+> Detailed module-level specs live in `memory_bank/specs/SPEC-{module}.md`. Each global spec covers one domain/subsystem: its contracts, invariants, data formats, and rules. These are reference documents — frozen after design, updated only with explicit approval.
+
+| Spec | Scope |
+|------|-------|
+| [e.g. `SPEC-data.md`] | [e.g. Corpus, data splits, leakage rules] |
+| [e.g. `SPEC-evaluation.md`] | [e.g. Metrics, scoring, judge config] |
+
+### Wave Definition of Done
+
+> Global DoD applied to every wave in addition to per-task DoD. All items must pass before a wave is considered complete.
+
+- [ ] All task-level DoDs met (per `specs/SPEC_{TASK_ID}.md`)
+- [ ] Cross-task contracts verified (type check passes)
+- [ ] Wave Integration Gate passes (build, tests, dependency audit)
+- [ ] No unresolved P0/P1 findings across wave tasks
+- [ ] All artifacts committed and migrated from worktrees
+- [ ] [Project-specific criteria added here]
+
+---
+
+## 6. Component Design
 
 > Context: Description of the logical modules (Classes/Files) within the src/ folder. Do not use physical blocks; use logical separation (Classes, Interfaces).
 ### A
@@ -73,7 +101,7 @@
 
 ---
 
-## 6. Code Organization Pattern
+## 7. Code Organization Pattern
 
 > The mandatory file and code structure within the src/ directory. This pattern promotes a clear separation of concerns.
 > 
@@ -89,7 +117,7 @@
 
 ---
 
-## 7. Core Data Models (Optional)(If implied in the project)
+## 8. Core Data Models (Optional)(If implied in the project)
 
 > A brief description of the main data entities.
 > 
@@ -103,7 +131,7 @@
 
 ---
 
-## 8. Key Conventions & Logging
+## 9. Key Conventions & Logging
 
 - **Modularity:** Code must be logically separated into classes and modules within `src/`.
 - **Logging:** All significant events must be logged to `logs/`.

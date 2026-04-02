@@ -28,6 +28,7 @@ Guardrails:
 - Preserve template section headers in Memory Bank files.
 - Keep recommendations concrete and decision-oriented.
 - Update memory_bank/tasks/* or memory_bank/STATE.md only when explicitly requested or when required to reflect an approved architecture decision.
+- Do not modify files in `memory_bank/specs/`. SPEC files are frozen contracts.
 
 Required outputs:
 - Decision-ready architecture guidance and strategic recommendations.

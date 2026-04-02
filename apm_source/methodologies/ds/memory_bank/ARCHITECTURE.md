@@ -71,7 +71,35 @@
 
 ---
 
-## 3. Technology Stack
+## 3. System Design
+
+> Context: High-level architecture of the system — how modules interact, data flows between them, and what each subsystem is responsible for.
+
+[Describe the system's major subsystems, their responsibilities, and how they connect. Include data flow direction and key boundaries.]
+
+### Global Specifications
+
+> Detailed module-level specs live in `memory_bank/specs/SPEC-{module}.md`. Each global spec covers one domain/subsystem: its contracts, invariants, data formats, and rules. These are reference documents — frozen after design, updated only with explicit approval.
+
+| Spec | Scope |
+|------|-------|
+| [e.g. `SPEC-data.md`] | [e.g. Corpus, data splits, leakage rules] |
+| [e.g. `SPEC-evaluation.md`] | [e.g. Metrics, scoring, judge config] |
+
+### Wave Definition of Done
+
+> Global DoD applied to every wave in addition to per-task DoD. All items must pass before a wave is considered complete.
+
+- [ ] All task-level DoDs met (per `specs/SPEC_{TASK_ID}.md`)
+- [ ] Cross-task contracts verified (type check passes)
+- [ ] Wave Integration Gate passes (build, tests, dependency audit)
+- [ ] No unresolved P0/P1 findings across wave tasks
+- [ ] All artifacts committed and migrated from worktrees
+- [ ] [Project-specific criteria added here]
+
+---
+
+## 4. Technology Stack
 
 > Context: Tools, libraries, and infrastructure for the project.
 
@@ -91,7 +119,7 @@
   ```
 ---
 
-## 4. Code Organization & Conventions
+## 5. Code Organization & Conventions
 
 ### Project Structure
 
@@ -128,6 +156,9 @@ experiments/                  # Isolated experiments
 memory_bank/
 ├── ARCHITECTURE.md
 ├── STATE.md
+├── specs/
+│   ├── SPEC-{module}.md
+│   └── SPEC_{TASK_ID}.md
 └── tasks/
     ├── TASKS.md
     └── {TASK_ID}.md

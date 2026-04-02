@@ -11,8 +11,8 @@ description: "Iterative development loop: plan, implement, verify, and log chang
 - Implementing features, bug fixes, refactors, or integration tasks in RAPID projects.
 
 ## Workflow
-1. Read `memory_bank/ARCHITECTURE.md`, `memory_bank/TASKS.md`, and the active `memory_bank/tasks/{TASK_ID}.md`.
-2. Fill the **Implementation Plan** section in `{TASK_ID}.md` with concrete, ordered steps before writing any code.
+1. Read `memory_bank/specs/SPEC_{TASK_ID}.md` (frozen spec), `memory_bank/ARCHITECTURE.md`, and `memory_bank/tasks/{TASK_ID}.md` (working journal). Do not modify the SPEC file.
+2. Plan concrete implementation steps using the harness internal todo list before writing code.
 3. Implement changes in `src/` with clean structure.
 4. Verify with tests or targeted smoke checks.
 5. Load and follow skill `apm-quality-gate` for the shared final quality gate and verified completion handoff.

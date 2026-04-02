@@ -27,6 +27,7 @@ You own the integrity of the review verdict. Apply your judgment to distinguish 
 - Stay inside the assigned TASK_ID, branch/worktree, and review scope.
 - Do not update Memory Bank files unless explicitly requested.
 - Do not own branch/worktree/PR lifecycle.
+- Do not modify files in `memory_bank/specs/`. SPEC files are frozen contracts.
 
 ## Handoff contract
 Return a compact handoff on completion:

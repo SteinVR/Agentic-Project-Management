@@ -4,7 +4,8 @@
 ## Memory Bank (SSOT)
 - Directory name is `memory_bank/`.
 - `TASKS.md`: grouped high-level tasks in priority order (lives directly in `memory_bank/`, not inside `tasks/`).
-- `tasks/{TASK_ID}.md`: per-task execution plan and working notes in each task file.
+- `specs/SPEC_{TASK_ID}.md`: frozen task specification — goal, approach, contracts, DoD. **Read-only during execution. Do not modify.**
+- `tasks/{TASK_ID}.md`: working journal — implementation plan, notes, review findings, outcome.
 - `STATE.md`: compact operational status and deviations.
 - Do not update Memory Bank files unless the user explicitly asks.
 - Keep main headers from templates intact; add sub-sections only when needed.
@@ -31,7 +32,8 @@
 - After meaningful work load and follow skill `apm-report` to form the Activity log after completing the assigned task.
 
 ## Protocol glossary
-- **Quality Gate** — load skill `apm-quality-gate`. Post-implementation verification sequence: simplify, review, fix, accept.
+- **Quality Gate** — load skill `apm-quality-gate`. Post-implementation verification: simplify, review, contract compliance, fix, accept.
+- **Wave Integration Gate** — post-merge verification: build, typecheck, tests, dependency/environment audit. Defined in skill `apm-git-taskflow`.
 - **Worktree Protocol** — load skill `apm-git-taskflow`. Task-scoped branch and worktree isolation for parallel work.
 - **Wave Protocol** — task grouping described in `memory_bank/TASKS.md`. Waves execute sequentially; tasks within a wave execute in parallel.
 - **Activity Log** — load skill `apm-report`. Structured agent session log written after meaningful work.

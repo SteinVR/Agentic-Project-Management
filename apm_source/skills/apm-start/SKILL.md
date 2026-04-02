@@ -17,6 +17,7 @@ description: "Project kickoff: initialize directory structure, run Vision Alignm
 ## Required outputs
 - `memory_bank/ARCHITECTURE.md`
 - `memory_bank/TASKS.md`
+- `memory_bank/specs/SPEC_W1A.md`
 - `memory_bank/tasks/W1A.md`
 - `memory_bank/STATE.md`
 
@@ -30,8 +31,8 @@ description: "Project kickoff: initialize directory structure, run Vision Alignm
 Run the `apm_init_structure` script bundled with this skill (see `scripts/apm_init_structure.sh`).
 If the script location is unknown, create the directories manually:
 
-- RAPID: `src/`, `tests/`, `logs/`, `memory_bank/`, `memory_bank/tasks/`
-- DS: `src/`, `experiments/`, `eda/`, `models/`, `logs/`, `memory_bank/`, `memory_bank/tasks/`, `data/raw/`, `data/processed/`, `data/external/`
+- RAPID: `src/`, `tests/`, `logs/`, `memory_bank/`, `memory_bank/specs/`, `memory_bank/tasks/`
+- DS: `src/`, `experiments/`, `eda/`, `models/`, `logs/`, `memory_bank/`, `memory_bank/specs/`, `memory_bank/tasks/`, `data/raw/`, `data/processed/`, `data/external/`
 
 ## Step 2: Vision Alignment / Problem Definition
 
@@ -59,7 +60,7 @@ Wait for user confirmation before proceeding.
 
 ## Step 3: Create Memory Bank
 - Fill `memory_bank/ARCHITECTURE.md` using the correct template
-- Initialize `memory_bank/TASKS.md`, `memory_bank/tasks/W1A.md`, and `memory_bank/STATE.md` using methodology templates; if templates are unavailable, create minimal headers and refine with the user.
+- Initialize `memory_bank/TASKS.md`, `memory_bank/specs/SPEC_W1A.md`, `memory_bank/tasks/W1A.md`, and `memory_bank/STATE.md` using methodology templates; if templates are unavailable, create minimal headers and refine with the user.
 
 ## Step 4: Environment setup
 - Read the Technology Stack and Deployment sections in `memory_bank/ARCHITECTURE.md`.

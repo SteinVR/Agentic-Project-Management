@@ -60,9 +60,12 @@ The Memory Bank is the heartbeat of any APM project, ensuring context continuity
 - `ARCHITECTURE.md` — The SSOT for the project's technical architecture, stack, patterns, and overarching design decisions.
 - `STATE.md` — Compact operational status and continuity context.
 - `tasks/TASKS.md` — Grouped high-level tasks organized by waves.
-- `tasks/{TASK_ID}.md` — Per-task execution notes and working plan.
+- `specs/SPEC_{TASK_ID}.md` — Frozen task specification: goal, approach, contracts, frozen decisions, output, Definition of Done. **Read-only during execution** — agents must not modify SPEC files after contract freeze.
+- `tasks/{TASK_ID}.md` — Working journal: implementation plan, notes, review findings, outcome.
 
 **WAVE naming:** Tasks use wave-based IDs: `W1A`, `W1B`, `W2A`, etc. Waves are sequential; tasks within a wave are parallel.
+
+**SPEC freeze:** Before a wave starts execution, all `SPEC_{TASK_ID}.md` files and cross-task contract files (Protocol/dataclass definitions) are finalized. No modifications after delegation begins.
 
 Size guardrail:
 - Keep `STATE.md` and `tasks/TASKS.md` under 150 lines; compress when limits are exceeded.
@@ -142,17 +145,20 @@ In modern environments (Cursor 2.5+, Codex CLI, OpenCode, and Claude Code), APM 
 **Three interaction modes:**
 1. **Standard mode (sequential):** The user drives work through the main session, which delegates to specialist subagents for localized execution via workflow skills. One task at a time, user validates between steps.
 2. **Co-Founder mode (collaborative):** The user works with an equal project partner who co-owns vision, architecture, and direction. Natural, informal communication. Does not orchestrate by default; task execution goes through Team Lead. Activated via Shift+Tab in OpenCode (cycle to Co-Founder primary agent), `claude --agent apm-co-founder` in Claude Code, or by loading the `apm-co-founder` skill in Codex.
-3. **Team Lead mode (WAVE orchestration):** The user assigns a wave of tasks to Team Lead. Team Lead creates worktrees, delegates with minimal contracts, waits for completion, runs quality gate per task (simplify + review), integrates per wave, and returns one compact final handoff. Activated via Shift+Tab in OpenCode (cycle to Team Lead primary agent), `claude --agent apm-team-lead` in Claude Code, or by loading the `apm-team-lead` skill in Codex.
+3. **Team Lead mode (WAVE orchestration):** The user assigns a wave of tasks to Team Lead. Team Lead validates frozen SPECs, freezes contracts, creates worktrees, delegates to specialists, runs quality gate per task (simplify + review + contract compliance), runs Wave Integration Gate (build + typecheck + tests), and returns one compact final handoff. Activated via Shift+Tab in OpenCode (cycle to Team Lead primary agent), `claude --agent apm-team-lead` in Claude Code, or by loading the `apm-team-lead` skill in Codex.
 
 **WAVE execution protocol:**
-1. **Setup:** Create a worktree per task via `apm-git-taskflow`.
-2. **Delegate (fan-out):** Spawn a specialist subagent per task with a minimal contract: TASK_ID + worktree path + optional clarification. Do not pre-gather context for subagents.
-3. **Wait:** Do not rush subagents. Do not write code.
-4. **Quality gate (per task):** As each subagent completes, run `apm-quality-gate` (simplify -> verify -> review -> fix/re-delegate).
-5. **Integrate wave (fan-in):** Merge branches, resolve mechanical conflicts, migrate untracked artifacts.
-6. **Next wave / Final handoff.**
+1. **Validate SPECs:** Read `specs/SPEC_{TASK_ID}.md` for every wave task. Verify goal, approach, contracts, and DoD are defined. If cross-task contracts reference Protocol files — verify those files exist.
+2. **Contract freeze:** All SPEC files and contract files are locked. No changes until wave integration completes.
+3. **Setup:** Create a worktree per task via `apm-git-taskflow`.
+4. **Delegate (fan-out):** Spawn a specialist subagent per task with contract: TASK_ID + worktree path + SPEC reference. Do not pre-gather context for subagents.
+5. **Wait:** Do not rush subagents. Do not write code.
+6. **Quality gate (per task):** As each subagent completes, run `apm-quality-gate` (simplify -> verify -> review -> contract compliance -> fix/re-delegate).
+7. **Integrate wave (fan-in):** Merge branches, resolve mechanical conflicts, migrate untracked artifacts.
+8. **Wave Integration Gate:** Build/compile check, type check (if contracts exist), test suite, dependency/environment audit. Do not proceed if gate fails.
+9. **Next wave / Final handoff.**
 
-**Delegation contract:** Minimal -- TASK_ID, worktree path, and optional clarification only. Subagents self-orient from task files and `memory_bank/`. Orchestrators do not pre-collect context.
+**Delegation contract:** TASK_ID (references frozen `specs/SPEC_{TASK_ID}.md` and working journal `tasks/{TASK_ID}.md`), worktree path, and optional clarification. Subagents self-orient from SPEC files and `memory_bank/`. Orchestrators do not pre-collect context.
 
 **Subagent constraints:**
 - Max 3 concurrent subagents per orchestrating agent.
@@ -197,9 +203,9 @@ APM/
 ## 7. Basic Project Workflow
 
 1. **Initialization:** Run the `apm.sh` configurator to stamp out the methodology, environment, and initial directory structure.
-2. **Setup Phase:** Run `/apm-start` to align on vision and generate the initial Memory Bank (`ARCHITECTURE.md`, `STATE.md`, `tasks/TASKS.md`, starter task file).
+2. **Setup Phase:** Run `/apm-start` to align on vision and generate the initial Memory Bank (`ARCHITECTURE.md`, `STATE.md`, `tasks/TASKS.md`, `specs/SPEC_W1A.md`, starter task file).
 3. **Execution Loop:** Work through role-specific commands (e.g., `/apm-develop`, `/apm-simplify`, `/apm-test` for RAPID; or `/apm-eda`, `/apm-deep-feature-engineering`, `/apm-experiment` for DS). Quality gate is orchestrated by Team Lead after each task completes.
-4. **WAVE Orchestration:** Assign a wave of tasks to Team Lead. Team Lead creates worktrees, delegates, waits, runs quality gate per task, integrates per wave, returns final handoff.
+4. **WAVE Orchestration:** Assign a wave of tasks to Team Lead. Team Lead validates frozen SPECs, freezes contracts, creates worktrees, delegates, waits, runs quality gate per task (including contract compliance), runs Wave Integration Gate, integrates per wave, returns final handoff.
 5. **Synchronization:** Run `/apm-sync` on explicit request whenever continuity updates are needed.
 
 ---
@@ -208,6 +214,7 @@ APM/
 
 - **File Naming:** Core instruction or agent context files strictly use **UPPERCASE** naming conventions (e.g., `AGENTS.md`, `SKILL.md`, `ARCHITECTURE.md`) to distinguish them from standard project documentation.
 - **WAVE Naming:** Tasks use wave-based IDs (`W1A`, `W1B`, `W2A`). Waves are sequential; tasks within a wave are parallel. Backlog items use `BL-NNN`.
+- **SPEC Freeze:** `specs/SPEC_{TASK_ID}.md` files and cross-task contract files are finalized before wave delegation. Agents must not modify SPEC files during execution. Working notes, findings, and plans go to `tasks/{TASK_ID}.md`.
 - **Continuity Guarantee:** Use `tasks/{TASK_ID}.md` and agent logs as primary working memory during execution; sync into Memory Bank only when explicitly requested.
 - **Git Isolation:** Branch/worktree flow is managed by Team Lead during WAVE execution. One branch per task (`wave/{TASK_ID}`), one worktree per task (`.apm/worktrees/{TASK_ID}`). Heavy untracked resources are shared at repo level. New artifacts are produced locally in the worktree and migrated during integration.
 - **Skill Portability:** Whenever possible, logic should be encapsulated in reusable `.md` skills following the `agentskills.io` spec to ensure cross-compatibility between Cursor, Claude Code, and Codex.

@@ -31,6 +31,7 @@ You may run inside a git worktree. Worktrees contain only tracked files; project
 - Stay inside the assigned TASK_ID, branch/worktree, and file scope.
 - Do not update Memory Bank files unless explicitly requested.
 - Do not own branch/worktree/PR lifecycle.
+- Do not modify files in `memory_bank/specs/`. SPEC files are frozen contracts.
 
 ## Handoff contract
 Return a compact handoff on completion:
