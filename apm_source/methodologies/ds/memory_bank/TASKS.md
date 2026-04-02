@@ -11,7 +11,7 @@ Tasks are organized in **waves**. Waves execute sequentially; tasks within a wav
 - A wave is complete when all its tasks pass the quality gate and are integrated.
 - The next wave starts only after the current wave is fully integrated.
 - New tasks discovered mid-wave go into the next wave or backlog — never into the active wave.
-- **SPEC freeze:** No SPEC changes`SPEC_{TASK_ID}.md` files.
+- **SPEC freeze:** No SPEC changes after delegation begins.
 
 ## 1. Active Plan (Ordered)
 
@@ -19,12 +19,21 @@ Tasks are organized in **waves**. Waves execute sequentially; tasks within a wav
 - [ ] [W1A](./specs/SPEC_W1A.md) Setup reproducible baseline and evaluator: establish first trusted benchmark and artifact contract.
 - [ ] [W1B] Complete EDA package: finalize `EDA-Report.md`, charts, and core risk findings.
 
+**Wave DoD:**
+- [ ] [Wave-specific completion criteria]
+
 ### Wave 2: Deep Feature Engineering
 - [ ] [W2A] Produce deep feature candidates: rank feature ideas by expected impact, leakage risk, and runtime cost.
 - [ ] [W2B] Select production-safe feature subset: confirm top candidates for baseline and experiment loops.
 
+**Wave DoD:**
+- [ ] [Wave-specific completion criteria]
+
 ### Wave 3: Experimentation
 - [ ] [W3A] Run first hypothesis cycle: implement and evaluate one controlled experiment against baseline.
+
+**Wave DoD:**
+- [ ] [Wave-specific completion criteria]
 
 ## 2. Low Priority / Ideas
 - [ ] [BL-001] [Idea title]: [1-2 line description]

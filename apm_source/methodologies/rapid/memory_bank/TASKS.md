@@ -11,16 +11,22 @@ Tasks are organized in **waves**. Waves execute sequentially; tasks within a wav
 - A wave is complete when all its tasks pass the quality gate and are integrated.
 - The next wave starts only after the current wave is fully integrated.
 - New tasks discovered mid-wave go into the next wave or backlog — never into the active wave.
-- **SPEC freeze:** No SPEC changes`SPEC_{TASK_ID}.md` files.
+- **SPEC freeze:** No SPEC changes after delegation begins.
 
 ## 1. Active Plan (Ordered)
 
 ### Wave 1: Architecture
 - [ ] [W1A](./specs/SPEC_W1A.md) Define MVP architecture and delivery boundaries.
 
+**Wave DoD:**
+- [ ] [Wave-specific completion criteria]
+
 ### Wave 2: Core Implementation
 - [ ] [W2A] Implement core user flow in `src/`.
 - [ ] [W2B] Add core tests and failure handling.
+
+**Wave DoD:**
+- [ ] [Wave-specific completion criteria]
 
 ## 2. Backlog
 

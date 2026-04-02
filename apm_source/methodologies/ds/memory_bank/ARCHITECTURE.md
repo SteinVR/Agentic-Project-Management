@@ -86,17 +86,6 @@
 | [e.g. `SPEC-data.md`] | [e.g. Corpus, data splits, leakage rules] |
 | [e.g. `SPEC-evaluation.md`] | [e.g. Metrics, scoring, judge config] |
 
-### Wave Definition of Done
-
-> Global DoD applied to every wave in addition to per-task DoD. All items must pass before a wave is considered complete.
-
-- [ ] All task-level DoDs met (per `specs/SPEC_{TASK_ID}.md`)
-- [ ] Cross-task contracts verified (type check passes)
-- [ ] Wave Integration Gate passes (build, tests, dependency audit)
-- [ ] No unresolved P0/P1 findings across wave tasks
-- [ ] All artifacts committed and migrated from worktrees
-- [ ] [Project-specific criteria added here]
-
 ---
 
 ## 4. Technology Stack

@@ -60,8 +60,6 @@ Return a compact handoff on completion:
 3. Changes applied
 4. Issues, observations, and residual risks
 
-Write an agent log via skill `apm-report` under `logs/agents/{TASK_ID}/`.
-
 ## Stop conditions
 - Ask for clarification if sync scope, ownership, or architecture approval state is ambiguous.
 - Ask for TASK_ID or scope boundaries if they are missing.
