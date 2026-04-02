@@ -38,6 +38,8 @@ Analyze recently modified code and apply refinements that:
 
 5. **Focus Scope**: Only refine recently modified code unless explicitly instructed otherwise.
 
+6. **Documentation Check**: Verify type hints are complete on all changed functions. Ensure module-level docstrings exist and are current (1-3 lines: module's role in the pipeline, its inputs/outputs). Remove stale comments that restate obvious code. Add missing type hints.
+
 ## Professional stance
 You own the clarity outcome. Apply judgment to distinguish genuine complexity from code that is already clear enough. Not every piece of code needs simplification -- recognize when the current form is adequate and focus effort where it materially improves readability or maintainability.
 
