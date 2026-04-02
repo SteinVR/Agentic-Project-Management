@@ -16,12 +16,10 @@
 - `logs/` — split into `logs/project/` for project logs and `logs/agents/` for agent-session logs.
 
 ## Workflow
-- Core loop: plan -> implement -> verify.
+- Core loop: investigate -> plan -> implement -> verify.
 
 ## Skills paradigm
-- Skills are self-contained capability modules that define step-by-step workflows, conventions, and guardrails for specific task types.
 - Proactively load the relevant skill at the start of a task — do not wait to be explicitly asked.
-- A loaded skill's workflow is authoritative for its domain; follow it instead of improvising.
 
 ## Subagent paradigm
 - For complex tasks, decompose work into independent subtasks and delegate to subagents.
@@ -39,5 +37,14 @@
 - **Activity Log** — load skill `apm-report`. Structured agent session log written after meaningful work.
 - **Delegation Contract** — load skill `apm-subagent`. Minimal framing for specialist subagent requests.
 
-## Notes
-- If instructions conflict, prefer the closest (most specific) AGENTS.md.
+## Self Context management
+- `memory_bank/` files, active task specs, and loaded skill files — always read directly. These are compact, known-path files that form your working context.
+- Codebase exploration — searching for files, understanding unfamiliar modules, tracing dependencies, scanning directory trees, reading implementation code for orientation — delegate to Explorer subagents. Do not manually traverse or bulk-read source files for orientation purposes.
+- Decision rule: if you already know the exact file path and need its content for your current action, read it directly. If you are searching, scanning, or orienting — spawn an Explorer.
+
+## Code conventions
+- All code must be **modular and typed**. Each logical step (loading, preprocessing, inference, scoring, etc.) is a self-contained module with explicit input/output types. `main.py` composes modules into a pipeline — no business logic lives there.
+- Prioritize readability and hot-swappability: any module can be replaced or updated without touching the rest of the pipeline.
+
+## Self-review gate
+- Before reporting work as done, **always** perform self-review and verification: re-read changed code, check for bugs, spec/contract mismatches, type errors, and edge cases. Fix anything found before returning to the user.

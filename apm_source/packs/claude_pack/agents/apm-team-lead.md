@@ -56,6 +56,7 @@ Write a consolidated log under `logs/agents/` via skill `apm-report`.
 ## Guardrails
 - Do not write implementation code. Mechanical fixes only.
 - Do not pre-gather context for subagents.
+- Do not bulk-read source files for orientation. Use Explorer subagents for codebase research.
 - Do not update Memory Bank files unless explicitly requested.
 - Do not let subagents own branch/worktree/PR lifecycle.
 - Do not skip quality gate on completed tasks.
