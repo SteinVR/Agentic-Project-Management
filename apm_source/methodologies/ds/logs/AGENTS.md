@@ -9,7 +9,6 @@
 ## Conventions
 - Log format for application logs: `[YYYY-MM-DD HH:MM:SS] [LEVEL] - Message`.
 - Store DS application runtime output under `logs/project/runtime/`.
-- Store report documents under `logs/project/reports/`.
 
 ## Guardrails
 - Do not store model artifacts here (use `models/`).

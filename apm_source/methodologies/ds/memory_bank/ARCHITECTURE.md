@@ -71,7 +71,24 @@
 
 ---
 
-## 3. Technology Stack
+## 3. System Design
+
+> Context: High-level architecture of the system — how modules interact, data flows between them, and what each subsystem is responsible for.
+
+[Describe the system's major subsystems, their responsibilities, and how they connect. Include data flow direction and key boundaries.]
+
+### Global Specifications
+
+> Detailed module-level specs live in `memory_bank/design/SPEC-{module}.md`. Each covers one domain/subsystem: contracts, invariants, data formats, rules. Frozen after design, updated only with explicit approval.
+
+| Spec | Scope |
+|------|-------|
+| [e.g. `SPEC-data.md`] | [e.g. Corpus, data splits, leakage rules] |
+| [e.g. `SPEC-evaluation.md`] | [e.g. Metrics, scoring, judge config] |
+
+---
+
+## 4. Technology Stack
 
 > Context: Tools, libraries, and infrastructure for the project.
 
@@ -91,7 +108,7 @@
   ```
 ---
 
-## 4. Code Organization & Conventions
+## 5. Code Organization & Conventions
 
 ### Project Structure
 
@@ -128,6 +145,10 @@ experiments/                  # Isolated experiments
 memory_bank/
 ├── ARCHITECTURE.md
 ├── STATE.md
+├── design/
+│   └── SPEC-{module}.md
+├── specs/
+│   └── SPEC_{TASK_ID}.md
 └── tasks/
     ├── TASKS.md
     └── {TASK_ID}.md

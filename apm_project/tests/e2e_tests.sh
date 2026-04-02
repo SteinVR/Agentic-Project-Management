@@ -249,7 +249,11 @@ test_rapid_methodology_deployment() {
     assert_path_exists "$mb_dir/STATE.md" "memory_bank/STATE.md" "RAPID-MBState"
     assert_path_exists "$mb_dir/TASKS.md" "memory_bank/TASKS.md" "RAPID-MBTasks"
     assert_path_exists "$mb_dir/tasks/W1A.md" "memory_bank/tasks/W1A.md" "RAPID-MBTask001"
-    
+    assert_path_exists "$mb_dir/design" "memory_bank/design directory" "RAPID-MBDesign"
+    assert_path_exists "$mb_dir/design/SPEC-MODULE.md" "memory_bank/design/SPEC-MODULE.md" "RAPID-MBDesignSpec"
+    assert_path_exists "$mb_dir/specs" "memory_bank/specs directory" "RAPID-MBSpecs"
+    assert_path_exists "$mb_dir/specs/SPEC_W1A.md" "memory_bank/specs/SPEC_W1A.md" "RAPID-MBSpecW1A"
+
     # Verify project name was substituted in ARCHITECTURE.md
     assert_file_contains "$mb_dir/ARCHITECTURE.md" "$project_name" \
         "ARCHITECTURE.md contains project name" "RAPID-ArchName"
@@ -331,7 +335,11 @@ test_ds_methodology_deployment() {
     assert_path_exists "$mb_dir/STATE.md" "memory_bank/STATE.md" "DS-MBState"
     assert_path_exists "$mb_dir/TASKS.md" "memory_bank/TASKS.md" "DS-MBTasks"
     assert_path_exists "$mb_dir/tasks/W1A.md" "memory_bank/tasks/W1A.md" "DS-MBTask001"
-    
+    assert_path_exists "$mb_dir/design" "memory_bank/design directory" "DS-MBDesign"
+    assert_path_exists "$mb_dir/design/SPEC-MODULE.md" "memory_bank/design/SPEC-MODULE.md" "DS-MBDesignSpec"
+    assert_path_exists "$mb_dir/specs" "memory_bank/specs directory" "DS-MBSpecs"
+    assert_path_exists "$mb_dir/specs/SPEC_W1A.md" "memory_bank/specs/SPEC_W1A.md" "DS-MBSpecW1A"
+
     # No legacy artifacts
     write_test_name "Verifying no legacy artifacts"
     assert_path_not_exists "$project_path/.apm" ".apm directory" "DS-NoAPM"
@@ -461,6 +469,8 @@ test_rapid_opencode_deployment() {
     assert_path_exists "$project_path/memory_bank" "memory_bank directory" "RAPID-OC-MB"
     assert_path_exists "$project_path/memory_bank/ARCHITECTURE.md" "ARCHITECTURE.md" "RAPID-OC-Arch"
     assert_path_exists "$project_path/memory_bank/TASKS.md" "TASKS.md" "RAPID-OC-Tasks"
+    assert_path_exists "$project_path/memory_bank/design/SPEC-MODULE.md" "design/SPEC-MODULE.md" "RAPID-OC-DesignSpec"
+    assert_path_exists "$project_path/memory_bank/specs/SPEC_W1A.md" "specs/SPEC_W1A.md" "RAPID-OC-SpecW1A"
     assert_path_exists "$project_path/src" "src directory" "RAPID-OC-Src"
     assert_path_exists "$project_path/tests" "tests directory" "RAPID-OC-Tests"
     assert_path_exists "$project_path/AGENTS.md" "AGENTS.md" "RAPID-OC-Agents"
@@ -522,9 +532,11 @@ test_rapid_codex_deployment() {
     assert_path_exists "$project_path/.codex/agents/apm-engineer.toml" "apm-engineer agent" "RAPID-CX-EngineerAgent"
     assert_path_exists "$project_path/.codex/agents/apm-sdet.toml" "apm-sdet agent" "RAPID-CX-SDETAgent"
     assert_path_exists "$project_path/.codex/agents/apm-code-simplifier.toml" "apm-code-simplifier agent" "RAPID-CX-SimplifierAgent"
-    assert_path_exists "$project_path/.codex/agents/apm-code-reviewer.toml" "apm-code-reviewer agent" "RAPID-CX-ReviewerAgent"
+    assert_path_exists "$project_path/.codex/agents/apm-reviewer.toml" "apm-reviewer agent" "RAPID-CX-ReviewerAgent"
     assert_path_exists "$project_path/.codex/agents/apm-memory-bank-sync.toml" "apm-memory-bank-sync agent" "RAPID-CX-SyncAgent"
-    
+    assert_path_exists "$project_path/.codex/agents/apm-web-explorer.toml" "apm-web-explorer agent" "RAPID-CX-WebExplorerAgent"
+    assert_path_exists "$project_path/.codex/agents/apm-data-scientist.toml" "apm-data-scientist agent" "RAPID-CX-DataScientistAgent"
+
     # Verify config.toml has required APM sections
     assert_file_contains "$project_path/.codex/config.toml" "multi_agent" \
         "config.toml has multi_agent setting" "RAPID-CX-ConfigMultiAgent"
@@ -533,6 +545,10 @@ test_rapid_codex_deployment() {
     assert_file_contains "$project_path/.codex/config.toml" "max_depth" \
         "config.toml has max_depth setting" "RAPID-CX-ConfigDepth"
     
+    # Verify shared skills were copied
+    assert_path_exists "$project_path/memory_bank/design/SPEC-MODULE.md" "design/SPEC-MODULE.md" "RAPID-CX-DesignSpec"
+    assert_path_exists "$project_path/memory_bank/specs/SPEC_W1A.md" "specs/SPEC_W1A.md" "RAPID-CX-SpecW1A"
+
     # Verify shared skills were copied
     assert_path_exists "$project_path/.codex/skills/apm-dev/SKILL.md" "apm-dev skill" "RAPID-CX-DevSkill"
     assert_path_exists "$project_path/.codex/skills/apm-report/SKILL.md" "apm-report skill" "RAPID-CX-ReportSkill"
@@ -587,11 +603,12 @@ test_rapid_claude_deployment() {
     assert_path_exists "$project_path/.claude/agents/apm-engineer.md" "apm-engineer agent" "RAPID-CC-EngineerAgent"
     assert_path_exists "$project_path/.claude/agents/apm-sdet.md" "apm-sdet agent" "RAPID-CC-SDETAgent"
     assert_path_exists "$project_path/.claude/agents/apm-code-simplifier.md" "apm-code-simplifier agent" "RAPID-CC-SimplifierAgent"
-    assert_path_exists "$project_path/.claude/agents/apm-code-reviewer.md" "apm-code-reviewer agent" "RAPID-CC-ReviewerAgent"
+    assert_path_exists "$project_path/.claude/agents/apm-reviewer.md" "apm-reviewer agent" "RAPID-CC-ReviewerAgent"
     assert_path_exists "$project_path/.claude/agents/apm-memory-bank-sync.md" "apm-memory-bank-sync agent" "RAPID-CC-SyncAgent"
     assert_path_exists "$project_path/.claude/agents/apm-co-founder.md" "apm-co-founder agent" "RAPID-CC-CoFounderAgent"
     assert_path_exists "$project_path/.claude/agents/apm-team-lead.md" "apm-team-lead agent" "RAPID-CC-TeamLeadAgent"
     assert_path_exists "$project_path/.claude/agents/apm-data-scientist.md" "apm-data-scientist agent" "RAPID-CC-DataScientistAgent"
+    assert_path_exists "$project_path/.claude/agents/apm-web-explorer.md" "apm-web-explorer agent" "RAPID-CC-WebExplorerAgent"
 
     # Verify agent frontmatter contains Claude Code-specific fields
     write_test_name "Verifying agent frontmatter format"
@@ -601,7 +618,7 @@ test_rapid_claude_deployment() {
         "engineer agent has model field" "RAPID-CC-EngineerModel"
     assert_file_contains "$project_path/.claude/agents/apm-engineer.md" "permissionMode: acceptEdits" \
         "engineer agent has permissionMode" "RAPID-CC-EngineerPerm"
-    assert_file_contains "$project_path/.claude/agents/apm-code-reviewer.md" "memory: project" \
+    assert_file_contains "$project_path/.claude/agents/apm-reviewer.md" "memory: project" \
         "reviewer agent has persistent memory" "RAPID-CC-ReviewerMemory"
     assert_file_contains "$project_path/.claude/agents/apm-team-lead.md" "Agent(apm-engineer" \
         "team-lead has scoped Agent tool" "RAPID-CC-TeamLeadAgent"
@@ -609,6 +626,10 @@ test_rapid_claude_deployment() {
     # Verify shared skills were copied
     write_test_name "Verifying Claude Code skills"
     assert_path_exists "$project_path/.claude/skills" ".claude/skills directory" "RAPID-CC-Skills"
+    assert_path_exists "$project_path/memory_bank/design/SPEC-MODULE.md" "design/SPEC-MODULE.md" "RAPID-CC-DesignSpec"
+    assert_path_exists "$project_path/memory_bank/specs/SPEC_W1A.md" "specs/SPEC_W1A.md" "RAPID-CC-SpecW1A"
+
+    # Verify shared skills were copied
     assert_path_exists "$project_path/.claude/skills/apm-dev/SKILL.md" "apm-dev skill" "RAPID-CC-DevSkill"
     assert_path_exists "$project_path/.claude/skills/apm-report/SKILL.md" "apm-report skill" "RAPID-CC-ReportSkill"
     assert_path_exists "$project_path/.claude/skills/apm-team-lead/SKILL.md" "apm-team-lead skill" "RAPID-CC-TeamLeadSkill"
@@ -646,6 +667,8 @@ test_ds_opencode_deployment() {
     assert_path_exists "$project_path/memory_bank" "memory_bank directory" "DS-OC-MB"
     assert_path_exists "$project_path/memory_bank/ARCHITECTURE.md" "ARCHITECTURE.md" "DS-OC-Arch"
     assert_path_exists "$project_path/memory_bank/TASKS.md" "TASKS.md" "DS-OC-Tasks"
+    assert_path_exists "$project_path/memory_bank/design/SPEC-MODULE.md" "design/SPEC-MODULE.md" "DS-OC-DesignSpec"
+    assert_path_exists "$project_path/memory_bank/specs/SPEC_W1A.md" "specs/SPEC_W1A.md" "DS-OC-SpecW1A"
     assert_path_exists "$project_path/src" "src directory" "DS-OC-Src"
     assert_path_exists "$project_path/eda" "eda directory" "DS-OC-EDA"
     assert_path_exists "$project_path/experiments" "experiments directory" "DS-OC-Experiments"

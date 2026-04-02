@@ -142,10 +142,10 @@ alias apm-cd='cd /path/to/Agentic-Project-Management'
 ## How it works
 
 1. **/apm-start** runs Vision Alignment (RAPID) or Problem Definition (DS).
-2. After your confirmation, APM creates the Memory Bank: `ARCHITECTURE.md`, `STATE.md`, and `tasks/` (`TASKS.md` + `W1A.md` starter).
+2. After your confirmation, APM creates the Memory Bank: `ARCHITECTURE.md`, `STATE.md`, `specs/` (`SPEC_W1A.md` frozen spec), and `tasks/` (`TASKS.md` + `W1A.md` working journal).
 3. You continue with role-specific commands/skills (e.g., `/apm-develop`, `apm-eda`, `apm-deep-feature-engineering`, `apm-ds-exp`).
    - **Co-Founder mode** provides a collaborative primary partner who co-owns project vision, architecture, and direction. Strategic discussion partner -- does not orchestrate by default. Activate via Shift+Tab in OpenCode, `claude --agent apm-co-founder` in Claude Code, or by loading `apm-co-founder` in Codex.
-   - **Team Lead mode** enables WAVE-based orchestration: Team Lead creates worktrees, delegates with minimal contracts, waits, runs quality gate per task (simplify + review), integrates per wave, and returns one compact final handoff. Activate via Shift+Tab in OpenCode, `claude --agent apm-team-lead` in Claude Code, or by loading `apm-team-lead` in Codex.
+   - **Team Lead mode** enables WAVE-based orchestration: Team Lead validates frozen SPECs, freezes contracts, creates worktrees, delegates to specialists, runs quality gate per task (simplify + review + contract compliance), runs Wave Integration Gate (build + typecheck + tests), and returns one compact final handoff. Activate via Shift+Tab in OpenCode, `claude --agent apm-team-lead` in Claude Code, or by loading `apm-team-lead` in Codex.
    - Codex can enable goal-first spec challenge by loading `apm-critical-execution` in the main session; do not use it for specialist subagents.
 4. Memory Bank synchronization is explicit (`/apm-sync`) and can be delegated to a dedicated sync subagent when configured.
 5. Logs are split into `logs/project/` for runtime and reports, and `logs/agents/{TASK_ID}/` for task-scoped agent logs. Team Lead writes consolidated logs under `logs/agents/` root.
@@ -168,9 +168,11 @@ Core files:
 - `ARCHITECTURE.md`
 - `STATE.md`
 - `tasks/TASKS.md`
-- `tasks/{TASK_ID}.md`
+- `design/SPEC-{module}.md` — global module specifications (contracts, invariants, data formats). Updated only with approval.
+- `specs/SPEC_{TASK_ID}.md` — frozen task specification (goal, pipeline, contracts, DoD). Read-only during execution.
+- `tasks/{TASK_ID}.md` — working journal (notes, review findings, outcome).
 
-WAVE naming: `W1A`, `W1B`, `W2A`, etc. Waves are sequential; tasks within a wave are parallel. Backlog items use `BL-NNN`.
+WAVE naming: `W1A`, `W1B`, `W2A`, etc. Waves are sequential; tasks within a wave are parallel. Backlog items use `BL-NNN`. SPECs and cross-task contracts are frozen before wave delegation begins.
 
 Line budget:
 - Keep `STATE.md` and `tasks/TASKS.md` under 150 lines (compress when exceeded).
@@ -254,7 +256,7 @@ Line budget:
 - **Skills** = shared `agentskills.io` skills in `.claude/skills/`. User-invocable via `/apm-*`. Same format as Cursor.
 - **Instructions** = `CLAUDE.md` (equivalent of `AGENTS.md`). Supports subdirectory discovery, `@import` syntax, and `.claude/rules/` for path-scoped modular rules.
 - **Tool control** = per-subagent `tools` (allowlist) and `disallowedTools` (denylist). Code-reviewer gets read-only tools; Team Lead gets scoped `Agent()` for known specialists only.
-- **Persistent memory** = `memory: project` gives subagents cross-session learning (e.g., code-reviewer accumulates project patterns).
+- **Persistent memory** = `memory: project` gives subagents cross-session learning (e.g., reviewer accumulates project patterns).
 - **Install targets**:
   - Global: `~/.claude/{agents,skills}`
   - Local: `.claude/{agents,skills}` inside a project

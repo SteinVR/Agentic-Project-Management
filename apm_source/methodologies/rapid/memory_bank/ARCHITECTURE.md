@@ -51,25 +51,20 @@
 
 ---
 
-## 5. Component Design
+## 5. System Design
 
-> Context: Description of the logical modules (Classes/Files) within the src/ folder. Do not use physical blocks; use logical separation (Classes, Interfaces).
-### A
-...
+> Context: High-level architecture of the system — how modules interact, data flows between them, and what each subsystem is responsible for.
 
-### B
-...
+[Describe the system's major subsystems, their responsibilities, and how they connect. Include data flow direction and key boundaries.]
 
-### C
-...
+### Global Specifications
 
-> 
-- **[Component/Class Name 1]**
-    - **Responsibility:** [What does this class do?]
-    - **Key Methods:** [e.g., `analyze_task()`, `generate_report()`]
-    - **Interactions:** [Which other components does it call?]
-- **[Component/Class Name 2]**
-    - **Responsibility:** ...
+> Detailed module-level specs live in `memory_bank/design/SPEC-{module}.md`. Each covers one domain/subsystem: contracts, invariants, data formats, rules. Frozen after design, updated only with explicit approval.
+
+| Spec | Scope |
+|------|-------|
+| [e.g. `SPEC-data.md`] | [e.g. Corpus, data splits, leakage rules] |
+| [e.g. `SPEC-evaluation.md`] | [e.g. Metrics, scoring, judge config] |
 
 ---
 
@@ -89,21 +84,7 @@
 
 ---
 
-## 7. Core Data Models (Optional)(If implied in the project)
-
-> A brief description of the main data entities.
-> 
-
-[Example:
-
-- **[Model 1: e.g., Task]**
-- **Purpose:** Represents a single to-do item with an ID, title, and completion status. Will be modeled as a Pydantic class.
-
-]
-
----
-
-## 8. Key Conventions & Logging
+## 7. Key Conventions & Logging
 
 - **Modularity:** Code must be logically separated into classes and modules within `src/`.
 - **Logging:** All significant events must be logged to `logs/`.

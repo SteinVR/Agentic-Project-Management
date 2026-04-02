@@ -1,11 +1,12 @@
 ---
 name: apm-git-taskflow
-description: "Task-scoped git execution contract: create or reuse one branch/worktree per TASK_ID, prepare PR content, and handle merge conflicts. Designed for WAVE-based orchestration."
+description: "Task-scoped git execution contract: create or reuse one branch/worktree per TASK_ID, prepare PR content, handle merge conflicts, and run wave integration gate. Designed for WAVE-based orchestration."
 ---
 ## What I do
 - Enforce one git branch and one worktree per active TASK_ID.
 - Keep parallel writes isolated by task ownership.
 - Standardize PR creation, PR content, and conflict handling.
+- Define and run the Wave Integration Gate after branch merges.
 
 ## Activation rule
 Valid triggers:
@@ -24,7 +25,7 @@ Valid triggers:
 
 ## Required setup workflow
 1. Identify `TASK_ID`:
-   - from active `memory_bank/tasks/{TASK_ID}.md`, or
+   - from active `memory_bank/specs/SPEC_{TASK_ID}.md`, or
    - from an explicit identifier provided by the user or orchestrator.
 2. Detect base branch (usually current integration branch, e.g., `main`).
 3. Ensure `.apm/worktrees/` exists.
@@ -86,6 +87,21 @@ After merging a task branch into the base branch, untracked task-local artifacts
 
 Projects may override the default symlink list via `memory_bank/ARCHITECTURE.md` (section "Shared resources" or equivalent). If present, follow the project-specific list instead of the defaults above.
 
+## Wave Integration Gate
+
+Run after all task branches in a wave are merged and artifacts are migrated. This gate validates the integrated codebase before proceeding to the next wave or final handoff.
+
+### Gate steps
+1. **Build/compile check**: run the project's build or import validation (language-appropriate). For Python: verify all imports resolve (`python -c "import <main_module>"`).
+2. **Type check**: if contract/Protocol files exist, run the project's type checker (e.g., `mypy`, `pyright`). Focus on contract-defined interfaces.
+3. **Test suite**: run tests in layer order — unit tests first, then contract tests, then cross-task integration tests. If pipeline/E2E tests exist, run those last. If no tests exist yet (e.g., Wave 1 greenfield), note it and skip gracefully.
+4. **Dependency audit**: verify the lockfile is consistent and no per-worktree runtime was created (no `.venv` or `node_modules` inside `.apm/worktrees/`).
+5. **Environment hygiene**: confirm all worktrees are cleaned up. No orphan branches remain.
+
+### Gate outcome
+- **Pass**: all checks succeed (or are gracefully skipped with justification). Proceed to next wave or final handoff.
+- **Fail**: fix the failure, re-run the failing check. Do not proceed until the gate passes.
+
 ## PR contract
 Create PR when:
 - the task is complete, or
@@ -111,3 +127,4 @@ If PR cannot be opened automatically (missing remote/permissions/tooling):
 - Do not run write-heavy parallel streams in the same branch/worktree.
 - Do not mix multiple TASK_IDs in one task branch.
 - Do not auto-merge semantic conflicts.
+- Do not proceed to next wave if integration gate fails.

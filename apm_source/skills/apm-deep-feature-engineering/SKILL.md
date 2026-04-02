@@ -7,7 +7,7 @@ description: "Deep Feature Engineering stage for DS: convert EDA findings into r
 - Produce prioritized feature hypotheses with explicit expected impact, leakage risk, and compute cost.
 - Define which features are safe for baseline now vs research backlog.
 
-## Required reads
+## Required reads (If you haven't read it yet)
 - `memory_bank/ARCHITECTURE.md`
 - `eda/reports/EDA-Report.md`
 - `eda/reports/EDA-Insights.md`
