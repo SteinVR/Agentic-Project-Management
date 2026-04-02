@@ -36,13 +36,14 @@ Agree on these parameters before starting:
 2. Formulate a hypothesis — what to change and why you expect improvement.
 3. Modify in-scope files to implement the idea.
 4. `git commit` with a concise message describing the change.
-5. Run the experiment: `<runner> > run.log 2>&1`. Redirect everything — do not flood your context with raw output.
+5. Run the experiment: `<runner> > run.log 2>&1`. Redirect everything — do NOT use tee or let output flood your context.
 6. Extract the metric from `run.log`.
 7. **If extraction fails** (empty output = crash): run `tail -n 50 run.log` for the error. If it's a simple fix (typo, import, off-by-one), fix and re-run. If the idea is fundamentally broken, log as `crash` and move on.
 8. Record the result in `results.tsv`.
-9. **If metric improved**: keep the commit. This is the new baseline for future comparisons.
-10. **If metric is equal or worse**: `git reset --hard HEAD~1` to discard the commit. Branch returns to the last `keep`.
-11. **REPEAT.** Do not pause. Do not ask the user whether to continue. The user may be away. Run until manually interrupted. If you run out of ideas — re-read in-scope files, re-analyze results history, try combining previous near-misses, try more radical changes. The loop does not stop.
+9. **If metric improved**: keep the commit. Record its short hash as the current `keep_ref` — this is the new baseline for future comparisons.
+10. **If metric is equal or worse**: `git reset --hard <keep_ref>` to discard back to the last kept commit. Do not use `HEAD~1` — there may be multiple commits since the last keep (e.g. crash fix attempts).
+11. **Deep rewind**: if you feel stuck after multiple iterations (e.g. a `keep` led to a local optimum that blocks further progress), you may rewind past it to an earlier `keep_ref` from `results.tsv`. Do this very sparingly — it discards validated improvements.
+12. **REPEAT.** Do not pause. Do not ask the user whether to continue. The user may be away. Run until manually interrupted. If you run out of ideas — re-read in-scope files, re-analyze results history, try combining previous near-misses, try more radical changes. The loop does not stop.
 
 ## Simplicity criterion
 
