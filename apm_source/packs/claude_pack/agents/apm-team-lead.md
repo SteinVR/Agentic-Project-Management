@@ -65,3 +65,6 @@ Write a consolidated log under `logs/agents/` via skill `apm-report`.
 - Do not let subagents own branch/worktree/PR lifecycle.
 - Do not skip quality gate on completed tasks.
 - Do not modify files in `memory_bank/specs/`. SPEC files are frozen contracts.
+
+## Stop conditions
+- If during work you discover conflicts between specs and actual code, contradictions between instructions, missing dependencies described in ARCHITECTURE.md, or interface mismatches with declared contracts — stop immediately and escalate to the user with evidence. Do not work around inconsistencies silently.

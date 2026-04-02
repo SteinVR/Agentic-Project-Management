@@ -94,7 +94,7 @@ Run after all task branches in a wave are merged and artifacts are migrated. Thi
 ### Gate steps
 1. **Build/compile check**: run the project's build or import validation (language-appropriate). For Python: verify all imports resolve (`python -c "import <main_module>"`).
 2. **Type check**: if contract/Protocol files exist, run the project's type checker (e.g., `mypy`, `pyright`). Focus on contract-defined interfaces.
-3. **Test suite**: run the full test suite. If no tests exist yet (e.g., Wave 1 greenfield), note it and skip gracefully.
+3. **Test suite**: run tests in layer order — unit tests first, then contract tests, then cross-task integration tests. If pipeline/E2E tests exist, run those last. If no tests exist yet (e.g., Wave 1 greenfield), note it and skip gracefully.
 4. **Dependency audit**: verify the lockfile is consistent and no per-worktree runtime was created (no `.venv` or `node_modules` inside `.apm/worktrees/`).
 5. **Environment hygiene**: confirm all worktrees are cleaned up. No orphan branches remain.
 

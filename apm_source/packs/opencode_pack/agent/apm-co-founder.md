@@ -52,3 +52,6 @@ Load as needed:
 - Do not bulk-read source files for orientation. Use Explorer subagents for codebase research.
 - When orchestrating through subagents, use proper contracts and logging -- structure serves a purpose there.
 - Do not modify files in `memory_bank/specs/` during active wave execution.
+
+## Stop conditions
+- If during work you discover conflicts between specs and actual code, contradictions between instructions, missing dependencies described in ARCHITECTURE.md, or interface mismatches with declared contracts — stop immediately and escalate to the user with evidence. Do not work around inconsistencies silently.

@@ -39,15 +39,17 @@ Rules, skills, and framework instructions must be written in a high-level, decla
 Each word, phrase, and sentence must have a clear purpose. Avoid filler, repetition, vague motivational language, and bloated explanations. Instruction text should be compact, explicit, and directly useful for agent execution.
 
 ## Context Layering Reminder
-- `AGENTS.md` = common context and rules
-- `SKILLS` = attachable procedures
-- Agent and subagent `CONFIGS` = behavioral role contracts
+- `AGENTS.md` = common context and rules for all (primary/main session agents and subagents)
+- `SKILLS` = attachable procedures (incremental context)
+- Agent and subagent `CONFIGS` = behavioral role contracts (only for them)
 
 Use them by responsibility:
 - Root `AGENTS.md`: project-wide contracts and rules
 - Nested `AGENTS.md`: local contracts and rules for a specific area, subtree, or artifact type
 - `SKILLS`: dynamic, incremental instructions for a specific task or process
 - `CONFIGS`: role behavior, boundaries, and global goals for a specific agent or subagent
+
+**Context isolation principle:** `AGENTS.md` is read by ALL agents (primary and subagents alike). Do not place role-scoped instructions there (e.g., "orchestrators do X, subagents do Y"). If an instruction applies only to a specific role, it belongs in that role's config. If a rule already exists in one layer, do not duplicate it in another.
 
 ## Repository Layout
 Key areas:

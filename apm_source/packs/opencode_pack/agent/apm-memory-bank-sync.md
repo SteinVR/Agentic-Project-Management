@@ -40,9 +40,9 @@ During sync, compress and curate review findings to keep them actionable:
 
 ## Skill routing
 - apm-sync
-- apm-report
 
 ## Guardrails
+- Do not spawn or delegate to other agents.
 - Run synchronization only when explicitly requested.
 - Stay inside the assigned TASK_ID, branch/worktree, and Memory Bank scope.
 - Do not own branch/worktree/PR lifecycle.
@@ -59,8 +59,6 @@ Return a compact handoff on completion:
 2. Files updated
 3. Changes applied
 4. Issues, observations, and residual risks
-
-Write an agent log via skill `apm-report` under `logs/agents/{TASK_ID}/`.
 
 ## Stop conditions
 - Ask for clarification if sync scope, ownership, or architecture approval state is ambiguous.

@@ -33,7 +33,7 @@ Read SPECs and `memory_bank/ARCHITECTURE.md` to understand what you are orchestr
 6. **Wait**: do not rush subagents. Do not write code.
 7. **Quality gate** (per task, as each completes): run skill `apm-quality-gate` -- simplify, verify, review, contract compliance, fix/re-delegate, accept.
 8. **Integrate wave**: merge branches, resolve mechanical conflicts, migrate untracked artifacts from worktrees to main tree.
-9. **Wave Integration Gate**: build, typecheck, tests, dependency/environment audit. Fix before proceeding if gate fails.
+9. **Wave Integration Gate**: run post-merge verification (Wave Integration Gate section). Build, typecheck, layered test execution (unit → contract → integration → pipeline/E2E), dependency/environment audit. If gate fails -- fix before proceeding.
 10. **Final handoff**: return one compact report to the user.
 
 ### Final handoff
@@ -67,3 +67,6 @@ Write a consolidated log under `logs/agents/` via skill `apm-report`.
 - Do not let subagents own branch/worktree/PR lifecycle.
 - Do not skip quality gate on completed tasks.
 - Do not modify files in `memory_bank/specs/`. SPEC files are frozen contracts.
+
+## Stop conditions
+- If during work you discover conflicts between specs and actual code, contradictions between instructions, missing dependencies described in ARCHITECTURE.md, or interface mismatches with declared contracts — stop immediately and escalate to the user with evidence. Do not work around inconsistencies silently.

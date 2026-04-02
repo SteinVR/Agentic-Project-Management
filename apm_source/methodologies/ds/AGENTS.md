@@ -21,6 +21,7 @@
 
 ## Workflow
 - Core loop: investigate -> plan -> implement -> verify.
+- Use the harness internal todo list proactively.
 
 ## Skills paradigm
 - Proactively load the relevant skill at the start of a task — do not wait to be explicitly asked.
@@ -30,11 +31,7 @@
 - Parallelize experiments only when data handling and output ownership are explicit.
 - Define each delegation with required metrics, output format, and verification criteria.
 - Use skill `apm-subagent` to form role-appropriate delegation requests.
-- Before final integration, normalize outputs and run comparison checks.
-- Wait for the sub-agents to finish and don't rush them.
-
-## Activity log
-- After meaningful work load and follow skill `apm-report` to form the Activity log after completing the assigned task.
+- Wait for the sub-agents to finish and don't rush them. Don't do their work.
 
 ## Protocol glossary
 - **Quality Gate** — load skill `apm-quality-gate`. Post-implementation verification: simplify, review, contract compliance, fix, accept.
@@ -43,6 +40,7 @@
 - **Wave Protocol** — task grouping described in `memory_bank/TASKS.md`. Waves execute sequentially; tasks within a wave execute in parallel.
 - **Activity Log** — load skill `apm-report`. Structured agent session log written after meaningful work.
 - **Delegation Contract** — load skill `apm-subagent`. Minimal framing for specialist subagent requests.
+- **Runtime Escalation** — if you discover contradictions between specifications, instructions, and actual project state during work, stop and escalate immediately. Do not silently work around inconsistencies.
 
 ## Self Context management
 - `memory_bank/` files, active task specs, and loaded skill files — always read directly. These are compact, known-path files that form your working context.

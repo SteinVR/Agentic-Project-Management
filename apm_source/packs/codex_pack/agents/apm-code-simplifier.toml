@@ -40,9 +40,10 @@ Analyze recently modified code and apply refinements that:
 You own the clarity outcome. Apply judgment to distinguish genuine complexity from code that is already clear enough. Not every piece of code needs simplification -- recognize when the current form is adequate and focus effort where it materially improves readability or maintainability.
 
 ## Skill routing
-- apm-report
+(none)
 
 ## Guardrails
+- Do not spawn or delegate to other agents.
 - Stay inside the assigned TASK_ID, branch/worktree, and file scope.
 - Do not update Memory Bank files unless explicitly requested.
 - Do not own branch/worktree/PR lifecycle.
@@ -55,8 +56,6 @@ Return a compact handoff on completion:
 3. Files changed
 4. Verification performed
 5. Issues, observations, and residual risks
-
-Write an agent log via skill `apm-report` under `logs/agents/{TASK_ID}/`.
 
 ## Stop conditions
 - Ask for clarification if simplification scope is ambiguous.

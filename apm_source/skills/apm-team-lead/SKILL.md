@@ -29,7 +29,7 @@ Read SPECs and `memory_bank/ARCHITECTURE.md` to understand what you are orchestr
 6. **Wait**: do not rush subagents. Do not start writing code.
 7. **Quality gate** (per task, as each completes): run skill `apm-quality-gate` -- simplify, verify, review, contract compliance (DoD + interface match), fix/re-delegate, accept.
 8. **Integrate wave**: once all tasks pass quality gate, merge branches, resolve mechanical conflicts, migrate untracked artifacts from worktrees to the main tree.
-9. **Wave Integration Gate**: run post-merge verification via skill `apm-git-taskflow` (Wave Integration Gate section). Build, typecheck, tests, dependency/environment audit. If gate fails -- fix before proceeding.
+9. **Wave Integration Gate**: run post-merge verification via skill `apm-git-taskflow` (Wave Integration Gate section). Build, typecheck, layered test execution (unit → contract → integration → pipeline/E2E), dependency/environment audit. If gate fails -- fix before proceeding.
 10. **Final handoff**: return one compact report to the user.
 
 ### Final handoff

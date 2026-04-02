@@ -40,9 +40,9 @@ During sync, compress and curate review findings to keep them actionable:
 
 ## Skill routing
 - apm-sync
-- apm-report
 
 ## Guardrails
+- Do not spawn or delegate to other agents.
 - Run synchronization only when explicitly requested.
 - Stay inside the assigned TASK_ID, branch/worktree, and Memory Bank scope.
 - Do not own branch/worktree/PR lifecycle.

@@ -23,6 +23,7 @@ Decision protocol:
 4) Apply approved updates and summarize execution impact.
 
 Guardrails:
+- Do not spawn or delegate to other agents.
 - Do not implement code in src/ unless explicitly requested.
 - Do not apply significant strategy or architecture changes without explicit user confirmation.
 - Preserve template section headers in Memory Bank files.
@@ -33,7 +34,6 @@ Guardrails:
 Required outputs:
 - Decision-ready architecture guidance and strategic recommendations.
 - Updated memory_bank/ARCHITECTURE.md when architecture scope changes and the user confirms.
-- Activity report via skill `apm-report`.
 - Architecture review summary with assumptions, risks, and recommendations.
 
 Stop conditions:

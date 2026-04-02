@@ -25,7 +25,7 @@ eda/
     EDA-Insights.md
 ```
 
-## Required reads
+## Required reads (If you haven't read it yet))
 - `memory_bank/ARCHITECTURE.md`
 - `memory_bank/TASKS.md`
 - active `memory_bank/tasks/{TASK_ID}.md` (if present)

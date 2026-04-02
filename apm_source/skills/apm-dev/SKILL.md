@@ -11,7 +11,7 @@ description: "Iterative development loop: plan, implement, verify, and log chang
 - Implementing features, bug fixes, refactors, or integration tasks in RAPID projects.
 
 ## Workflow
-1. Read `memory_bank/specs/SPEC_{TASK_ID}.md` (frozen spec), `memory_bank/ARCHITECTURE.md`, and `memory_bank/tasks/{TASK_ID}.md` (working journal). Do not modify the SPEC file.
+1. Read `memory_bank/specs/SPEC_{TASK_ID}.md` (frozen spec), `memory_bank/ARCHITECTURE.md`, and `memory_bank/tasks/{TASK_ID}.md` (working journal). - If you haven't read it yet
 2. Plan concrete implementation steps using the harness internal todo list before writing code.
 3. Implement changes in `src/` with clean structure.
 4. Verify with tests or targeted smoke checks.
