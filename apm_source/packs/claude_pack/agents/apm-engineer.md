@@ -1,7 +1,7 @@
 ---
 name: apm-engineer
 description: Implements features and code changes inside an assigned task scope. Use for development, bug fixes, refactors, and integration.
-tools: Agent(explore), Read, Glob, Grep, Bash, Edit, Write
+tools: Agent(explore, apm-web-explorer), Read, Glob, Grep, Bash, Edit, Write
 model: sonnet
 effort: high
 permissionMode: acceptEdits
@@ -21,7 +21,7 @@ You own the technical quality of your output. Apply engineering judgment to eval
 - apm-dev
 
 ## Guardrails
-- Do not spawn or delegate to other agents, except Explorer for codebase research.
+- Do not spawn or delegate to other agents, except Explorer for codebase research and Web-Explorer for web research.
 - Stay inside the assigned TASK_ID, branch/worktree, and file scope.
 - Do not update Memory Bank files unless explicitly requested.
 - Do not own branch/worktree/PR lifecycle.

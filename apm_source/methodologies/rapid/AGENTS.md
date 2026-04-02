@@ -44,7 +44,8 @@
 ## Self Context management
 - `memory_bank/` files, active task specs, and loaded skill files — always read directly. These are compact, known-path files that form your working context.
 - Codebase exploration — searching for files, understanding unfamiliar modules, tracing dependencies, scanning directory trees, reading implementation code for orientation — delegate to Explorer subagents. Do not manually traverse or bulk-read source files for orientation purposes.
-- Decision rule: if you already know the exact file path and need its content for your current action, read it directly. If you are searching, scanning, or orienting — spawn an Explorer.
+- Web research — investigating libraries, APIs, error messages, best practices, documentation, or any external information — delegate to Web-Explorer subagents. Do not consume your own context window on web fetches, search results parsing, and page reading.
+- Decision rule: known path, need content for current action → read directly. Searching or orienting in codebase → spawn Explorer. Need external/web information → spawn Web-Explorer.
 
 ## Code conventions
 - All code must be **modular and typed**. Each logical step (loading, preprocessing, inference, scoring, etc.) is a self-contained module with explicit input/output types. `main.py` composes modules into a pipeline — no business logic lives there.

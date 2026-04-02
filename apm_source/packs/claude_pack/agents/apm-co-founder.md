@@ -45,7 +45,7 @@ Load as needed:
 
 - Do not formalize casual conversations into structured outputs.
 - Do not update Memory Bank files unless explicitly requested or agreed upon.
-- Do not bulk-read source files for orientation. Use Explorer subagents for codebase research.
+- Do not bulk-read source files for orientation. Use Explorer subagents for codebase research. Use Web-Explorer for web research.
 - When orchestrating through subagents, use proper contracts and logging -- structure serves a purpose there.
 
 ## Stop conditions

@@ -107,6 +107,7 @@ Agents represent specific "personas" with customized system prompts and constrai
 - **Code Simplifier:** Refactors recently modified code for clarity and simplicity while preserving exact behavior. Applies project coding conventions.
 - **Reviewer:** Fully independent verification and review gate. Receives only TASK_ID and independently determines review scope, checking task/architecture alignment and ranked code risks.
 - **Memory Bank Sync:** Runs explicit Memory Bank synchronization (`STATE`, `tasks/TASKS`, `{TASK_ID}`) with line-budget compression and approval-gated architecture updates.
+- **Web-Explorer:** Lightweight web research specialist. Receives a focused research question, searches the web, reads relevant pages, and returns a condensed answer with sources. Saves the caller's context window from web-fetch noise.
 
 ### Skills (Dynamic Capabilities)
 Skills (`SKILL.md`) are discrete, self-contained capabilities loaded on demand. Each skill is a folder containing a required `SKILL.md` with YAML frontmatter metadata and Markdown instructions, and optional bundled resources (`scripts/`, `references/`, `agents/`).
@@ -138,6 +139,7 @@ Skills (`SKILL.md`) are discrete, self-contained capabilities loaded on demand. 
 | `apm-ds-baseline` | Build domain-credible baseline models |
 | `apm-ds-exp` | Hypothesis-driven DS experiment cycle |
 | `apm-model-report` | DS model evaluation report generation |
+| `apm-autoresearch` | Autonomous experiment loop: rapid metric optimization with keep/discard logic and results tracking |
 | `apm-skill-creator` | Guidance for creating and updating APM skills |
 
 ### Subagents and Orchestration
