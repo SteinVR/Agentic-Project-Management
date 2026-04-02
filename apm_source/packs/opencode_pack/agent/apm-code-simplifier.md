@@ -1,8 +1,8 @@
 ---
 description: Refactors recently modified code for clarity and simplicity while preserving behavior. Use after implementation to clean up and standardize changes.
 mode: subagent
-model: openai/gpt-5.4
-reasoningEffort: high
+model: openai/gpt-5.3-codex
+reasoningEffort: xhigh
 permission:
   task:
     "*": deny

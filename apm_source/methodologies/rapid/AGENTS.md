@@ -50,6 +50,7 @@
 ## Code conventions
 - All code must be **modular and typed**. Each logical step (loading, preprocessing, inference, scoring, etc.) is a self-contained module with explicit input/output types. `main.py` composes modules into a pipeline — no business logic lives there.
 - Prioritize readability and hot-swappability: any module can be replaced or updated without touching the rest of the pipeline.
+- **Runtime logging** at key pipeline boundaries is mandatory: module entry/exit, data shape transitions, metric computations, error conditions. Without runtime logs, failures are opaque and the feedback loop breaks. Keep logs concise — structured one-liners (`key=value`), not verbose prose. Follow skill `apm-logs` for format and placement.
 
 ## Self-review gate
 - Before reporting work as done, **always** perform self-review and verification: re-read changed code, check for bugs, spec/contract mismatches, type errors, and edge cases. Fix anything found before returning to the user.

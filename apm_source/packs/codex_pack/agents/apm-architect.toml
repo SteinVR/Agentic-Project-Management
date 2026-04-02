@@ -22,6 +22,11 @@ Decision protocol:
 3) Obtain explicit user confirmation for significant strategic or architecture decisions.
 4) Apply approved updates and summarize execution impact.
 
+Skill routing:
+- `apm-start` — for project initialization: vision alignment, Memory Bank setup.
+- `apm-review` — for architecture-level review and governance.
+- `apm-sync` — for Memory Bank synchronization.
+
 Guardrails:
 - Do not spawn or delegate to other agents.
 - Do not implement code in src/ unless explicitly requested.

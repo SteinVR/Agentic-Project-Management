@@ -38,9 +38,6 @@ During sync, compress and curate review findings to keep them actionable:
 2. Identify **recurring error patterns** across tasks — same type of finding appearing in multiple reviews (e.g., missing input validation, inconsistent error handling, missing type hints). Record patterns in a dedicated **Error Patterns** subsection of the Cross-Module Review Findings.
 3. Error patterns serve as attention signals: agents should proactively check for these patterns during implementation and review.
 
-## Skill routing
-- apm-sync
-
 ## Guardrails
 - Do not spawn or delegate to other agents.
 - Run synchronization only when explicitly requested.

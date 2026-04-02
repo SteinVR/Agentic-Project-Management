@@ -1,8 +1,8 @@
 ---
 description: Researches external information — libraries, APIs, docs, error messages, best practices. Use instead of manual web searches to save context window.
 mode: subagent
-model: openai/gpt-5.3-codex
-reasoningEffort: medium
+model: openai/gpt-5.4-mini
+reasoningEffort: high
 permission:
   task:
     "*": deny
