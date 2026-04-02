@@ -1,6 +1,6 @@
 # Task Board (RAPID): [Project Name]
 
-> Keep this file concise (max 150 lines). Store only grouped high-level tasks. Detailed plans, specs, and notes live in `memory_bank/tasks/{TASK_ID}.md`.
+> Store only grouped high-level tasks. Detailed plans, specs, and notes live in `memory_bank/tasks/{TASK_ID}.md`.
 
 ## Wave Protocol
 
