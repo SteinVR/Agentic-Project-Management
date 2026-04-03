@@ -15,7 +15,7 @@ description: "Plan, execute, and document a hypothesis-driven experiment for mac
    - `config.py`
    - `EXP-XXX_REPORT.md` (from template — leave Results, Analysis, and Conclusions sections empty until full production run completes)
 5. **Implement** experiment code.
-6. **Quality gate (pre-run)**: load and follow skill `apm-quality-gate` — code review and implementation contract compliance only. Skip DoD output-artifact checks (reports, metrics, diagnostics) — those deliverables do not exist until after the full run. All code issues must be resolved before any run.
+6. **Pre-run self-review**: perform self-review gate per AGENTS.md — focus on code correctness and contract compliance only. Skip DoD output-artifact checks (reports, metrics, diagnostics) — those deliverables do not exist until after the full run. All code issues must be resolved before any run.
 7. **Smoke-test**: run the pipeline on a small subset to verify it executes end-to-end without errors. Stability only — do not record metrics, do not update state, do not analyze results, do not update the experiment report. If it fails, fix and re-run.
 8. **Full run**: do not start without user approval.
 9. **Post-run analysis** (mandatory after full run only — this is the only point where report content is written):

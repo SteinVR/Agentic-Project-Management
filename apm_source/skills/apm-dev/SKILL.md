@@ -5,7 +5,7 @@ description: "Iterative development loop: plan, implement, verify, and log chang
 ## What I do
 - Provide a disciplined implementation loop.
 - Keep implementation scoped to active tasks.
-- Enforce a post-implementation quality gate: simplify -> review -> fix -> verified handoff.
+- Enforce a structured self-review gate before handoff.
 
 ## When to use
 - Implementing features, bug fixes, refactors, or integration tasks in RAPID projects.
@@ -15,7 +15,7 @@ description: "Iterative development loop: plan, implement, verify, and log chang
 2. Plan concrete implementation steps using the harness internal todo list before writing code.
 3. Implement changes in `src/` with clean structure.
 4. Verify with tests or targeted smoke checks.
-5. Load and follow skill `apm-quality-gate` for the shared final quality gate and verified completion handoff.
+5. Perform self-review gate per AGENTS.md before handoff.
 
 ## Conventions
 - Prefer simple, modular solutions (SOLID/DRY).

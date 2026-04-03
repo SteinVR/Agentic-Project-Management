@@ -31,9 +31,8 @@
 - Use skill `apm-subagent` to form role-appropriate delegation requests.
 - Wait for the sub-agents to finish and don't rush them. Don't do their work.
 
-
 ## Protocol glossary
-- **Quality Gate** — load skill `apm-quality-gate`. Post-implementation verification: simplify, review, contract compliance, fix, accept.
+- **Quality Gate** — orchestrator-only. Load skill `apm-quality-gate`. Post-implementation verification: simplify, review, contract compliance, fix, accept. Run by the orchestrating agent after sub-agent handoff, not by the implementing sub-agent.
 - **Wave Integration Gate** — post-merge verification: build, typecheck, tests, dependency/environment audit. Defined in skill `apm-git-taskflow`.
 - **Worktree Protocol** — load skill `apm-git-taskflow`. Task-scoped branch and worktree isolation for parallel work.
 - **Wave Protocol** — task grouping described in `memory_bank/TASKS.md`. Waves execute sequentially; tasks within a wave execute in parallel.
@@ -43,9 +42,9 @@
 
 ## Self Context management
 - `memory_bank/` files, active task specs, and loaded skill files — always read directly. These are compact, known-path files that form your working context.
-- Codebase exploration — searching for files, understanding unfamiliar modules, tracing dependencies, scanning directory trees, reading implementation code for orientation — delegate to Explorer subagents. Do not manually traverse or bulk-read source files for orientation purposes.
-- Web research — investigating libraries, APIs, error messages, best practices, documentation, or any external information — delegate to Web-Explorer subagents. Do not consume your own context window on web fetches, search results parsing, and page reading.
-- Decision rule: known path, need content for current action → read directly. Searching or orienting in codebase → spawn Explorer. Need external/web information → spawn Web-Explorer.
+- Codebase exploration — searching for files, understanding unfamiliar modules, tracing dependencies, scanning directory trees, reading implementation code for orientation — delegate to Explorer subagents (when available).
+- Web research — investigating libraries, APIs, error messages, best practices, documentation, or any external information — delegate to Web-Explorer subagents (when available).
+- Decision rule: known path, need content for current action → read directly. Searching or orienting in codebase → spawn Explorer (when available). Need external/web information → spawn Web-Explorer (when available).
 
 ## Code conventions
 - All code must be **modular and typed**. Each logical step (loading, preprocessing, inference, scoring, etc.) is a self-contained module with explicit input/output types. `main.py` composes modules into a pipeline — no business logic lives there.
@@ -53,4 +52,12 @@
 - **Runtime logging** at key pipeline boundaries is mandatory: module entry/exit, data shape transitions, metric computations, error conditions. Without runtime logs, failures are opaque and the feedback loop breaks. Keep logs concise — structured one-liners (`key=value`), not verbose prose. Follow skill `apm-logs` for format and placement.
 
 ## Self-review gate
-- Before reporting work as done, **always** perform self-review and verification: re-read changed code, check for bugs, spec/contract mismatches, type errors, and edge cases. Fix anything found before returning to the user.
+Before reporting work as done, perform structured self-review. Fix anything found before handoff.
+
+1. **Re-read** all changed files. Check for bugs, off-by-one errors, unhandled edge cases.
+2. **Spec compliance**: verify implementation matches `SPEC_{TASK_ID}.md` — goal, pipeline steps, contracts table (signatures and types), DoD items.
+3. **Type correctness**: confirm type annotations are present and consistent across function boundaries.
+4. **Logging**: confirm runtime logging exists at key pipeline boundaries per skill `apm-logs`.
+5. **Scope discipline**: no unrelated changes, no files outside assigned scope.
+
+Report self-review outcome in the handoff (steps performed, issues found and fixed, residual concerns).

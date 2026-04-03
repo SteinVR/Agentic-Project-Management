@@ -23,7 +23,7 @@ description: "Diagnose project issues and validate specifications. Covers archit
 
 ### Spec review
 1. Read target `memory_bank/specs/SPEC_{TASK_ID}.md` files and relevant `memory_bank/design/SPEC-{module}.md`.
-2. Spawn `apm-reviewer` on the target SPECs. Reviewer checks: completeness, cross-spec consistency, architecture alignment, DoD verifiability, contract feasibility.
+2. Review the target SPECs (directly or by spawning `apm-reviewer` if available). Check: completeness, cross-spec consistency, architecture alignment, DoD verifiability, contract feasibility.
 3. Fix or escalate findings before proceeding to implementation or freeze.
 
 ## Report template
