@@ -1,6 +1,6 @@
 ---
 name: apm-quality-gate
-description: "Run the shared final quality gate for code-writing tasks: simplify changed code, re-verify, review independently, check contract compliance, fix findings in a convergence loop, and prepare a verified completion handoff. Use at the end of implementation, or experiment flows."
+description: "Orchestrator-only. Run the shared final quality gate for code-writing tasks: spawn code-simplifier, re-verify, spawn independent reviewer, check contract compliance, fix findings in a convergence loop, and accept task for integration. Requires spawning capability. Used by the orchestrating agent after sub-agent handoff."
 ---
 ## What I do
 - Run the standard final quality gate for code-writing workflows.
@@ -9,6 +9,7 @@ description: "Run the shared final quality gate for code-writing tasks: simplify
 
 ## When to use
 - After implementation is complete and initial validation has already passed.
+- After a sub-agent completes implementation and returns a handoff with self-review results.
 - At the end of flows that changed code and need a standard simplify/review/fix/handoff gate.
 
 ## Quality gate sequence

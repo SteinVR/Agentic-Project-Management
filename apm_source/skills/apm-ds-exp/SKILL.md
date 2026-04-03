@@ -15,17 +15,18 @@ description: "Plan, execute, and document a hypothesis-driven experiment for mac
    - `config.py`
    - `EXP-XXX_REPORT.md` (from template — leave Results, Analysis, and Conclusions sections empty until full production run completes)
 5. **Implement** experiment code.
-6. **Quality gate (pre-run)**: load and follow skill `apm-quality-gate` — code review and implementation contract compliance only. Skip DoD output-artifact checks (reports, metrics, diagnostics) — those deliverables do not exist until after the full run. All code issues must be resolved before any run.
-7. **Smoke-test**: run the pipeline on a small subset to verify it executes end-to-end without errors. Stability only — do not record metrics, do not update state, do not analyze results, do not update the experiment report. If it fails, fix and re-run.
-8. **Full run**: do not start without user approval.
-9. **Post-run analysis** (mandatory after full run only — this is the only point where report content is written):
+6. **Self-review**: perform self-review gate — focus on code correctness and contract compliance only.
+7. **Quality gate**: load and follow skill `apm-quality-gate` — independent code review and implementation contract compliance only. Skip DoD output-artifact checks (reports, metrics, diagnostics) — those deliverables do not exist until after the full run. All code issues must be resolved before any run.
+8. **Smoke-test**: run the pipeline on a small subset to verify it executes end-to-end without errors. Stability only — do not record metrics, do not update state, do not analyze results, do not update the experiment report. If it fails, fix and re-run.
+9. **Full run**: do not start without user approval.
+10. **Post-run analysis** (mandatory after full run only — this is the only point where report content is written):
    - Produce diagnostic artifacts in `experiments/EXP-XXX/results/`: training curves (loss, metrics vs epoch/iteration), confusion matrix, error distribution, feature importance — whatever is relevant to the model type.
    - Produce readable summary tables: per-fold/per-split metrics, comparison against baseline and prior experiments.
    - Analyze training dynamics: convergence speed, overfitting signals, anomalies, metric plateaus, gradient issues.
    - Write analytical conclusions in `EXP-XXX_REPORT.md`: what the results mean, why the model behaves this way, what signals point to.
    - Formulate next-step recommendations: new hypotheses, hyperparameter adjustments, architectural changes, data preprocessing ideas — grounded in the analysis above.
    - **Decision gate:** if analysis reveals the original plan is suboptimal, update the Implementation Plan in `{TASK_ID}.md` with adjusted steps and rationale before proceeding.
-10. **Final handoff**: ensure `EXP-XXX_REPORT.md` contains the full post-run analysis, success and failure outcomes, and next-step recommendations. Include experiment evidence, risks, and open items.
+11. **Final handoff**: ensure `EXP-XXX_REPORT.md` contains the full post-run analysis, success and failure outcomes, and next-step recommendations. Include experiment evidence, risks, and open items.
 
 ## Template
 Use `references/EXPERIMENT_REPORT_TMP.md` for `EXP-XXX_REPORT.md`.

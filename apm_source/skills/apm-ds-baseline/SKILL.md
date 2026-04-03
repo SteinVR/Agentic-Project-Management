@@ -14,16 +14,17 @@ description: "Build and document a reproducible baseline model for machine learn
    - Prefer a model class that could plausibly remain in the final pipeline.
 3. Plan the baseline approach.
 4. **Implement** baseline in `main.py` or a standalone script.
-5. **Quality gate (pre-run)**: load and follow skill `apm-quality-gate` — code review and implementation contract compliance only. Skip DoD output-artifact checks (reports, metrics, diagnostics) — those deliverables do not exist until after the full run. All code issues must be resolved before any run.
-6. **Smoke-test**: run on a small subset to verify the pipeline executes end-to-end without errors. Stability only — do not record metrics, do not update state, do not analyze results, do not write report content. If it fails, fix and re-run.
-7. **Full run**: do not start without user approval.
-8. **Post-run analysis** (mandatory after full run only — this is the only point where report and analysis content is written):
+5. **Self-review**: perform self-review gate — focus on code correctness and contract compliance only.
+6. **Quality gate**: load and follow skill `apm-quality-gate` — independent code review and implementation contract compliance only. Skip DoD output-artifact checks (reports, metrics, diagnostics) — those deliverables do not exist until after the full run. All code issues must be resolved before any run.
+7. **Smoke-test**: run on a small subset to verify the pipeline executes end-to-end without errors. Stability only — do not record metrics, do not update state, do not analyze results, do not write report content. If it fails, fix and re-run.
+8. **Full run**: do not start without user approval.
+9. **Post-run analysis** (mandatory after full run only — this is the only point where report and analysis content is written):
    - Produce diagnostic artifacts: training curves, confusion matrix, per-class/per-split metrics, error distribution, feature importance — whatever is relevant to the model type. Save to `models/` or experiment artifacts.
    - Produce readable summary tables: metric breakdown by split/fold, comparison against naive benchmarks.
    - Analyze model behavior: where the model performs well and where it fails, error patterns, class imbalances, potential data leakage signals.
    - Write analytical conclusions in the task file and baseline report: what the baseline reveals about the problem structure, which directions are promising for experiments, and which are likely dead ends.
    - Formulate initial hypotheses for the experiment phase: what to try first and why, grounded in baseline analysis.
-9. **Final handoff**: save artifacts to `models/` and logs to `logs/`. If task tracking is active, reflect baseline status in `memory_bank/TASKS.md` and `memory_bank/tasks/{TASK_ID}.md`. Include baseline metrics, post-run analysis, and initial experiment hypotheses.
+10. **Final handoff**: save artifacts to `models/` and logs to `logs/`. If task tracking is active, reflect baseline status in `memory_bank/TASKS.md` and `memory_bank/tasks/{TASK_ID}.md`. Include baseline metrics, post-run analysis, and initial experiment hypotheses.
 
 ## Conventions
 - Prefer simple, modular solutions (SOLID/DRY).
