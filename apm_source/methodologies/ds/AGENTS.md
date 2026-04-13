@@ -33,7 +33,7 @@
 - Use skill `apm-subagent` to form role-appropriate delegation requests.
 - Wait for the sub-agents to finish and don't rush them. Don't do their work.
 
-## Protocol glossary
+## Glossary
 - **Quality Gate** — post-implementation verification: simplify, review, contract compliance, fix, accept. Defined in skill `apm-quality-gate`. 
 - **Wave Integration Gate** — post-merge verification: build, typecheck, tests, dependency/environment audit. Defined in skill `apm-git-taskflow`.
 - **Worktree Protocol** — task-scoped branch and worktree isolation for parallel work. Defined in skill `apm-git-taskflow`. 
