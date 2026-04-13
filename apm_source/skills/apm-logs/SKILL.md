@@ -1,21 +1,19 @@
 ---
 name: apm-logs
-description: "Application logging conventions for software and data science projects. Use when adding logging to application code or deciding where runtime logs belong."
+description: "Runtime logging conventions for software and data science projects. Use when adding logging to runtime code or deciding where runtime logs belong."
 ---
 ## What I do
-- Define application-level logging conventions: what to log, where, and in what format.
+- Define runtime-level logging conventions.
 - Ensure runtime output enables fast debugging and feedback loops.
-
-## Scope
-This skill covers **application logging** — logging statements embedded in code that produce output at runtime.
 
 ## Feedback loop principles
 - Logs are the primary evidence of system behavior.
 - Every meaningful action should leave a trace that can be reviewed later.
 - A log entry should answer: what happened, when, where, and with what result.
 
-## Where runtime logs go
-- `logs/project/runtime/` — all application runtime output (events, training logs, evaluation metrics, errors).
+## Runtime logging conventions
+- Use `logs/runtime/` for all runtime output (events, training logs, evaluation metrics, errors).
+- Keep identifiers when available: request id, task id, run id, file names.
 
 > Create the directory on demand if it does not exist.
 
@@ -23,11 +21,6 @@ This skill covers **application logging** — logging statements embedded in cod
 ```
 [YYYY-MM-DD HH:MM:SS] [LEVEL] - Message
 ```
-
-## Application logging conventions
-- Use `logs/project/runtime/` for all runtime output.
-- Keep identifiers when available: request id, task id, run id, file names.
-- If work maps to a task, reference the task id in `memory_bank/tasks/{TASK_ID}.md`.
 
 ## Templates
 - RAPID example: `references/LOGGING_RAPID_TMP.log`
