@@ -25,7 +25,7 @@ eda/
     EDA-Insights.md
 ```
 
-## Required reads (If you haven't read it yet))
+## Required reads (If you haven't read it yet)
 - `memory_bank/ARCHITECTURE.md`
 - `memory_bank/TASKS.md`
 - active `memory_bank/tasks/{TASK_ID}.md` (if present)
@@ -35,7 +35,7 @@ eda/
 1. Build the high-level EDA profile (schema, quality, leakage risks, core distributions).
 2. Produce reproducible figures/tables in `eda/results/`.
 3. Write `eda/reports/EDA-Report.md` with a compact executive-level narrative.
-4. Generate low-level diagnostics in `eda/results/deep/`.
+4. Conduct detailed quantitative (low-level) diagnostics in `eda/results/deep/`.
 5. Write `eda/reports/EDA-Insights.md` as a detailed quantitative analysis:
    - target behavior and temporal structure,
    - feature-family diagnostics,
@@ -58,10 +58,6 @@ eda/
 ## Templates
 - Use `references/EDA_REPORT_TMP.md` for `EDA-Report.md`.
 - Use `references/EDA_INSIGHTS_TMP.md` for `EDA-Insights.md`.
-- When a prior deep report exists (for example `external/EDA-Insights.md`), keep its strongest analytical patterns and expand where useful.
-
-## Required updates
-- Log notable EDA runs and outputs per skill `apm-logs` when applicable.
 
 ## Guardrails
 - Do not run full model experiments in this stage.

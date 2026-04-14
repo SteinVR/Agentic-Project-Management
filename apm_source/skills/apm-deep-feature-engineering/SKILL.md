@@ -5,13 +5,11 @@ description: "Deep Feature Engineering stage for DS: convert EDA findings into r
 ## What I do
 - Run a dedicated post-EDA feature engineering analysis stage.
 - Produce prioritized feature hypotheses with explicit expected impact, leakage risk, and compute cost.
-- Define which features are safe for baseline now vs research backlog.
 
 ## Required reads (If you haven't read it yet)
 - `memory_bank/ARCHITECTURE.md`
 - `eda/reports/EDA-Report.md`
 - `eda/reports/EDA-Insights.md`
-- `memory_bank/TASKS.md`
 
 ## Required outputs
 - `eda/reports/Feature-Engineering.md`
@@ -19,7 +17,7 @@ description: "Deep Feature Engineering stage for DS: convert EDA findings into r
 
 ## Workflow
 1. Re-read EDA evidence and identify the strongest target signals and failure modes.
-2. Build candidate feature families (statistical, temporal, interaction, domain-specific).
+2. Build candidate feature families (statistical, temporal, interaction, domain-specific and etc.).
 3. For each candidate, score:
    - expected metric impact (high/medium/low),
    - leakage risk (high/medium/low),
@@ -29,7 +27,6 @@ description: "Deep Feature Engineering stage for DS: convert EDA findings into r
    - **Now:** safe, high-value features for baseline and next experiments.
    - **Later:** promising but expensive/risky candidates.
    - **Reject:** ideas with poor signal or unacceptable risk.
-5. Map approved candidates to task IDs in `memory_bank/TASKS.md` and create/update `memory_bank/tasks/{TASK_ID}.md` as needed.
 
 ## Template
 Use `references/Feature-Engineering_TMP.md`.
