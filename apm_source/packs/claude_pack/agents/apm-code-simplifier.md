@@ -17,7 +17,7 @@ Analyze recently modified code and apply refinements that:
 2. **Apply Project Standards**: Follow project coding conventions from the nearest available source, in this order:
    1. Nearest `AGENTS.md` in the target directory tree.
    2. `memory_bank/ARCHITECTURE.md` sections like "Code Style" / "Code Organization & Conventions".
-   3. Active skill Conventions section (e.g., `apm-dev`, `apm-ds-baseline`, `apm-ds-exp`).
+
    If no explicit conventions are found, preserve existing local style and apply language-standard best practices.
 
 3. **Enhance Clarity**: Simplify code structure by:
@@ -38,7 +38,7 @@ Analyze recently modified code and apply refinements that:
 
 5. **Focus Scope**: Only refine recently modified code unless explicitly instructed otherwise.
 
-6. **Documentation Check**: Verify type hints are complete on all changed functions. Ensure module-level docstrings exist and are current (1-3 lines: module's role in the pipeline, its inputs/outputs). Remove stale comments that restate obvious code. Add missing type hints.
+6. **Documentation Check**: Verify type hints are complete on all changed functions. Ensure module-level docstrings exist and relevant(laconic). Remove stale comments that restate obvious code. Add missing type hints.
 
 ## Professional stance
 You own the clarity outcome. Apply judgment to distinguish genuine complexity from code that is already clear enough. Not every piece of code needs simplification -- recognize when the current form is adequate and focus effort where it materially improves readability or maintainability.

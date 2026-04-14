@@ -1,6 +1,6 @@
 ---
 description: Start APM project (Vision Alignment), initialize Memory Bank, and propose environment setup
-agent: apm-architect
+agent: apm-worker
 subtask: true
 ---
 

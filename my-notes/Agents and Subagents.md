@@ -18,14 +18,14 @@
 
 - [ ] apm-architect
   - Заметка: убрать как отдельного субагента; сделать `apm-start` самодостаточным.
-- [ ] apm-code-simplifier - оставить. 
+- [ ] apm-code-simplifier - не трогать. 
 - [ ] apm-co-founder - оставить.
 - [ ] apm-data-scientist
   - Заметка: заменить на универсального `apm-worker`.
 - [ ] apm-engineer
   - Заметка: заменить на универсального `apm-worker`.
 - [ ] apm-memory-bank-sync
-  - Заметка: текущий `apm-memory-bank-sync.md` слишком раздут; нужно сжать.
+  - Заметка: текущий `apm-memory-bank-sync.md` слишком раздут; нужно сжать, а так же изменить сам стиль инструкции на более ествественный (меньше списков и т.д.)
 - [ ] apm-reviewer - оставить.
 - [ ] apm-sdet - убрать.
 - [ ] apm-team-lead  
