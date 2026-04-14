@@ -1,6 +1,6 @@
 # Project State: [Project Name]
 
-> Note: This file tracks compact RAPID project status. Keep it under 150 lines; compress old details into concise summaries.
+> Note: This file tracks compact project status. Keep it under 150 lines; compress old details into concise summaries.
 
 ---
 

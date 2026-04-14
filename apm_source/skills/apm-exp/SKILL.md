@@ -9,6 +9,13 @@ Unified workflow for planning, running, and analyzing ML/DS experiments, where b
 - `memory_bank/ARCHITECTURE.md`
 - EDA reports in `eda/reports/` (if available)
 
+## Directory initialization
+Before starting work, ensure the required directories exist. If missing, create them and place the corresponding `AGENTS.md` from this skill's `references/`:
+- `experiments/` -- use `references/EXPERIMENTS_AGENTS.md`
+- `models/` -- use `references/MODELS_AGENTS.md`
+
+Optionally, use `references/config_template.py` and `references/main_template.py` as boilerplate for new experiments when no existing structure is present.
+
 ## Experiment workflow
 1. Define hypothesis (or use user-provided). For baselines: choose a domain-appropriate model that could plausibly remain in the final pipeline -- not a toy.
 2. Plan approach, hyperparameters, and compute strategy.
@@ -40,4 +47,7 @@ Unified workflow for planning, running, and analyzing ML/DS experiments, where b
 - Add application-level logging where appropriate (runtime events, metrics, errors). Follow skill `apm-logs` for format and placement.
 - If you create helper scripts, place them under `tools/` (create if missing).
 - Keep experiments reproducible and comparable: fixed seeds, documented configs, deterministic splits where possible.
+
+## Guardrails
+- Do not store model artifacts in `logs/` (use `models/`).
 - Do not run long training without user approval.

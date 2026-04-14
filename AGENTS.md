@@ -1,7 +1,7 @@
 # Repository Guidelines
 
 ## Project Focus
-This repository is not a classic application codebase. It is the source of an agentic workflow framework: environments, methodologies, skills, packs, templates, installers, and supporting documentation for APM.
+This repository is not a classic application codebase. It is the source of an agentic workflow framework: environments, skills, packs, templates, installers, and supporting documentation for APM.
 
 ## Mandatory Context Review
 At the start of every new chat, first review:
@@ -13,17 +13,15 @@ Do not make structural or methodological changes before aligning with them.
 
 ## Terminology
 Use terms consistently:
-- **Environment** or **workflow**: `Cursor`, `OpenCode`, `Codex`
-- **Methodology**: `RAPID`, `DS`
+- **Environment**: `Cursor (legacy)`, `OpenCode`, `Codex`, `Claude Code`
 
-Do not mix these categories. `Cursor/OpenCode/Codex` are delivery environments. `RAPID/DS` are methodology layers used inside those environments.
+Environments are delivery targets. Workflow is controlled through explicitly invoked skills, not rigid methodology boundaries.
 
 ## Documentation Sync Rules
 Update `README.md` whenever the repository changes in ways that affect how APM is used or understood, especially:
 - structural repository changes
-- methodology changes
-- new skills
-- new operating modes
+- skill changes
+- new agent roles
 - environment-specific behavior changes
 
 If the change affects core architecture, orchestration principles, or framework invariants, update `APM_ARCHITECTURE.md` as well.
@@ -31,7 +29,7 @@ If the change affects core architecture, orchestration principles, or framework 
 ## Methodology-First Rule
 When working on the methodological layer of the project such as the framework itself, skills, agents, subagents, packs, instructions, contracts, or orchestration rules, do not change or finalize implementation code unless the user explicitly asks for finalization.
 
-Stabilize the framework logic, contracts, and instruction flow first. Apply code changes only at the end, once the methodological changes are settled and the user requests finalization. This avoids unnecessary code churn during large or iterative framework edits.
+Stabilize the framework logic, contracts, and instruction flow first. Apply code changes only at the end, once the methodological changes are settled and the user requests finalization.
 
 ## Writing Style For Rules And Skills
 Rules, skills, and framework instructions must be written in a high-level, declarative style. Prefer intent, constraints, decision rules, and expected outcomes over low-value verbosity.
@@ -54,10 +52,10 @@ Use them by responsibility:
 ## Repository Layout
 Key areas:
 - `apm_project/`: configurator, installers, validation scripts
-- `apm_source/methodologies/`: methodology assets for `RAPID` and `DS`
+- `apm_source/base/`: unified project template (directory structure, Memory Bank templates, project-level AGENTS.md)
 - `apm_source/skills/`: shared APM skills
-- `apm_source/packs/`: environment-specific payloads for `Cursor`, `OpenCode`, and `Codex`
+- `apm_source/packs/`: environment-specific payloads for `Cursor`, `OpenCode`, `Codex`, and `Claude Code`
 - `docs/`: supporting project documentation
 
 ## Important Scope Note
-Nested `AGENTS.md` files inside methodology directories are framework assets shipped for generated workflows. They are not governing instructions for this repository itself unless you are explicitly editing those assets as deliverables.
+Nested `AGENTS.md` files inside `apm_source/base/` and skill `references/` are framework assets shipped for generated workflows. They are not governing instructions for this repository itself unless you are explicitly editing those assets as deliverables.

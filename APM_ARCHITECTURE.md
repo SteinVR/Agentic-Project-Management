@@ -8,13 +8,13 @@ Core Principles:
 - **Spec-Driven Development (SDD):** The specification is the Single Source of Truth (SSOT). Code must follow the documented architecture, not the other way around.
 - **Only Essential Memory Bank:** Maintain a minimal, highly structured set of Markdown files to preserve sustainable context across sessions without overwhelming the LLM.
 - **Context Engineering:** Emphasize declarative control, predictable determinism, and token efficiency to maximize AI output quality and consistency.
-- **Role-Based Execution:** Tasks are delegated to specialized agent profiles (e.g., Team Lead, Architect, Engineer, SDET, Data Scientist, Reviewer, Memory Bank Sync) acting sequentially or concurrently.
+- **Skill-Driven Workflow:** Workflow is controlled through explicitly invoked skills, not rigid methodology boundaries. Skills define how to work; the user/prompt defines what to work on and with which artifacts.
 
 ---
 
 ## 2. Environments and Modalities
 
-APM supports four distinct environments (or workflows), tailoring its components for each ecosystem:
+APM supports four distinct environments, tailoring its components for each ecosystem:
 
 1. **Cursor IDE (Interactive UI):**
    - Utilizes `.cursor/agents/`, `.cursor/commands/`, and shared skills.
@@ -24,52 +24,48 @@ APM supports four distinct environments (or workflows), tailoring its components
 2. **Codex CLI (Terminal / Orchestrated):**
    - Utilizes `config.toml` for subagent declarations (`[agents.*]`) and parallel multi-agent threading.
    - Relies on standardized `.codex/skills/` following the `agentskills.io` specification.
-   - Supports primary-session operating modes: `apm-co-founder` (collaborative partner) and `apm-team-lead` (WAVE orchestrator).
+   - Supports `apm-co-founder` as a primary-session operating mode.
    - Memory Bank resides in `memory_bank/`.
 
 3. **OpenCode CLI (Terminal / Extensible):**
    - Implements custom `commands/`, `agents/`, `skills/`, and `tools/` either globally (`~/.config/opencode/`) or locally (`.opencode/`).
-   - Supports Co-Founder (`apm-co-founder`) and Team Lead (`apm-team-lead`) primary agents.
+   - Supports Co-Founder (`apm-co-founder`) as a primary agent.
    - Memory Bank resides in `memory_bank/`.
 
 4. **Claude Code (Terminal / Agentic):**
    - Subagent roles in `.claude/agents/` (Markdown + YAML frontmatter) with explicit tool allowlists, permission modes, and turn limits.
    - Skills in `.claude/skills/` following the `agentskills.io` specification (shared with Cursor).
-   - Project instructions in `CLAUDE.md` (Claude Code's equivalent of `AGENTS.md`; `AGENTS.md` support pending).
-   - Supports Co-Founder (`apm-co-founder`) and Team Lead (`apm-team-lead`) primary agents via `claude --agent <name>`.
+   - Project instructions in `CLAUDE.md` (Claude Code's equivalent of `AGENTS.md`).
+   - Supports Co-Founder (`apm-co-founder`) as a primary agent via `claude --agent apm-co-founder`.
    - Native worktree isolation (`isolation: worktree`) and persistent subagent memory (`memory: project`).
    - Memory Bank resides in `memory_bank/`.
 
 ---
 
-## 3. Supported Methodologies
+## 3. Workflow Model
 
-APM defines strict workflows based on the nature of the project:
+APM uses a single base project template. Workflow is controlled through explicitly invoked skills, not rigid methodology boundaries.
 
-- **RAPID:** Designed for fast, iterative software product development with minimal ceremonial overhead. Focuses on the core `develop -> test -> sync` loop.
-- **DS (Data Science):** Specialized workflow for analytical, ML, and research projects. Progresses through `EDA -> Deep Feature Engineering -> Baseline -> Experimentation -> Evaluation -> Finalization`.
-- **FULL (Deprecated):** Legacy workflow maintained only for older Cursor projects.
+- **Base structure** (`apm_source/base/`) provides the minimal project scaffold: `src/`, `tests/`, `logs/`, `external/`, `memory_bank/` with template files.
+- **`apm-start`** initializes the project and selects the appropriate `ARCHITECTURE.md` template (product-oriented or DS/experiment-oriented) based on the project domain.
+- **Workflow skills** extend the project structure on demand. For example, `apm-eda` creates `eda/` and `data/` directories; `apm-exp` creates `experiments/` and `models/`. A project may use any combination of skills as needed.
 
 ---
 
 ## 4. The Memory Bank (SSOT)
 
-The Memory Bank is the heartbeat of any APM project, ensuring context continuity across multiple separate LLM sessions.
+The Memory Bank ensures context continuity across multiple separate LLM sessions.
 
 **Core Files:**
 - `ARCHITECTURE.md` — The SSOT for the project's technical architecture, stack, patterns, and overarching design decisions.
 - `STATE.md` — Compact operational status and continuity context.
-- `tasks/TASKS.md` — Grouped high-level tasks organized by waves.
-- `design/SPEC-{module}.md` — Global module specifications: contracts, invariants, data formats, rules. Updated only with explicit approval.
-- `specs/SPEC_{TASK_ID}.md` — Frozen task specification: goal, pipeline, contracts, frozen decisions, output, Definition of Done. **Read-only during execution** — agents must not modify SPEC files after contract freeze.
-- `tasks/{TASK_ID}.md` — Working journal: notes, review findings, outcome.
-
-**WAVE naming:** Tasks use wave-based IDs: `W1A`, `W1B`, `W2A`, etc. Waves are sequential; tasks within a wave are parallel.
-
-**SPEC freeze:** Before a wave starts execution, all `SPEC_{TASK_ID}.md` files and cross-task contract files (Protocol/dataclass definitions) are finalized. No modifications after delegation begins.
+- `tasks/TASKS.md` — High-level task overview.
+- `design/SPEC-{module}.md` — Global module specifications: contracts, invariants, data formats. Updated only with explicit approval.
+- `specs/SPEC_{id}.md` — Frozen task specification: goal, pipeline, contracts, Definition of Done. Read-only during execution.
+- `tasks/{id}.md` — Working journal: notes, review findings, outcome.
 
 Size guardrail:
-- Keep `STATE.md` and `tasks/TASKS.md` under 150 lines; compress when limits are exceeded.
+- Keep `STATE.md` and `tasks/TASKS.md` under 120 lines; compress when limits are exceeded.
 
 ---
 
@@ -84,98 +80,56 @@ APM separates shared context, dynamic procedures, and role contracts into differ
   Global and local instruction layer for all agents and subagents in a given area.
   The root `AGENTS.md` defines general project-wide contracts and rules.
   Nested `AGENTS.md` files define local contracts and rules for a specific area, subtree, or artifact type.
-  It answers: "What must an agent always know in this area?"
 
 - **`SKILLS` = attachable procedures**
   Mechanism for dynamic, incremental instruction loading.
-  Used for specific tasks, processes, and strictly defined action sequences.
   Skills load only what is needed at the current moment, only for the agent that needs it, reducing context duplication and noise.
-  They answer: "What must the agent do right now?"
 
 - **Agent and subagent `CONFIGS` = behavioral role contracts**
   Define the role, behavior, boundaries, and global goals of a specific agent or subagent.
-  They answer: "How must this type of agent behave?"
 
 ### Agent Roles
-Agents represent specific "personas" with customized system prompts and constraints.
-- **Architect:** Strategic architecture owner. Keeps global project goals coherent, drives system-level decisions with explicit trade-offs, governs architecture consistency, and updates `ARCHITECTURE.md` (approval-gated for significant changes).
-- **Lead Engineer / Developer:** Focuses on implementation, adhering to specs.
-- **SDET (Software Development Engineer in Test):** Focuses entirely on QA, testing, and test automation.
-- **Data Scientist:** Executes the DS methodology loop.
-- **Co-Founder:** Primary project partner who co-owns vision, architecture, and direction. Strategic discussion partner with deep project understanding. Does not orchestrate by default -- orchestration goes through Team Lead. Available as a primary agent in OpenCode (`apm-co-founder`), Claude Code (`claude --agent apm-co-founder`), or as a skill in Codex (`apm-co-founder`).
-- **Team Lead:** Formalized WAVE-based orchestrator. Receives task waves, creates worktrees per task, delegates to specialist subagents with minimal contracts, runs quality gate per task, integrates per wave. Does not write implementation code (mechanical fixes only). Available as a primary agent in OpenCode (`apm-team-lead`), Claude Code (`claude --agent apm-team-lead`), or as a skill in Codex (`apm-team-lead`).
+- **Worker:** Universal execution unit. Receives a task, breaks it down via todo list, delivers results with self-review gate before handoff. Specifics come from the loaded skill and delegation instruction.
+- **Co-Founder:** Primary project partner who co-owns vision, architecture, and direction. Equal strategic partner, not an assistant. Available as a primary agent in OpenCode, Claude Code, or as a skill in Codex.
 - **Code Simplifier:** Refactors recently modified code for clarity and simplicity while preserving exact behavior. Applies project coding conventions.
-- **Reviewer:** Fully independent verification and review gate. Receives only TASK_ID and independently determines review scope, checking task/architecture alignment and ranked code risks.
-- **Memory Bank Sync:** Runs explicit Memory Bank synchronization (`STATE`, `tasks/TASKS`, `{TASK_ID}`) with line-budget compression and approval-gated architecture updates.
-- **Web-Explorer:** Lightweight web research specialist. Receives a focused research question, searches the web, reads relevant pages, and returns a condensed answer with sources. Saves the caller's context window from web-fetch noise.
+- **Reviewer:** Independent verification gate. Determines review scope autonomously, checks architecture alignment and ranked code risks. Persistent memory across sessions.
+- **Memory Bank Sync:** Reconciles Memory Bank files with recent work. Keeps `STATE.md`, `TASKS.md`, and task files aligned with actual project state. Proposes architecture updates with explicit approval gate.
+- **Web-Explorer:** Lightweight web research specialist. Receives a focused question, returns a condensed answer with sources. Saves the caller's context window from web-fetch noise.
 
 ### Skills (Dynamic Capabilities)
-Skills (`SKILL.md`) are discrete, self-contained capabilities loaded on demand. Each skill is a folder containing a required `SKILL.md` with YAML frontmatter metadata and Markdown instructions, and optional bundled resources (`scripts/`, `references/`, `agents/`).
+Skills (`SKILL.md`) are discrete, self-contained capabilities loaded on demand. Each skill is a folder containing a required `SKILL.md` with YAML frontmatter metadata and Markdown instructions, and optional bundled resources (`scripts/`, `references/`).
 
-**Two-level hierarchy:**
-- **High-level (orchestrating) skills:** Define what to do, in which order, and when to switch modes. Delegate specialized execution to low-level skills.
-- **Low-level (atomic) skills:** Define how to execute one specific process end-to-end, with steps, checklists, and edge cases. Self-contained; do not call other skills.
+Workflow skills describe HOW to work. The scenario (which artifacts exist, whether specs are involved, whether to run quality gate) is determined by the user, prompt, or delegation instruction -- not hardcoded in the skill.
 
 **Available skills:**
 
 | Skill | Purpose |
 |-------|---------|
-| `apm-start` | Vision Alignment (RAPID) or Problem Definition (DS); initializes the Memory Bank |
-| `apm-dev` | Lead Engineer implementation loop |
-| `apm-git-taskflow` | WAVE-based git flow: one branch/worktree per TASK_ID, PR flow, conflict policy, and worktree resource management |
-| `apm-quality-gate` | Post-task quality gate orchestrated by Team Lead: simplify, verify, review, fix, accept |
-| `apm-code-simplifier` | Behavior-preserving simplification of recently modified code |
-| `apm-test` | SDET testing and QA workflow |
-| `apm-review` | Architecture and code review |
+| `apm-start` | Project kickoff: Vision Alignment, Memory Bank initialization, environment setup |
+| `apm-dev` | Iterative development workflow: plan, implement, verify, self-review |
+| `apm-exp` | Experiment workflow (covers baselines, model variants, hypothesis-driven experiments) |
+| `apm-eda` | Exploratory Data Analysis: distributions, missingness, correlations, leakage risks |
+| `apm-deep-feature-engineering` | Post-EDA feature engineering analysis with ranked candidates |
+| `apm-test` | Testing workflow prioritizing comprehensive smoke tests |
+| `apm-quality-gate` | Post-implementation quality gate: simplify, verify, review, fix loop, accept |
+| `apm-git-taskflow` | Git branch/worktree isolation with shared runtime management |
 | `apm-sync` | Explicit Memory Bank synchronization on request |
-| `apm-report` | Write a structured agent session log for the current work |
-| `apm-logs` | Structured project-log and agent-log taxonomy management |
-| `apm-co-founder` | Co-Founder mode: strategic project partner for collaborative discussion |
-| `apm-team-lead` | Team Lead mode: WAVE-based orchestration with delegation, quality gate, and integration |
-| `apm-critical-execution` | Codex-only primary-session mode for intent reconstruction, spec challenge, and goal-first execution |
-| `apm-subagent` | Minimal delegation contract for specialist subagents (TASK_ID + worktree path + optional clarification) |
-| `apm-eda` | Exploratory Data Analysis workflow |
-| `apm-deep-feature-engineering` | Deep post-EDA feature engineering analysis |
-| `apm-ds-baseline` | Build domain-credible baseline models |
-| `apm-exp` | Hypothesis-driven DS experiment cycle |
-| `apm-model-report` | DS model evaluation report generation |
-| `apm-autoresearch` | Autonomous experiment loop: rapid metric optimization with keep/discard logic and results tracking |
-| `apm-skill-creator` | Guidance for creating and updating APM skills |
+| `apm-subagent` | Delegation contract for specialist subagents |
+| `apm-logs` | Runtime logging conventions |
+| `apm-autoresearch` | Autonomous experiment loop: rapid metric optimization with keep/discard logic |
 
-### Subagents and Orchestration
-In modern environments (Cursor 2.5+, Codex CLI, OpenCode, and Claude Code), APM leverages subagents coordinated by the orchestrating session. Subagent configs are mode-agnostic: they work identically whether the orchestrator is Team Lead, a standard main session, or a workflow skill. `apm-subagent` standardizes how delegation requests are framed for current specialist roles.
+### Subagents and Delegation
+In modern environments (Cursor 2.5+, Codex CLI, OpenCode, and Claude Code), APM leverages subagents coordinated by the main session or user. Subagent configs are minimal and scenario-agnostic. `apm-subagent` standardizes how delegation requests are framed.
 
-**Three interaction modes:**
-1. **Standard mode (sequential):** The user drives work through the main session, which delegates to specialist subagents for localized execution via workflow skills. One task at a time, user validates between steps.
-2. **Co-Founder mode (collaborative):** The user works with an equal project partner who co-owns vision, architecture, and direction. Natural, informal communication. Does not orchestrate by default; task execution goes through Team Lead. Activated via Shift+Tab in OpenCode (cycle to Co-Founder primary agent), `claude --agent apm-co-founder` in Claude Code, or by loading the `apm-co-founder` skill in Codex.
-3. **Team Lead mode (WAVE orchestration):** The user assigns a wave of tasks to Team Lead. Team Lead validates frozen SPECs, freezes contracts, creates worktrees, delegates to specialists, runs quality gate per task (simplify + review + contract compliance), runs Wave Integration Gate (build + typecheck + tests), and returns one compact final handoff. Activated via Shift+Tab in OpenCode (cycle to Team Lead primary agent), `claude --agent apm-team-lead` in Claude Code, or by loading the `apm-team-lead` skill in Codex.
+**Two interaction modes:**
+1. **Standard mode:** The user drives work through the main session, optionally delegating to specialist subagents. User validates between steps.
+2. **Co-Founder mode:** The user works with an equal project partner who co-owns vision, architecture, and direction. Activated via Shift+Tab in OpenCode, `claude --agent apm-co-founder` in Claude Code, or by loading the skill in Codex.
 
-**WAVE execution protocol:**
-1. **Validate SPECs:** Read `specs/SPEC_{TASK_ID}.md` for every wave task. Verify goal, approach, contracts, and DoD are defined. If cross-task contracts reference Protocol files — verify those files exist.
-2. **Contract freeze:** All SPEC files and contract files are locked. No changes until wave integration completes.
-3. **Setup:** Create a worktree per task via `apm-git-taskflow`.
-4. **Delegate (fan-out):** Spawn a specialist subagent per task with contract: TASK_ID + worktree path + SPEC reference. Do not pre-gather context for subagents.
-5. **Wait:** Do not rush subagents. Do not write code.
-6. **Quality gate (per task):** As each subagent completes, run `apm-quality-gate` (simplify -> verify -> review -> contract compliance -> fix/re-delegate).
-7. **Integrate wave (fan-in):** Merge branches, resolve mechanical conflicts, migrate untracked artifacts.
-8. **Wave Integration Gate:** Build/compile check, type check (if contracts exist), test suite, dependency/environment audit. Do not proceed if gate fails.
-9. **Next wave / Final handoff.**
-
-**Delegation contract:** TASK_ID (references frozen `specs/SPEC_{TASK_ID}.md` and working journal `tasks/{TASK_ID}.md`), worktree path, and optional clarification. Subagents self-orient from SPEC files and `memory_bank/`. Orchestrators do not pre-collect context.
-
-**Subagent constraints:**
-- Max 3 concurrent subagents per orchestrating agent.
-- Max depth 1 (subagents do not spawn sub-subagents).
-
-Subagents return compact handoffs and write `apm-report` logs under `logs/agents/{TASK_ID}/`. Team Lead writes a consolidated log under `logs/agents/` root.
-`apm-critical-execution` is primary-session only; do not load it into specialist subagents.
-Git branch/worktree/PR flow is managed by Team Lead via `apm-git-taskflow` when processing waves.
+**Delegation contract:** Task description, context pointers (relevant files, worktree path if applicable), optional clarification. Subagents self-orient from the project structure and memory bank.
 
 ---
 
 ## 6. APM Repository Structure
-
-The source repository for the APM framework itself is organized as follows:
 
 ```text
 APM/
@@ -184,13 +138,11 @@ APM/
 │   ├── scripts/                 # Installers (Codex, OpenCode, Cursor) for Bash/PS
 │   └── tests/                   # Framework E2E tests
 ├── apm_source/                  # Framework Source of Truth (Payloads)
-│   ├── methodologies/           # Templates and instructions per methodology
-│   │   ├── rapid/               # RAPID workflow template
-│   │   └── ds/                  # DS workflow template
+│   ├── base/                    # Unified project template (structure, Memory Bank templates, AGENTS.md)
 │   ├── skills/                  # Shared skills source
 │   ├── packs/                   # Environment-specific packs
 │   │   ├── codex_pack/          # Subagent roles for Codex CLI
-│   │   ├── opencode_pack/       # Native OpenCode agents/commands/tools
+│   │   ├── opencode_pack/       # Native OpenCode agents/skills
 │   │   ├── claude_pack/         # Subagent roles for Claude Code
 │   │   └── cursor_pack/         # Cursor agents and command wrappers
 │   └── _legacy/                 # Frozen legacy assets
@@ -205,10 +157,10 @@ APM/
 
 ## 7. Basic Project Workflow
 
-1. **Initialization:** Run the `apm.sh` configurator to stamp out the methodology, environment, and initial directory structure.
-2. **Setup Phase:** Run `/apm-start` to align on vision and generate the initial Memory Bank (`ARCHITECTURE.md`, `STATE.md`, `tasks/TASKS.md`, `specs/SPEC_W1A.md`, starter task file).
-3. **Execution Loop:** Work through role-specific commands (e.g., `/apm-develop`, `/apm-simplify`, `/apm-test` for RAPID; or `/apm-eda`, `/apm-deep-feature-engineering`, `/apm-experiment` for DS). Quality gate is orchestrated by Team Lead after each task completes.
-4. **WAVE Orchestration:** Assign a wave of tasks to Team Lead. Team Lead validates frozen SPECs, freezes contracts, creates worktrees, delegates, waits, runs quality gate per task (including contract compliance), runs Wave Integration Gate, integrates per wave, returns final handoff.
+1. **Initialization:** Run the `apm.sh` configurator to create the base project structure and install environment packs.
+2. **Setup Phase:** Run `/apm-start` to align on vision, select the architecture template, and generate the initial Memory Bank (`ARCHITECTURE.md`, `STATE.md`, `tasks/TASKS.md`, initial spec and task files).
+3. **Execution Loop:** Work through workflow skills (`apm-dev`, `apm-test`, `apm-eda`, `apm-exp`, `apm-deep-feature-engineering`, etc.). Domain-specific skills create their required directories on first use. Use `apm-quality-gate` when independent verification is needed.
+4. **Git Isolation:** When parallel or isolated execution is needed, use `apm-git-taskflow` for branch/worktree management with shared runtime.
 5. **Synchronization:** Run `/apm-sync` on explicit request whenever continuity updates are needed.
 
 ---
@@ -216,8 +168,5 @@ APM/
 ## 8. Core Conventions
 
 - **File Naming:** Core instruction or agent context files strictly use **UPPERCASE** naming conventions (e.g., `AGENTS.md`, `SKILL.md`, `ARCHITECTURE.md`) to distinguish them from standard project documentation.
-- **WAVE Naming:** Tasks use wave-based IDs (`W1A`, `W1B`, `W2A`). Waves are sequential; tasks within a wave are parallel. Backlog items use `BL-NNN`.
-- **SPEC Freeze:** `specs/SPEC_{TASK_ID}.md` files and cross-task contract files are finalized before wave delegation. Agents must not modify SPEC files during execution. Working notes, findings, and plans go to `tasks/{TASK_ID}.md`.
-- **Continuity Guarantee:** Use `tasks/{TASK_ID}.md` and agent logs as primary working memory during execution; sync into Memory Bank only when explicitly requested.
-- **Git Isolation:** Branch/worktree flow is managed by Team Lead during WAVE execution. One branch per task (`wave/{TASK_ID}`), one worktree per task (`.apm/worktrees/{TASK_ID}`). Heavy untracked resources are shared at repo level. New artifacts are produced locally in the worktree and migrated during integration.
+- **Git Isolation:** One branch per execution stream (`task/<identifier>`), one worktree per stream (`.apm/worktrees/<identifier>`). Heavy untracked resources are shared at repo level. New artifacts are produced locally in the worktree and migrated during integration.
 - **Skill Portability:** Whenever possible, logic should be encapsulated in reusable `.md` skills following the `agentskills.io` spec to ensure cross-compatibility between Cursor, Claude Code, and Codex.

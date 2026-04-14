@@ -9,6 +9,11 @@ Reproducible EDA workflow that turns raw dataset exploration into decision-ready
 - `memory_bank/ARCHITECTURE.md`
 - Dataset metadata and available data contracts
 
+## Directory initialization
+Before starting work, ensure the required directories exist. If missing, create them and place the corresponding `AGENTS.md` from this skill's `references/`:
+- `eda/` structure (see below) -- use `references/EDA_AGENTS.md`
+- `data/raw/`, `data/processed/`, `data/external/` -- use `references/DATA_AGENTS.md` (place as `data/AGENTS.md`)
+
 ## EDA structure
 ```
 eda/

@@ -13,7 +13,7 @@
 
 ---
 
-## Review
+## 📋 Review
 
 APM is a configurable SDD-based framework that brings structure and predictability to LLM-assisted development across Cursor IDE, Codex CLI, OpenCode CLI, and Claude Code. It standardizes project setup, roles, and documentation so teams keep continuity with minimal overhead.
 
@@ -23,25 +23,26 @@ Usage: run the TUI configurator (`apm.sh`) to generate a project, then drive wor
 
 ---
 
-## What you get
+## 📦 What you get
 
 - CLI configurator for new projects
-- Agent roles and commands
+- Agent roles (worker, co-founder, reviewer, code-simplifier, memory-bank-sync, web-explorer)
+- Workflow skills loaded on demand
 - Memory Bank for durable project context
 - Templates for specs, tasks, and reports
 
 ---
 
-## Environments
+## 🌐 Environments
 
-- **Cursor IDE** (interactive): methodology assets, `.cursor/` agents and commands, shared skills, `memory_bank/`.
+- **Cursor IDE** (interactive): `.cursor/` agents and commands, shared skills, `memory_bank/`.
 - **Codex CLI** (global or per-project): skills + subagent roles installed into `.codex/`; APM blocks merged into `.codex/config.toml`; projects use `memory_bank/` and minimal structure.
 - **OpenCode CLI** (global or per-project): commands/agents/skills installed into OpenCode; projects use `memory_bank/` and minimal structure.
-- **Claude Code** (global or per-project): subagent roles in `.claude/agents/`, skills in `.claude/skills/`, instructions in `CLAUDE.md` (Claude Code's equivalent of `AGENTS.md`); projects use `memory_bank/` and minimal structure.
+- **Claude Code** (global or per-project): subagent roles in `.claude/agents/`, skills in `.claude/skills/`, instructions in `CLAUDE.md`; projects use `memory_bank/` and minimal structure.
 
 ---
 
-## Quick Start
+## 🚀 Quick Start
 
 ### 1) Run the configurator
 
@@ -54,11 +55,8 @@ chmod +x ./apm_project/apm.sh
 ### 2) Non-interactive flags
 
 Shorthands are supported:
-- `--opencode` / `--codex` / `--cursor`
-- `--rapid` / `--ds` / `--full`
+- `--opencode` / `--codex` / `--cursor` / `--claude`
 - `--local` / `--global` / `--none` (CLI pack install; default is `--none`)
-
-Recommended order for non-interactive usage: **Environment -> Mode -> other flags**.
 
 Defaults:
 - `--project-path` defaults to the current directory
@@ -66,13 +64,13 @@ Defaults:
 
 Example:
 ```bash
-./apm_project/apm.sh --opencode --rapid --project-name "my-app" --project-path "/projects" \
-  --non-interactive --skip-cursor
+./apm_project/apm.sh --opencode --project-name "my-app" --project-path "/projects" \
+  --non-interactive
 ```
 
 In-place (inside an existing project directory):
 ```bash
-./apm_project/apm.sh --opencode --rapid --non-interactive
+./apm_project/apm.sh --opencode --non-interactive
 ```
 
 ---
@@ -114,8 +112,8 @@ PowerShell equivalents:
 Codex install adds:
 - Skills to `.codex/skills/`
 - Codex-only primary-session skills from `apm_source/packs/codex_pack/skills/`
-- Standalone subagent role configs to `.codex/agents/` (each file includes `name`, `description`, `developer_instructions`)
-- Global multi-agent settings in `.codex/config.toml` (`features.multi_agent`, `agents.max_threads`, `agents.max_depth`)
+- Standalone subagent role configs to `.codex/agents/`
+- Global multi-agent settings in `.codex/config.toml`
 
 ---
 
@@ -131,32 +129,27 @@ alias apm-cd='cd /path/to/Agentic-Project-Management'
 
 ---
 
-## Methodologies
-
-- **RAPID**: fast product iterations, minimal ceremony.
-- **DS**: data science workflow (EDA -> Deep Feature Engineering -> baseline -> experiments -> evaluation -> finalize).
-- **FULL**: deprecated (Cursor-only).
-
----
-
 ## How it works
 
-1. **/apm-start** runs Vision Alignment (RAPID) or Problem Definition (DS).
-2. After your confirmation, APM creates the Memory Bank: `ARCHITECTURE.md`, `STATE.md`, `specs/` (`SPEC_W1A.md` frozen spec), and `tasks/` (`TASKS.md` + `W1A.md` working journal).
-3. You continue with role-specific commands/skills (e.g., `/apm-develop`, `apm-eda`, `apm-deep-feature-engineering`, `apm-exp`).
-   - **Co-Founder mode** provides a collaborative primary partner who co-owns project vision, architecture, and direction. Strategic discussion partner -- does not orchestrate by default. Activate via Shift+Tab in OpenCode, `claude --agent apm-co-founder` in Claude Code, or by loading `apm-co-founder` in Codex.
-   - **Team Lead mode** enables WAVE-based orchestration: Team Lead validates frozen SPECs, freezes contracts, creates worktrees, delegates to specialists, runs quality gate per task (simplify + review + contract compliance), runs Wave Integration Gate (build + typecheck + tests), and returns one compact final handoff. Activate via Shift+Tab in OpenCode, `claude --agent apm-team-lead` in Claude Code, or by loading `apm-team-lead` in Codex.
-   - Codex can enable goal-first spec challenge by loading `apm-critical-execution` in the main session; do not use it for specialist subagents.
-4. Memory Bank synchronization is explicit (`/apm-sync`) and can be delegated to a dedicated sync subagent when configured.
-5. Logs are split into `logs/project/` for runtime and reports, and `logs/agents/{TASK_ID}/` for task-scoped agent logs. Team Lead writes consolidated logs under `logs/agents/` root.
+1. **/apm-start** runs Vision Alignment, determines the project domain, and selects the matching architecture template.
+2. After your confirmation, APM creates the Memory Bank: `ARCHITECTURE.md`, `STATE.md`, `specs/`, and `tasks/`.
+3. You continue with workflow skills:
+   - `apm-dev` for implementation, `apm-test` for testing, `apm-quality-gate` for independent verification.
+   - `apm-eda`, `apm-deep-feature-engineering`, `apm-exp` for DS/ML workflows.
+   - Domain-specific skills create their required directories on first use (e.g., `apm-eda` creates `eda/` and `data/`).
+   - **Co-Founder mode** provides a collaborative primary partner who co-owns project vision, architecture, and direction. Activate via Shift+Tab in OpenCode, `claude --agent apm-co-founder` in Claude Code, or by loading `apm-co-founder` in Codex.
+4. Memory Bank synchronization is explicit (`/apm-sync`) and delegated to the `apm-memory-bank-sync` subagent.
+5. Git isolation via `apm-git-taskflow` when parallel or isolated execution streams are needed.
 
 ---
 
-## Example flow
+## Example flows
 
-**RAPID:** `/apm-start` -> `/apm-develop` (includes `apm-quality-gate`) -> `/apm-test`
+**Product:** `/apm-start` -> `apm-dev` -> `apm-test` -> `apm-quality-gate` (optional) -> `/apm-sync`
 
-**DS:** `/apm-start` -> `/apm-eda` (`EDA-Report.md` + `EDA-Insights.md`) -> `/apm-deep-feature-engineering` -> `/apm-baseline` / `/apm-experiment` (includes `apm-quality-gate`) -> `/apm-review`
+**DS/ML:** `/apm-start` -> `apm-eda` -> `apm-deep-feature-engineering` -> `apm-exp` (baseline + experiments) -> `/apm-sync`
+
+**Mixed:** combine skills from both as needed within the same project.
 
 ---
 
@@ -168,71 +161,67 @@ Core files:
 - `ARCHITECTURE.md`
 - `STATE.md`
 - `tasks/TASKS.md`
-- `design/SPEC-{module}.md` — global module specifications (contracts, invariants, data formats). Updated only with approval.
-- `specs/SPEC_{TASK_ID}.md` — frozen task specification (goal, pipeline, contracts, DoD). Read-only during execution.
-- `tasks/{TASK_ID}.md` — working journal (notes, review findings, outcome).
-
-WAVE naming: `W1A`, `W1B`, `W2A`, etc. Waves are sequential; tasks within a wave are parallel. Backlog items use `BL-NNN`. SPECs and cross-task contracts are frozen before wave delegation begins.
+- `design/SPEC-{module}.md` -- global module specifications (contracts, invariants, data formats). Updated only with approval.
+- `specs/SPEC_{id}.md` -- frozen task specification. Read-only during execution.
+- `tasks/{id}.md` -- working journal (notes, review findings, outcome).
 
 Line budget:
-- Keep `STATE.md` and `tasks/TASKS.md` under 150 lines (compress when exceeded).
+- Keep `STATE.md` and `tasks/TASKS.md` under 120 lines (compress when exceeded).
 
 ## Logs
 
-- `logs/project/runtime/` stores runtime, training, evaluation, metrics, and error logs.
+- `logs/runtime/` stores runtime, training, evaluation, metrics, and error logs.
 - `logs/project/reports/` stores generated reports such as test, review, and model reports.
-- `logs/agents/{TASK_ID}/` stores task-scoped agent logs written via `apm-report`. Each agent working on a task writes here.
-- Team Lead writes consolidated orchestration logs under `logs/agents/` root.
-- In Codex, spawned roles get their human-readable identity only from their agent config files.
 
 ## Git Isolation
 
-- Git flow is managed by Team Lead during WAVE execution via `apm-git-taskflow`.
-- One branch per task: `wave/{TASK_ID}`. One worktree per task: `.apm/worktrees/{TASK_ID}`.
+- Managed via `apm-git-taskflow` when isolated execution streams are needed.
+- One branch per stream: `task/<identifier>`. One worktree per stream: `.apm/worktrees/<identifier>`.
 - Heavy untracked resources (runtime, data, models) are shared at repo level -- not copied per worktree.
-- New artifacts are produced locally in the worktree and migrated during wave integration.
+- New artifacts are produced locally in the worktree and migrated after merge.
 
 ---
 
-## Commands
+## Skills
 
-### Common
+| Skill | Description |
+|-------|-------------|
+| `apm-start` | Project kickoff: Vision Alignment + Memory Bank initialization |
+| `apm-dev` | Iterative development workflow: plan, implement, verify, self-review |
+| `apm-exp` | Experiment workflow (baselines, model variants, hypothesis-driven experiments) |
+| `apm-eda` | Exploratory Data Analysis |
+| `apm-deep-feature-engineering` | Post-EDA feature engineering analysis |
+| `apm-test` | Testing workflow (smoke > integration > unit) |
+| `apm-quality-gate` | Post-implementation quality gate: simplify, verify, review, fix loop |
+| `apm-git-taskflow` | Git branch/worktree isolation with shared runtime management |
+| `apm-sync` | Explicit Memory Bank synchronization |
+| `apm-subagent` | Delegation contract for specialist subagents |
+| `apm-logs` | Runtime logging conventions |
+| `apm-autoresearch` | Autonomous experiment loop for rapid metric optimization |
 
-| Command | Description |
-|---------|-------------|
-| `/apm-start` | Vision Alignment / Problem Definition + Memory Bank initialization + environment proposal |
-| `/apm-architect` | Strategic architecture decisions, trade-off analysis, and architecture-governance updates (with user confirmation for major changes) |
-| `/apm-review` | Architecture review and recommendations |
-| `/apm-sync` | Explicit Memory Bank synchronization on request |
-| `/apm-report` | Write a structured agent log for a delegated task stream or the primary session |
+---
 
-### RAPID
+## Agent roles
 
-| Command | Description |
-|---------|-------------|
-| `/apm-develop` | Lead Engineer implementation loop |
-| `/apm-simplify` | Behavior-preserving simplification pass (maps to `apm-code-simplifier`) |
-| `/apm-test` | SDET testing / QA |
-
-### DS
-
-| Command | Description |
-|---------|-------------|
-| `/apm-eda` | Exploratory Data Analysis workflow |
-| `/apm-deep-feature-engineering` | Deep post-EDA feature engineering analysis |
-| `/apm-baseline` | Build a domain-credible baseline model |
-| `/apm-experiment` | Hypothesis-driven experiment cycle |
+| Role | Description |
+|------|-------------|
+| `apm-worker` | Universal execution unit: receives task, delivers results with self-review |
+| `apm-co-founder` | Primary project partner, equal strategic collaborator |
+| `apm-code-simplifier` | Behavior-preserving code simplification |
+| `apm-reviewer` | Independent verification gate with persistent memory |
+| `apm-memory-bank-sync` | Memory Bank reconciliation specialist |
+| `apm-web-explorer` | Web research specialist |
 
 ---
 
 ## Notes
 
+- Base project template lives in `apm_source/base/`.
+- Shared skills live in `apm_source/skills/`.
 - OpenCode pack lives in `apm_source/packs/opencode_pack/`.
-- Shared CLI skills live in `apm_source/skills/`.
-- Codex pack source lives in `apm_source/packs/codex_pack/` (subagent roles plus Codex-only primary-session skills).
+- Codex pack source lives in `apm_source/packs/codex_pack/`.
 - Cursor agents/commands pack lives in `apm_source/packs/cursor_pack/`.
-- Claude Code pack source lives in `apm_source/packs/claude_pack/` (subagent roles for Claude Code).
-- Methodology templates live in `apm_source/methodologies/{rapid,ds}/`.
+- Claude Code pack source lives in `apm_source/packs/claude_pack/`.
 - Legacy FULL methodology is stored in `apm_source/_legacy/cursor_ide/full_deprecated/`.
 
 ---
@@ -240,9 +229,9 @@ Line budget:
 ## OpenCode CLI architecture
 
 - **Commands** = playbooks the user runs (`/apm-*`). They set the phase and required context.
-- **Agents** = role profiles plus primary agents: Co-Founder (`apm-co-founder`) for strategic partnership, Team Lead (`apm-team-lead`) for WAVE orchestration. Switch via Shift+Tab (cycle primary agents).
-- **Skills** = modular knowledge chunks loaded on demand (governance, arch, team-lead mode, subagent delegation contracts, dev, simplification, test, logs, DS workflows).
-- **Tools** = custom actions (e.g., `apm_init_structure`) used by commands.
+- **Agents** = role profiles plus primary agent: Co-Founder (`apm-co-founder`) for strategic partnership. Switch via Shift+Tab.
+- **Skills** = modular knowledge chunks loaded on demand (dev, test, DS workflows, subagent delegation, git isolation, logs).
+- **Tools** = custom actions used by commands.
 - **Install targets**:
   - Global: `~/.config/opencode/{commands,agents,skills,tools}`
   - Local: `.opencode/{commands,agents,skills,tools}` inside a project
@@ -251,11 +240,11 @@ Line budget:
 
 ## Claude Code architecture
 
-- **Subagents** = specialist roles in `.claude/agents/` (Markdown + YAML frontmatter). Each subagent has explicit tool allowlists, permission modes, effort levels, and turn limits. Spawned automatically or via `@"agent-name"`.
-- **Primary agents** = Co-Founder (`apm-co-founder`) and Team Lead (`apm-team-lead`). Activated via `claude --agent <name>` or `"agent"` in `.claude/settings.json`.
-- **Skills** = shared `agentskills.io` skills in `.claude/skills/`. User-invocable via `/apm-*`. Same format as Cursor.
+- **Subagents** = specialist roles in `.claude/agents/` (Markdown + YAML frontmatter). Each subagent has explicit tool allowlists, permission modes, effort levels, and turn limits.
+- **Primary agents** = Co-Founder (`apm-co-founder`). Activated via `claude --agent apm-co-founder`.
+- **Skills** = shared `agentskills.io` skills in `.claude/skills/`. Same format as Cursor.
 - **Instructions** = `CLAUDE.md` (equivalent of `AGENTS.md`). Supports subdirectory discovery, `@import` syntax, and `.claude/rules/` for path-scoped modular rules.
-- **Tool control** = per-subagent `tools` (allowlist) and `disallowedTools` (denylist). Code-reviewer gets read-only tools; Team Lead gets scoped `Agent()` for known specialists only.
+- **Tool control** = per-subagent `tools` (allowlist) and `disallowedTools` (denylist).
 - **Persistent memory** = `memory: project` gives subagents cross-session learning (e.g., reviewer accumulates project patterns).
 - **Install targets**:
   - Global: `~/.claude/{agents,skills}`
