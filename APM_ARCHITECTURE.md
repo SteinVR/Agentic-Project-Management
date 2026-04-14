@@ -137,7 +137,7 @@ Skills (`SKILL.md`) are discrete, self-contained capabilities loaded on demand. 
 | `apm-eda` | Exploratory Data Analysis workflow |
 | `apm-deep-feature-engineering` | Deep post-EDA feature engineering analysis |
 | `apm-ds-baseline` | Build domain-credible baseline models |
-| `apm-ds-exp` | Hypothesis-driven DS experiment cycle |
+| `apm-exp` | Hypothesis-driven DS experiment cycle |
 | `apm-model-report` | DS model evaluation report generation |
 | `apm-autoresearch` | Autonomous experiment loop: rapid metric optimization with keep/discard logic and results tracking |
 | `apm-skill-creator` | Guidance for creating and updating APM skills |

@@ -1,12 +1,13 @@
 ---
 name: apm-eda
-description: "Exploratory Data Analysis: analyze distributions, missingness, correlations, and leakage risks. Produces reproducible artifacts and EDA reports under eda/ (high-level EDA-Report and deep EDA-Insights). Use when exploring a new dataset or validating data quality."
+description: "Exploratory Data Analysis: analyze distributions, missingness, correlations, and leakage risks. Produces reproducible artifacts and EDA reports under eda/."
 ---
-## What I do
-- Provide a reproducible EDA workflow under `eda/`.
-- Produce two complementary reports:
-  - `EDA-Report.md`: high-level overview for quick decisions.
-  - `EDA-Insights.md`: exhaustive low-level quantitative analysis with explicit insights and guardrails.
+## Skill Description
+Reproducible EDA workflow that turns raw dataset exploration into decision-ready reporting and deep quantitative evidence.
+
+## Required reads (if you haven't read yet)
+- `memory_bank/ARCHITECTURE.md`
+- Dataset metadata and available data contracts
 
 ## EDA structure
 ```
@@ -25,13 +26,7 @@ eda/
     EDA-Insights.md
 ```
 
-## Required reads (If you haven't read it yet)
-- `memory_bank/ARCHITECTURE.md`
-- `memory_bank/TASKS.md`
-- active `memory_bank/tasks/{TASK_ID}.md` (if present)
-- dataset metadata and available data contracts
-
-## EDA workflow
+## Workflow
 1. Build the high-level EDA profile (schema, quality, leakage risks, core distributions).
 2. Produce reproducible figures/tables in `eda/results/`.
 3. Write `eda/reports/EDA-Report.md` with a compact executive-level narrative.

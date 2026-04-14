@@ -143,7 +143,7 @@ alias apm-cd='cd /path/to/Agentic-Project-Management'
 
 1. **/apm-start** runs Vision Alignment (RAPID) or Problem Definition (DS).
 2. After your confirmation, APM creates the Memory Bank: `ARCHITECTURE.md`, `STATE.md`, `specs/` (`SPEC_W1A.md` frozen spec), and `tasks/` (`TASKS.md` + `W1A.md` working journal).
-3. You continue with role-specific commands/skills (e.g., `/apm-develop`, `apm-eda`, `apm-deep-feature-engineering`, `apm-ds-exp`).
+3. You continue with role-specific commands/skills (e.g., `/apm-develop`, `apm-eda`, `apm-deep-feature-engineering`, `apm-exp`).
    - **Co-Founder mode** provides a collaborative primary partner who co-owns project vision, architecture, and direction. Strategic discussion partner -- does not orchestrate by default. Activate via Shift+Tab in OpenCode, `claude --agent apm-co-founder` in Claude Code, or by loading `apm-co-founder` in Codex.
    - **Team Lead mode** enables WAVE-based orchestration: Team Lead validates frozen SPECs, freezes contracts, creates worktrees, delegates to specialists, runs quality gate per task (simplify + review + contract compliance), runs Wave Integration Gate (build + typecheck + tests), and returns one compact final handoff. Activate via Shift+Tab in OpenCode, `claude --agent apm-team-lead` in Claude Code, or by loading `apm-team-lead` in Codex.
    - Codex can enable goal-first spec challenge by loading `apm-critical-execution` in the main session; do not use it for specialist subagents.

@@ -1,1 +1,0 @@
-- Follow skill `apm-logs` for runtime logging conventions.

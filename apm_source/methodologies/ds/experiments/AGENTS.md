@@ -1,5 +1,5 @@
 ## Skill
-- Use skill `apm-ds-exp` for hypothesis-driven experiments.
+- Use skill `apm-exp` for hypothesis-driven experiments.
 
 ## Expected structure
 Each experiment lives in its own directory:
@@ -7,7 +7,7 @@ Each experiment lives in its own directory:
 experiments/EXP-XXX_{description}/
   main_exp.py      # Experiment pipeline (cell-like blocks)
   config.py        # Experiment-specific hyperparameters
-  REPORT.md        # Experiment report (from apm-ds-exp template)
+  REPORT.md        # Experiment report (from apm-exp template)
 ```
 
 ## Naming convention

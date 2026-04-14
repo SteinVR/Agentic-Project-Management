@@ -10,5 +10,5 @@ $ARGUMENTS
 
 ## Instructions
 - Use `apm-data-scientist`.
-- Load and follow skill `apm-ds-exp`.
+- Load and follow skill `apm-exp`.
 - Compare results against baseline and log outcomes.

@@ -1,0 +1,43 @@
+---
+name: apm-exp
+description: "Hypothesis-driven experiment workflow for ML/DS projects: plan, implement, validate, run, analyze. Covers baselines, model variants, and hyperparameter exploration."
+---
+## Skill Description
+Unified workflow for planning, running, and analyzing ML/DS experiments, where baseline work is treated as the first reference experiment in the same execution model.
+
+## Required reads (if you haven't read yet)
+- `memory_bank/ARCHITECTURE.md`
+- EDA reports in `eda/reports/` (if available)
+
+## Experiment workflow
+1. Define hypothesis (or use user-provided). For baselines: choose a domain-appropriate model that could plausibly remain in the final pipeline -- not a toy.
+2. Plan approach, hyperparameters, and compute strategy.
+3. Create `experiments/EXP-XXX_<desc>/` with:
+   - `main_exp.py`
+   - `config.py`
+   - `EXP-XXX_REPORT.md` (from template — leave Results, Analysis, and Conclusions sections empty until full run completes)
+4. Implement experiment code in accordance with the **Conventions**.
+5. **Self-review**: perform self-review gate — focus on code correctness and contract compliance
+6. Smoke test: run on a small subset to verify the pipeline executes end-to-end without errors. Stability only -- do not record metrics or write report content. Fix and re-run if it fails.
+7. Full run: do not start without user approval. When approved provide tmux session for user progress controlling.
+8. Post-run analysis (only after full run completes -- this is when report content gets written):
+   - Produce diagnostic artifacts: training curves, confusion matrix, per-class/per-split metrics, error distribution, feature importance -- whatever is relevant.
+   - Produce comparison tables: metrics vs baseline and prior experiments.
+   - Analyze model behavior: where it succeeds, where it fails,  metric plateaus, gradient issues, error patterns, overfitting signals, convergence dynamics.
+   - Write analytical conclusions in the experiment report: what the results mean, which directions are promising, which are dead ends.
+   - Formulate next-step recommendations grounded in the analysis (new hypotheses, hyperparameter adjustments, architectural changes, data preprocessing ideas and etc).
+9. Save artifacts to `models/` and logs per skill `apm-logs`. Use `references/MODEL_REPORT_TMP.md` when documenting a model for comparison or delivery.
+10. If analysis reveals the original plan is suboptimal, reveal it to user, explain and suggest.
+
+## Templates
+- `references/EXPERIMENT_REPORT_TMP.md` -- experiment report structure.
+- `references/MODEL_REPORT_TMP.md` -- model documentation for comparison or delivery.
+- `references/BASELINE_GUIDE.md` -- baseline-specific considerations.
+
+## Conventions
+- Prefer simple, modular solutions (**SOLID/DRY**).
+- Use explicit type hints (annotations) for function parameters and return values.
+- Add application-level logging where appropriate (runtime events, metrics, errors). Follow skill `apm-logs` for format and placement.
+- If you create helper scripts, place them under `tools/` (create if missing).
+- Keep experiments reproducible and comparable: fixed seeds, documented configs, deterministic splits where possible.
+- Do not run long training without user approval.

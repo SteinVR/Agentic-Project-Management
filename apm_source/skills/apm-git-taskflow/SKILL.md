@@ -1,130 +1,54 @@
 ---
 name: apm-git-taskflow
-description: "Task-scoped git execution contract: create or reuse one branch/worktree per TASK_ID, prepare PR content, handle merge conflicts, and run wave integration gate. Designed for WAVE-based orchestration."
+description: "Git branch/worktree isolation workflow with shared runtime management. Use when you need isolated execution streams or parallel development without contaminating the main tree."
 ---
-## What I do
-- Enforce one git branch and one worktree per active TASK_ID.
-- Keep parallel writes isolated by task ownership.
-- Standardize PR creation, PR content, and conflict handling.
-- Define and run the Wave Integration Gate after branch merges.
+## Skill Description
+Workflow for creating and operating isolated git worktrees with one branch per execution stream, while reusing shared runtime and data resources.
 
-## Activation rule
-Valid triggers:
-- The user explicitly requests branch/worktree/PR flow.
-- The orchestrating agent receives a wave of tasks that require isolated execution.
-
-## TASK_ID contract
-- `TASK_ID` is the identifier used for branch/worktree naming.
-- WAVE naming: `W1A`, `W1B`, `W2A`, etc. (wave number + task letter).
-- Fallback: short explicit identifier assigned at delegation time.
-
-## Naming contract
-- Task branch: `wave/{TASK_ID}`
-- Worktree path: `.apm/worktrees/{TASK_ID}`
-- Reuse existing task branch/worktree if already initialized.
-
-## Required setup workflow
-1. Identify `TASK_ID`:
-   - from active `memory_bank/specs/SPEC_{TASK_ID}.md`, or
-   - from an explicit identifier provided by the user or orchestrator.
-2. Detect base branch (usually current integration branch, e.g., `main`).
-3. Ensure `.apm/worktrees/` exists.
-4. Create or reuse task branch:
-   - if branch exists, reuse;
-   - if not, create from base branch.
-5. Create or reuse task worktree under `.apm/worktrees/{TASK_ID}`.
-6. If `memory_bank/tasks/{TASK_ID}.md` exists and the user wants git traceability in task notes, record compact git context there:
-   - Base branch
-   - Task branch
-   - Worktree path
+## Branch and worktree setup
+1. Pick a stream identifier from user context (for example `w1a`, `feature-x`, `hotfix-auth`).
+2. Detect base branch (usually `main` or current integration branch).
+3. Create or reuse:
+   - Branch: `<identifier>`
+   - Worktree: `.apm/worktrees/<identifier>`
+4. Reuse existing branch/worktree if already initialized.
 
 ## Worktree resource management
+Git worktrees contain tracked files only. Heavy untracked resources do not appear automatically.
 
-Git worktrees check out only tracked files. Heavy untracked resources (virtual environments, datasets, model artifacts, caches) are absent in a new worktree by default.
-
-### Resource classification
-
-| Category | Examples | Worktree strategy |
+### Resource strategy
+| Category | Examples | Strategy |
 |---|---|---|
-| Shared runtime (single per repo) | `.venv`, `node_modules` | Use the shared runtime from the main tree (no per-worktree envs) |
-| Shared data | `data/raw/`, `data/external/`, `data/processed/` | Reference the main-tree data (do not copy) |
-| Read-reference artifacts | Existing trained models needed for fine-tuning or inference | Subagent references via project structure or absolute path |
-| Task-local outputs | New models, checkpoints, experiment results, logs | Created locally in worktree |
+| Shared runtime | `.venv`, `node_modules` | Reuse one repo-level runtime. Do not create per-worktree copies. |
+| Shared data | `data/raw/`, `data/external/`, `data/processed/` | Reference from main tree. Do not copy. |
+| Read-reference artifacts | Existing trained models | Reference by path; do not duplicate. |
+| Stream-local outputs | New models, checkpoints, experiment logs | Keep inside worktree until integration. |
 
-### Shared runtime protocol (default)
+### Shared runtime protocol
+- Default symlink set: `.venv`, `node_modules`, `data`.
+- If the project requires a different set, define it explicitly in your instruction and apply that list.
+- Use `scripts/setup_shared_runtime_symlinks_example.sh` as executable example instead of embedding shell code here.
+- If the project uses DVC, `dvc checkout` inside a worktree resolves data references from shared cache.
 
-Default policy: keep a **single** repo-level runtime and reuse it across all worktrees. Do not create a separate `.venv` (or separate `node_modules`) per worktree.
+### Dependency changes
+When dependencies change (`pyproject.toml`, `requirements*.txt`, `package.json`, lockfiles):
+1. Apply dependency changes in code/lockfiles first.
+2. Update the single shared runtime from the main tree (`uv sync`, `npm install`, `pnpm install`, etc.).
+3. Do this in one stream at a time. Do not run dependency installs in parallel streams, because they mutate the same shared environment and can corrupt or overwrite each other.
+4. After sync, run a short verification command (`python -c "import <module>"`, `npm run test -- <smoke>`, or project equivalent) before continuing work in other streams.
 
-If your environment/tooling expects paths to exist inside the worktree, you may create **convenience symlinks** after step 5 (worktree creation):
-
-```bash
-MAIN_TREE="$(git -C .apm/worktrees/{TASK_ID} rev-parse --path-format=absolute --git-common-dir | xargs -I{} dirname {})"
-WT_DIR=".apm/worktrees/{TASK_ID}"
-
-[ -d "$MAIN_TREE/.venv" ] && ln -sfn "$MAIN_TREE/.venv" "$WT_DIR/.venv"
-[ -d "$MAIN_TREE/node_modules" ] && ln -sfn "$MAIN_TREE/node_modules" "$WT_DIR/node_modules"
-[ -d "$MAIN_TREE/data" ] && ln -sfn "$MAIN_TREE/data" "$WT_DIR/data"
-```
-
-Adapt paths to the project layout documented in `memory_bank/ARCHITECTURE.md`. If the project uses DVC, `dvc checkout` inside the worktree resolves data references from the shared DVC cache automatically.
-
-### Dependency change handling (safe updates)
-
-When a task changes dependencies (`pyproject.toml`, `requirements*.txt`, `package.json`, lockfiles), update the **shared** runtime using a managed toolchain:
-- Prefer a lockfile-driven approach (e.g., `uv.lock`, `pnpm-lock.yaml`, etc.).
-- Apply changes via safe sync tools (e.g., `uv sync`, package-manager install) to update the shared `.venv` / `node_modules`.
-- Serialize updates: do not run concurrent dependency updates across parallel tasks.
-- After sync, run a short verification relevant to the task scope.
-
-### Artifact integration after merge
-
-After merging a task branch into the base branch, untracked task-local artifacts (new models, reports, generated data) remain only in the worktree directory. Before `git worktree remove`:
-1. Copy new untracked artifacts from the worktree to the corresponding locations in the main tree.
-2. Verify artifact integrity (checksums, config snapshots).
+### Artifact migration after merge
+Before removing a merged worktree:
+1. Copy new untracked artifacts from worktree to main tree.
+2. Verify artifact integrity.
 3. Remove the worktree.
 
-### Configuration
-
-Projects may override the default symlink list via `memory_bank/ARCHITECTURE.md` (section "Shared resources" or equivalent). If present, follow the project-specific list instead of the defaults above.
-
-## Wave Integration Gate
-
-Run after all task branches in a wave are merged and artifacts are migrated. This gate validates the integrated codebase before proceeding to the next wave or final handoff.
-
-### Gate steps
-1. **Build/compile check**: run the project's build or import validation (language-appropriate). For Python: verify all imports resolve (`python -c "import <main_module>"`).
-2. **Type check**: if contract/Protocol files exist, run the project's type checker (e.g., `mypy`, `pyright`). Focus on contract-defined interfaces.
-3. **Test suite**: run tests in layer order — unit tests first, then contract tests, then cross-task integration tests. If pipeline/E2E tests exist, run those last. If no tests exist yet (e.g., Wave 1 greenfield), note it and skip gracefully.
-4. **Dependency audit**: verify the lockfile is consistent and no per-worktree runtime was created (no `.venv` or `node_modules` inside `.apm/worktrees/`).
-5. **Environment hygiene**: confirm all worktrees are cleaned up. No orphan branches remain.
-
-### Gate outcome
-- **Pass**: all checks succeed (or are gracefully skipped with justification). Proceed to next wave or final handoff.
-- **Fail**: fix the failure, re-run the failing check. Do not proceed until the gate passes.
-
-## PR contract
-Create PR when:
-- the task is complete, or
-- the user explicitly requests PR creation.
-
-PR body must include:
-1. Task context (`TASK_ID` and objective)
-2. What changed
-3. Verification evidence
-4. Risks / deferred items
-5. Conflict notes (if conflicts were resolved)
-
-If PR cannot be opened automatically (missing remote/permissions/tooling):
-- prepare a PR package (title + full body + verification summary + diff summary),
-- return it to the user and wait for further instruction.
-
 ## Conflict policy
-- Resolve mechanical conflicts (non-semantic merge conflicts) directly.
-- After mechanical conflict resolution, rerun relevant verification.
-- Escalate semantic conflicts (requirements, behavior intent, architecture meaning) to the user before final merge.
+Conflict policy defines what you resolve yourself and what you escalate.
+
+- Mechanical conflicts: same file touched, but intent is equivalent (import order, formatting, adjacent edits, obvious line-level merge). Resolve directly, then run verification.
+- Semantic conflicts: different behavioral intent (API contract, business logic, algorithm choice, data schema, acceptance criteria). Do not auto-resolve. Escalate to user with options and impact.
 
 ## Guardrails
-- Do not run write-heavy parallel streams in the same branch/worktree.
-- Do not mix multiple TASK_IDs in one task branch.
+- Do not mix unrelated streams in one branch/worktree.
 - Do not auto-merge semantic conflicts.
-- Do not proceed to next wave if integration gate fails.

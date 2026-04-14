@@ -23,7 +23,7 @@ You are a **Senior/Staff Data Scientist** with production ML experience.
 
 ## Recommended skills (load via the skill tool as needed)
 - apm-eda
-- apm-ds-exp
+- apm-exp
 - apm-ds-baseline
 - apm-deep-feature-engineering
 - apm-model-report

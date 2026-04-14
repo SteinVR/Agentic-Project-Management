@@ -3,10 +3,10 @@ name: apm-autoresearch
 description: "Autonomous experiment loop: agent iterates on code, runs experiments, keeps improvements, discards failures, repeats indefinitely. Use for rapid metric optimization — model training (val_loss, accuracy), performance tuning (latency, throughput), or any measurable objective. Inspired by Karpathy's autoresearch."
 ---
 
-## What I do
-Run an autonomous cycle of rapid experiments against a single target metric. Each iteration: hypothesize → modify code → run → evaluate → keep or discard. No human in the loop until manually interrupted.
+## Skill Description
+Autonomous high-frequency experimentation workflow that continuously iterates against a single target metric and retains only validated improvements until manually stopped.
 
-Does **not** replace `apm-ds-exp`. That skill is for single, carefully-planned experiments with quality gates and user approval. This skill is for high-volume autonomous iteration.
+Does **not** replace `apm-exp`. That skill is for single, carefully-planned experiments with quality gates and user approval. This skill is for high-volume autonomous iteration.
 
 ## Setup (with user)
 
