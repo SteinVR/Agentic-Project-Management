@@ -47,7 +47,7 @@ APM supports four distinct environments, tailoring its components for each ecosy
 APM uses a single base project template. Workflow is controlled through explicitly invoked skills, not rigid methodology boundaries.
 
 - **Base structure** (`apm_source/base/`) provides the minimal project scaffold: `src/`, `tests/`, `logs/`, `external/`, `memory_bank/` with template files.
-- **`apm-start`** initializes the project and selects the appropriate `ARCHITECTURE.md` template (product-oriented or DS/experiment-oriented) based on the project domain.
+- **`apm-start`** initializes the project, bootstraps the dual-branch git layout (`main` clean, `dev` working), and selects the appropriate `ARCHITECTURE.md` template (product-oriented or DS/experiment-oriented) based on the project domain.
 - **Workflow skills** extend the project structure on demand. For example, `apm-eda` creates `eda/` and `data/` directories; `apm-exp` creates `experiments/` and `models/`. A project may use any combination of skills as needed.
 
 ---
@@ -101,22 +101,24 @@ Skills (`SKILL.md`) are discrete, self-contained capabilities loaded on demand. 
 
 Workflow skills describe HOW to work. The scenario (which artifacts exist, whether specs are involved, whether to run quality gate) is determined by the user, prompt, or delegation instruction -- not hardcoded in the skill.
 
-Primary sessions also use `apm` as the core session overlay: it adds the main-agent operating loop (`plan -> execute -> self-review`), workflow-skill selection, and delegation boundaries on top of the shared `AGENTS.md` rules.
+In APM, a workflow skill is a skill marked as `Workflow skill` in its description. It defines the execution flow for a class of work and serves as the procedural layer the agent follows for that task type.
+
+Primary sessions also use `apm` as the core session overlay: it adds the main-agent operating loop, the pre-implementation decision gate for non-trivial work (task/spec mode, verification mode, execution mode), workflow-skill selection, and delegation boundaries on top of the shared `AGENTS.md` rules.
 
 **Available skills:**
 
 | Skill | Purpose |
 |-------|---------|
-| `apm` | Core main-session operating frame: choose workflow skill, plan -> execute -> self-review, keep context narrow |
-| `apm-start` | Project kickoff: Vision Alignment, Memory Bank initialization, environment setup |
-| `apm-dev` | Iterative development workflow: plan, implement, verify, self-review |
-| `apm-exp` | Experiment workflow (covers baselines, model variants, hypothesis-driven experiments) |
-| `apm-eda` | Exploratory Data Analysis: distributions, missingness, correlations, leakage risks |
-| `apm-deep-feature-engineering` | Post-EDA feature engineering analysis with ranked candidates |
-| `apm-test` | Testing workflow prioritizing comprehensive smoke tests |
+| `apm` | Core main-session operating frame: resolve task mode, choose workflow skill, plan -> execute -> self-review |
+| `apm-start` | Project kickoff: Vision Alignment, dual-branch git bootstrap, Memory Bank initialization, environment setup |
+| `apm-dev` | Workflow skill for iterative development: plan, implement, verify, self-review |
+| `apm-exp` | Workflow skill for experiments (covers baselines, model variants, hypothesis-driven experiments) |
+| `apm-eda` | Workflow skill for Exploratory Data Analysis: distributions, missingness, correlations, leakage risks |
+| `apm-deep-feature-engineering` | Workflow skill for post-EDA feature engineering analysis with ranked candidates |
+| `apm-test` | Workflow skill for testing, prioritizing comprehensive smoke tests |
 | `apm-quality-gate` | Post-implementation quality gate: simplify, verify, review, fix loop, accept |
-| `apm-git-taskflow` | Git branch/worktree isolation with shared runtime management |
-| `apm-sync` | Explicit Memory Bank synchronization on request |
+| `apm-git-taskflow` | Git branch/worktree isolation from `dev` with shared runtime management |
+| `apm-sync` | Workflow skill for explicit Memory Bank synchronization on request |
 | `apm-subagent` | Delegation contract for specialist subagents |
 | `apm-logs` | Runtime logging conventions |
 | `apm-autoresearch` | Autonomous experiment loop: rapid metric optimization with keep/discard logic |
@@ -161,9 +163,9 @@ APM/
 ## 7. Basic Project Workflow
 
 1. **Initialization:** Run the `apm.sh` configurator to create the base project structure and install environment packs.
-2. **Setup Phase:** Run `/apm-start` to align on vision, select the architecture template, and generate the initial Memory Bank (`ARCHITECTURE.md`, `STATE.md`, `tasks/TASKS.md`, initial spec and task files).
-3. **Execution Loop:** Work through workflow skills (`apm-dev`, `apm-test`, `apm-eda`, `apm-exp`, `apm-deep-feature-engineering`, etc.). Domain-specific skills create their required directories on first use. Use `apm-quality-gate` when independent verification is needed.
-4. **Git Isolation:** When parallel or isolated execution is needed, use `apm-git-taskflow` for branch/worktree management with shared runtime.
+2. **Setup Phase:** Run `/apm-start` to align on vision, bootstrap two independent branches (`main` clean, `dev` working), select the architecture template, and generate the initial Memory Bank on `dev` (`ARCHITECTURE.md`, `STATE.md`, `tasks/TASKS.md`, initial spec and task files).
+3. **Execution Loop:** Work through workflow skills (`apm-dev`, `apm-test`, `apm-eda`, `apm-exp`, `apm-deep-feature-engineering`, etc.) on `dev`. Domain-specific skills create their required directories on first use. Use `apm-quality-gate` when independent verification is needed.
+4. **Git Isolation:** When parallel or isolated execution is needed, use `apm-git-taskflow` for `dev`-based branch/worktree management with shared runtime.
 5. **Synchronization:** Run `/apm-sync` on explicit request whenever continuity updates are needed.
 
 ---
@@ -171,5 +173,6 @@ APM/
 ## 8. Core Conventions
 
 - **File Naming:** Core instruction or agent context files strictly use **UPPERCASE** naming conventions (e.g., `AGENTS.md`, `SKILL.md`, `ARCHITECTURE.md`) to distinguish them from standard project documentation.
-- **Git Isolation:** One branch per execution stream (`task/<identifier>`), one worktree per stream (`.apm/worktrees/<identifier>`). Heavy untracked resources are shared at repo level. New artifacts are produced locally in the worktree and migrated during integration.
+- **Dual-Branch Bootstrap:** `main` is a clean branch without APM working artifacts. `dev` is the primary development branch and carries the full APM working layer (`AGENTS.md`, `memory_bank/`, `external/`, `docs/`, and similar assets). The two branches are initialized with independent history.
+- **Git Isolation:** One branch per execution stream from `dev` (`task/<identifier>`), one worktree per stream (`.apm/worktrees/<identifier>`). Heavy untracked resources are shared at repo level. New artifacts are produced locally in the worktree and migrated back to `dev` or shared storage during integration.
 - **Skill Portability:** Whenever possible, logic should be encapsulated in reusable `.md` skills following the `agentskills.io` spec to ensure cross-compatibility between Cursor, Claude Code, and Codex.

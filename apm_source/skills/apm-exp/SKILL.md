@@ -1,6 +1,6 @@
 ---
 name: apm-exp
-description: "Hypothesis-driven experiment workflow for ML/DS projects: plan, implement, validate, run, analyze. Covers baselines, model variants, and hyperparameter exploration."
+description: "Workflow skill for hypothesis-driven ML/DS experiments: plan, implement, validate, run, analyze. Covers baselines, model variants, and hyperparameter exploration."
 ---
 ## Skill Description
 Unified workflow for planning, running, and analyzing ML/DS experiments, where baseline work is treated as the first reference experiment in the same execution model.
@@ -16,7 +16,7 @@ Before starting work, ensure the required directories exist. If missing, create 
 
 Optionally, use `references/config_template.py` and `references/main_template.py` as boilerplate for new experiments when no existing structure is present.
 
-## Experiment workflow
+## Workflow
 1. Define hypothesis (or use user-provided). For baselines: choose a domain-appropriate model that could plausibly remain in the final pipeline -- not a toy.
 2. Plan approach, hyperparameters, and compute strategy.
 3. Create `experiments/EXP-XXX_<desc>/` with:

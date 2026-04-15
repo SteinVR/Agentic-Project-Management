@@ -59,3 +59,6 @@ Key areas:
 
 ## Important Scope Note
 Nested `AGENTS.md` files inside `apm_source/base/` and skill `references/` are framework assets shipped for generated workflows. They are not governing instructions for this repository itself unless you are explicitly editing those assets as deliverables.
+
+## Glossary
+- **Workflow skill** -- a skill marked as `Workflow skill` in its `description`. It defines the execution flow for a class of work and tells the agent how to run that kind of task step by step. Use that description mark as the source of truth.

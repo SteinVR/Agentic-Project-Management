@@ -26,7 +26,8 @@
 - **Runtime logging** at key pipeline boundaries is mandatory. Keep logs concise -- structured one-liners (`key=value`). Follow skill `apm-logs` for format and placement.
 
 ## Glossary
+- **Workflow skill** -- a skill marked as `Workflow skill` in its `description`. It defines the execution flow for a class of work and tells the agent how to run that kind of task step by step. Use that description mark as the source of truth.
 - **Runtime Escalation** -- if you discover contradictions between specifications, instructions, and actual project state during work, stop and escalate immediately. Do not silently work around inconsistencies.
 
 ## Self-review gate
-Before reporting work as done, re-read all changed/created artifacts and self-review for correctness. If a spec exists for the task, verify compliance against it. Fix anything found before handoff. Report self-review outcome (steps performed, issues found and fixed).
+Before reporting work as done, re-read all changed/created artifacts and self-review for correctness. Check for bugs, logical errors, off-by-one errors, unhandled edge cases. If a spec exists for the task, verify compliance against it. Fix anything found before handoff. Report self-review outcome (steps performed, issues found and fixed).

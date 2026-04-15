@@ -1,6 +1,6 @@
 ---
 name: apm-test
-description: "Write and run tests. Prioritizes comprehensive smoke tests that verify real system behavior end-to-end. Use when adding tests, validating changes, or auditing coverage."
+description: "Workflow skill for testing: write and run tests with smoke-first verification of real system behavior end-to-end. Use when adding tests, validating changes, or auditing coverage."
 ---
 ## Skill Description
 Testing workflow focused on realistic verification, with smoke testing as the primary mechanism for catching behavioral and integration regressions.

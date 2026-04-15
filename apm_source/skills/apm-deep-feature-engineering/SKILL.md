@@ -1,6 +1,6 @@
 ---
 name: apm-deep-feature-engineering
-description: "Deep Feature Engineering stage for DS: convert EDA findings into ranked, testable feature candidates with risk and runtime analysis."
+description: "Workflow skill for Deep Feature Engineering: convert EDA findings into ranked, testable feature candidates with risk and runtime analysis."
 ---
 ## Skill Description
 Post-EDA feature engineering workflow that converts analysis findings into prioritized and testable feature hypotheses with explicit trade-offs.

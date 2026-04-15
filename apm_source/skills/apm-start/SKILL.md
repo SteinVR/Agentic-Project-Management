@@ -1,11 +1,13 @@
 ---
 name: apm-start
-description: "Project kickoff: initialize directory structure, run Vision Alignment, and set up Memory Bank. Use when starting a new project or resetting architecture from scratch."
+description: "Project kickoff: initialize directory structure, bootstrap the dual-branch git layout, run Vision Alignment, and set up Memory Bank. Use when starting a new project or resetting architecture from scratch."
 ---
 ## Skill Description
-Project initialization workflow that aligns goals, establishes project structure, and creates the initial Memory Bank as the working source of truth.
+Project initialization workflow that aligns goals, establishes project structure, bootstraps the repository's dual-branch layout, and creates the initial Memory Bank as the working source of truth.
 
 ## Required outputs
+- Clean `main` branch with independent history and without APM working artifacts.
+- `dev` branch with independent history, full APM working artifacts, and ready as the default working branch.
 - `memory_bank/ARCHITECTURE.md`
 - `memory_bank/TASKS.md`
 - `memory_bank/STATE.md`
@@ -32,7 +34,15 @@ Then provide:
 
 Wait for user confirmation before proceeding.
 
-## Step 3: Create Memory Bank
+## Step 3: Bootstrap git layout
+- Initialize git if the project is not yet a repository.
+- Create two separate branches with independent history:
+  - `main` -- clean branch, reserved for artifact-free project state. Do not keep working artifacts here (`AGENTS.md`, `memory_bank/`, `external/`, `docs/`, and similar operating assets).
+  - `dev` -- primary development branch. Keep the full APM working layer here, including all operating artifacts required for agentic development.
+- Treat `dev` as the default branch for day-to-day work, task branches, and worktrees.
+- Finish initialization on `dev`.
+
+## Step 4: Create Memory Bank
 - Determine the appropriate architecture template from this skill's `references/`:
   - `ARCHITECTURE_PRODUCT_TMP.md` -- for product/application projects
   - `ARCHITECTURE_DS_TMP.md` -- for ML/DL/experiment-driven projects
@@ -40,11 +50,12 @@ Wait for user confirmation before proceeding.
 - Fill `memory_bank/ARCHITECTURE.md` using the chosen template. Include approved decisions, tech stack, architecture, and constraints.
 - Initialize `memory_bank/TASKS.md`, initial spec and task files, and `memory_bank/STATE.md`.
 
-## Step 4: Environment setup
+## Step 5: Environment setup
 - Read Technology Stack and Deployment sections in the newly created `memory_bank/ARCHITECTURE.md`.
 - Propose the environment (runtime versions, package manager, core deps).
 - If approved, create or update config files (pyproject.toml, package.json, etc.) and provide setup commands.
 
 ## Guardrails
+- Do not rewrite or replace an existing user git history without explicit approval. If the repository already has meaningful history, align with the user before reshaping branches into the dual-branch layout.
 - Do not implement application code unless explicitly requested.
 - Do not update Memory Bank files outside the initialization steps above unless the user explicitly asks.

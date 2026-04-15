@@ -131,17 +131,22 @@ alias apm-cd='cd /path/to/Agentic-Project-Management'
 
 ## How it works
 
-Primary/main agents use the core skill `apm` as the session overlay: choose the relevant workflow skill, decompose work into todo items, execute, and self-review before handoff.
+Primary/main agents use the core skill `apm` as the session overlay: first resolve the implementation mode for non-trivial work, then choose the relevant workflow skill, decompose work into todo items, execute, and self-review before handoff.
 
-1. **/apm-start** runs Vision Alignment, determines the project domain, and selects the matching architecture template.
-2. After your confirmation, APM creates the Memory Bank: `ARCHITECTURE.md`, `STATE.md`, `specs/`, and `tasks/`.
-3. You continue with workflow skills:
+Workflow skills are the skills marked as `Workflow skill` in their descriptions. They define the execution flow for a class of work.
+
+1. **/apm-start** runs Vision Alignment, determines the project domain, initializes the dual-branch git layout, and selects the matching architecture template.
+2. During initialization, APM bootstraps two independent branches:
+   - `main` stays clean and free of APM working artifacts.
+   - `dev` contains the full working layer (`AGENTS.md`, `memory_bank/`, `external/`, `docs/`, and similar assets) and becomes the default branch for development.
+3. After your confirmation, APM creates the Memory Bank on `dev`: `ARCHITECTURE.md`, `STATE.md`, `specs/`, and `tasks/`.
+4. You continue with workflow skills:
    - `apm-dev` for implementation, `apm-test` for testing, `apm-quality-gate` for independent verification.
    - `apm-eda`, `apm-deep-feature-engineering`, `apm-exp` for DS/ML workflows.
    - Domain-specific skills create their required directories on first use (e.g., `apm-eda` creates `eda/` and `data/`).
    - **Co-Founder mode** provides a collaborative primary partner who co-owns project vision, architecture, and direction. Activate via Shift+Tab in OpenCode, `claude --agent apm-co-founder` in Claude Code, or by loading `apm-co-founder` in Codex.
-4. Memory Bank synchronization is explicit (`/apm-sync`) and delegated to the `apm-memory-bank-sync` subagent.
-5. Git isolation via `apm-git-taskflow` when parallel or isolated execution streams are needed.
+5. Memory Bank synchronization is explicit (`/apm-sync`) and delegated to the `apm-memory-bank-sync` subagent.
+6. Git isolation via `apm-git-taskflow` when parallel or isolated execution streams are needed. Task branches and worktrees are created from `dev`, not from `main`.
 
 ---
 
@@ -178,9 +183,11 @@ Line budget:
 ## Git Isolation
 
 - Managed via `apm-git-taskflow` when isolated execution streams are needed.
-- One branch per stream: `task/<identifier>`. One worktree per stream: `.apm/worktrees/<identifier>`.
+- Repository bootstrap creates two independent branches: clean `main` and working `dev`.
+- Day-to-day implementation happens on `dev`.
+- One branch per stream from `dev`: `task/<identifier>`. One worktree per stream: `.apm/worktrees/<identifier>`.
 - Heavy untracked resources (runtime, data, models) are shared at repo level -- not copied per worktree.
-- New artifacts are produced locally in the worktree and migrated after merge.
+- New artifacts are produced locally in the worktree and migrated back to `dev` or shared repo-level storage after merge.
 
 ---
 
@@ -188,16 +195,16 @@ Line budget:
 
 | Skill | Description |
 |-------|-------------|
-| `apm` | Core main-session operating frame: choose workflow skill, plan -> execute -> self-review, keep context narrow |
-| `apm-start` | Project kickoff: Vision Alignment + Memory Bank initialization |
-| `apm-dev` | Iterative development workflow: plan, implement, verify, self-review |
-| `apm-exp` | Experiment workflow (baselines, model variants, hypothesis-driven experiments) |
-| `apm-eda` | Exploratory Data Analysis |
-| `apm-deep-feature-engineering` | Post-EDA feature engineering analysis |
-| `apm-test` | Testing workflow (smoke > integration > unit) |
+| `apm` | Core main-session operating frame: resolve task mode, choose workflow skill, plan -> execute -> self-review |
+| `apm-start` | Project kickoff: Vision Alignment + dual-branch git bootstrap + Memory Bank initialization |
+| `apm-dev` | Workflow skill for iterative development: plan, implement, verify, self-review |
+| `apm-exp` | Workflow skill for experiments (baselines, model variants, hypothesis-driven experiments) |
+| `apm-eda` | Workflow skill for Exploratory Data Analysis |
+| `apm-deep-feature-engineering` | Workflow skill for post-EDA feature engineering analysis |
+| `apm-test` | Workflow skill for testing (smoke > integration > unit) |
 | `apm-quality-gate` | Post-implementation quality gate: simplify, verify, review, fix loop |
-| `apm-git-taskflow` | Git branch/worktree isolation with shared runtime management |
-| `apm-sync` | Explicit Memory Bank synchronization |
+| `apm-git-taskflow` | Git branch/worktree isolation from `dev` with shared runtime management |
+| `apm-sync` | Workflow skill for explicit Memory Bank synchronization |
 | `apm-subagent` | Delegation contract for specialist subagents |
 | `apm-logs` | Runtime logging conventions |
 | `apm-autoresearch` | Autonomous experiment loop for rapid metric optimization |

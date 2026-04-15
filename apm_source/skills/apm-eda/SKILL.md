@@ -1,6 +1,6 @@
 ---
 name: apm-eda
-description: "Exploratory Data Analysis: analyze distributions, missingness, correlations, and leakage risks. Produces reproducible artifacts and EDA reports under eda/."
+description: "Workflow skill for Exploratory Data Analysis: analyze distributions, missingness, correlations, and leakage risks. Produces reproducible artifacts and EDA reports under eda/."
 ---
 ## Skill Description
 Reproducible EDA workflow that turns raw dataset exploration into decision-ready reporting and deep quantitative evidence.

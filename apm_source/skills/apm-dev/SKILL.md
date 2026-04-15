@@ -1,6 +1,6 @@
 ---
 name: apm-dev
-description: "Iterative development loop: plan, implement, verify. Use when writing or modifying application code."
+description: "Workflow skill for iterative development: plan, implement, verify. Use when writing or modifying application code."
 ---
 ## Skill Description
 Disciplined workflow for implementing and validating code changes with clear execution order and self-review before handoff.

@@ -1,6 +1,6 @@
 ---
 name: apm-sync
-description: "Reconcile Memory Bank with the current project state on explicit user request. Use when the user asks to sync or update Memory Bank."
+description: "Workflow skill for Memory Bank synchronization: reconcile project memory with current state on explicit user request."
 ---
 ## Skill Description
 Synchronization workflow for reconciling Memory Bank state with current project reality only when explicitly requested by the user.
