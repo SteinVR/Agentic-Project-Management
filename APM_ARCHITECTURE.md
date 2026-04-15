@@ -2,13 +2,26 @@
 
 ## 1. Overview and Core Principles
 
-**Agentic Project Management (APM)** is an AI-driven development framework designed to standardize and streamline LLM-assisted workflows across multiple environments: **Cursor IDE**, **Codex CLI**, **OpenCode CLI**, and **Claude Code**.
+**Agentic Project Management (APM)** is a framework for agentic development across **Cursor (legacy)**, **Codex CLI**, **OpenCode CLI**, and **Claude Code**.
+
+APM is built around two core responsibilities:
+
+1. **Flow management**
+   Defines how work proceeds, in what sequence, and through which decision and verification gates.
+   This includes workflow skills, planning, artifact-mode decisions, review loops, delegation flow, and integration gates.
+
+2. **Context management**
+   Ensures the agent receives the right context, in the right scope, at the right time.
+   This includes SSOT artifacts, Memory Bank files, frozen specs, nested `AGENTS.md`, skills as incremental context, and delegation contracts that pass the correct pointers forward.
+
+These two responsibilities are tightly linked. In APM, flow is also a mechanism for controlling context: it determines which artifacts must exist, which SSOT files are binding, and what the agent must load before continuing.
 
 Core Principles:
-- **Spec-Driven Development (SDD):** The specification is the Single Source of Truth (SSOT). Code must follow the documented architecture, not the other way around.
-- **Only Essential Memory Bank:** Maintain a minimal, highly structured set of Markdown files to preserve sustainable context across sessions without overwhelming the LLM.
-- **Context Engineering:** Emphasize declarative control, predictable determinism, and token efficiency to maximize AI output quality and consistency.
-- **Skill-Driven Workflow:** Workflow is controlled through explicitly invoked skills, not rigid methodology boundaries. Skills define how to work; the user/prompt defines what to work on and with which artifacts.
+- **Spec-Driven Development (SDD):** Specifications and SSOT artifacts define the intended system behavior and constraints.
+- **Only Essential Memory Bank:** Keep durable context minimal, structured, and sustainable across sessions.
+- **Explicit Flow Control:** Development proceeds through declared workflow skills, decision gates, and verification loops.
+- **Context Engineering:** APM treats context quality as the central variable in agent reliability.
+- **Layered Instruction Model:** Shared rules, local rules, skills, and role configs each own a distinct part of the agent context.
 
 ---
 
@@ -16,9 +29,9 @@ Core Principles:
 
 APM supports four distinct environments, tailoring its components for each ecosystem:
 
-1. **Cursor IDE (Interactive UI):**
-   - Utilizes `.cursor/agents/`, `.cursor/commands/`, and shared skills.
-   - Leverages Cursor's native Subagents and Skills system (`SKILL.md`).
+1. **Cursor (legacy):**
+   - Legacy Cursor payloads are kept under `apm_source/_legacy/`.
+   - Cursor is no longer part of the active environment pack set, but legacy assets remain available for reference and migration.
    - Memory Bank resides in `memory_bank/`.
 
 2. **Codex CLI (Terminal / Orchestrated):**
@@ -46,6 +59,13 @@ APM supports four distinct environments, tailoring its components for each ecosy
 
 APM uses a single base project template. Workflow is controlled through explicitly invoked skills, not rigid methodology boundaries.
 
+Conceptually, APM operates through two linked layers:
+
+- **Flow layer** -- methodology, sequence, decision gates, review loops, delegation flow.
+- **Context layer** -- SSOT files, Memory Bank, specs, nested `AGENTS.md`, skills as incremental context, and selective artifact loading.
+
+The framework works only when these two layers stay aligned: flow determines which context must be present, and context determines whether flow can continue safely.
+
 - **Base structure** (`apm_source/base/`) provides the minimal project scaffold: `src/`, `tests/`, `logs/`, `external/`, `memory_bank/` with template files.
 - **`apm-start`** initializes the project, bootstraps the dual-branch git layout (`main` clean, `dev` working), and selects the appropriate `ARCHITECTURE.md` template (product-oriented or DS/experiment-oriented) based on the project domain.
 - **Workflow skills** extend the project structure on demand. For example, `apm-eda` creates `eda/` and `data/` directories; `apm-exp` creates `experiments/` and `models/`. A project may use any combination of skills as needed.
@@ -59,13 +79,13 @@ The Memory Bank ensures context continuity across multiple separate LLM sessions
 **Core Files:**
 - `ARCHITECTURE.md` — The SSOT for the project's technical architecture, stack, patterns, and overarching design decisions.
 - `STATE.md` — Compact operational status and continuity context.
-- `tasks/TASKS.md` — High-level task overview.
+- `TASKS.md` — High-level task overview.
 - `design/SPEC-{module}.md` — Global module specifications: contracts, ready interfaces, typecheck gates, invariants, data formats. Updated only with explicit approval.
 - `specs/SPEC_{id}.md` — Frozen task specification: goal, pipeline, contracts, ready interfaces, typecheck automation, Definition of Done. Read-only during execution.
 - `tasks/{id}.md` — Working journal: notes, review findings, outcome.
 
 Size guardrail:
-- Keep `STATE.md` and `tasks/TASKS.md` under 120 lines; compress when limits are exceeded.
+- Keep `STATE.md` and `TASKS.md` under 120 lines; compress when limits are exceeded.
 
 ---
 
@@ -104,13 +124,15 @@ Workflow skills describe HOW to work. The scenario (which artifacts exist, wheth
 
 In APM, a workflow skill is a skill marked as `Workflow skill` in its description. It defines the execution flow for a class of work and serves as the procedural layer the agent follows for that task type.
 
-Primary sessions also use `apm` as the core session overlay: it adds the main-agent operating loop, the pre-implementation decision gate for non-trivial work (task/spec mode, verification mode, execution mode), question conventions for missing details and scope expansion, workflow-skill selection, and delegation boundaries on top of the shared `AGENTS.md` rules.
+Primary sessions also use `apm` as the core session overlay: it connects flow and context. It adds the main-agent operating loop, the pre-implementation decision gate for non-trivial work (task/spec mode, verification mode, execution mode), question conventions for missing details and scope expansion, workflow-skill selection, SSOT handling, and delegation boundaries on top of the shared `AGENTS.md` rules.
+
+If a frozen task spec exists, it is binding for both the main session and delegated subagents. If no task/spec is established, the main session raises an artifact-mode question: create the formal task flow or continue ad hoc.
 
 **Available skills:**
 
 | Skill | Purpose |
 |-------|---------|
-| `apm` | Core main-session operating frame: resolve task mode, choose workflow skill, ask before scope expansion, plan -> execute -> self-review |
+| `apm` | Core main-session operating frame: resolve task mode, bind to frozen task specs when they exist, ask before scope expansion, plan -> execute -> self-review |
 | `apm-start` | Project kickoff: Vision Alignment, dual-branch git bootstrap, Memory Bank initialization, environment setup |
 | `apm-dev` | Workflow skill for iterative development: plan, implement, verify, self-review |
 | `apm-exp` | Workflow skill for experiments (covers baselines, model variants, hypothesis-driven experiments) |
@@ -120,7 +142,7 @@ Primary sessions also use `apm` as the core session overlay: it adds the main-ag
 | `apm-quality-gate` | Post-implementation quality gate: simplify, verify, review, fix loop, accept |
 | `apm-git-taskflow` | Git branch/worktree isolation from `dev` with shared runtime management |
 | `apm-sync` | Workflow skill for explicit Memory Bank synchronization on request |
-| `apm-subagent` | Delegation contract for specialist subagents |
+| `apm-subagent` | Delegation contract for specialist subagents, including SSOT and frozen-spec pointers |
 | `apm-logs` | Runtime logging conventions |
 | `apm-autoresearch` | Autonomous experiment loop: rapid metric optimization with keep/discard logic |
 
@@ -131,7 +153,7 @@ In modern environments (Cursor 2.5+, Codex CLI, OpenCode, and Claude Code), APM 
 1. **Standard mode:** The user drives work through the main session, optionally delegating to specialist subagents. User validates between steps.
 2. **Co-Founder mode:** The user works with an equal project partner who co-owns vision, architecture, and direction. Activated via Shift+Tab in OpenCode, `claude --agent apm-co-founder` in Claude Code, or by loading the skill in Codex.
 
-**Delegation contract:** Task description, context pointers (relevant files, worktree path if applicable), optional clarification. Subagents self-orient from the project structure and memory bank.
+**Delegation contract:** Task description, SSOT pointers (`ARCHITECTURE.md`, module spec, frozen task spec when it exists), additional context pointers, optional clarification. Subagents self-orient from the project structure and memory bank, but a frozen task spec is binding when passed.
 
 ---
 
@@ -146,11 +168,10 @@ APM/
 ├── apm_source/                  # Framework Source of Truth (Payloads)
 │   ├── base/                    # Unified project template (structure, Memory Bank templates, AGENTS.md)
 │   ├── skills/                  # Shared skills source
-│   ├── packs/                   # Environment-specific packs
-│   │   ├── codex_pack/          # Subagent roles for Codex CLI
-│   │   ├── opencode_pack/       # Native OpenCode agents/skills
-│   │   ├── claude_pack/         # Subagent roles for Claude Code
-│   │   └── cursor_pack/         # Cursor agents and command wrappers
+│   ├── packs/                   # Active environment-specific packs
+│   │   ├── codex_pack/          # Subagent role configs for Codex CLI
+│   │   ├── opencode_pack/       # Native OpenCode agents
+│   │   └── claude_pack/         # Subagent roles for Claude Code
 │   └── _legacy/                 # Frozen legacy assets
 │       └── cursor_ide/
 │           └── full_deprecated/
@@ -164,7 +185,7 @@ APM/
 ## 7. Basic Project Workflow
 
 1. **Initialization:** Run the `apm.sh` configurator to create the base project structure and install environment packs.
-2. **Setup Phase:** Run `/apm-start` to align on vision, bootstrap two independent branches (`main` clean, `dev` working), select the architecture template, and generate the initial Memory Bank on `dev` (`ARCHITECTURE.md`, `STATE.md`, `tasks/TASKS.md`, initial spec and task files).
+2. **Setup Phase:** Run `/apm-start` to align on vision, bootstrap two independent branches (`main` clean, `dev` working), select the architecture template, and generate the initial Memory Bank on `dev` (`ARCHITECTURE.md`, `STATE.md`, `TASKS.md`, initial spec and task files).
 3. **Execution Loop:** Work through workflow skills (`apm-dev`, `apm-test`, `apm-eda`, `apm-exp`, `apm-deep-feature-engineering`, etc.) on `dev`. Domain-specific skills create their required directories on first use. Use `apm-quality-gate` when independent verification is needed.
 4. **Git Isolation:** When parallel or isolated execution is needed, use `apm-git-taskflow` for `dev`-based branch/worktree management with shared runtime.
 5. **Synchronization:** Run `/apm-sync` on explicit request whenever continuity updates are needed.
@@ -176,6 +197,7 @@ APM/
 - **File Naming:** Core instruction or agent context files strictly use **UPPERCASE** naming conventions (e.g., `AGENTS.md`, `SKILL.md`, `ARCHITECTURE.md`) to distinguish them from standard project documentation.
 - **Dual-Branch Bootstrap:** `main` is a clean branch without APM working artifacts. `dev` is the primary development branch and carries the full APM working layer (`AGENTS.md`, `memory_bank/`, `external/`, `docs/`, and similar assets). The two branches are initialized with independent history.
 - **Git Isolation:** One branch per execution stream from `dev` (`task/<identifier>`), one worktree per stream (`.apm/worktrees/<identifier>`). Heavy untracked resources are shared at repo level. New artifacts are produced locally in the worktree and migrated back to `dev` or shared storage during integration.
+- **Implementation Conventions Layering:** Implementation code conventions are carried by `src/AGENTS.md` inside generated projects. Workflow skills and subagents should rely on that local instruction layer rather than duplicating code rules.
 - **Fail-fast Runtime:** Prefer minimal fallback logic. Invalid or contradictory runtime states should fail loudly unless a fallback is explicitly required by an external contract.
 - **Single-Role Files:** One file, one role. Split orchestration, domain logic, adapters, reporting, and helpers when responsibilities diverge.
 - **File Size Guardrail:** Keep files ideally between 100 and 600 LOC. Allow 600-800 only when preserving a clear semantic boundary; otherwise refactor or decompose.

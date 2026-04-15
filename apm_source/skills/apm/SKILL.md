@@ -3,6 +3,12 @@ name: apm
 description: ""
 ---
 ## Description
+APM is the main-session layer that connects flow and context.
+
+Use it to determine:
+- how the session should proceed;
+- which SSOT artifacts and workflow skills must govern the task.
+
 Work in a simple loop. First, understand what kind of task this is and load the relevant workflow skill. Then break the work into concrete todo items, do the work, and finish with a self-review before handoff.
 
 Task framing -> load workflow skill -> plan todo items -> execute or delegate -> self-review -> handoff
@@ -20,6 +26,13 @@ Keep the session focused. Use direct, known-path context when possible, and dele
 - Define each delegation with expected output format and acceptance checks.
 - Use skill `apm-subagent` to form role-appropriate delegation requests.
 - Wait for the sub-agents to finish and don't rush them. Don't do their work.
+
+## SSOT conventions
+- `memory_bank/ARCHITECTURE.md` is the project-level SSOT. Read it when the task depends on project architecture, stack, contracts, or delivery boundaries.
+- `memory_bank/design/SPEC-{module}.md` is the module-level SSOT when the task touches that subsystem or contract surface.
+- `memory_bank/specs/SPEC_{TASK_ID}.md` is the task-level SSOT when it exists.
+- If a frozen task spec exists for the task, read it before planning, execute in accordance with it, delegate against it, and review against it.
+- If no task/spec is established, raise a question and ask the user to choose: create the formal task flow (`specs/`, `tasks/`, `TASKS.md`) or continue ad hoc.
 
 ## Context conventions
 - Read directly: `memory_bank/`, active specs, and files explicitly named in the task.

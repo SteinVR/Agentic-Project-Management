@@ -3,7 +3,8 @@ description = "Universal execution unit -- implementation, analysis, experiments
 model = "gpt-5.3-mini"
 model_reasoning_effort = "xhigh"
 developer_instructions = """
-You are a hands-on specialist who receives a task and delivers working results. Your scope, context, and relevant skills come from the delegation instruction -- follow it.
+You are a hands-on specialist who receives a task and delivers working results. Your scope, context, and relevant skills come from the delegation instruction -- follow it. 
+If the delegation includes a frozen task spec, treat it as binding and execute in accordance with it.
 
 ## How you work
 

@@ -2,7 +2,7 @@
 
 # Agentic Project Management
 
-**AI-driven development framework for Cursor IDE, Codex CLI, OpenCode CLI, and Claude Code**
+**AI-driven development framework for Codex CLI, OpenCode CLI, and Claude Code**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![PowerShell](https://img.shields.io/badge/PowerShell-5.1+-blue.svg)](https://github.com/PowerShell/PowerShell)
@@ -15,9 +15,16 @@
 
 ## 📋 Review
 
-APM is a configurable SDD-based framework that brings structure and predictability to LLM-assisted development across Cursor IDE, Codex CLI, OpenCode CLI, and Claude Code. It standardizes project setup, roles, and documentation so teams keep continuity with minimal overhead.
+APM is a configurable framework for agentic development across Codex CLI, OpenCode CLI, and Claude Code.
 
-Ideology: configured SDD, only-essential Memory Bank, context engineering, agents and skills, with an emphasis on declarative control, determinism, and token efficiency.
+At its core, APM is a context-engineering system with an explicit development flow. The project is built around two linked responsibilities:
+
+- **Flow management** -- how work proceeds, in what order, and through which decision and verification gates.
+- **Context management** -- what context the agent receives, in what scope, and at what moment.
+
+These two layers are not independent. In APM, flow is also a mechanism for controlling context: it determines which artifacts must exist, which SSOT files are binding, and what should be loaded before work continues.
+
+Ideology: configured SDD, only-essential Memory Bank, explicit flow control, and context engineering with an emphasis on determinism, layering, and token efficiency.
 
 Usage: run the TUI configurator (`apm.sh`) to generate a project, then drive work via environment-specific commands and skills. For automation or CI, use non-interactive flags.
 
@@ -27,15 +34,14 @@ Usage: run the TUI configurator (`apm.sh`) to generate a project, then drive wor
 
 - CLI configurator for new projects
 - Agent roles (worker, co-founder, reviewer, code-simplifier, memory-bank-sync, web-explorer)
-- Workflow skills loaded on demand
-- Memory Bank for durable project context
+- Workflow skills loaded on demand for flow control
+- Memory Bank and SSOT artifacts for durable project context
 - Templates for specs, tasks, and reports
 
 ---
 
 ## 🌐 Environments
 
-- **Cursor IDE** (interactive): `.cursor/` agents and commands, shared skills, `memory_bank/`.
 - **Codex CLI** (global or per-project): skills + subagent roles installed into `.codex/`; APM blocks merged into `.codex/config.toml`; projects use `memory_bank/` and minimal structure.
 - **OpenCode CLI** (global or per-project): commands/agents/skills installed into OpenCode; projects use `memory_bank/` and minimal structure.
 - **Claude Code** (global or per-project): subagent roles in `.claude/agents/`, skills in `.claude/skills/`, instructions in `CLAUDE.md`; projects use `memory_bank/` and minimal structure.
@@ -135,6 +141,12 @@ Primary/main agents use the core skill `apm` as the session overlay: first resol
 
 Workflow skills are the skills marked as `Workflow skill` in their descriptions. They define the execution flow for a class of work.
 
+If a frozen task spec exists for a task, it is binding for both the main agent and delegated subagents. If no frozen task spec exists, ad-hoc execution is allowed.
+
+In practice, APM works by combining:
+- **Flow layer** -- workflow skills, decision gates, review loops, delegation flow.
+- **Context layer** -- `AGENTS.md`, nested `AGENTS.md`, Memory Bank, specs, SSOT files, and delegation pointers.
+
 1. **/apm-start** runs Vision Alignment, determines the project domain, initializes the dual-branch git layout, and selects the matching architecture template.
 2. During initialization, APM bootstraps two independent branches:
    - `main` stays clean and free of APM working artifacts.
@@ -204,7 +216,7 @@ Line budget:
 
 | Skill | Description |
 |-------|-------------|
-| `apm` | Core main-session operating frame: resolve task mode, choose workflow skill, ask before scope expansion, plan -> execute -> self-review |
+| `apm` | Core main-session operating frame: resolve task mode, bind to frozen task specs when they exist, ask before scope expansion, plan -> execute -> self-review |
 | `apm-start` | Project kickoff: Vision Alignment + dual-branch git bootstrap + Memory Bank initialization |
 | `apm-dev` | Workflow skill for iterative development: plan, implement, verify, self-review |
 | `apm-exp` | Workflow skill for experiments (baselines, model variants, hypothesis-driven experiments) |
@@ -214,7 +226,7 @@ Line budget:
 | `apm-quality-gate` | Post-implementation quality gate: simplify, verify, review, fix loop |
 | `apm-git-taskflow` | Git branch/worktree isolation from `dev` with shared runtime management |
 | `apm-sync` | Workflow skill for explicit Memory Bank synchronization |
-| `apm-subagent` | Delegation contract for specialist subagents |
+| `apm-subagent` | Delegation contract for specialist subagents, including SSOT and frozen-spec pointers |
 | `apm-logs` | Runtime logging conventions |
 | `apm-autoresearch` | Autonomous experiment loop for rapid metric optimization |
 
@@ -239,9 +251,8 @@ Line budget:
 - Shared skills live in `apm_source/skills/`.
 - OpenCode pack lives in `apm_source/packs/opencode_pack/`.
 - Codex pack source lives in `apm_source/packs/codex_pack/`.
-- Cursor agents/commands pack lives in `apm_source/packs/cursor_pack/`.
 - Claude Code pack source lives in `apm_source/packs/claude_pack/`.
-- Legacy FULL methodology is stored in `apm_source/_legacy/cursor_ide/full_deprecated/`.
+- Legacy Cursor assets are stored in `apm_source/_legacy/`.
 
 ---
 
@@ -261,7 +272,7 @@ Line budget:
 
 - **Subagents** = specialist roles in `.claude/agents/` (Markdown + YAML frontmatter). Each subagent has explicit tool allowlists, permission modes, effort levels, and turn limits.
 - **Primary agents** = Co-Founder (`apm-co-founder`). Activated via `claude --agent apm-co-founder`.
-- **Skills** = shared `agentskills.io` skills in `.claude/skills/`. Same format as Cursor.
+- **Skills** = shared `agentskills.io` skills in `.claude/skills/`.
 - **Instructions** = `CLAUDE.md` (equivalent of `AGENTS.md`). Supports subdirectory discovery, `@import` syntax, and `.claude/rules/` for path-scoped modular rules.
 - **Tool control** = per-subagent `tools` (allowlist) and `disallowedTools` (denylist).
 - **Persistent memory** = `memory: project` gives subagents cross-session learning (e.g., reviewer accumulates project patterns).

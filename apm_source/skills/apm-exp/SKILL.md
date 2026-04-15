@@ -7,7 +7,6 @@ Unified workflow for planning, running, and analyzing ML/DS experiments, where b
 
 ## Required reads (if you haven't read yet)
 - `memory_bank/ARCHITECTURE.md`
-- `src/AGENTS.md`
 - EDA reports in `eda/reports/` (if available)
 
 ## Directory initialization

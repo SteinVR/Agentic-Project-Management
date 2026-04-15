@@ -7,7 +7,6 @@ Disciplined workflow for implementing and validating code changes with clear exe
 
 ## Required reads (if you haven't read yet)
 - `memory_bank/ARCHITECTURE.md`
-- `src/AGENTS.md`
 
 ## Workflow
 1. Plan concrete implementation steps using the built-in todo list before writing code.

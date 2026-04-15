@@ -1,7 +1,11 @@
 # Repository Guidelines
 
 ## Project Focus
-This repository is not a classic application codebase. It is the source of an agentic workflow framework: environments, skills, packs, templates, installers, and supporting documentation for APM.
+This repository is not a classic application codebase. It is the source of an agentic development framework centered on two responsibilities:
+- **Flow management** -- how work proceeds through planning, execution, delegation, and verification.
+- **Context management** -- what context an agent receives through SSOT files, Memory Bank artifacts, layered instructions, and skill loading.
+
+APM exists to make agent work reliable by controlling both flow and context together.
 
 ## Mandatory Context Review
 At the start of every new chat, first review:
@@ -54,7 +58,8 @@ Key areas:
 - `apm_project/`: configurator, installers, validation scripts
 - `apm_source/base/`: unified project template (directory structure, Memory Bank templates, project-level AGENTS.md)
 - `apm_source/skills/`: shared APM skills
-- `apm_source/packs/`: environment-specific payloads for `Cursor`, `OpenCode`, `Codex`, and `Claude Code`
+- `apm_source/packs/`: environment-specific payloads for `OpenCode`, `Codex`, and `Claude Code`
+- `apm_source/_legacy/`: frozen legacy assets, including deprecated `Cursor` payloads
 - `docs/`: supporting project documentation
 
 ## Important Scope Note
