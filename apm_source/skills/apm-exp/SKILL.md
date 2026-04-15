@@ -24,7 +24,12 @@ Optionally, use `references/config_template.py` and `references/main_template.py
    - `config.py`
    - `EXP-XXX_REPORT.md` (from template — leave Results, Analysis, and Conclusions sections empty until full run completes)
 4. Implement experiment code in accordance with the **Conventions**.
-5. **Self-review**: perform self-review gate — focus on code correctness and contract compliance
+5. **Self-review** before smoke test:
+   - Re-read experiment code for correctness and edge cases.
+   - Verify reproducibility: seeds set, configs documented, splits deterministic.
+   - Confirm type annotations are present and consistent.
+   - Confirm runtime logging exists at pipeline boundaries per skill `apm-logs`.
+   - If a spec exists: verify compliance. Fix anything found.
 6. Smoke test: run on a small subset to verify the pipeline executes end-to-end without errors. Stability only -- do not record metrics or write report content. Fix and re-run if it fails.
 7. Full run: do not start without user approval. When approved provide tmux session for user progress controlling.
 8. Post-run analysis (only after full run completes -- this is when report content gets written):

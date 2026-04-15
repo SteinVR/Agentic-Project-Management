@@ -41,7 +41,11 @@ eda/
    - feature-family diagnostics,
    - metric-aligned insights,
    - prioritized feature-engineering implications.
-6. Cross-check consistency between `EDA-Report.md` and `EDA-Insights.md` before finalizing.
+6. Self-review before finalizing:
+   - Cross-check consistency between `EDA-Report.md` and `EDA-Insights.md`.
+   - Verify every insight in `EDA-Insights.md` references a concrete artifact path.
+   - Verify no narrative claims lack quantitative evidence.
+   - Fix anything found. Report self-review outcome.
 
 ## Report contracts
 ### `EDA-Report.md` (high-level)

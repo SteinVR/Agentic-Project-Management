@@ -21,7 +21,8 @@ Avoid test duplication across layers. Each test should verify something no other
 2. Determine which test layer applies (prefer smoke > integration > unit).
 3. Write tests in `tests/`.
 4. Run tests and verify results.
-5. Store test reports under `logs/reports/` if applicable.
+5. Self-review: confirm tests are deterministic, cover the intended scope, and do not duplicate existing coverage.
+6. Store test reports under `logs/reports/` if applicable.
 
 ## Conventions
 - Treat tests as specifications: change tests only when requirements change.

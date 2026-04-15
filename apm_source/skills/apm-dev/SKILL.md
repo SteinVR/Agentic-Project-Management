@@ -12,7 +12,12 @@ Disciplined workflow for implementing and validating code changes with clear exe
 1. Plan concrete implementation steps using the built-in todo list before writing code.
 2. Implement changes with clean structure in accordance with the **Code Conventions**.
 3. Verify with targeted smoke checks.
-4. Self-review gate: re-read the task, verify your output satisfies it, verify the code implementation, check for regressions and overlooked requirements. Fix what you find.
+4. Self-review gate before handoff:
+   - Re-read all changed files. Check for bugs, logical errors, edge cases.
+   - If a spec exists for this task: verify compliance against goal, pipeline, contracts, DoD.
+   - Confirm type annotations are present and consistent across function boundaries.
+   - Confirm runtime logging exists at key pipeline boundaries per skill `apm-logs`.
+   - Fix anything found. Report self-review outcome.
 
 ## Code Conventions
 - Prefer simple, modular solutions (SOLID/DRY).
