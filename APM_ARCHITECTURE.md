@@ -60,8 +60,8 @@ The Memory Bank ensures context continuity across multiple separate LLM sessions
 - `ARCHITECTURE.md` — The SSOT for the project's technical architecture, stack, patterns, and overarching design decisions.
 - `STATE.md` — Compact operational status and continuity context.
 - `tasks/TASKS.md` — High-level task overview.
-- `design/SPEC-{module}.md` — Global module specifications: contracts, invariants, data formats. Updated only with explicit approval.
-- `specs/SPEC_{id}.md` — Frozen task specification: goal, pipeline, contracts, Definition of Done. Read-only during execution.
+- `design/SPEC-{module}.md` — Global module specifications: contracts, ready interfaces, typecheck gates, invariants, data formats. Updated only with explicit approval.
+- `specs/SPEC_{id}.md` — Frozen task specification: goal, pipeline, contracts, ready interfaces, typecheck automation, Definition of Done. Read-only during execution.
 - `tasks/{id}.md` — Working journal: notes, review findings, outcome.
 
 Size guardrail:

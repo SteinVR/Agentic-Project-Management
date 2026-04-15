@@ -19,7 +19,26 @@
 |-----------|----------|-------|
 | [e.g. SessionStore] | [e.g. src/contracts/auth.py] | [Owner TASK_ID] |
 
-> Cross-task Protocol/dataclass definitions. If no cross-task contracts exist, leave empty.
+> Cross-task contract definitions. Point to concrete interface artifacts such as Protocols, ABCs, TypedDicts, dataclasses, schemas, or other typed contract files. If no cross-task contracts exist, leave empty.
+
+## Ready Interfaces
+
+[Concrete interface definitions or exact signatures the implementation builds against.]
+
+```python
+# Example
+from typing import Protocol
+
+class SessionStore(Protocol):
+    def get(self, session_id: str) -> Session | None: ...
+    def put(self, session: Session) -> None: ...
+```
+
+## Typecheck Automation
+
+- **Command:** [e.g. `pyright src tests` or `mypy src tests`]
+- **Scope:** [e.g. `src/contracts/auth.py`, `src/core/auth.py`, `tests/test_auth.py`]
+- **Gate:** [e.g. Must pass before handoff / quality gate / merge]
 
 ## Frozen Decisions
 
@@ -34,7 +53,8 @@
 ## Definition of Done
 
 - [ ] [Concrete, verifiable criterion]
-- [ ] All contract interfaces implemented and type-checked
+- [ ] All declared contract interfaces implemented
+- [ ] Declared typecheck automation passes
 - [ ] Verification passing
 
 

@@ -12,6 +12,14 @@
 
 [Key interfaces, data contracts, Protocol definitions, and rules that other modules depend on. Be concrete — names, types, constraints.]
 
+## Ready Interfaces
+
+[Concrete interface definitions or exact signatures for this module.]
+
+## Typecheck Automation
+
+[Expected typecheck command(s), scope, and gate for this module or subsystem.]
+
 ## Data Formats
 
 [Schemas, file formats, serialization rules, or data structures owned by this module.]

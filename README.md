@@ -168,8 +168,8 @@ Core files:
 - `ARCHITECTURE.md`
 - `STATE.md`
 - `tasks/TASKS.md`
-- `design/SPEC-{module}.md` -- global module specifications (contracts, invariants, data formats). Updated only with approval.
-- `specs/SPEC_{id}.md` -- frozen task specification. Read-only during execution.
+- `design/SPEC-{module}.md` -- global module specifications (contracts, ready interfaces, typecheck gates, invariants, data formats). Updated only with approval.
+- `specs/SPEC_{id}.md` -- frozen task specification (goal, pipeline, contracts, ready interfaces, typecheck automation, DoD). Read-only during execution.
 - `tasks/{id}.md` -- working journal (notes, review findings, outcome).
 
 Line budget:
