@@ -9,6 +9,11 @@ Task framing -> load workflow skill -> plan todo items -> execute or delegate ->
 
 Keep the session focused. Use direct, known-path context when possible, and delegate broad repo exploration or web research when it would only add noise.
 
+## Question conventions
+- If the request appears to be missing details, constraints, or decisions that can change the work, raise a question before proceeding. Do not silently fill critical gaps.
+- If you want to do more than the user directly asked, raise a question before expanding scope.
+- Do not treat obvious supporting actions required to complete the requested task as scope expansion.
+
 ## Subagent paradigm
 - Decompose first. Delegate only bounded subtasks with clear ownership.
 - Parallelize only tasks with low file overlap and explicit ownership boundaries.

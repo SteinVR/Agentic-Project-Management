@@ -1,6 +1,6 @@
 ---
 name: apm-test
-description: "Workflow skill for testing: write and run tests with smoke-first verification of real system behavior end-to-end. Use when adding tests, validating changes, or auditing coverage."
+description: "Workflow skill for testing: prefer per-module smoke and smoke E2E verification, with narrow integration tests only when needed. Use when adding tests, validating changes, or auditing coverage."
 ---
 ## Skill Description
 Testing workflow focused on realistic verification, with smoke testing as the primary mechanism for catching behavioral and integration regressions.
@@ -10,22 +10,25 @@ Testing workflow focused on realistic verification, with smoke testing as the pr
 
 ## Test priorities
 
-1. **Smoke tests** (primary): exercise full or near-full system paths with real (or realistic) data. Verify that the pipeline runs, produces expected output types, and does not crash or corrupt state. These are the most valuable tests for catching real breakage.
-2. **Integration tests**: verify seams between modules -- data flow, interface contracts, format compatibility.
-3. **Unit tests**: isolate critical logic where the cost of a bug is high and the function is genuinely complex. Do not write unit tests for trivial getters, wrappers, or pass-through code.
+1. **Per-module smoke tests** (primary): exercise each meaningful module or pipeline stage through a realistic runtime path. Verify that it runs, produces expected output shapes/types, and fails loudly on bad states.
+2. **Smoke E2E tests** (primary): exercise the full or near-full system path with real or realistic data. Verify that the pipeline runs end-to-end and produces coherent results without silent corruption.
+3. **Integration tests** (allowed, narrow only): verify critical seams between modules when smoke coverage alone does not give enough signal. Keep them small and non-bloated.
 
 Avoid test duplication across layers. Each test should verify something no other test covers.
 
 ## Workflow
 1. Identify what needs testing based on the current scope and changes.
-2. Determine which test layer applies (prefer smoke > integration > unit).
+2. Choose the smallest useful test set (prefer per-module smoke + smoke E2E; add narrow integration tests only when needed).
 3. Write tests in `tests/`.
 4. Run tests and verify results.
-5. Self-review: confirm tests are deterministic, cover the intended scope, and do not duplicate existing coverage.
-6. Store test reports under `logs/reports/` if applicable.
+5. Inspect runtime logs and produced outputs after the run. Investigate anomalies, suspicious warnings, and incoherent results -- not only assertion failures.
+6. Self-review: confirm tests are deterministic, cover the intended scope, and do not duplicate existing coverage.
+7. Store test reports under `logs/project/reports/` if applicable.
 
 ## Conventions
 - Treat tests as specifications: change tests only when requirements change.
 - Tests should be deterministic and reproducible.
 - Keep test setup minimal -- complex fixtures are a code smell.
+- Prefer smoke evidence and runtime-log analysis over growing unit-test suites.
+- Keep integration tests narrow and non-bloated.
 - Follow skill `apm-logs` for logging test runs and failures when applicable.

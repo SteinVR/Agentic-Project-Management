@@ -80,6 +80,7 @@ APM separates shared context, dynamic procedures, and role contracts into differ
   Global and local instruction layer for all agents and subagents in a given area.
   The root `AGENTS.md` defines general project-wide contracts and rules.
   Nested `AGENTS.md` files define local contracts and rules for a specific area, subtree, or artifact type.
+  Example: `src/AGENTS.md` carries implementation code conventions for the `src/` tree.
 
 - **`SKILLS` = attachable procedures**
   Mechanism for dynamic, incremental instruction loading.
@@ -103,19 +104,19 @@ Workflow skills describe HOW to work. The scenario (which artifacts exist, wheth
 
 In APM, a workflow skill is a skill marked as `Workflow skill` in its description. It defines the execution flow for a class of work and serves as the procedural layer the agent follows for that task type.
 
-Primary sessions also use `apm` as the core session overlay: it adds the main-agent operating loop, the pre-implementation decision gate for non-trivial work (task/spec mode, verification mode, execution mode), workflow-skill selection, and delegation boundaries on top of the shared `AGENTS.md` rules.
+Primary sessions also use `apm` as the core session overlay: it adds the main-agent operating loop, the pre-implementation decision gate for non-trivial work (task/spec mode, verification mode, execution mode), question conventions for missing details and scope expansion, workflow-skill selection, and delegation boundaries on top of the shared `AGENTS.md` rules.
 
 **Available skills:**
 
 | Skill | Purpose |
 |-------|---------|
-| `apm` | Core main-session operating frame: resolve task mode, choose workflow skill, plan -> execute -> self-review |
+| `apm` | Core main-session operating frame: resolve task mode, choose workflow skill, ask before scope expansion, plan -> execute -> self-review |
 | `apm-start` | Project kickoff: Vision Alignment, dual-branch git bootstrap, Memory Bank initialization, environment setup |
 | `apm-dev` | Workflow skill for iterative development: plan, implement, verify, self-review |
 | `apm-exp` | Workflow skill for experiments (covers baselines, model variants, hypothesis-driven experiments) |
 | `apm-eda` | Workflow skill for Exploratory Data Analysis: distributions, missingness, correlations, leakage risks |
 | `apm-deep-feature-engineering` | Workflow skill for post-EDA feature engineering analysis with ranked candidates |
-| `apm-test` | Workflow skill for testing, prioritizing comprehensive smoke tests |
+| `apm-test` | Workflow skill for testing: per-module smoke + smoke E2E, with narrow integration tests when needed |
 | `apm-quality-gate` | Post-implementation quality gate: simplify, verify, review, fix loop, accept |
 | `apm-git-taskflow` | Git branch/worktree isolation from `dev` with shared runtime management |
 | `apm-sync` | Workflow skill for explicit Memory Bank synchronization on request |
@@ -175,4 +176,9 @@ APM/
 - **File Naming:** Core instruction or agent context files strictly use **UPPERCASE** naming conventions (e.g., `AGENTS.md`, `SKILL.md`, `ARCHITECTURE.md`) to distinguish them from standard project documentation.
 - **Dual-Branch Bootstrap:** `main` is a clean branch without APM working artifacts. `dev` is the primary development branch and carries the full APM working layer (`AGENTS.md`, `memory_bank/`, `external/`, `docs/`, and similar assets). The two branches are initialized with independent history.
 - **Git Isolation:** One branch per execution stream from `dev` (`task/<identifier>`), one worktree per stream (`.apm/worktrees/<identifier>`). Heavy untracked resources are shared at repo level. New artifacts are produced locally in the worktree and migrated back to `dev` or shared storage during integration.
+- **Fail-fast Runtime:** Prefer minimal fallback logic. Invalid or contradictory runtime states should fail loudly unless a fallback is explicitly required by an external contract.
+- **Single-Role Files:** One file, one role. Split orchestration, domain logic, adapters, reporting, and helpers when responsibilities diverge.
+- **File Size Guardrail:** Keep files ideally between 100 and 600 LOC. Allow 600-800 only when preserving a clear semantic boundary; otherwise refactor or decompose.
+- **Smoke-First Testing:** Prefer per-module smoke tests and smoke E2E tests. Allow only narrow integration tests when they add unique signal. Inspect runtime logs and produced results after runs.
+- **Local Source Documentation:** `src/` and every subdirectory inside `src/` should contain a `README.md` with a local script graph and a flat descriptive list of contained scripts. Keep docstrings concise.
 - **Skill Portability:** Whenever possible, logic should be encapsulated in reusable `.md` skills following the `agentskills.io` spec to ensure cross-compatibility between Cursor, Claude Code, and Codex.

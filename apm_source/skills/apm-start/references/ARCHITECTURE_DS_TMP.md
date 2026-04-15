@@ -102,6 +102,7 @@
 
 ```
 src/                          # Reusable typed functions (DRY principle)
+├── README.md                 # Local script graph + script descriptions
 ├── __init__.py
 ├── data.py                   # Data loading, cleaning, transformations
 ├── features.py               # Feature engineering functions
@@ -144,7 +145,11 @@ memory_bank/
 - **Cell-like execution**: Use `# %% [Block Name]` separators in `main.py` and `main_exp.py` for block-by-block execution
 - **Typed functions**: All functions should have type hints
 - **Reusability**: Functions in `src/` should be reusable across experiments (DRY)
-- **Docstrings**: All public functions must have docstrings
+- **Fail-fast**: Prefer minimal fallback logic; invalid runtime states should fail loudly
+- **Single-role files**: One file, one responsibility boundary
+- **File size**: Keep files ideally between 100 and 600 LOC. Allow 600-800 only to preserve a meaningful semantic boundary
+- **Docstrings**: Keep public docstrings concise
+- **Directory documentation**: `src/` and each subdirectory inside `src/` must contain a `README.md` with a script graph and flat script descriptions
 
 ### Naming Conventions
 
@@ -155,5 +160,6 @@ memory_bank/
 
 ### Logging
 
-- Training logs in `logs/`, format `[YYYY-MM-DD HH:MM:SS] [LEVEL] - Message`
+- Training logs in `logs/`, preferably concise structured lines (`key=value`)
+- After smoke or full runs, inspect runtime logs and produced results -- not only metric outputs
 - Random seeds: Always set and document for reproducibility

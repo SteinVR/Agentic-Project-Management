@@ -8,7 +8,7 @@ Delegation framing workflow that defines how to pass a clear, minimal, and scena
 ## Delegation contract
 Every delegation includes:
 1. **Task description** -- what needs to be done, clearly and concisely.
-2. **Context pointers** -- relevant files, paths, or artifacts the subagent should know about (specs, worktree path, data locations, prior work). Include only what's specific to this task -- do not restate what the subagent config or `memory_bank/` already cover.
+2. **Context pointers** -- relevant files, paths, or artifacts the subagent should know about (specs, worktree path, data locations, prior work). Include only what's specific to this task
 3. **Clarification** -- only if something is non-obvious or task-specific.
 
 Do not pre-gather context, file contents, or scope boundaries for the subagent. They self-orient from the project structure and memory bank.

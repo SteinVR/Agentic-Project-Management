@@ -9,7 +9,7 @@
 
 ## Project map
 - `memory_bank/` -- architecture source of truth, state, and task board.
-- `src/` -- implementation.
+- `src/` -- implementation. `src/AGENTS.md` defines implementation code conventions for this tree.
 - `tests/` -- tests.
 - `logs/` -- split into `logs/project/` for project logs and `logs/agents/` for agent-session logs.
 
@@ -19,11 +19,6 @@
 
 ## Skills paradigm
 - Proactively load the relevant skill at the start of a task -- do not wait to be explicitly asked.
-
-## Code conventions
-- All code must be **modular and typed**. Each logical step is a self-contained module with explicit input/output types.
-- Prioritize readability and hot-swappability.
-- **Runtime logging** at key pipeline boundaries is mandatory. Keep logs concise -- structured one-liners (`key=value`). Follow skill `apm-logs` for format and placement.
 
 ## Glossary
 - **Workflow skill** -- a skill marked as `Workflow skill` in its `description`. It defines the execution flow for a class of work and tells the agent how to run that kind of task step by step. Use that description mark as the source of truth.

@@ -36,7 +36,7 @@
 - [ ] [Concrete, verifiable criterion]
 - [ ] All contract interfaces implemented and type-checked
 - [ ] Verification passing
-- [ ] Results committed to git
+
 
 ---
 

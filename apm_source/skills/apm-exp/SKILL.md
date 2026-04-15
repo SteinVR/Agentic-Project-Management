@@ -7,6 +7,7 @@ Unified workflow for planning, running, and analyzing ML/DS experiments, where b
 
 ## Required reads (if you haven't read yet)
 - `memory_bank/ARCHITECTURE.md`
+- `src/AGENTS.md`
 - EDA reports in `eda/reports/` (if available)
 
 ## Directory initialization
@@ -23,10 +24,11 @@ Optionally, use `references/config_template.py` and `references/main_template.py
    - `main_exp.py`
    - `config.py`
    - `EXP-XXX_REPORT.md` (from template — leave Results, Analysis, and Conclusions sections empty until full run completes)
-4. Implement experiment code in accordance with the **Conventions**.
+4. Implement experiment code in accordance with `src/AGENTS.md` and the experiment-specific constraints below.
 5. **Self-review** before smoke test:
    - Re-read experiment code for correctness and edge cases.
    - Verify reproducibility: seeds set, configs documented, splits deterministic.
+   - Confirm the implementation stays within `src/AGENTS.md` and the experiment-specific constraints below.
    - Confirm type annotations are present and consistent.
    - Confirm runtime logging exists at pipeline boundaries per skill `apm-logs`.
    - If a spec exists: verify compliance. Fix anything found.
@@ -46,11 +48,7 @@ Optionally, use `references/config_template.py` and `references/main_template.py
 - `references/MODEL_REPORT_TMP.md` -- model documentation for comparison or delivery.
 - `references/BASELINE_GUIDE.md` -- baseline-specific considerations.
 
-## Conventions
-- Prefer simple, modular solutions (**SOLID/DRY**).
-- Use explicit type hints (annotations) for function parameters and return values.
-- Add application-level logging where appropriate (runtime events, metrics, errors). Follow skill `apm-logs` for format and placement.
-- If you create helper scripts, place them under `tools/` (create if missing).
+## Experiment-specific constraints
 - Keep experiments reproducible and comparable: fixed seeds, documented configs, deterministic splits where possible.
 
 ## Guardrails

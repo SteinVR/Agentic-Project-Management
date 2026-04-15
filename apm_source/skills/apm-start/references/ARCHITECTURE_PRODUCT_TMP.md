@@ -80,6 +80,7 @@
 
 [Example:
 
+- `README.md`: **Local directory map.** Documents the scripts that belong to `src/` using a simple graph plus a flat descriptive list.
 - `main.py`: **The Entrypoint & Orchestrator.** This is the only file that should be directly executed. It is responsible for parsing command-line arguments, initializing services, and coordinating the overall application flow. It should contain minimal business logic.
 - `config.py`: **Configuration.** Stores all static configuration, constants, file paths (e.g., `DATABASE_FILE = "tasks.json"`), and settings.
 - `utils/`: **Utilities Directory.** Contains specific, reusable helper functions that are not part of the core business logic.
@@ -105,7 +106,12 @@
 
 ## 8. Key Conventions & Logging
 
-- **Modularity:** Code must be logically separated into classes and modules within `src/`.
-- **Logging:** All significant events must be logged to `logs/`.
-    - **Format:** `[YYYY-MM-DD HH:MM:SS] [LEVEL] - Message`
+- **Fail-fast:** Prefer minimal fallback logic. Invalid or contradictory runtime states should fail loudly unless a fallback is explicitly required by an external contract.
+- **Single-role files:** One file, one role. Do not mix unrelated responsibilities inside the same source file.
+- **File size:** Keep files ideally between 100 and 600 LOC. Allow 600-800 only to preserve a clear semantic boundary; otherwise split/refactor.
+- **Local documentation:** `src/` and every subdirectory inside `src/` must contain a `README.md` with a script graph and a detailed flat list of contained scripts.
+- **Docstrings:** Keep docstrings concise and useful.
+- **Testing:** Prefer per-module smoke tests and smoke E2E tests. Allow only narrow integration tests when they add unique value. Inspect runtime logs and produced results after runs.
+- **Logging:** All significant runtime events must be logged to `logs/`.
+    - **Format:** concise structured lines, preferably `key=value`
 - **Tools:** Reusable scripts created during development should be saved in `tools/`.

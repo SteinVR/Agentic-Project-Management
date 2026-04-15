@@ -131,7 +131,7 @@ alias apm-cd='cd /path/to/Agentic-Project-Management'
 
 ## How it works
 
-Primary/main agents use the core skill `apm` as the session overlay: first resolve the implementation mode for non-trivial work, then choose the relevant workflow skill, decompose work into todo items, execute, and self-review before handoff.
+Primary/main agents use the core skill `apm` as the session overlay: first resolve the implementation mode for non-trivial work, then choose the relevant workflow skill, decompose work into todo items, execute, and self-review before handoff. If key details are missing or the agent wants to expand scope beyond the direct request, it raises a question first.
 
 Workflow skills are the skills marked as `Workflow skill` in their descriptions. They define the execution flow for a class of work.
 
@@ -189,19 +189,28 @@ Line budget:
 - Heavy untracked resources (runtime, data, models) are shared at repo level -- not copied per worktree.
 - New artifacts are produced locally in the worktree and migrated back to `dev` or shared repo-level storage after merge.
 
+## Code Conventions
+
+- Prefer runtime fail-fast over layered fallback logic.
+- Keep files single-role and ideally within 100-600 LOC; allow 600-800 only when preserving a clear semantic boundary.
+- Use smoke-first testing: per-module smoke and smoke E2E are primary; keep integration tests narrow.
+- Inspect runtime logs and produced results after test runs.
+- Keep concise docstrings and a `README.md` in `src/` and every `src/` subdirectory with a local script graph and script descriptions.
+- In generated projects, these implementation conventions live in `src/AGENTS.md`.
+
 ---
 
 ## Skills
 
 | Skill | Description |
 |-------|-------------|
-| `apm` | Core main-session operating frame: resolve task mode, choose workflow skill, plan -> execute -> self-review |
+| `apm` | Core main-session operating frame: resolve task mode, choose workflow skill, ask before scope expansion, plan -> execute -> self-review |
 | `apm-start` | Project kickoff: Vision Alignment + dual-branch git bootstrap + Memory Bank initialization |
 | `apm-dev` | Workflow skill for iterative development: plan, implement, verify, self-review |
 | `apm-exp` | Workflow skill for experiments (baselines, model variants, hypothesis-driven experiments) |
 | `apm-eda` | Workflow skill for Exploratory Data Analysis |
 | `apm-deep-feature-engineering` | Workflow skill for post-EDA feature engineering analysis |
-| `apm-test` | Workflow skill for testing (smoke > integration > unit) |
+| `apm-test` | Workflow skill for testing: per-module smoke + smoke E2E, with narrow integration tests when needed |
 | `apm-quality-gate` | Post-implementation quality gate: simplify, verify, review, fix loop |
 | `apm-git-taskflow` | Git branch/worktree isolation from `dev` with shared runtime management |
 | `apm-sync` | Workflow skill for explicit Memory Bank synchronization |
