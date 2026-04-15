@@ -32,7 +32,7 @@ When working on the methodological layer of the project such as the framework it
 Stabilize the framework logic, contracts, and instruction flow first. Apply code changes only at the end, once the methodological changes are settled and the user requests finalization.
 
 ## Writing Style For Rules And Skills
-Rules, skills, and framework instructions must be written in a high-level, declarative style. Prefer intent, constraints, decision rules, and expected outcomes over low-value verbosity.
+Rules, skills, and framework instructions must be written in a high-level, human-like declarative style. Prefer natural, direct instruction phrasing over robotic or overly formal wording. Prefer intent, constraints, decision rules, and expected outcomes over low-value verbosity.
 
 Each word, phrase, and sentence must have a clear purpose. Avoid filler, repetition, vague motivational language, and bloated explanations. Instruction text should be compact, explicit, and directly useful for agent execution.
 

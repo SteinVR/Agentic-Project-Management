@@ -101,10 +101,13 @@ Skills (`SKILL.md`) are discrete, self-contained capabilities loaded on demand. 
 
 Workflow skills describe HOW to work. The scenario (which artifacts exist, whether specs are involved, whether to run quality gate) is determined by the user, prompt, or delegation instruction -- not hardcoded in the skill.
 
+Primary sessions also use `apm` as the core session overlay: it adds the main-agent operating loop (`plan -> execute -> self-review`), workflow-skill selection, and delegation boundaries on top of the shared `AGENTS.md` rules.
+
 **Available skills:**
 
 | Skill | Purpose |
 |-------|---------|
+| `apm` | Core main-session operating frame: choose workflow skill, plan -> execute -> self-review, keep context narrow |
 | `apm-start` | Project kickoff: Vision Alignment, Memory Bank initialization, environment setup |
 | `apm-dev` | Iterative development workflow: plan, implement, verify, self-review |
 | `apm-exp` | Experiment workflow (covers baselines, model variants, hypothesis-driven experiments) |

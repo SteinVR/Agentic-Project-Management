@@ -131,6 +131,8 @@ alias apm-cd='cd /path/to/Agentic-Project-Management'
 
 ## How it works
 
+Primary/main agents use the core skill `apm` as the session overlay: choose the relevant workflow skill, decompose work into todo items, execute, and self-review before handoff.
+
 1. **/apm-start** runs Vision Alignment, determines the project domain, and selects the matching architecture template.
 2. After your confirmation, APM creates the Memory Bank: `ARCHITECTURE.md`, `STATE.md`, `specs/`, and `tasks/`.
 3. You continue with workflow skills:
@@ -186,6 +188,7 @@ Line budget:
 
 | Skill | Description |
 |-------|-------------|
+| `apm` | Core main-session operating frame: choose workflow skill, plan -> execute -> self-review, keep context narrow |
 | `apm-start` | Project kickoff: Vision Alignment + Memory Bank initialization |
 | `apm-dev` | Iterative development workflow: plan, implement, verify, self-review |
 | `apm-exp` | Experiment workflow (baselines, model variants, hypothesis-driven experiments) |
