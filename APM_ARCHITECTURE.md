@@ -144,7 +144,7 @@ If a frozen task spec exists, it is binding for both the main session and delega
 | `apm-sync` | Workflow skill for explicit Memory Bank synchronization on request |
 | `apm-subagent` | Delegation contract for specialist subagents, including SSOT and frozen-spec pointers |
 | `apm-logs` | Runtime logging conventions |
-| `apm-autoresearch` | Autonomous experiment loop: rapid metric optimization with keep/discard logic |
+| `apm-autoresearch` | Workflow skill for branch-scoped autonomous research with isolated context, post-run reporting, and keep/discard logic |
 
 ### Subagents and Delegation
 In modern environments (Cursor 2.5+, Codex CLI, OpenCode, and Claude Code), APM leverages subagents coordinated by the main session or user. Subagent configs are minimal and scenario-agnostic. `apm-subagent` standardizes how delegation requests are framed.

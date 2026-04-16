@@ -228,7 +228,7 @@ Line budget:
 | `apm-sync` | Workflow skill for explicit Memory Bank synchronization |
 | `apm-subagent` | Delegation contract for specialist subagents, including SSOT and frozen-spec pointers |
 | `apm-logs` | Runtime logging conventions |
-| `apm-autoresearch` | Autonomous experiment loop for rapid metric optimization |
+| `apm-autoresearch` | Workflow skill for branch-scoped autonomous research with mandatory post-run analysis, reporting, and selective sync-back |
 
 ---
 
