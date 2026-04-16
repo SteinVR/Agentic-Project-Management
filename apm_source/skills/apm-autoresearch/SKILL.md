@@ -14,7 +14,7 @@ This skill runs in an isolated research stream. When invoked, it creates or reus
 
 Agree on these parameters before starting:
 
-1. **Run tag** — propose based on date (e.g. `apr2`). Branch: `autoresearch/<tag>`.
+1. **Run tag** — discuss with user, propose laconic one. Branch: `autoresearch/<tag>`.
 2. **Objective** — metric name + direction (`minimize` or `maximize`).
 3. **Runner** — command to execute one experiment (e.g. `uv run train.py`, `python benchmark.py`, `npm run perf-test`).
 4. **Metric extraction** — how to read the metric from output. Prefer a grep pattern (e.g. `grep "^val_loss:" run.log`). If the metric is not printed in a greppable format, agree on a parsing approach.
@@ -55,7 +55,7 @@ Weigh complexity cost against improvement magnitude on every keep/discard decisi
 
 ## Results tracking
 
-`results.tsv` — tab-separated, **not committed to git** (leave untracked).
+`results.tsv` — tab-separated.
 
 Required columns: `commit`, the primary metric, `status`, `description`. Beyond these, add any secondary metrics that help interpret results — decide based on the task. For DL: peak memory, training time, MFU, total tokens, num params. For dev: p50/p99 latency, throughput, binary size. Use judgment.
 
@@ -93,7 +93,6 @@ If budget is defined and a run exceeds 2× budget — kill the process, treat as
 - Only modify files listed in the in-scope parameter. Everything else is read-only.
 - Do not install new dependencies unless explicitly allowed in constraints.
 - Do not modify the evaluation/metric extraction mechanism.
-- Do not commit `results.tsv` — it stays untracked.
 - Do not skip the analysis pause or the run report.
 - `git reset --hard <keep_ref>` is allowed only inside the isolated `autoresearch/*` branch/worktree as part of the keep/discard mechanism of this skill.
 - Do not ask the user whether to continue once the loop has started.

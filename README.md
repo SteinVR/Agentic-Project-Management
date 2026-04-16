@@ -229,6 +229,7 @@ Line budget:
 | `apm-subagent` | Delegation contract for specialist subagents, including SSOT and frozen-spec pointers |
 | `apm-logs` | Runtime logging conventions |
 | `apm-autoresearch` | Workflow skill for branch-scoped autonomous research with mandatory post-run analysis, reporting, and selective sync-back |
+| `apm-compression-mode` | Communication compression skill for explicitly requested terse replies without loss of technical meaning |
 
 ---
 
@@ -253,6 +254,7 @@ Line budget:
 - Codex pack source lives in `apm_source/packs/codex_pack/`.
 - Claude Code pack source lives in `apm_source/packs/claude_pack/`.
 - Legacy Cursor assets are stored in `apm_source/_legacy/`.
+- `external/` can hold incubating or third-party skill prototypes before they are promoted into APM's shared skill set.
 
 ---
 
