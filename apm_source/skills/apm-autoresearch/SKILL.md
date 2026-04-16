@@ -22,56 +22,8 @@ Agree on these parameters before starting:
 6. **Read-only context** — files to read for understanding but never edit.
 7. **Budget** — max wall-clock time per experiment. If a run exceeds 2× budget, kill it and treat as crash. For DL tasks: discuss whether early stopping at budget is informative — if the model needs N epochs to converge and budget cuts training short, the metric may be meaningless. Agree on a budget that produces comparable, interpretable results (e.g. fixed epoch count, fixed token count, or enough wall-clock time for convergence).
 8. **Constraints** — hard limits (memory, VRAM, disk, etc.). Soft constraints (minor increase acceptable for meaningful metric gain).
-
-### Setup steps
-1. Create or reuse `autoresearch/<tag>` from `dev` (or the project's active integration branch if `dev` does not exist). Use a dedicated worktree when the environment supports it.
-2. Bootstrap the branch-local research context. Keep examples for the deployed artifacts in `references/`:
-   - `references/AGENTS.md`
-   - `references/ARCHITECTURE.md`
-   - `references/SPEC_TASK-AR-001.md`
-   - `references/TASK-AR-001.md`
-   - `references/run-id.md`
-3. Read all in-scope and read-only files for full context.
-4. Create `results.tsv` with header row (see Results tracking below).
-5. **Baseline run**: execute the runner as-is, without modifications. Record result as baseline in `results.tsv`. This is the starting point for all comparisons.
-6. Confirm setup with the user. Once confirmed, begin the experiment loop.
-
-### Expected project map
-
-The autoresearch branch should keep the main implementation tree plus a branch-local research context. Typical shape:
-
-```text
-.
-├── src/
-├── AGENTS.md
-├── results.tsv
-├── memory_bank/
-│   ├── ARCHITECTURE.md
-│   ├── specs/
-│   │   └── SPEC_{TASK_ID}.md
-│   └── tasks/
-│       └── {TASK_ID}.md
-├── analysis/
-│   └── ... project-specific analysis and run reports
-├── artifacts/
-│   └── ... project-specific research artifacts
-└── ... runner-specific configs, scripts, and logs
-```
-
-Keep this map minimal. Add only the research-local artifacts needed for the loop, artifact inspection, and keep/discard continuity.
-
-## Branch-local research context
-
-Inside `autoresearch/<tag>`, keep an independent research context. Typical branch-local artifacts:
-- `AGENTS.md`
-- `memory_bank/ARCHITECTURE.md`
-- `memory_bank/specs/`
-- `memory_bank/tasks/`
-- `results.tsv`
-- analysis and report artifacts
-- keep-state artifacts
-
-This context is local to the autoresearch stream. It is not promoted back by default.
+### Setup
+- one-time bootstrap, expected project map, and example branch-local artifacts. Follow `references/SETUP.md`.
 
 ## Experiment loop
 
@@ -105,8 +57,6 @@ Weigh complexity cost against improvement magnitude on every keep/discard decisi
 
 `results.tsv` — tab-separated, **not committed to git** (leave untracked).
 
-In addition to `results.tsv`, keep branch-local reporting and keep-state artifacts. Store them in the autoresearch stream and treat them as research context, not default promotion targets.
-
 Required columns: `commit`, the primary metric, `status`, `description`. Beyond these, add any secondary metrics that help interpret results — decide based on the task. For DL: peak memory, training time, MFU, total tokens, num params. For dev: p50/p99 latency, throughput, binary size. Use judgment.
 
 Header example (DL task):
@@ -138,22 +88,12 @@ Use your judgment. If the crash is something dumb and easy to fix (typo, missing
 
 If budget is defined and a run exceeds 2× budget — kill the process, treat as crash.
 
-## Sync-back policy
-
-Promotion back to the main project flow is selective.
-
-- Promote to `dev` only the deliverables that should become part of the main project: approved code changes, configs, or stable supporting scripts.
-- Keep branch-local research context in `autoresearch/*`: `AGENTS.md`, `memory_bank/`, `results.tsv`, run reports, keep-state, and similar analytical artifacts.
-- Do not merge `autoresearch/*` directly into `main`. Follow the normal integration path through `dev`.
-
 ## Guardrails
 
 - Only modify files listed in the in-scope parameter. Everything else is read-only.
 - Do not install new dependencies unless explicitly allowed in constraints.
 - Do not modify the evaluation/metric extraction mechanism.
-- Do not update the main project Memory Bank during the loop. Branch-local autoresearch Memory Bank updates are allowed inside the isolated research stream.
 - Do not commit `results.tsv` — it stays untracked.
 - Do not skip the analysis pause or the run report.
 - `git reset --hard <keep_ref>` is allowed only inside the isolated `autoresearch/*` branch/worktree as part of the keep/discard mechanism of this skill.
-- Do not promote branch-local autoresearch context back to `dev` unless the user explicitly asks for it.
 - Do not ask the user whether to continue once the loop has started.

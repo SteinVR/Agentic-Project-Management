@@ -15,6 +15,7 @@
 - Promote to `dev` only approved deliverables.
 - Keep branch-local research context out of `dev` by default: `AGENTS.md`, `memory_bank/`, `results.tsv`, run reports, keep-state, and similar analytical artifacts.
 - Do not merge `autoresearch/*` directly into `main`.
+- Do not update the main project Memory Bank during the loop. Branch-local autoresearch Memory Bank updates are allowed inside the isolated research stream.
 
 ## Post-run analysis
 - The report is authored by the agent directly.
