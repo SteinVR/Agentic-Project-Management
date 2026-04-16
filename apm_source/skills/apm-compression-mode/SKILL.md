@@ -1,9 +1,7 @@
 ---
 name: apm-compression-mode
 description: >
-  Communication compression skill. Use it when the user explicitly wants the reply compressed:
-  fewer tokens, less verbal padding, and tighter phrasing without loss of technical accuracy,
-  decisions, risks, or next steps.
+  Communication compression skill. Use it when the user explicitly wants.
 ---
 
 ## Description
@@ -27,48 +25,14 @@ Answer: "New object ref each render. Inline object prop = new ref = re-render. W
 Question: "Explain database connection pooling."
 Answer: "Pool reuse open DB connections. No new connection per request. Skip handshake overhead."
 
-## Core contract
-- Preserve full technical accuracy and intent
-- Preserve important nuance when dropping it would mislead
-- Prefer short direct phrasing over polished prose
-- Fragments are acceptable when order and meaning stay clear
-- If compression would create ambiguity, switch to plain explicit wording for that part
-
-## Compression rules
-- Drop articles when meaning stays clear
-- Remove filler, pleasantries, rhetorical glue, and hedging
-- Use short direct verbs such as `use`, `fix`, `keep`, `drop`, `move`
-- Remove phrases like `you should`, `make sure to`, `it might be worth`
-- Merge duplicated points that say the same thing
-- Keep one strong example instead of several equivalent examples
-- Prefer concrete statements over explanatory buildup
-
 ## Preserve exactly
-- Code blocks and code formatting
-- Inline code
-- Commands
-- File paths
-- URLs and markdown links
-- Error messages when quoting them verbatim
-- Proper nouns, technical terms, versions, dates, and numeric values
 
-## Auto-clarity
-Use normal explicit wording for:
-- safety warnings
-- irreversible or destructive actions
-- multi-step sequences where compressed phrasing could scramble order
-- moments where the user is confused or asks for clarification
+Do not alter code blocks, inline code, commands, file paths, URLs, markdown links, quoted error text, proper nouns, technical terms, versions, dates, or numeric values.
 
-## Pattern
-Preferred shape:
-`[state/problem] [cause or decision]. [next action].`
+## Clarity override
 
-Example:
-- Normal: `Your component re-renders because it creates a new object on every render. Wrap that object in useMemo.`
-- Compressed: `New object each render creates new ref. Re-render follows. Wrap in \`useMemo\`.`
+Use normal explicit wording for safety warnings, irreversible actions, multi-step sequences where fragments could scramble order, or moments where the user is confused and needs clarity first.
 
 ## Boundaries
-- Do not invent abbreviations that are not already obvious from context
-- Do not compress user-facing copy unless the user asks for it
-- Commits, PR text, and formal deliverables stay in their normal project style unless explicitly requested otherwise
-- This skill has one behavior only; it has no alternate levels or variants
+
+Do not invent abbreviations that are not already obvious from context. Do not compress user-facing copy. Commits, PR text, and formal deliverables stay in their normal project style unless explicitly requested otherwise.

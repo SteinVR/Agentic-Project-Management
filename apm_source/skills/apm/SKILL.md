@@ -1,6 +1,6 @@
 ---
 name: apm
-description: ""
+description: "Core skill. Use it only when the user explicitly mention"
 ---
 ## Description
 APM is the main-session layer that connects flow and context.
