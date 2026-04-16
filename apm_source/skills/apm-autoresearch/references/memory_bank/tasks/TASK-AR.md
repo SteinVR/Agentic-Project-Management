@@ -1,6 +1,6 @@
 # Task: TASK-AR-001 Working Journal
 
-**Spec:** [SPEC_TASK-AR-001.md](./SPEC_TASK-AR-001.md)
+**Spec:** [SPEC_TASK-AR.md](../specs/SPEC_TASK-AR.md)
 
 ## Working Notes
 

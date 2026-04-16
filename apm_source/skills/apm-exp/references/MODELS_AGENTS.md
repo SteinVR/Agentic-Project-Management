@@ -1,5 +1,5 @@
 ## Skill
-- Use skill `apm-model-report` for model reporting and artifact summaries.
+- Use `MODEL_REPORT_TMP.md` as the template for model reporting and artifact summaries.
 
 ## Expected structure
 Each model gets a separate subfolder:
@@ -9,7 +9,7 @@ models/model_{metric}_{value}/
   preprocessor.pkl             # Preprocessor (if applicable)
   config.json                  # Hyperparameters snapshot
   src/                         # Optional source snapshot for reproducibility
-  MODEL_REPORT.md              # Model report (from apm-model-report template)
+  MODEL_REPORT.md              # Model report (from MODEL_REPORT_TMP.md)
 ```
 
 ## Conventions

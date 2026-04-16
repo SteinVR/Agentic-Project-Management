@@ -135,8 +135,8 @@ experiments/                  # Isolated experiments
 memory_bank/
 ├── ARCHITECTURE.md
 ├── STATE.md
+├── TASKS.md
 └── tasks/
-    ├── TASKS.md
     └── {TASK_ID}.md
 ```
 

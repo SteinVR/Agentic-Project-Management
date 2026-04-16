@@ -43,7 +43,7 @@ Usage: run the TUI configurator (`apm.sh`) to generate a project, then drive wor
 ## 🌐 Environments
 
 - **Codex CLI** (global or per-project): skills + subagent roles installed into `.codex/`; APM blocks merged into `.codex/config.toml`; projects use `memory_bank/` and minimal structure.
-- **OpenCode CLI** (global or per-project): commands/agents/skills installed into OpenCode; projects use `memory_bank/` and minimal structure.
+- **OpenCode CLI** (global or per-project): agents and shared skills installed into OpenCode; projects use `memory_bank/` and minimal structure.
 - **Claude Code** (global or per-project): subagent roles in `.claude/agents/`, skills in `.claude/skills/`, instructions in `CLAUDE.md`; projects use `memory_bank/` and minimal structure.
 
 ---
@@ -151,12 +151,12 @@ In practice, APM works by combining:
 2. During initialization, APM bootstraps two independent branches:
    - `main` stays clean and free of APM working artifacts.
    - `dev` contains the full working layer (`AGENTS.md`, `memory_bank/`, `external/`, `docs/`, and similar assets) and becomes the default branch for development.
-3. After your confirmation, APM creates the Memory Bank on `dev`: `ARCHITECTURE.md`, `STATE.md`, `specs/`, and `tasks/`.
+3. After your confirmation, APM creates the Memory Bank on `dev`: `ARCHITECTURE.md`, `STATE.md`, `TASKS.md`, `specs/`, and `tasks/`.
 4. You continue with workflow skills:
    - `apm-dev` for implementation, `apm-test` for testing, `apm-quality-gate` for independent verification.
    - `apm-eda`, `apm-deep-feature-engineering`, `apm-exp` for DS/ML workflows.
    - Domain-specific skills create their required directories on first use (e.g., `apm-eda` creates `eda/` and `data/`).
-   - **Co-Founder mode** provides a collaborative primary partner who co-owns project vision, architecture, and direction. Activate via Shift+Tab in OpenCode, `claude --agent apm-co-founder` in Claude Code, or by loading `apm-co-founder` in Codex.
+   - **Co-Founder mode** provides a collaborative primary partner who co-owns project vision, architecture, and direction. Activate via Shift+Tab in OpenCode or `claude --agent apm-co-founder` in Claude Code.
 5. Memory Bank synchronization is explicit (`/apm-sync`) and delegated to the `apm-memory-bank-sync` subagent.
 6. Git isolation via `apm-git-taskflow` when parallel or isolated execution streams are needed. Task branches and worktrees are created from `dev`, not from `main`.
 
@@ -179,13 +179,13 @@ In practice, APM works by combining:
 Core files:
 - `ARCHITECTURE.md`
 - `STATE.md`
-- `tasks/TASKS.md`
+- `TASKS.md`
 - `design/SPEC-{module}.md` -- global module specifications (contracts, ready interfaces, typecheck gates, invariants, data formats). Updated only with approval.
 - `specs/SPEC_{id}.md` -- frozen task specification (goal, pipeline, contracts, ready interfaces, typecheck automation, DoD). Read-only during execution.
 - `tasks/{id}.md` -- working journal (notes, review findings, outcome).
 
 Line budget:
-- Keep `STATE.md` and `tasks/TASKS.md` under 120 lines (compress when exceeded).
+- Keep `STATE.md` and `TASKS.md` under 120 lines (compress when exceeded).
 
 ## Logs
 
@@ -260,13 +260,11 @@ Line budget:
 
 ## OpenCode CLI architecture
 
-- **Commands** = playbooks the user runs (`/apm-*`). They set the phase and required context.
 - **Agents** = role profiles plus primary agent: Co-Founder (`apm-co-founder`) for strategic partnership. Switch via Shift+Tab.
 - **Skills** = modular knowledge chunks loaded on demand (dev, test, DS workflows, subagent delegation, git isolation, logs).
-- **Tools** = custom actions used by commands.
 - **Install targets**:
-  - Global: `~/.config/opencode/{commands,agents,skills,tools}`
-  - Local: `.opencode/{commands,agents,skills,tools}` inside a project
+  - Global: `~/.config/opencode/{agents,skills}`
+  - Local: `.opencode/{agents,skills}` inside a project
 
 ---
 
@@ -283,11 +281,3 @@ Line budget:
   - Local: `.claude/{agents,skills}` inside a project
 
 ---
-
-## Inspiration
-
-APM is inspired by:
-- [GitHub Spec Kit](https://github.com/github/spec-kit) - Spec-Driven Development toolkit
-- Enterprise software development practices
-- Domain-Driven Design by Eric Evans
-- Test-Driven Development by Kent Beck

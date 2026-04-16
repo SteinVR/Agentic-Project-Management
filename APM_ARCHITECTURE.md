@@ -37,11 +37,10 @@ APM supports four distinct environments, tailoring its components for each ecosy
 2. **Codex CLI (Terminal / Orchestrated):**
    - Utilizes `config.toml` for subagent declarations (`[agents.*]`) and parallel multi-agent threading.
    - Relies on standardized `.codex/skills/` following the `agentskills.io` specification.
-   - Supports `apm-co-founder` as a primary-session operating mode.
    - Memory Bank resides in `memory_bank/`.
 
 3. **OpenCode CLI (Terminal / Extensible):**
-   - Implements custom `commands/`, `agents/`, `skills/`, and `tools/` either globally (`~/.config/opencode/`) or locally (`.opencode/`).
+   - Installs OpenCode agents plus shared skills either globally (`~/.config/opencode/`) or locally (`.opencode/`).
    - Supports Co-Founder (`apm-co-founder`) as a primary agent.
    - Memory Bank resides in `memory_bank/`.
 
@@ -152,7 +151,7 @@ In modern environments (Cursor 2.5+, Codex CLI, OpenCode, and Claude Code), APM 
 
 **Two interaction modes:**
 1. **Standard mode:** The user drives work through the main session, optionally delegating to specialist subagents. User validates between steps.
-2. **Co-Founder mode:** The user works with an equal project partner who co-owns vision, architecture, and direction. Activated via Shift+Tab in OpenCode, `claude --agent apm-co-founder` in Claude Code, or by loading the skill in Codex.
+2. **Co-Founder mode:** The user works with an equal project partner who co-owns vision, architecture, and direction. Activated via Shift+Tab in OpenCode or `claude --agent apm-co-founder` in Claude Code.
 
 **Delegation contract:** Task description, SSOT pointers (`ARCHITECTURE.md`, module spec, frozen task spec when it exists), additional context pointers, optional clarification. Subagents self-orient from the project structure and memory bank, but a frozen task spec is binding when passed.
 
