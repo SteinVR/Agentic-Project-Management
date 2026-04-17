@@ -1,4 +1,5 @@
-# Install APM OpenCode pack into ~/.config/opencode or a local .opencode directory
+# Install APM OpenCode assets into ~/.config/opencode or a local .opencode directory.
+# Current OpenCode support ships agents plus shared skills.
 
 param(
   [switch]$Local,
@@ -43,15 +44,20 @@ if ($useLocal) {
 }
 
 $agentsDir = Join-Path $OpenCodeDir "agents"
-$commandsDir = Join-Path $OpenCodeDir "commands"
 $skillsDir = Join-Path $OpenCodeDir "skills"
-$toolsDir = Join-Path $OpenCodeDir "tools"
+$legacyCommandsDir = Join-Path $OpenCodeDir "commands"
+$legacyToolsDir = Join-Path $OpenCodeDir "tools"
 
-New-Item -ItemType Directory -Force -Path $agentsDir, $commandsDir, $skillsDir, $toolsDir | Out-Null
+if (Test-Path $legacyCommandsDir) {
+  Remove-Item -Recurse -Force $legacyCommandsDir
+}
+if (Test-Path $legacyToolsDir) {
+  Remove-Item -Recurse -Force $legacyToolsDir
+}
+
+New-Item -ItemType Directory -Force -Path $agentsDir, $skillsDir | Out-Null
 
 Copy-Item -Recurse -Force (Join-Path $PackDir "agent/*") $agentsDir
-Copy-Item -Recurse -Force (Join-Path $PackDir "command/*") $commandsDir
-Copy-Item -Recurse -Force (Join-Path $PackDir "tools/*") $toolsDir
 Copy-Item -Recurse -Force (Join-Path $SkillsSourceDir "*") $skillsDir
 
-Write-Host "APM OpenCode pack installed to $OpenCodeDir"
+Write-Host "APM OpenCode assets installed to $OpenCodeDir"

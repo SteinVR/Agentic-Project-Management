@@ -1,39 +1,25 @@
 #!/usr/bin/env bash
 #
-# APM E2E Tests - End-to-End testing for project deployment
-# Tests RAPID, DS, and FULL methodologies across Cursor, OpenCode, and Codex environments.
+# APM E2E Tests - validate the current unified configurator and active packs.
 #
-# Author: APM Team
-# Version: 2.0.0
 
-# Don't exit on error - we handle errors in tests
 set +e
 
-# ============================================================================
-# CONFIGURATION
-# ============================================================================
-
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-APM_SCRIPT="$SCRIPT_DIR/../apm.sh"
+REPO_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
+APM_SCRIPT="$REPO_ROOT/apm_project/apm.sh"
 
-# Test counters
 TESTS_RUN=0
 TESTS_PASSED=0
 TESTS_FAILED=0
 FAILED_TESTS=()
 
-# Options
 VERBOSE=false
 KEEP_TEST_PROJECTS=false
-TEST_SUITE="All"
-
-# ============================================================================
-# ARGUMENT PARSING
-# ============================================================================
 
 parse_args() {
     while [[ $# -gt 0 ]]; do
-        case $1 in
+        case "$1" in
             --verbose|-v)
                 VERBOSE=true
                 shift
@@ -42,43 +28,26 @@ parse_args() {
                 KEEP_TEST_PROJECTS=true
                 shift
                 ;;
-            --rapid)
-                TEST_SUITE="RAPID"
-                shift
-                ;;
-            --ds)
-                TEST_SUITE="DS"
-                shift
-                ;;
-            --full)
-                TEST_SUITE="FULL"
-                shift
-                ;;
             --help|-h)
-                echo "APM E2E Test Suite"
-                echo ""
-                echo "Usage: ./e2e_tests.sh [options]"
-                echo ""
-                echo "Options:"
-                echo "  --verbose, -v   Show detailed test output"
-                echo "  --keep          Keep test projects after completion"
-                echo "  --rapid         Run only RAPID methodology tests"
-                echo "  --ds            Run only DS methodology tests"
-                echo "  --full          Run only FULL methodology tests"
-                echo "  --help, -h      Show this help message"
+                cat <<'EOF'
+APM E2E Test Suite
+
+Usage: ./e2e_tests.sh [options]
+
+Options:
+  --verbose, -v   Show detailed test output
+  --keep          Keep temporary test projects
+  --help, -h      Show this help message
+EOF
                 exit 0
                 ;;
             *)
-                echo "[ERROR] Unknown option: $1"
+                echo "[ERROR] Unknown option: $1" >&2
                 exit 1
                 ;;
         esac
     done
 }
-
-# ============================================================================
-# TEST UTILITIES
-# ============================================================================
 
 write_test_header() {
     echo ""
@@ -109,7 +78,7 @@ write_test_fail() {
 
 write_test_info() {
     if [[ "$VERBOSE" == "true" ]]; then
-        echo -e "    \033[36m[INFO]\033[0m $1" >&2
+        echo -e "    \033[36m[INFO]\033[0m $1"
     fi
 }
 
@@ -117,28 +86,28 @@ assert_path_exists() {
     local path="$1"
     local description="$2"
     local test_context="$3"
-    
+
     if [[ -e "$path" ]]; then
         write_test_pass "$description exists"
         return 0
-    else
-        write_test_fail "$description does not exist: $path" "$test_context"
-        return 1
     fi
+
+    write_test_fail "$description does not exist: $path" "$test_context"
+    return 1
 }
 
 assert_path_not_exists() {
     local path="$1"
     local description="$2"
     local test_context="$3"
-    
+
     if [[ ! -e "$path" ]]; then
         write_test_pass "$description does not exist (expected)"
         return 0
-    else
-        write_test_fail "$description should not exist: $path" "$test_context"
-        return 1
     fi
+
+    write_test_fail "$description should not exist: $path" "$test_context"
+    return 1
 }
 
 assert_file_contains() {
@@ -146,45 +115,41 @@ assert_file_contains() {
     local pattern="$2"
     local description="$3"
     local test_context="$4"
-    
+
     if [[ ! -f "$file_path" ]]; then
         write_test_fail "File not found: $file_path" "$test_context"
         return 1
     fi
-    
+
     if grep -q "$pattern" "$file_path"; then
         write_test_pass "$description - pattern found"
         return 0
-    else
-        write_test_fail "$description - pattern not found: $pattern" "$test_context"
-        return 1
     fi
+
+    write_test_fail "$description - pattern not found: $pattern" "$test_context"
+    return 1
 }
 
 assert_directory_not_empty() {
     local path="$1"
     local description="$2"
     local test_context="$3"
-    
+
     if [[ ! -d "$path" ]]; then
         write_test_fail "Directory not found: $path" "$test_context"
         return 1
     fi
-    
+
     local count
     count=$(find "$path" -mindepth 1 -maxdepth 1 | wc -l)
-    if [[ $count -gt 0 ]]; then
+    if [[ "$count" -gt 0 ]]; then
         write_test_pass "$description is not empty ($count items)"
         return 0
-    else
-        write_test_fail "$description is empty" "$test_context"
-        return 1
     fi
-}
 
-# ============================================================================
-# TEST SETUP & TEARDOWN
-# ============================================================================
+    write_test_fail "$description is empty" "$test_context"
+    return 1
+}
 
 initialize_test_environment() {
     local test_dir
@@ -195,7 +160,7 @@ initialize_test_environment() {
 
 remove_test_environment() {
     local test_dir="$1"
-    
+
     if [[ "$KEEP_TEST_PROJECTS" != "true" && -d "$test_dir" ]]; then
         rm -rf "$test_dir"
         write_test_info "Cleaned up test directory: $test_dir"
@@ -205,684 +170,305 @@ remove_test_environment() {
     fi
 }
 
-# ============================================================================
-# RAPID METHODOLOGY TESTS (Cursor)
-# ============================================================================
-
-test_rapid_methodology_deployment() {
-    local test_dir="$1"
-    
-    write_test_header "RAPID Methodology Deployment Tests (Cursor)"
-    
-    local project_name="test-rapid-project"
-    local project_path="$test_dir/$project_name"
-    
-    write_test_name "Creating RAPID project via apm.sh"
-    
-    if bash "$APM_SCRIPT" \
-        --project-name "$project_name" \
-        --project-path "$test_dir" \
-        --cursor \
-        --rapid \
-        --non-interactive \
-        --skip-cursor; then
-        write_test_pass "apm.sh executed successfully"
-    else
-        write_test_fail "apm.sh execution failed" "RAPID-Creation"
-        return
-    fi
-    
-    # Test project root structure
-    write_test_name "Verifying RAPID project root structure"
-    assert_path_exists "$project_path" "Project root" "RAPID-Root"
-    assert_path_exists "$project_path/src" "src directory" "RAPID-Src"
-    assert_path_exists "$project_path/logs" "logs directory" "RAPID-Logs"
-    assert_path_exists "$project_path/tests" "tests directory" "RAPID-Tests"
-    assert_path_exists "$project_path/external" "external directory" "RAPID-External"
-    assert_path_exists "$project_path/AGENTS.md" "AGENTS.md" "RAPID-Agents"
-    
-    # Test memory_bank directory
-    write_test_name "Verifying RAPID memory_bank"
+assert_base_template() {
+    local project_path="$1"
+    local project_name="$2"
+    local prefix="$3"
     local mb_dir="$project_path/memory_bank"
-    assert_path_exists "$mb_dir" "memory_bank directory" "RAPID-MemoryBank"
-    assert_path_exists "$mb_dir/ARCHITECTURE.md" "memory_bank/ARCHITECTURE.md" "RAPID-MBArch"
-    assert_path_exists "$mb_dir/STATE.md" "memory_bank/STATE.md" "RAPID-MBState"
-    assert_path_exists "$mb_dir/TASKS.md" "memory_bank/TASKS.md" "RAPID-MBTasks"
-    assert_path_exists "$mb_dir/tasks/W1A.md" "memory_bank/tasks/W1A.md" "RAPID-MBTask001"
-    assert_path_exists "$mb_dir/design" "memory_bank/design directory" "RAPID-MBDesign"
-    assert_path_exists "$mb_dir/design/SPEC-MODULE.md" "memory_bank/design/SPEC-MODULE.md" "RAPID-MBDesignSpec"
-    assert_path_exists "$mb_dir/specs" "memory_bank/specs directory" "RAPID-MBSpecs"
-    assert_path_exists "$mb_dir/specs/SPEC_W1A.md" "memory_bank/specs/SPEC_W1A.md" "RAPID-MBSpecW1A"
 
-    # Verify project name was substituted in ARCHITECTURE.md
-    assert_file_contains "$mb_dir/ARCHITECTURE.md" "$project_name" \
-        "ARCHITECTURE.md contains project name" "RAPID-ArchName"
-    
-    # No legacy .apm/ directory
-    write_test_name "Verifying no legacy artifacts"
-    assert_path_not_exists "$project_path/.apm" ".apm directory" "RAPID-NoAPM"
-    assert_path_not_exists "$project_path/ARCHITECTURE.md" "Root ARCHITECTURE.md" "RAPID-NoRootArch"
-    assert_path_not_exists "$project_path/TASK.md" "Root TASK.md" "RAPID-NoRootTask"
-    assert_path_not_exists "$project_path/TASKS.md" "Root TASKS.md" "RAPID-NoRootTASKS"
-    assert_path_not_exists "$project_path/{project-name}" "{project-name} placeholder" "RAPID-NoPlaceholder"
-    
-    # Test cursor pack installation
-    write_test_name "Verifying Cursor pack (agents)"
-    local agents_dir="$project_path/.cursor/agents"
-    assert_path_exists "$agents_dir" ".cursor/agents directory" "RAPID-CursorAgents"
-    assert_path_exists "$agents_dir/apm-architect.md" "apm-architect agent" "RAPID-ArchitectAgent"
-    assert_path_exists "$agents_dir/apm-engineer.md" "apm-engineer agent" "RAPID-EngineerAgent"
-    assert_path_exists "$agents_dir/apm-sdet.md" "apm-sdet agent" "RAPID-SDETAgent"
-    assert_path_exists "$agents_dir/apm-code-simplifier.md" "apm-code-simplifier agent" "RAPID-SimplifierAgent"
-    
-    write_test_name "Verifying Cursor pack (commands)"
-    local commands_dir="$project_path/.cursor/commands"
-    assert_path_exists "$commands_dir" ".cursor/commands directory" "RAPID-CursorCommands"
-    assert_path_exists "$commands_dir/apm-start.md" "apm-start command" "RAPID-StartCmd"
-    assert_path_exists "$commands_dir/apm-develop.md" "apm-develop command" "RAPID-DevelopCmd"
-    assert_path_exists "$commands_dir/apm-simplify.md" "apm-simplify command" "RAPID-SimplifyCmd"
-    assert_path_exists "$commands_dir/apm-test.md" "apm-test command" "RAPID-TestCmd"
-    assert_path_exists "$commands_dir/apm-sync.md" "apm-sync command" "RAPID-SyncCmd"
-    assert_path_exists "$commands_dir/apm-architect.md" "apm-architect command" "RAPID-ArchCmd"
-    assert_path_exists "$commands_dir/apm-review.md" "apm-review command" "RAPID-ReviewCmd"
+    assert_path_exists "$project_path/AGENTS.md" "AGENTS.md" "$prefix-AGENTS"
+    assert_path_exists "$project_path/src" "src directory" "$prefix-SRC"
+    assert_path_exists "$project_path/tests" "tests directory" "$prefix-TESTS"
+    assert_path_exists "$project_path/logs" "logs directory" "$prefix-LOGS"
+    assert_path_exists "$project_path/external" "external directory" "$prefix-EXTERNAL"
+
+    assert_path_exists "$mb_dir" "memory_bank" "$prefix-MB"
+    assert_path_exists "$mb_dir/ARCHITECTURE.md" "memory_bank/ARCHITECTURE.md" "$prefix-MB-ARCH"
+    assert_path_exists "$mb_dir/STATE.md" "memory_bank/STATE.md" "$prefix-MB-STATE"
+    assert_path_exists "$mb_dir/TASKS.md" "memory_bank/TASKS.md" "$prefix-MB-TASKS"
+    assert_path_exists "$mb_dir/design/SPEC-MODULE.md" "memory_bank/design/SPEC-MODULE.md" "$prefix-MB-DESIGN"
+    assert_path_exists "$mb_dir/specs/SPEC_W1A.md" "memory_bank/specs/SPEC_W1A.md" "$prefix-MB-SPEC"
+    assert_path_exists "$mb_dir/tasks/W1A.md" "memory_bank/tasks/W1A.md" "$prefix-MB-TASK"
+    assert_file_contains "$mb_dir/ARCHITECTURE.md" "$project_name" "ARCHITECTURE.md contains project name" "$prefix-NAME"
 }
 
-# ============================================================================
-# DS METHODOLOGY TESTS (Cursor)
-# ============================================================================
-
-test_ds_methodology_deployment() {
+test_opencode_local() {
     local test_dir="$1"
-    
-    write_test_header "DS Methodology Deployment Tests (Cursor)"
-    
-    local project_name="test-ds-project"
+    local tmp_home="$test_dir/home-opencode"
+    mkdir -p "$tmp_home"
+
+    write_test_header "OpenCode local install"
+    local project_name="test-opencode"
     local project_path="$test_dir/$project_name"
-    
-    write_test_name "Creating DS project via apm.sh"
-    
-    if bash "$APM_SCRIPT" \
-        --project-name "$project_name" \
-        --project-path "$test_dir" \
-        --cursor \
-        --ds \
-        --non-interactive \
-        --skip-cursor; then
-        write_test_pass "apm.sh executed successfully"
-    else
-        write_test_fail "apm.sh execution failed" "DS-Creation"
-        return
-    fi
-    
-    # Test DS-specific directories
-    write_test_name "Verifying DS project root structure"
-    assert_path_exists "$project_path" "Project root" "DS-Root"
-    assert_path_exists "$project_path/src" "src directory" "DS-Src"
-    assert_path_exists "$project_path/eda" "eda directory" "DS-EDA"
-    assert_path_exists "$project_path/experiments" "experiments directory" "DS-Experiments"
-    assert_path_exists "$project_path/data" "data directory" "DS-Data"
-    assert_path_exists "$project_path/models" "models directory" "DS-Models"
-    assert_path_exists "$project_path/logs" "logs directory" "DS-Logs"
-    assert_path_exists "$project_path/AGENTS.md" "AGENTS.md" "DS-Agents"
-    assert_path_exists "$project_path/config.py" "config.py" "DS-Config"
-    assert_path_exists "$project_path/main.py" "main.py" "DS-Main"
-    
-    # Test memory_bank
-    write_test_name "Verifying DS memory_bank"
-    local mb_dir="$project_path/memory_bank"
-    assert_path_exists "$mb_dir" "memory_bank directory" "DS-MemoryBank"
-    assert_path_exists "$mb_dir/ARCHITECTURE.md" "memory_bank/ARCHITECTURE.md" "DS-MBArch"
-    assert_path_exists "$mb_dir/STATE.md" "memory_bank/STATE.md" "DS-MBState"
-    assert_path_exists "$mb_dir/TASKS.md" "memory_bank/TASKS.md" "DS-MBTasks"
-    assert_path_exists "$mb_dir/tasks/W1A.md" "memory_bank/tasks/W1A.md" "DS-MBTask001"
-    assert_path_exists "$mb_dir/design" "memory_bank/design directory" "DS-MBDesign"
-    assert_path_exists "$mb_dir/design/SPEC-MODULE.md" "memory_bank/design/SPEC-MODULE.md" "DS-MBDesignSpec"
-    assert_path_exists "$mb_dir/specs" "memory_bank/specs directory" "DS-MBSpecs"
-    assert_path_exists "$mb_dir/specs/SPEC_W1A.md" "memory_bank/specs/SPEC_W1A.md" "DS-MBSpecW1A"
 
-    # No legacy artifacts
-    write_test_name "Verifying no legacy artifacts"
-    assert_path_not_exists "$project_path/.apm" ".apm directory" "DS-NoAPM"
-    
-    # Cursor pack
-    write_test_name "Verifying Cursor pack"
-    assert_path_exists "$project_path/.cursor/agents/apm-architect.md" "apm-architect agent" "DS-ArchitectAgent"
-    assert_path_exists "$project_path/.cursor/agents/apm-data-scientist.md" "apm-data-scientist agent" "DS-DSAgent"
-    assert_path_exists "$project_path/.cursor/commands/apm-start.md" "apm-start command" "DS-StartCmd"
-    assert_path_exists "$project_path/.cursor/commands/apm-eda.md" "apm-eda command" "DS-EDACmd"
-    assert_path_exists "$project_path/.cursor/commands/apm-deep-feature-engineering.md" "apm-deep-feature-engineering command" "DS-DeepFECmd"
-    assert_path_exists "$project_path/.cursor/commands/apm-baseline.md" "apm-baseline command" "DS-BaselineCmd"
-    assert_path_exists "$project_path/.cursor/commands/apm-experiment.md" "apm-experiment command" "DS-ExpCmd"
-}
-
-# ============================================================================
-# FULL METHODOLOGY TESTS (Cursor-only)
-# ============================================================================
-
-test_full_methodology_deployment() {
-    local test_dir="$1"
-    
-    write_test_header "FULL Methodology Deployment Tests (Cursor)"
-    
-    local project_name="test-full-project"
-    local project_path="$test_dir/$project_name"
-    
-    write_test_name "Creating FULL project via apm.sh"
-    
-    if bash "$APM_SCRIPT" \
-        --project-name "$project_name" \
-        --project-path "$test_dir" \
-        --cursor \
-        --full \
-        --non-interactive \
-        --skip-cursor; then
-        write_test_pass "apm.sh executed successfully"
-    else
-        write_test_fail "apm.sh execution failed" "FULL-Creation"
-        return
-    fi
-    
-    # Test project root structure
-    write_test_name "Verifying FULL project root structure"
-    assert_path_exists "$project_path" "Project root" "FULL-Root"
-    assert_path_exists "$project_path/WORKFLOW.md" "WORKFLOW.md" "FULL-Workflow"
-    assert_path_exists "$project_path/external" "external directory" "FULL-External"
-    
-    # Test project name directory (renamed from {project-name})
-    write_test_name "Verifying FULL project name directory structure"
-    local project_sub_dir="$project_path/$project_name"
-    assert_path_exists "$project_sub_dir" "Project name directory" "FULL-ProjectDir"
-    
-    # Test block structure
-    write_test_name "Verifying FULL block structure"
-    local block1="$project_sub_dir/{BLOCK-1-name}"
-    local block2="$project_sub_dir/{BLOCK-2-name}"
-    local block3="$project_sub_dir/{BLOCK-3-name}"
-    
-    assert_path_exists "$block1" "BLOCK-1 directory" "FULL-Block1"
-    assert_path_exists "$block2" "BLOCK-2 directory" "FULL-Block2"
-    assert_path_exists "$block3" "BLOCK-3 directory" "FULL-Block3"
-    
-    # Test block internal structure
-    write_test_name "Verifying FULL block internal structure"
-    for block in "$block1" "$block2" "$block3"; do
-        local block_name
-        block_name=$(basename "$block")
-        assert_path_exists "$block/logs" "$block_name/logs" "FULL-BlockLogs"
-        assert_path_exists "$block/tests" "$block_name/tests" "FULL-BlockTests"
-        assert_path_exists "$block/task.md" "$block_name/task.md" "FULL-BlockTask"
-    done
-    
-    # Test .apm directory structure
-    write_test_name "Verifying FULL .apm directory structure"
-    local apm_dir="$project_path/.apm"
-    assert_path_exists "$apm_dir" ".apm directory" "FULL-APM"
-    assert_path_exists "$apm_dir/AGENT_DROLES" "AGENT_DROLES directory" "FULL-AgentRoles"
-    assert_path_exists "$apm_dir/MEMORY" "MEMORY directory" "FULL-Memory"
-    
-    # Test FULL-specific agent role files
-    write_test_name "Verifying FULL agent role files"
-    local roles_dir="$apm_dir/AGENT_DROLES"
-    assert_path_exists "$roles_dir/System_Architect.md" "System_Architect.md" "FULL-Architect"
-    assert_path_exists "$roles_dir/Lead-Engineer.md" "Lead-Engineer.md" "FULL-LeadEngineer"
-    assert_path_exists "$roles_dir/Principal-Engineer.md" "Principal-Engineer.md" "FULL-PrincipalEngineer"
-    assert_path_exists "$roles_dir/SDET.md" "SDET.md" "FULL-SDET"
-    
-    # Test cursor pack installed on top of legacy commands
-    write_test_name "Verifying Cursor pack"
-    assert_path_exists "$project_path/.cursor/agents" ".cursor/agents directory" "FULL-CursorAgents"
-    assert_path_exists "$project_path/.cursor/commands" ".cursor/commands directory" "FULL-CursorCommands"
-    
-    # Verify placeholder was renamed correctly
-    write_test_name "Verifying placeholder renaming"
-    assert_path_not_exists "$project_path/{project-name}" "{project-name} placeholder" "FULL-NoPlaceholder"
-}
-
-# ============================================================================
-# CLI ENVIRONMENT TESTS
-# ============================================================================
-
-test_rapid_opencode_deployment() {
-    local test_dir="$1"
-    
-    write_test_header "RAPID OpenCode CLI Deployment Tests"
-    
-    local project_name="test-rapid-opencode"
-    local project_path="$test_dir/$project_name"
-    
-    write_test_name "Creating RAPID OpenCode project"
-    
-    if bash "$APM_SCRIPT" \
-        --project-name "$project_name" \
-        --project-path "$test_dir" \
+    write_test_name "Creating OpenCode project with local assets"
+    if HOME="$tmp_home" TERM=xterm bash "$APM_SCRIPT" \
         --opencode \
-        --rapid \
-        --none \
+        --project-name "$project_name" \
+        --project-path "$test_dir" \
+        --local \
         --non-interactive; then
         write_test_pass "apm.sh executed successfully"
     else
-        write_test_fail "apm.sh execution failed" "RAPID-OC-Creation"
+        write_test_fail "apm.sh execution failed" "OC-CREATE"
         return
     fi
-    
-    write_test_name "Verifying OpenCode RAPID structure"
-    assert_path_exists "$project_path/memory_bank" "memory_bank directory" "RAPID-OC-MB"
-    assert_path_exists "$project_path/memory_bank/ARCHITECTURE.md" "ARCHITECTURE.md" "RAPID-OC-Arch"
-    assert_path_exists "$project_path/memory_bank/TASKS.md" "TASKS.md" "RAPID-OC-Tasks"
-    assert_path_exists "$project_path/memory_bank/design/SPEC-MODULE.md" "design/SPEC-MODULE.md" "RAPID-OC-DesignSpec"
-    assert_path_exists "$project_path/memory_bank/specs/SPEC_W1A.md" "specs/SPEC_W1A.md" "RAPID-OC-SpecW1A"
-    assert_path_exists "$project_path/src" "src directory" "RAPID-OC-Src"
-    assert_path_exists "$project_path/tests" "tests directory" "RAPID-OC-Tests"
-    assert_path_exists "$project_path/AGENTS.md" "AGENTS.md" "RAPID-OC-Agents"
-    
-    # No Cursor-specific artifacts
-    assert_path_not_exists "$project_path/.cursor" ".cursor directory" "RAPID-OC-NoCursor"
-    assert_path_not_exists "$project_path/.apm" ".apm directory" "RAPID-OC-NoAPM"
+
+    assert_base_template "$project_path" "$project_name" "OC"
+    assert_path_exists "$project_path/.opencode/agents" ".opencode/agents" "OC-AGENTS"
+    assert_path_exists "$project_path/.opencode/skills" ".opencode/skills" "OC-SKILLS"
+    assert_path_exists "$project_path/.opencode/agents/apm-worker.md" "OpenCode worker agent" "OC-WORKER"
+    assert_path_exists "$project_path/.opencode/agents/apm-co-founder.md" "OpenCode co-founder agent" "OC-COFOUNDER"
+    assert_directory_not_empty "$project_path/.opencode/skills/apm-start" "OpenCode apm-start skill" "OC-SKILL-CONTENT"
+    assert_path_not_exists "$project_path/.opencode/commands" ".opencode/commands" "OC-NO-COMMANDS"
+    assert_path_not_exists "$project_path/.opencode/tools" ".opencode/tools" "OC-NO-TOOLS"
 }
 
-# ============================================================================
-# CODEX ENVIRONMENT TESTS
-# ============================================================================
-
-test_rapid_codex_deployment() {
+test_codex_local() {
     local test_dir="$1"
-    
-    write_test_header "RAPID Codex CLI Deployment Tests"
-    
-    local project_name="test-rapid-codex"
+    local tmp_home="$test_dir/home-codex"
+    mkdir -p "$tmp_home"
+
+    write_test_header "Codex local install"
+    local project_name="test-codex"
     local project_path="$test_dir/$project_name"
-    
-    write_test_name "Creating RAPID Codex project"
-    
-    if bash "$APM_SCRIPT" \
-        --project-name "$project_name" \
-        --project-path "$test_dir" \
+
+    write_test_name "Creating Codex project with local assets"
+    if HOME="$tmp_home" TERM=xterm bash "$APM_SCRIPT" \
         --codex \
-        --rapid \
-        --local \
-        --non-interactive \
-        --skip-cursor; then
-        write_test_pass "apm.sh executed successfully"
-    else
-        write_test_fail "apm.sh execution failed" "RAPID-CX-Creation"
-        return
-    fi
-    
-    write_test_name "Verifying Codex RAPID structure"
-    assert_path_exists "$project_path/memory_bank" "memory_bank directory" "RAPID-CX-MB"
-    assert_path_exists "$project_path/memory_bank/ARCHITECTURE.md" "ARCHITECTURE.md" "RAPID-CX-Arch"
-    assert_path_exists "$project_path/memory_bank/TASKS.md" "TASKS.md" "RAPID-CX-Tasks"
-    assert_path_exists "$project_path/memory_bank/tasks/W1A.md" "W1A.md" "RAPID-CX-Task001"
-    assert_path_exists "$project_path/src" "src directory" "RAPID-CX-Src"
-    assert_path_exists "$project_path/tests" "tests directory" "RAPID-CX-Tests"
-    assert_path_exists "$project_path/AGENTS.md" "AGENTS.md" "RAPID-CX-Agents"
-    
-    # No Cursor-specific artifacts
-    assert_path_not_exists "$project_path/.cursor" ".cursor directory" "RAPID-CX-NoCursor"
-    assert_path_not_exists "$project_path/.apm" ".apm directory" "RAPID-CX-NoAPM"
-    
-    # Codex assets
-    write_test_name "Verifying Codex assets"
-    assert_path_exists "$project_path/.codex/skills" ".codex/skills directory" "RAPID-CX-Skills"
-    assert_path_exists "$project_path/.codex/agents" ".codex/agents directory" "RAPID-CX-Agents"
-    assert_path_exists "$project_path/.codex/config.toml" ".codex/config.toml" "RAPID-CX-Config"
-    
-    # Verify all agent TOML files
-    assert_path_exists "$project_path/.codex/agents/apm-architect.toml" "apm-architect agent" "RAPID-CX-ArchitectAgent"
-    assert_path_exists "$project_path/.codex/agents/apm-engineer.toml" "apm-engineer agent" "RAPID-CX-EngineerAgent"
-    assert_path_exists "$project_path/.codex/agents/apm-sdet.toml" "apm-sdet agent" "RAPID-CX-SDETAgent"
-    assert_path_exists "$project_path/.codex/agents/apm-code-simplifier.toml" "apm-code-simplifier agent" "RAPID-CX-SimplifierAgent"
-    assert_path_exists "$project_path/.codex/agents/apm-reviewer.toml" "apm-reviewer agent" "RAPID-CX-ReviewerAgent"
-    assert_path_exists "$project_path/.codex/agents/apm-memory-bank-sync.toml" "apm-memory-bank-sync agent" "RAPID-CX-SyncAgent"
-    assert_path_exists "$project_path/.codex/agents/apm-web-explorer.toml" "apm-web-explorer agent" "RAPID-CX-WebExplorerAgent"
-    assert_path_exists "$project_path/.codex/agents/apm-data-scientist.toml" "apm-data-scientist agent" "RAPID-CX-DataScientistAgent"
-
-    # Verify config.toml has required APM sections
-    assert_file_contains "$project_path/.codex/config.toml" "multi_agent" \
-        "config.toml has multi_agent setting" "RAPID-CX-ConfigMultiAgent"
-    assert_file_contains "$project_path/.codex/config.toml" "max_threads" \
-        "config.toml has max_threads setting" "RAPID-CX-ConfigThreads"
-    assert_file_contains "$project_path/.codex/config.toml" "max_depth" \
-        "config.toml has max_depth setting" "RAPID-CX-ConfigDepth"
-    
-    # Verify shared skills were copied
-    assert_path_exists "$project_path/memory_bank/design/SPEC-MODULE.md" "design/SPEC-MODULE.md" "RAPID-CX-DesignSpec"
-    assert_path_exists "$project_path/memory_bank/specs/SPEC_W1A.md" "specs/SPEC_W1A.md" "RAPID-CX-SpecW1A"
-
-    # Verify shared skills were copied
-    assert_path_exists "$project_path/.codex/skills/apm-dev/SKILL.md" "apm-dev skill" "RAPID-CX-DevSkill"
-    assert_path_exists "$project_path/.codex/skills/apm-report/SKILL.md" "apm-report skill" "RAPID-CX-ReportSkill"
-    assert_path_exists "$project_path/.codex/skills/apm-team-lead/SKILL.md" "apm-team-lead skill" "RAPID-CX-TeamLeadSkill"
-}
-
-# ============================================================================
-# CLAUDE CODE ENVIRONMENT TESTS
-# ============================================================================
-
-test_rapid_claude_deployment() {
-    local test_dir="$1"
-
-    write_test_header "RAPID Claude Code Deployment Tests"
-
-    local project_name="test-rapid-claude"
-    local project_path="$test_dir/$project_name"
-
-    write_test_name "Creating RAPID Claude Code project"
-
-    if bash "$APM_SCRIPT" \
         --project-name "$project_name" \
         --project-path "$test_dir" \
-        --claude \
-        --rapid \
         --local \
-        --non-interactive \
-        --skip-cursor; then
-        write_test_pass "apm.sh executed successfully"
-    else
-        write_test_fail "apm.sh execution failed" "RAPID-CC-Creation"
-        return
-    fi
-
-    write_test_name "Verifying Claude Code RAPID structure"
-    assert_path_exists "$project_path/memory_bank" "memory_bank directory" "RAPID-CC-MB"
-    assert_path_exists "$project_path/memory_bank/ARCHITECTURE.md" "ARCHITECTURE.md" "RAPID-CC-Arch"
-    assert_path_exists "$project_path/memory_bank/TASKS.md" "TASKS.md" "RAPID-CC-Tasks"
-    assert_path_exists "$project_path/memory_bank/tasks/W1A.md" "W1A.md" "RAPID-CC-Task001"
-    assert_path_exists "$project_path/src" "src directory" "RAPID-CC-Src"
-    assert_path_exists "$project_path/tests" "tests directory" "RAPID-CC-Tests"
-    assert_path_exists "$project_path/AGENTS.md" "AGENTS.md" "RAPID-CC-Agents"
-
-    # No Cursor-specific artifacts
-    assert_path_not_exists "$project_path/.cursor" ".cursor directory" "RAPID-CC-NoCursor"
-    assert_path_not_exists "$project_path/.apm" ".apm directory" "RAPID-CC-NoAPM"
-
-    # Claude Code assets
-    write_test_name "Verifying Claude Code agents"
-    assert_path_exists "$project_path/.claude/agents" ".claude/agents directory" "RAPID-CC-AgentsDir"
-    assert_path_exists "$project_path/.claude/agents/apm-architect.md" "apm-architect agent" "RAPID-CC-ArchitectAgent"
-    assert_path_exists "$project_path/.claude/agents/apm-engineer.md" "apm-engineer agent" "RAPID-CC-EngineerAgent"
-    assert_path_exists "$project_path/.claude/agents/apm-sdet.md" "apm-sdet agent" "RAPID-CC-SDETAgent"
-    assert_path_exists "$project_path/.claude/agents/apm-code-simplifier.md" "apm-code-simplifier agent" "RAPID-CC-SimplifierAgent"
-    assert_path_exists "$project_path/.claude/agents/apm-reviewer.md" "apm-reviewer agent" "RAPID-CC-ReviewerAgent"
-    assert_path_exists "$project_path/.claude/agents/apm-memory-bank-sync.md" "apm-memory-bank-sync agent" "RAPID-CC-SyncAgent"
-    assert_path_exists "$project_path/.claude/agents/apm-co-founder.md" "apm-co-founder agent" "RAPID-CC-CoFounderAgent"
-    assert_path_exists "$project_path/.claude/agents/apm-team-lead.md" "apm-team-lead agent" "RAPID-CC-TeamLeadAgent"
-    assert_path_exists "$project_path/.claude/agents/apm-data-scientist.md" "apm-data-scientist agent" "RAPID-CC-DataScientistAgent"
-    assert_path_exists "$project_path/.claude/agents/apm-web-explorer.md" "apm-web-explorer agent" "RAPID-CC-WebExplorerAgent"
-
-    # Verify agent frontmatter contains Claude Code-specific fields
-    write_test_name "Verifying agent frontmatter format"
-    assert_file_contains "$project_path/.claude/agents/apm-engineer.md" "^name: apm-engineer" \
-        "engineer agent has name field" "RAPID-CC-EngineerName"
-    assert_file_contains "$project_path/.claude/agents/apm-engineer.md" "model: sonnet" \
-        "engineer agent has model field" "RAPID-CC-EngineerModel"
-    assert_file_contains "$project_path/.claude/agents/apm-engineer.md" "permissionMode: acceptEdits" \
-        "engineer agent has permissionMode" "RAPID-CC-EngineerPerm"
-    assert_file_contains "$project_path/.claude/agents/apm-reviewer.md" "memory: project" \
-        "reviewer agent has persistent memory" "RAPID-CC-ReviewerMemory"
-    assert_file_contains "$project_path/.claude/agents/apm-team-lead.md" "Agent(apm-engineer" \
-        "team-lead has scoped Agent tool" "RAPID-CC-TeamLeadAgent"
-
-    # Verify shared skills were copied
-    write_test_name "Verifying Claude Code skills"
-    assert_path_exists "$project_path/.claude/skills" ".claude/skills directory" "RAPID-CC-Skills"
-    assert_path_exists "$project_path/memory_bank/design/SPEC-MODULE.md" "design/SPEC-MODULE.md" "RAPID-CC-DesignSpec"
-    assert_path_exists "$project_path/memory_bank/specs/SPEC_W1A.md" "specs/SPEC_W1A.md" "RAPID-CC-SpecW1A"
-
-    # Verify shared skills were copied
-    assert_path_exists "$project_path/.claude/skills/apm-dev/SKILL.md" "apm-dev skill" "RAPID-CC-DevSkill"
-    assert_path_exists "$project_path/.claude/skills/apm-report/SKILL.md" "apm-report skill" "RAPID-CC-ReportSkill"
-    assert_path_exists "$project_path/.claude/skills/apm-team-lead/SKILL.md" "apm-team-lead skill" "RAPID-CC-TeamLeadSkill"
-}
-
-# ============================================================================
-# DS OPENCODE TESTS
-# ============================================================================
-
-test_ds_opencode_deployment() {
-    local test_dir="$1"
-    
-    write_test_header "DS OpenCode CLI Deployment Tests"
-    
-    local project_name="test-ds-opencode"
-    local project_path="$test_dir/$project_name"
-    
-    write_test_name "Creating DS OpenCode project"
-    
-    if bash "$APM_SCRIPT" \
-        --project-name "$project_name" \
-        --project-path "$test_dir" \
-        --opencode \
-        --ds \
-        --none \
         --non-interactive; then
         write_test_pass "apm.sh executed successfully"
     else
-        write_test_fail "apm.sh execution failed" "DS-OC-Creation"
+        write_test_fail "apm.sh execution failed" "CX-CREATE"
         return
     fi
-    
-    # DS-specific directories
-    write_test_name "Verifying DS OpenCode structure"
-    assert_path_exists "$project_path/memory_bank" "memory_bank directory" "DS-OC-MB"
-    assert_path_exists "$project_path/memory_bank/ARCHITECTURE.md" "ARCHITECTURE.md" "DS-OC-Arch"
-    assert_path_exists "$project_path/memory_bank/TASKS.md" "TASKS.md" "DS-OC-Tasks"
-    assert_path_exists "$project_path/memory_bank/design/SPEC-MODULE.md" "design/SPEC-MODULE.md" "DS-OC-DesignSpec"
-    assert_path_exists "$project_path/memory_bank/specs/SPEC_W1A.md" "specs/SPEC_W1A.md" "DS-OC-SpecW1A"
-    assert_path_exists "$project_path/src" "src directory" "DS-OC-Src"
-    assert_path_exists "$project_path/eda" "eda directory" "DS-OC-EDA"
-    assert_path_exists "$project_path/experiments" "experiments directory" "DS-OC-Experiments"
-    assert_path_exists "$project_path/data" "data directory" "DS-OC-Data"
-    assert_path_exists "$project_path/models" "models directory" "DS-OC-Models"
-    assert_path_exists "$project_path/logs" "logs directory" "DS-OC-Logs"
-    assert_path_exists "$project_path/AGENTS.md" "AGENTS.md" "DS-OC-Agents"
-    assert_path_exists "$project_path/config.py" "config.py" "DS-OC-Config"
-    assert_path_exists "$project_path/main.py" "main.py" "DS-OC-Main"
-    
-    # No Cursor-specific artifacts
-    assert_path_not_exists "$project_path/.cursor" ".cursor directory" "DS-OC-NoCursor"
-    assert_path_not_exists "$project_path/.apm" ".apm directory" "DS-OC-NoAPM"
+
+    assert_base_template "$project_path" "$project_name" "CX"
+    assert_path_exists "$project_path/.codex/skills" ".codex/skills" "CX-SKILLS"
+    assert_path_exists "$project_path/.codex/agents" ".codex/agents" "CX-AGENTS"
+    assert_path_exists "$project_path/.codex/agents/apm-worker.toml" "Codex worker agent" "CX-WORKER"
+    assert_path_exists "$project_path/.codex/agents/apm-reviewer.toml" "Codex reviewer agent" "CX-REVIEWER"
+    assert_path_exists "$project_path/.codex/config.toml" "Codex config" "CX-CONFIG"
+    assert_file_contains "$project_path/.codex/config.toml" "multi_agent = true" "Codex config multi_agent" "CX-CONFIG-MA"
+    assert_file_contains "$project_path/.codex/config.toml" "max_threads = 6" "Codex config max_threads" "CX-CONFIG-THREADS"
 }
 
-# ============================================================================
-# ADDITIONAL VALIDATION TESTS
-# ============================================================================
-
-test_project_overwrite() {
+test_claude_local() {
     local test_dir="$1"
-    
-    write_test_header "Project Overwrite Tests"
-    
-    local project_name="test-overwrite-project"
+    local tmp_home="$test_dir/home-claude"
+    mkdir -p "$tmp_home"
+
+    write_test_header "Claude Code local install"
+    local project_name="test-claude"
     local project_path="$test_dir/$project_name"
-    
-    # Create initial project
-    write_test_name "Creating initial project"
-    bash "$APM_SCRIPT" \
+
+    write_test_name "Creating Claude Code project with local assets"
+    if HOME="$tmp_home" TERM=xterm bash "$APM_SCRIPT" \
+        --claude \
         --project-name "$project_name" \
         --project-path "$test_dir" \
-        --cursor \
-        --rapid \
-        --non-interactive \
-        --skip-cursor
-    
-    # Add marker file
-    local marker_file="$project_path/initial_marker.txt"
-    echo "This should be removed after overwrite" > "$marker_file"
-    
-    # Overwrite with --force
-    write_test_name "Overwriting project with --force flag"
-    if bash "$APM_SCRIPT" \
-        --project-name "$project_name" \
-        --project-path "$test_dir" \
-        --cursor \
-        --rapid \
-        --non-interactive \
-        --skip-cursor \
-        --force; then
-        write_test_pass "Project overwritten successfully"
+        --local \
+        --non-interactive; then
+        write_test_pass "apm.sh executed successfully"
     else
-        write_test_fail "Project overwrite failed" "Overwrite-Force"
+        write_test_fail "apm.sh execution failed" "CC-CREATE"
         return
     fi
-    
-    # Verify marker file is gone
-    assert_path_not_exists "$marker_file" "Marker file after overwrite" "Overwrite-Marker"
-    
-    # Verify project structure is intact
-    assert_path_exists "$project_path/memory_bank/ARCHITECTURE.md" "memory_bank/ARCHITECTURE.md after overwrite" "Overwrite-Structure"
+
+    assert_base_template "$project_path" "$project_name" "CC"
+    assert_path_exists "$project_path/.claude/agents" ".claude/agents" "CC-AGENTS"
+    assert_path_exists "$project_path/.claude/skills" ".claude/skills" "CC-SKILLS"
+    assert_path_exists "$project_path/.claude/agents/apm-worker.md" "Claude worker agent" "CC-WORKER"
+    assert_path_exists "$project_path/.claude/agents/apm-reviewer.md" "Claude reviewer agent" "CC-REVIEWER"
+    assert_path_exists "$project_path/.claude/agents/apm-co-founder.md" "Claude co-founder agent" "CC-COFOUNDER"
 }
 
-test_error_handling() {
+test_cursor_local_legacy() {
     local test_dir="$1"
-    
-    write_test_header "Error Handling Tests"
-    
-    # Test invalid methodology
-    write_test_name "Testing invalid methodology parameter"
-    if bash "$APM_SCRIPT" \
-        --project-name "test-invalid" \
+    local tmp_home="$test_dir/home-cursor"
+    mkdir -p "$tmp_home"
+
+    write_test_header "Cursor local install (legacy)"
+    local project_name="test-cursor"
+    local project_path="$test_dir/$project_name"
+
+    write_test_name "Creating Cursor project with local legacy assets"
+    if HOME="$tmp_home" TERM=xterm bash "$APM_SCRIPT" \
+        --cursor \
+        --project-name "$project_name" \
         --project-path "$test_dir" \
-        --methodology "INVALID" \
-        --non-interactive \
-        --skip-cursor 2>/dev/null; then
-        write_test_fail "No error thrown for invalid methodology" "Error-InvalidMethodology"
+        --local \
+        --non-interactive; then
+        write_test_pass "apm.sh executed successfully"
     else
-        write_test_pass "Error correctly thrown for invalid methodology"
+        write_test_fail "apm.sh execution failed" "CURSOR-CREATE"
+        return
     fi
-    
-    # Test FULL not available for CLI environments
-    write_test_name "Testing FULL methodology rejected for OpenCode"
-    if bash "$APM_SCRIPT" \
-        --project-name "test-full-oc" \
-        --project-path "$test_dir" \
-        --opencode \
-        --full \
-        --non-interactive 2>/dev/null; then
-        write_test_fail "No error for FULL+OpenCode" "Error-FullOpenCode"
-    else
-        write_test_pass "Error correctly thrown for FULL+OpenCode"
-    fi
+
+    assert_base_template "$project_path" "$project_name" "CURSOR"
+    assert_path_exists "$project_path/.cursor/agents" ".cursor/agents" "CURSOR-AGENTS"
+    assert_path_exists "$project_path/.cursor/commands" ".cursor/commands" "CURSOR-COMMANDS"
+    assert_path_exists "$project_path/.cursor/agents/apm-engineer.md" "Cursor engineer agent" "CURSOR-ENGINEER"
+    assert_path_exists "$project_path/.cursor/commands/apm-start.md" "Cursor apm-start command" "CURSOR-START"
 }
 
-# ============================================================================
-# TEST SUMMARY
-# ============================================================================
+test_multi_env_local() {
+    local test_dir="$1"
+    local tmp_home="$test_dir/home-multi"
+    mkdir -p "$tmp_home"
 
-show_test_summary() {
-    echo ""
-    echo -e "\033[37m============================================================\033[0m"
-    echo -e "  TEST SUMMARY"
-    echo -e "\033[37m============================================================\033[0m"
-    
-    echo ""
-    echo -n "  Total Tests: "
-    echo -e "\033[36m$TESTS_RUN\033[0m"
-    
-    echo -n "  Passed:      "
-    echo -e "\033[32m$TESTS_PASSED\033[0m"
-    
-    echo -n "  Failed:      "
-    if [[ $TESTS_FAILED -gt 0 ]]; then
-        echo -e "\033[31m$TESTS_FAILED\033[0m"
+    write_test_header "Multi-environment local install"
+    local project_name="test-multi"
+    local project_path="$test_dir/$project_name"
+
+    write_test_name "Creating project with OpenCode + Codex + Claude"
+    if HOME="$tmp_home" TERM=xterm bash "$APM_SCRIPT" \
+        --opencode \
+        --codex \
+        --claude \
+        --project-name "$project_name" \
+        --project-path "$test_dir" \
+        --local \
+        --non-interactive; then
+        write_test_pass "apm.sh executed successfully"
     else
-        echo -e "\033[32m$TESTS_FAILED\033[0m"
+        write_test_fail "apm.sh execution failed" "MULTI-CREATE"
+        return
     fi
-    
-    if [[ ${#FAILED_TESTS[@]} -gt 0 ]]; then
+
+    assert_base_template "$project_path" "$project_name" "MULTI"
+    assert_path_exists "$project_path/.opencode/agents" "OpenCode agents" "MULTI-OC"
+    assert_path_exists "$project_path/.codex/agents" "Codex agents" "MULTI-CX"
+    assert_path_exists "$project_path/.claude/agents" "Claude agents" "MULTI-CC"
+    assert_path_not_exists "$project_path/.cursor" "Cursor assets" "MULTI-NO-CURSOR"
+}
+
+test_in_place_and_legacy_flags() {
+    local test_dir="$1"
+    local tmp_home="$test_dir/home-inplace"
+    mkdir -p "$tmp_home"
+
+    write_test_header "In-place setup + legacy flag compatibility"
+    local project_path="$test_dir/in-place-project"
+    mkdir -p "$project_path"
+    printf '# scratch\n' > "$project_path/local.md"
+
+    write_test_name "Running in-place setup with deprecated methodology flag"
+    if (
+        cd "$project_path" &&
+        HOME="$tmp_home" TERM=xterm bash "$APM_SCRIPT" \
+            --opencode \
+            --rapid \
+            --non-interactive
+    ); then
+        write_test_pass "apm.sh executed successfully"
+    else
+        write_test_fail "apm.sh execution failed" "INPLACE-CREATE"
+        return
+    fi
+
+    assert_base_template "$project_path" "in-place-project" "INPLACE"
+    assert_path_exists "$project_path/local.md" "existing local file preserved" "INPLACE-PRESERVE"
+    assert_path_not_exists "$project_path/.opencode" "OpenCode assets skipped by default" "INPLACE-SKIP"
+}
+
+test_force_in_place_refresh() {
+    local test_dir="$1"
+    local tmp_home="$test_dir/home-force"
+    mkdir -p "$tmp_home"
+
+    write_test_header "In-place force refresh"
+    local project_path="$test_dir/force-project"
+    mkdir -p "$project_path"
+
+    write_test_name "Initial local OpenCode setup"
+    if (
+        cd "$project_path" &&
+        HOME="$tmp_home" TERM=xterm bash "$APM_SCRIPT" \
+            --opencode \
+            --local \
+            --non-interactive
+    ); then
+        write_test_pass "initial apm.sh execution succeeded"
+    else
+        write_test_fail "initial apm.sh execution failed" "FORCE-INITIAL"
+        return
+    fi
+
+    mkdir -p "$project_path/.opencode/commands" "$project_path/.opencode/tools"
+    printf 'stale\n' > "$project_path/.opencode/commands/legacy.txt"
+    printf 'stale\n' > "$project_path/.opencode/tools/legacy.txt"
+    printf 'stale\n' > "$project_path/memory_bank/stale.txt"
+    printf 'keep\n' > "$project_path/local.md"
+
+    write_test_name "Re-running in place with --force refresh"
+    if (
+        cd "$project_path" &&
+        HOME="$tmp_home" TERM=xterm bash "$APM_SCRIPT" \
+            --opencode \
+            --local \
+            --force \
+            --non-interactive
+    ); then
+        write_test_pass "forced refresh succeeded"
+    else
+        write_test_fail "forced refresh failed" "FORCE-REFRESH"
+        return
+    fi
+
+    assert_base_template "$project_path" "force-project" "FORCE"
+    assert_path_exists "$project_path/local.md" "unmanaged local file preserved" "FORCE-PRESERVE"
+    assert_path_not_exists "$project_path/memory_bank/stale.txt" "stale managed file removed" "FORCE-MB-CLEAN"
+    assert_path_not_exists "$project_path/.opencode/commands" "stale OpenCode commands removed" "FORCE-OC-COMMANDS"
+    assert_path_not_exists "$project_path/.opencode/tools" "stale OpenCode tools removed" "FORCE-OC-TOOLS"
+}
+
+print_summary() {
+    echo ""
+    echo -e "\033[36m============================================================\033[0m"
+    echo -e "  E2E Test Summary"
+    echo -e "\033[36m============================================================\033[0m"
+    echo "  Tests Run:    $TESTS_RUN"
+    echo "  Passed:       $TESTS_PASSED"
+    echo "  Failed:       $TESTS_FAILED"
+
+    if [[ $TESTS_FAILED -gt 0 ]]; then
         echo ""
-        echo -e "  \033[31mFailed Tests:\033[0m"
-        for test in "${FAILED_TESTS[@]}"; do
-            echo -e "    - $test"
+        echo "  Failed Tests:"
+        local failed_test
+        for failed_test in "${FAILED_TESTS[@]}"; do
+            echo "    - $failed_test"
         done
     fi
-    
-    local pass_rate=0
-    if [[ $TESTS_RUN -gt 0 ]]; then
-        pass_rate=$((TESTS_PASSED * 100 / TESTS_RUN))
-    fi
-    
     echo ""
-    echo -n "  Pass Rate:   "
-    if [[ $pass_rate -eq 100 ]]; then
-        echo -e "\033[32m${pass_rate}%\033[0m"
-    elif [[ $pass_rate -ge 80 ]]; then
-        echo -e "\033[33m${pass_rate}%\033[0m"
-    else
-        echo -e "\033[31m${pass_rate}%\033[0m"
-    fi
-    
-    echo ""
-    echo -e "\033[37m============================================================\033[0m"
-    
-    if [[ $TESTS_FAILED -eq 0 ]]; then
-        return 0
-    else
-        return 1
-    fi
 }
-
-# ============================================================================
-# MAIN
-# ============================================================================
 
 main() {
     parse_args "$@"
-    
-    echo ""
-    echo -e "  \033[36mAPM E2E Test Suite v2.0\033[0m"
-    echo -e "  \033[36m=======================\033[0m"
-    echo -e "  \033[90mTesting project deployment via apm.sh\033[0m"
-    
-    # Check if apm.sh exists
-    if [[ ! -f "$APM_SCRIPT" ]]; then
-        echo -e "\033[31m[ERROR] apm.sh not found at: $APM_SCRIPT\033[0m"
-        exit 1
-    fi
-    
-    # Make apm.sh executable
-    chmod +x "$APM_SCRIPT"
-    
-    # Initialize test environment
+
     local test_dir
     test_dir=$(initialize_test_environment)
-    
-    # Run test suites based on selection
-    case "$TEST_SUITE" in
-        RAPID)
-            test_rapid_methodology_deployment "$test_dir"
-            ;;
-        DS)
-            test_ds_methodology_deployment "$test_dir"
-            ;;
-        FULL)
-            test_full_methodology_deployment "$test_dir"
-            ;;
-        All)
-            test_rapid_methodology_deployment "$test_dir"
-            test_ds_methodology_deployment "$test_dir"
-            test_full_methodology_deployment "$test_dir"
-            test_rapid_opencode_deployment "$test_dir"
-            test_rapid_codex_deployment "$test_dir"
-            test_rapid_claude_deployment "$test_dir"
-            test_ds_opencode_deployment "$test_dir"
-            test_project_overwrite "$test_dir"
-            test_error_handling "$test_dir"
-            ;;
-    esac
-    
-    # Cleanup
-    remove_test_environment "$test_dir"
-    
-    # Show summary and exit with appropriate code
-    if show_test_summary; then
-        echo -e "  \033[32mAll tests passed!\033[0m"
-        exit 0
-    else
-        echo -e "  \033[31mSome tests failed.\033[0m"
-        exit 1
+
+    test_opencode_local "$test_dir"
+    test_codex_local "$test_dir"
+    test_claude_local "$test_dir"
+    test_cursor_local_legacy "$test_dir"
+    test_multi_env_local "$test_dir"
+    test_in_place_and_legacy_flags "$test_dir"
+    test_force_in_place_refresh "$test_dir"
+
+    print_summary
+
+    local exit_code=0
+    if [[ $TESTS_FAILED -gt 0 ]]; then
+        exit_code=1
     fi
+
+    remove_test_environment "$test_dir"
+    exit "$exit_code"
 }
 
-# Run main
 main "$@"

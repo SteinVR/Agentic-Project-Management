@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
-# Install APM OpenCode pack into ~/.config/opencode or a local .opencode directory
+# Install APM OpenCode assets into ~/.config/opencode or a local .opencode directory.
+# Current OpenCode support ships agents plus shared skills.
 
 set -e
 
@@ -78,11 +79,10 @@ else
   OPENCODE_DIR="$HOME/.config/opencode"
 fi
 
-mkdir -p "$OPENCODE_DIR/agents" "$OPENCODE_DIR/commands" "$OPENCODE_DIR/skills" "$OPENCODE_DIR/tools"
+rm -rf "$OPENCODE_DIR/commands" "$OPENCODE_DIR/tools"
+mkdir -p "$OPENCODE_DIR/agents" "$OPENCODE_DIR/skills"
 
 cp -R "$PACK_DIR/agent/." "$OPENCODE_DIR/agents/"
-cp -R "$PACK_DIR/command/." "$OPENCODE_DIR/commands/"
-cp -R "$PACK_DIR/tools/." "$OPENCODE_DIR/tools/"
 cp -R "$SKILLS_DIR/." "$OPENCODE_DIR/skills/"
 
-echo "APM OpenCode pack installed to $OPENCODE_DIR"
+echo "APM OpenCode assets installed to $OPENCODE_DIR"

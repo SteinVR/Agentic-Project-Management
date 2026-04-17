@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
-# Install APM Cursor assets into ~/.cursor or a local .cursor directory.
-# Skills are installed globally by default to ~/.cursor/skills.
+# Install legacy APM Cursor assets into ~/.cursor or a local .cursor directory.
+# Shared skills are still installed from the current skills tree by default.
 
 set -e
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
-PACK_DIR="$REPO_ROOT/apm_source/packs/cursor_pack"
+PACK_DIR="$REPO_ROOT/apm_source/_legacy/cursor_pack"
 SKILLS_DIR="$REPO_ROOT/apm_source/skills"
 
 usage() {
@@ -60,7 +60,7 @@ while [[ $# -gt 0 ]]; do
 done
 
 if [[ ! -d "$PACK_DIR" ]]; then
-  echo "[ERROR] Cursor pack not found: $PACK_DIR" >&2
+  echo "[ERROR] Legacy Cursor pack not found: $PACK_DIR" >&2
   exit 1
 fi
 if [[ "$SKIP_SKILLS" != "true" && ! -d "$SKILLS_DIR" ]]; then
@@ -95,7 +95,7 @@ if [[ "$SKIP_SKILLS" != "true" ]]; then
   cp -R "$SKILLS_DIR/." "$HOME/.cursor/skills/"
 fi
 
-echo "APM Cursor pack installed to $CURSOR_DIR"
+echo "APM legacy Cursor pack installed to $CURSOR_DIR"
 if [[ "$SKIP_SKILLS" != "true" ]]; then
   echo "APM skills installed to $HOME/.cursor/skills"
 fi

@@ -1,44 +1,32 @@
 #!/usr/bin/env bash
 #
 # APM (Agentic Project Management) - Project Configurator
-# Interactive CLI wizard for creating new projects with APM methodology.
-# Supports FULL/RAPID/DS methodologies for Cursor, OpenCode CLI, Codex CLI, and Claude Code environments.
+# Creates a project from the unified base template and optionally installs
+# environment packs for OpenCode, Codex, Claude Code, or legacy Cursor.
 #
-# Author: APM Team
-# Version: 1.0.0
 
 set -e
 
-# ============================================================================
-# CONFIGURATION
-# ============================================================================
-
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 SOURCE_PATH="$SCRIPT_DIR/../apm_source"
-APP_VERSION="1.0.0"
+BASE_TEMPLATE_DIR="$SOURCE_PATH/base"
+APP_VERSION="2.0.0"
 
-# Command line arguments
 PROJECT_NAME=""
 PROJECT_PATH=""
 PROJECT_NAME_SET=false
 PROJECT_PATH_SET=false
-METHODOLOGY=""
-DEV_ENV=""
 DEV_ENVS=()
 PACK_INSTALL=""
-SKIP_CURSOR=false
 FORCE=false
 NON_INTERACTIVE=false
 SHOW_HELP=false
 SHOW_VERSION=false
-
-# ============================================================================
-# ARGUMENT PARSING
-# ============================================================================
+LEGACY_PROFILE=""
 
 parse_args() {
     while [[ $# -gt 0 ]]; do
-        case $1 in
+        case "$1" in
             -h|--help)
                 SHOW_HELP=true
                 shift
@@ -58,19 +46,11 @@ parse_args() {
                 shift 2
                 ;;
             --methodology)
-                METHODOLOGY="$2"
+                LEGACY_PROFILE="$2"
                 shift 2
                 ;;
-            --rapid)
-                METHODOLOGY="RAPID"
-                shift
-                ;;
-            --ds)
-                METHODOLOGY="DS"
-                shift
-                ;;
-            --full)
-                METHODOLOGY="FULL"
+            --rapid|--ds|--full)
+                LEGACY_PROFILE="${1#--}"
                 shift
                 ;;
             --dev-env)
@@ -105,12 +85,8 @@ parse_args() {
                 PACK_INSTALL="skip"
                 shift
                 ;;
-            --skip-cursor)
-                SKIP_CURSOR=true
-                shift
-                ;;
-            --skip-github)
-                # Deprecated no-op: kept for backward compatibility with old CI/docs.
+            --skip-cursor|--skip-github)
+                # Deprecated no-ops kept for backward compatibility with old CI/docs.
                 shift
                 ;;
             --force)
@@ -122,16 +98,12 @@ parse_args() {
                 shift
                 ;;
             *)
-                echo "[ERROR] Unknown option: $1"
+                echo "[ERROR] Unknown option: $1" >&2
                 exit 1
                 ;;
         esac
     done
 }
-
-# ============================================================================
-# UI FUNCTIONS
-# ============================================================================
 
 show_banner() {
     echo ""
@@ -142,7 +114,7 @@ show_banner() {
     echo -e "\033[36m/_/  |_/_/   /_/  /_/   \033[0m"
     echo ""
     echo -e "\033[36mAgentic Project Management v${APP_VERSION}\033[0m"
-    echo -e "\033[36mSpec-Driven Development\033[0m"
+    echo -e "\033[36mUnified base template + environment packs\033[0m"
     echo ""
 }
 
@@ -171,13 +143,13 @@ read_user_input() {
     local prompt="$1"
     local default="$2"
     local input
-    
+
     if [[ -n "$default" ]]; then
         echo -n "$prompt [$default]: " >&2
     else
         echo -n "$prompt: " >&2
     fi
-    
+
     read -r input
     if [[ -z "$input" && -n "$default" ]]; then
         echo "$default"
@@ -189,11 +161,11 @@ read_user_input() {
 read_directory_path() {
     local prompt="$1"
     local default_path="${2:-$(pwd)}"
-    
+
     while true; do
         local path
         path=$(read_user_input "$prompt" "$default_path")
-        
+
         if [[ -d "$path" ]]; then
             local resolved
             resolved="$(cd "$path" && pwd)"
@@ -201,7 +173,7 @@ read_directory_path() {
             echo "$resolved"
             return 0
         fi
-        
+
         write_error "Directory does not exist: $path"
         local create
         create=$(read_user_input "Create it? (y/n)" "n")
@@ -212,9 +184,8 @@ read_directory_path() {
                 write_info "Selected directory: $created"
                 echo "$created"
                 return 0
-            else
-                write_error "Failed to create directory"
             fi
+            write_error "Failed to create directory"
         fi
     done
 }
@@ -224,18 +195,17 @@ read_project_name() {
     while true; do
         local name
         name=$(read_user_input "Project name" "$default_name")
-        
+
         if [[ -z "$name" ]]; then
             write_error "Project name cannot be empty"
             continue
         fi
-        
-        # Validate name (alphanumeric, hyphens, underscores)
+
         if [[ ! "$name" =~ ^[a-zA-Z][a-zA-Z0-9_-]*$ ]]; then
             write_error "Invalid name. Use letters, numbers, hyphens, underscores. Start with a letter."
             continue
         fi
-        
+
         echo "$name"
         return 0
     done
@@ -255,20 +225,10 @@ maybe_install_apm_alias() {
     local rc_file
     shell_name="$(basename "${SHELL:-}")"
     case "$shell_name" in
-        bash)
-            rc_file="$HOME/.bashrc"
-            ;;
-        zsh)
-            rc_file="$HOME/.zshrc"
-            ;;
-        *)
-            rc_file="$HOME/.profile"
-            ;;
+        bash) rc_file="$HOME/.bashrc" ;;
+        zsh) rc_file="$HOME/.zshrc" ;;
+        *) rc_file="$HOME/.profile" ;;
     esac
-
-    if [[ -z "$rc_file" ]]; then
-        return 0
-    fi
 
     if [[ ! -f "$rc_file" ]]; then
         touch "$rc_file" 2>/dev/null || return 0
@@ -285,46 +245,45 @@ maybe_install_apm_alias() {
     write_info "Installed shell alias 'apm' -> $target (restart your shell)"
 }
 
+normalize_env_token() {
+    case "$1" in
+        1|OPENCODE|opencode) echo "OPENCODE" ;;
+        2|CODEX|codex) echo "CODEX" ;;
+        3|CLAUDE|claude) echo "CLAUDE" ;;
+        4|CURSOR|cursor) echo "CURSOR" ;;
+        *) return 1 ;;
+    esac
+}
+
 select_dev_environment() {
     echo "" >&2
     echo "Select Development Environment(s):" >&2
-    echo -e "\033[90mYou can select multiple environments (comma-separated, e.g. 2,4)\033[0m" >&2
+    echo -e "\033[90mYou can select multiple environments (comma-separated, e.g. 1,3)\033[0m" >&2
     echo "" >&2
-    echo -e "  \033[33m[1] \033[36mCursor IDE\033[0m - Interactive IDE workflow" >&2
-    echo -e "      \033[90mUses Cursor agents/commands pack and methodology assets\033[0m" >&2
-    echo "" >&2
-    echo -e "  \033[33m[2] \033[32mOpenCode CLI\033[0m - CLI-first workflow" >&2
-    echo -e "      \033[90mUses OpenCode agents/commands/skills pack and memory_bank/\033[0m" >&2
-    echo "" >&2
-    echo -e "  \033[33m[3] \033[35mCodex CLI\033[0m - CLI-first workflow" >&2
-    echo -e "      \033[90mUses Codex skills, subagent roles, and AGENTS chain with memory_bank/\033[0m" >&2
-    echo "" >&2
-    echo -e "  \033[33m[4] \033[34mClaude Code\033[0m - CLI agentic workflow" >&2
-    echo -e "      \033[90mUses Claude Code subagents, skills, and CLAUDE.md with memory_bank/\033[0m" >&2
+    echo -e "  \033[33m[1] \033[32mOpenCode CLI\033[0m - Agents + shared skills" >&2
+    echo -e "  \033[33m[2] \033[35mCodex CLI\033[0m - Skills + subagent roles" >&2
+    echo -e "  \033[33m[3] \033[34mClaude Code\033[0m - Agents + shared skills" >&2
+    echo -e "  \033[33m[4] \033[90mCursor (legacy)\033[0m - Legacy pack under apm_source/_legacy/" >&2
     echo "" >&2
 
     while true; do
         local raw_choice
         raw_choice=$(read_user_input "Select environment(s)" "1")
 
-        # Normalize: replace commas and spaces with single delimiter
         local normalized
         normalized="$(echo "$raw_choice" | tr ',' ' ' | xargs)"
 
         local valid=true
         local results=()
+        local token
         for token in $normalized; do
-            case "$token" in
-                1|CURSOR|cursor)        results+=("CURSOR") ;;
-                2|OPENCODE|opencode)    results+=("OPENCODE") ;;
-                3|CODEX|codex)          results+=("CODEX") ;;
-                4|CLAUDE|claude)        results+=("CLAUDE") ;;
-                *)
-                    write_error "Invalid choice: $token. Use 1-4 or environment names."
-                    valid=false
-                    break
-                    ;;
-            esac
+            local normalized_token
+            if ! normalized_token="$(normalize_env_token "$token")"; then
+                write_error "Invalid choice: $token. Use 1-4 or environment names."
+                valid=false
+                break
+            fi
+            results+=("$normalized_token")
         done
 
         if [[ "$valid" == "true" && ${#results[@]} -gt 0 ]]; then
@@ -334,259 +293,186 @@ select_dev_environment() {
     done
 }
 
-select_methodology() {
-    local dev_env="$1"
-
-    echo "" >&2
-    echo "Available Methodologies:" >&2
-    echo "" >&2
-    if [[ "$dev_env" == "CURSOR" ]]; then
-        echo -e "  \033[33m[1] \033[32mFULL\033[0m - Enterprise methodology" >&2
-        echo -e "      \033[90mBlock-based architecture, 4 agent roles (Architect, SDET, Engineer, Principal)\033[0m" >&2
-        echo -e "      \033[90mTDD workflow, isolated components, comprehensive documentation\033[0m" >&2
-        echo -e "      \033[90mBest for: Large projects, microservices, team collaboration\033[0m" >&2
-        echo "" >&2
-        echo -e "  \033[33m[2] \033[36mRAPID\033[0m - Startup methodology" >&2
-        echo -e "      \033[90mUnified src/ structure, 3 agent roles (Architect, Engineer, SDET)\033[0m" >&2
-        echo -e "      \033[90mFaster iteration, simpler setup, less ceremony\033[0m" >&2
-        echo -e "      \033[90mBest for: MVPs, prototypes, small projects\033[0m" >&2
-        echo "" >&2
-        echo -e "  \033[33m[3] \033[35mDS\033[0m - Data Science methodology" >&2
-        echo -e "      \033[90mML/DS projects with experiment tracking, 2 agent roles (Architect, Data Scientist)\033[0m" >&2
-        echo -e "      \033[90mEDA pipeline, hypothesis-driven experiments, model finalization\033[0m" >&2
-        echo -e "      \033[90mBest for: Kaggle, ML research, data analysis\033[0m" >&2
-        echo "" >&2
-    else
-        echo -e "  \033[33m[1] \033[36mRAPID\033[0m - Startup methodology" >&2
-        echo -e "      \033[90mUnified src/ structure, 3 agent roles (Architect, Engineer, SDET)\033[0m" >&2
-        echo -e "      \033[90mFaster iteration, simpler setup, less ceremony\033[0m" >&2
-        echo -e "      \033[90mBest for: MVPs, prototypes, small projects\033[0m" >&2
-        echo "" >&2
-        echo -e "  \033[33m[2] \033[35mDS\033[0m - Data Science methodology" >&2
-        echo -e "      \033[90mML/DS projects with experiment tracking, 2 agent roles (Architect, Data Scientist)\033[0m" >&2
-        echo -e "      \033[90mEDA pipeline, hypothesis-driven experiments, model finalization\033[0m" >&2
-        echo "" >&2
-    fi
-    
-    while true; do
-        local choice
-        if [[ "$dev_env" != "CURSOR" ]]; then
-            choice=$(read_user_input "Select methodology (1 or 2)" "1")
-        else
-            choice=$(read_user_input "Select methodology (1, 2, or 3)" "2")
-        fi
-        
-        if [[ "$dev_env" != "CURSOR" ]]; then
-            case "$choice" in
-                1|RAPID|rapid)
-                    echo "RAPID"
-                    return 0
-                    ;;
-                2|DS|ds)
-                    echo "DS"
-                    return 0
-                    ;;
-                *)
-                    write_error "Invalid choice. Enter 1 or 2"
-                    ;;
-            esac
-        else
-            case "$choice" in
-                1|FULL|full)
-                    echo "FULL"
-                    return 0
-                    ;;
-                2|RAPID|rapid)
-                    echo "RAPID"
-                    return 0
-                    ;;
-                3|DS|ds)
-                    echo "DS"
-                    return 0
-                    ;;
-                *)
-                    write_error "Invalid choice. Enter 1, 2, 3, FULL, RAPID, or DS"
-                    ;;
-            esac
-        fi
-    done
-}
-
 env_to_label() {
     case "$1" in
         OPENCODE) echo "OpenCode CLI" ;;
-        CODEX)    echo "Codex CLI" ;;
-        CURSOR)   echo "Cursor IDE" ;;
-        CLAUDE)   echo "Claude Code" ;;
-        *)        echo "$1" ;;
+        CODEX) echo "Codex CLI" ;;
+        CLAUDE) echo "Claude Code" ;;
+        CURSOR) echo "Cursor (legacy)" ;;
+        *) echo "$1" ;;
     esac
 }
 
 show_summary() {
     local project_path="$1"
     local project_name="$2"
-    local methodology="$3"
-    shift 3
+    shift 2
     local envs=("$@")
 
-    echo ""
-    echo -e "\033[90m==================================================\033[0m"
-    echo "Configuration Summary"
-    echo -e "\033[90m==================================================\033[0m"
-    echo -n "  Project Name:  "
-    echo -e "\033[32m$project_name\033[0m"
-    echo -n "  Location:      "
-    echo -e "\033[32m$project_path\033[0m"
-    echo -n "  Methodology:   "
-    echo -e "\033[32m$methodology\033[0m"
+    echo "" >&2
+    echo -e "\033[90m==================================================\033[0m" >&2
+    echo "Configuration Summary" >&2
+    echo -e "\033[90m==================================================\033[0m" >&2
+    echo -n "  Project Name:  " >&2
+    echo -e "\033[32m$project_name\033[0m" >&2
+    echo -n "  Location:      " >&2
+    echo -e "\033[32m$project_path\033[0m" >&2
+
     local env_labels=""
-    for _env in "${envs[@]}"; do
-        if [[ -n "$env_labels" ]]; then env_labels+=", "; fi
-        env_labels+="$(env_to_label "$_env")"
+    local env
+    for env in "${envs[@]}"; do
+        if [[ -n "$env_labels" ]]; then
+            env_labels+=", "
+        fi
+        env_labels+="$(env_to_label "$env")"
     done
-    echo -n "  Environment:  "
-    echo -e "\033[32m$env_labels\033[0m"
-    echo -e "\033[90m==================================================\033[0m"
+    echo -n "  Environment:   " >&2
+    echo -e "\033[32m$env_labels\033[0m" >&2
+    echo -e "\033[90m==================================================\033[0m" >&2
 
     local confirm
     confirm=$(read_user_input "Proceed with these settings? (y/n)" "y")
-    if [[ "$confirm" == "y" || "$confirm" == "Y" ]]; then
-        return 0
-    else
-        return 1
+    [[ "$confirm" == "y" || "$confirm" == "Y" ]]
+}
+
+warn_on_legacy_profile() {
+    if [[ -n "$LEGACY_PROFILE" ]]; then
+        write_warning "Legacy methodology flags are ignored. APM now uses one unified base template; project shape is extended later by workflow skills."
     fi
 }
 
-# ============================================================================
-# PROJECT CREATION FUNCTIONS
-# ============================================================================
+copy_base_template() {
+    local target_path="$1"
 
-copy_methodology_template() {
-    local methodology="$1"
-    local target_path="$2"
-    local dev_env="$3"
-
-    local method_key
-    case "$methodology" in
-        RAPID) method_key="rapid" ;;
-        DS) method_key="ds" ;;
-        FULL) method_key="full_deprecated" ;;
-        *)
-            write_error "Unknown methodology: $methodology"
-            exit 1
-            ;;
-    esac
-
-    local source_path=""
-    if [[ "$methodology" == "FULL" ]]; then
-        if [[ -d "$SOURCE_PATH/_legacy/cursor_ide/full_deprecated/cursor" ]]; then
-            source_path="$SOURCE_PATH/_legacy/cursor_ide/full_deprecated/cursor"
-        elif [[ -d "$SOURCE_PATH/legacy/full_deprecated/cursor" ]]; then
-            write_warning "Using legacy FULL path at apm_source/legacy/full_deprecated/cursor"
-            source_path="$SOURCE_PATH/legacy/full_deprecated/cursor"
-        fi
-    else
-        source_path="$SOURCE_PATH/methodologies/$method_key"
-        if [[ ! -d "$source_path" ]]; then
-            local legacy_path
-            if [[ "$dev_env" == "CURSOR" ]]; then
-                legacy_path="$SOURCE_PATH/methodologies/$method_key/cursor"
-            else
-                legacy_path="$SOURCE_PATH/methodologies/$method_key/cli"
-            fi
-            if [[ -d "$legacy_path" ]]; then
-                write_warning "Using legacy methodology split path: $legacy_path"
-                source_path="$legacy_path"
-            fi
-        fi
-    fi
-
-    if [[ ! -d "$source_path" ]]; then
-        write_error "Methodology template not found: $source_path"
+    if [[ ! -d "$BASE_TEMPLATE_DIR" ]]; then
+        write_error "Base template not found: $BASE_TEMPLATE_DIR"
         exit 1
     fi
-    
-    write_info "Copying $methodology methodology template..."
-    
-    # Copy all files and directories (including hidden)
-    cp -r "$source_path/"* "$target_path/" 2>/dev/null || true
-    cp -r "$source_path/".* "$target_path/" 2>/dev/null || true
-    
+
+    write_info "Copying unified base template..."
+    cp -R "$BASE_TEMPLATE_DIR/." "$target_path/"
     write_success "Template copied"
 }
 
-prune_template_for_environment() {
+replace_project_name_placeholders() {
     local project_path="$1"
-    local dev_env="$2"
+    local project_name="$2"
+    local target_file
 
-    if [[ "$dev_env" != "CURSOR" ]]; then
-        rm -rf "$project_path/.apm" "$project_path/.cursor"
+    while IFS= read -r -d '' target_file; do
+        if [[ "$(uname)" == "Darwin" ]]; then
+            sed -i '' "s/\\[Project Name\\]/$project_name/g" "$target_file"
+        else
+            sed -i "s/\\[Project Name\\]/$project_name/g" "$target_file"
+        fi
+    done < <(find "$project_path" -type f -name "*.md" -print0)
+
+    write_info "Applied project name placeholders"
+}
+
+remove_path_if_exists() {
+    local path="$1"
+    if [[ -e "$path" ]]; then
+        rm -rf "$path"
     fi
+}
+
+reset_apm_managed_paths() {
+    local project_path="$1"
+    local managed_rel_path
+    local managed_paths=(
+        "AGENTS.md"
+        "src"
+        "tests"
+        "logs"
+        "external"
+        "memory_bank"
+        ".opencode"
+        ".codex"
+        ".claude"
+        ".cursor"
+    )
+
+    for managed_rel_path in "${managed_paths[@]}"; do
+        remove_path_if_exists "$project_path/$managed_rel_path"
+    done
+}
+
+prepare_target_directory() {
+    local project_path="$1"
+    local current_dir
+    current_dir="$(pwd)"
+
+    if [[ ! -d "$project_path" ]]; then
+        return 0
+    fi
+
+    if [[ "$project_path" == "$current_dir" ]]; then
+        if [[ "$FORCE" == "true" ]]; then
+            write_warning "Refreshing managed APM files in-place: $project_path"
+            reset_apm_managed_paths "$project_path"
+        else
+            write_warning "Project directory already exists; proceeding in-place: $project_path"
+        fi
+        return 0
+    fi
+
+    if [[ "$FORCE" == "true" ]]; then
+        write_warning "Overwriting existing project: $project_path"
+        rm -rf "$project_path"
+        return 0
+    fi
+
+    if [[ "$NON_INTERACTIVE" == "true" ]]; then
+        write_error "Project already exists: $project_path. Use --force to overwrite."
+        exit 1
+    fi
+
+    write_warning "Project already exists: $project_path"
+    local overwrite
+    overwrite=$(read_user_input "Overwrite it? (y/n)" "n")
+    if [[ "$overwrite" == "y" || "$overwrite" == "Y" ]]; then
+        rm -rf "$project_path"
+        return 0
+    fi
+
+    echo "" >&2
+    echo -e "\033[33mAborted.\033[0m" >&2
+    exit 0
 }
 
 install_opencode_pack() {
     local mode="$1"
     local project_path="$2"
     local pack_dir="$SOURCE_PATH/packs/opencode_pack"
-    if [[ ! -d "$pack_dir" && -d "$SOURCE_PATH/opencode_pack" ]]; then
-        write_warning "Using legacy OpenCode pack path at apm_source/opencode_pack"
-        pack_dir="$SOURCE_PATH/opencode_pack"
-    fi
     local skills_dir="$SOURCE_PATH/skills"
-    
+
     if [[ ! -d "$pack_dir" ]]; then
         write_warning "OpenCode pack not found: $pack_dir"
         return 0
     fi
-    
+
     local target_dir
     if [[ "$mode" == "local" ]]; then
         target_dir="$project_path/.opencode"
     else
         target_dir="$HOME/.config/opencode"
     fi
-    
-    mkdir -p "$target_dir/agents" "$target_dir/commands" "$target_dir/skills" "$target_dir/tools"
-    cp -R "$pack_dir/agent/." "$target_dir/agents/"
-    cp -R "$pack_dir/command/." "$target_dir/commands/"
-    cp -R "$pack_dir/tools/." "$target_dir/tools/"
+
+    remove_path_if_exists "$target_dir/commands"
+    remove_path_if_exists "$target_dir/tools"
+    mkdir -p "$target_dir/agents" "$target_dir/skills"
+    if [[ -d "$pack_dir/agent" ]]; then
+        cp -R "$pack_dir/agent/." "$target_dir/agents/"
+    fi
     if [[ -d "$skills_dir" ]]; then
         cp -R "$skills_dir/." "$target_dir/skills/"
-    else
-        write_warning "Skills not found: $skills_dir"
     fi
-    
-    write_success "OpenCode pack installed to $target_dir"
+
+    write_success "OpenCode assets installed to $target_dir"
 }
 
-install_cursor_pack() {
-    local mode="$1"
-    local project_path="$2"
-    local pack_dir="$SOURCE_PATH/packs/cursor_pack"
-    if [[ ! -d "$pack_dir" ]]; then
-        write_warning "Cursor pack not found: $pack_dir"
-        return 0
-    fi
-
-    local target_dir
-    if [[ "$mode" == "local" ]]; then
-        target_dir="$project_path/.cursor"
-    else
-        target_dir="$HOME/.cursor"
-    fi
-
-    mkdir -p "$target_dir/agents" "$target_dir/commands"
-    if [[ -d "$pack_dir/agents" ]]; then
-        cp -R "$pack_dir/agents/." "$target_dir/agents/"
-    fi
-    if [[ -d "$pack_dir/commands" ]]; then
-        cp -R "$pack_dir/commands/." "$target_dir/commands/"
-    fi
-
-    write_success "Cursor pack installed to $target_dir"
-}
-
-install_codex_skills() {
+install_codex_pack() {
     local mode="$1"
     local project_path="$2"
     local installer_path="$SCRIPT_DIR/scripts/codex_install.sh"
@@ -617,169 +503,86 @@ install_claude_pack() {
 
     if [[ "$mode" == "local" ]]; then
         bash "$installer_path" --local "$project_path"
-        write_success "Claude Code pack installed to $project_path/.claude"
+        write_success "Claude Code assets installed to $project_path/.claude"
     else
         bash "$installer_path" --global
-        write_success "Claude Code pack installed to $HOME/.claude"
+        write_success "Claude Code assets installed to $HOME/.claude"
     fi
 }
 
-rename_project_placeholders() {
-    local project_path="$1"
-    local project_name="$2"
-    local dev_env="$3"
-    
-    # Rename {project-name} directory if exists (FULL methodology)
-    local placeholder_dir="$project_path/{project-name}"
-    if [[ -d "$placeholder_dir" ]]; then
-        mv "$placeholder_dir" "$project_path/$project_name"
-        write_info "Renamed project directory to: $project_name"
+install_cursor_pack() {
+    local mode="$1"
+    local project_path="$2"
+    local installer_path="$SCRIPT_DIR/scripts/cursor_install.sh"
+
+    if [[ ! -f "$installer_path" ]]; then
+        write_warning "Cursor installer not found: $installer_path"
+        return 0
     fi
-    
-    # Update project name in ARCHITECTURE.md
-    local replace_in_file
-    replace_in_file() {
-        local target_file="$1"
-        if [[ "$(uname)" == "Darwin" ]]; then
-            sed -i '' "s/\\[Project Name\\]/$project_name/g" "$target_file"
+
+    if [[ "$mode" == "local" ]]; then
+        bash "$installer_path" --local "$project_path"
+        write_success "Cursor legacy assets installed to $project_path/.cursor"
+    else
+        bash "$installer_path" --global
+        write_success "Cursor legacy assets installed to $HOME/.cursor"
+    fi
+}
+
+resolve_project_path() {
+    local base_path
+    if [[ "$PROJECT_PATH_SET" == "true" && "$PROJECT_NAME_SET" == "true" ]]; then
+        if [[ "$(basename "$PROJECT_PATH")" == "$PROJECT_NAME" ]]; then
+            base_path="$PROJECT_PATH"
         else
-            sed -i "s/\\[Project Name\\]/$project_name/g" "$target_file"
+            base_path="$PROJECT_PATH/$PROJECT_NAME"
         fi
-    }
-
-    local arch_file="$project_path/ARCHITECTURE.md"
-    if [[ -f "$arch_file" ]]; then
-        replace_in_file "$arch_file"
-        write_info "Updated ARCHITECTURE.md with project name"
+    elif [[ "$PROJECT_PATH_SET" == "true" && "$PROJECT_NAME_SET" != "true" ]]; then
+        base_path="$PROJECT_PATH"
+    elif [[ "$PROJECT_PATH_SET" != "true" && "$PROJECT_NAME_SET" == "true" ]]; then
+        base_path="$PROJECT_PATH/$PROJECT_NAME"
+    else
+        base_path="$PROJECT_PATH"
     fi
 
-    local memory_bank_dir="$project_path/memory_bank"
-    local mb_file
-    if [[ -d "$memory_bank_dir" ]]; then
-        while IFS= read -r -d '' mb_file; do
-            replace_in_file "$mb_file"
-            write_info "Updated ${mb_file#$project_path/} with project name"
-        done < <(find "$memory_bank_dir" -type f -name "*.md" -print0)
+    local parent_dir
+    parent_dir="$(dirname "$base_path")"
+    if [[ ! -d "$parent_dir" ]]; then
+        write_error "Parent directory does not exist: $parent_dir"
+        exit 1
     fi
+
+    local resolved_parent
+    resolved_parent="$(cd "$parent_dir" && pwd)"
+    echo "$resolved_parent/$(basename "$base_path")"
 }
 
-initialize_memory_bank() {
-    local project_path="$1"
-    local methodology="$2"
-    local dev_env="$3"
-    
-    if [[ "$methodology" == "FULL" ]]; then
-        return 0
+ensure_valid_envs() {
+    local normalized_envs=()
+    local env
+
+    if [[ ${#DEV_ENVS[@]} -eq 0 ]]; then
+        DEV_ENVS=("OPENCODE")
     fi
-    
-    local memory_bank_dir="$project_path/memory_bank"
-    
-    # Flat methodology templates already include memory_bank/ with all files
-    if [[ -d "$memory_bank_dir" ]]; then
-        mkdir -p "$memory_bank_dir/tasks"
-        if [[ -f "$memory_bank_dir/TASK.md" && ! -f "$memory_bank_dir/TASKS.md" ]]; then
-            mv "$memory_bank_dir/TASK.md" "$memory_bank_dir/TASKS.md"
-            write_info "Migrated memory_bank/TASK.md to memory_bank/TASKS.md"
+
+    for env in "${DEV_ENVS[@]}"; do
+        local normalized_env
+        if ! normalized_env="$(normalize_env_token "$env")"; then
+            write_error "Invalid environment: $env. Use OpenCode, Codex, Claude, or Cursor."
+            exit 1
         fi
-        return 0
-    fi
-    
-    # Fallback: create memory_bank/ if missing
-    mkdir -p "$memory_bank_dir/tasks"
-    
-    local file_name
-    for file_name in ARCHITECTURE.md STATE.md; do
-        local root_file="$project_path/$file_name"
-        local bank_file="$memory_bank_dir/$file_name"
-        
-        if [[ -f "$root_file" && ! -f "$bank_file" ]]; then
-            mv "$root_file" "$bank_file"
-            write_info "Moved $file_name to memory_bank/"
-            continue
-        fi
-        
-        if [[ ! -f "$bank_file" ]]; then
-            echo "# ${file_name%.md}" > "$bank_file"
-            write_warning "Initialized memory_bank/$file_name as empty file"
-        fi
+        normalized_envs+=("$normalized_env")
     done
 
-    local root_tasks_file="$project_path/TASKS.md"
-    local root_task_file="$project_path/TASK.md"
-    local tasks_file="$memory_bank_dir/TASKS.md"
-    if [[ -f "$root_tasks_file" && ! -f "$tasks_file" ]]; then
-        mv "$root_tasks_file" "$tasks_file"
-        write_info "Moved TASKS.md to memory_bank/"
-    elif [[ -f "$root_task_file" && ! -f "$tasks_file" ]]; then
-        mv "$root_task_file" "$tasks_file"
-        write_info "Moved TASK.md to memory_bank/TASKS.md"
-    elif [[ ! -f "$tasks_file" ]]; then
-        echo "# TASKS" > "$tasks_file"
-        write_warning "Initialized memory_bank/TASKS.md as empty file"
-    fi
-
-    local task_detail_file="$memory_bank_dir/tasks/W1A.md"
-    if [[ ! -f "$task_detail_file" ]]; then
-        cat > "$task_detail_file" << 'EOF'
-# Task: W1A
-
-## 1. Summary (Copied from TASKS.md)
-
-**Title:** [Task title]
-**Description:** [High-level description copied from TASKS.md]
-**Status:** [Planned / In Progress / Blocked / Done]
-EOF
-        write_warning "Initialized memory_bank/tasks/W1A.md as starter task file"
-    fi
+    DEV_ENVS=("${normalized_envs[@]}")
 }
-
-initialize_agent_reports() {
-    local project_path="$1"
-    local methodology="$2"
-    local dev_env="$3"
-    
-    if [[ "$methodology" == "FULL" || "$dev_env" != "CURSOR" ]]; then
-        return 0
-    fi
-    
-    local roles_dir="$project_path/.apm/AGENT_ROLES"
-    if [[ ! -d "$roles_dir" ]]; then
-        roles_dir="$project_path/.apm/AGENT_DROLES"
-    fi
-    local reports_root="$project_path/.apm/Agent Reports"
-    
-    if [[ ! -d "$roles_dir" ]]; then
-        return 0
-    fi
-    
-    mkdir -p "$reports_root"
-    
-    local role_file
-    for role_file in "$roles_dir"/*.md; do
-        [[ -f "$role_file" ]] || continue
-        
-        local base
-        base="$(basename "$role_file" .md)"
-        local role_name="${base//_/ }"
-        role_name="${role_name//-/ }"
-        
-        local role_dir="$reports_root/$role_name"
-        mkdir -p "$role_dir"
-        : > "$role_dir/.gitkeep"
-    done
-}
-
-# ============================================================================
-# MAIN FUNCTION
-# ============================================================================
 
 main() {
     parse_args "$@"
     maybe_install_apm_alias
-    
-    # Handle help flag
+
     if [[ "$SHOW_HELP" == "true" ]]; then
-        cat << EOF
+        cat <<'EOF'
 APM (Agentic Project Management) - Project Configurator
 
 Usage: ./apm.sh [options]
@@ -787,86 +590,55 @@ Usage: ./apm.sh [options]
 Options:
     -h, --help          Show this help message
     -v, --version       Show version information
-
-Non-Interactive Mode (for automation/testing):
-    --opencode          Add OPENCODE environment (can combine multiple)
-    --codex             Add CODEX environment (can combine multiple)
-    --claude            Add CLAUDE environment (can combine multiple)
-    --cursor            Add CURSOR environment (can combine multiple)
-    --rapid             Shorthand for --methodology RAPID
-    --ds                Shorthand for --methodology DS
-    --full              Shorthand for --methodology FULL
     --project-name      Project name (defaults to current directory name)
     --project-path      Target directory or parent directory (default: current directory)
-    --methodology       FULL, RAPID, or DS
-    --dev-env           CURSOR, OPENCODE, CODEX, or CLAUDE (repeatable for multiple envs)
-    --local             Install CLI pack/assets locally into project config directory (default)
-    --global            Install CLI pack/assets globally into user config directory
-    --none              Skip CLI pack/assets install
-    --skip-github       Deprecated no-op (kept for backward compatibility)
-    --skip-cursor       Deprecated (no auto-open)
-    --force             Overwrite existing project without prompting
-    --non-interactive   Run without any user prompts
+    --opencode          Add OpenCode environment
+    --codex             Add Codex environment
+    --claude            Add Claude Code environment
+    --cursor            Add legacy Cursor environment
+    --dev-env           Environment name or index (repeatable)
+    --local             Install environment assets locally into the project config directory
+    --global            Install environment assets globally into the user config directory
+    --none              Skip environment asset install (default)
+    --force             Overwrite an existing target directory, or refresh managed APM files in place
+    --non-interactive   Run without prompts
 
-Example:
-    ./apm.sh --opencode --rapid --project-name "my-app" --project-path "/projects" --non-interactive
-    ./apm.sh --opencode --claude --ds --project-name "ml-project" --project-path "/projects" --non-interactive
-    ./apm.sh --codex --rapid --project-name "my-codex-app" --project-path "/projects" --non-interactive
+Legacy compatibility flags accepted as no-ops:
+    --methodology, --rapid, --ds, --full, --skip-cursor, --skip-github
 
-This interactive wizard will guide you through creating a new APM project.
+Examples:
+    ./apm.sh --opencode --project-name "my-app" --project-path "/projects" --non-interactive
+    ./apm.sh --codex --claude --project-name "my-app" --project-path "/projects" --local --non-interactive
+    ./apm.sh --cursor --project-name "legacy-app" --project-path "/projects" --local --non-interactive
 EOF
         exit 0
     fi
-    
-    # Handle version flag
+
     if [[ "$SHOW_VERSION" == "true" ]]; then
         echo "APM v$APP_VERSION"
         exit 0
     fi
-    
-    # Verify source path exists
+
     if [[ ! -d "$SOURCE_PATH" ]]; then
         write_error "APM source templates not found at: $SOURCE_PATH"
-        echo -e "\033[90mMake sure apm_source directory is in the correct location.\033[0m"
         exit 1
     fi
-    
+
+    warn_on_legacy_profile
+
     local directory
     local project_name
-    local methodology
-    local dev_env
     local project_path
-    
-    # Check if running in non-interactive mode
+
     if [[ "$NON_INTERACTIVE" == "true" ]]; then
-        # Resolve defaults
         if [[ -z "$PROJECT_PATH" ]]; then
             PROJECT_PATH="$(pwd)"
         fi
         if [[ -z "$PROJECT_NAME" ]]; then
             PROJECT_NAME="$(basename "$PROJECT_PATH")"
         fi
-        if [[ -z "$METHODOLOGY" ]]; then
-            write_error "--methodology is required in non-interactive mode"
-            exit 1
-        fi
-        # Resolve DEV_ENVS array into DEV_ENV (primary) and validate
-        if [[ ${#DEV_ENVS[@]} -eq 0 ]]; then
-            DEV_ENVS=("CURSOR")
-        fi
-        for _env in "${DEV_ENVS[@]}"; do
-            if [[ "$_env" != "CURSOR" && "$_env" != "OPENCODE" && "$_env" != "CODEX" && "$_env" != "CLAUDE" ]]; then
-                write_error "Invalid --dev-env: $_env. Use CURSOR, OPENCODE, CODEX, or CLAUDE."
-                exit 1
-            fi
-        done
-        # Primary env: CURSOR if present, otherwise first in list
-        DEV_ENV="${DEV_ENVS[0]}"
-        for _env in "${DEV_ENVS[@]}"; do
-            if [[ "$_env" == "CURSOR" ]]; then DEV_ENV="CURSOR"; break; fi
-        done
         if [[ -z "$PACK_INSTALL" ]]; then
-            PACK_INSTALL="local"
+            PACK_INSTALL="skip"
         fi
         case "$PACK_INSTALL" in
             local|global|skip) ;;
@@ -876,75 +648,16 @@ EOF
                 ;;
         esac
 
-        # Validate methodology
-        if [[ "$METHODOLOGY" != "FULL" && "$METHODOLOGY" != "RAPID" && "$METHODOLOGY" != "DS" ]]; then
-            write_error "Invalid methodology: $METHODOLOGY. Use FULL, RAPID, or DS."
-            exit 1
-        fi
-        if [[ "$DEV_ENV" != "CURSOR" && "$METHODOLOGY" == "FULL" ]]; then
-            write_error "FULL methodology is not available for OpenCode/Codex/Claude Code CLI projects."
-            exit 1
-        fi
-        
-        # Resolve paths (support parent path or full project path)
-        local base_path
-        if [[ "$PROJECT_PATH_SET" == "true" && "$PROJECT_NAME_SET" == "true" ]]; then
-            if [[ "$(basename "$PROJECT_PATH")" == "$PROJECT_NAME" ]]; then
-                base_path="$PROJECT_PATH"
-            else
-                base_path="$PROJECT_PATH/$PROJECT_NAME"
-            fi
-        elif [[ "$PROJECT_PATH_SET" == "true" && "$PROJECT_NAME_SET" != "true" ]]; then
-            base_path="$PROJECT_PATH"
-        elif [[ "$PROJECT_PATH_SET" != "true" && "$PROJECT_NAME_SET" == "true" ]]; then
-            base_path="$PROJECT_PATH/$PROJECT_NAME"
-        else
-            base_path="$PROJECT_PATH"
-        fi
-
-        local parent_dir
-        parent_dir="$(dirname "$base_path")"
-        if [[ ! -d "$parent_dir" ]]; then
-            write_error "Parent directory does not exist: $parent_dir"
-            exit 1
-        fi
-
-        local resolved_parent
-        resolved_parent="$(cd "$parent_dir" && pwd)"
-        project_path="$resolved_parent/$(basename "$base_path")"
-
+        ensure_valid_envs
+        project_path="$(resolve_project_path)"
+        directory="$(dirname "$project_path")"
         project_name="$PROJECT_NAME"
-        methodology="$METHODOLOGY"
-        dev_env="$DEV_ENV"
-        directory="$resolved_parent"
 
-        write_info "Non-interactive mode: Creating $methodology project '$project_name' (${DEV_ENVS[*]})"
-        
-        # Check if project exists
-        if [[ -d "$project_path" ]]; then
-            local current_dir
-            current_dir="$(pwd)"
-            if [[ "$project_path" == "$current_dir" ]]; then
-                if [[ "$FORCE" == "true" ]]; then
-                    write_warning "--force ignored for in-place setup: $project_path"
-                fi
-                write_warning "Project directory already exists; proceeding in-place: $project_path"
-            else
-                if [[ "$FORCE" == "true" ]]; then
-                    write_warning "Overwriting existing project: $project_path"
-                    rm -rf "$project_path"
-                else
-                    write_error "Project already exists: $project_path. Use --force to overwrite."
-                    exit 1
-                fi
-            fi
-        fi
+        write_info "Non-interactive mode: creating '$project_name' for ${DEV_ENVS[*]}"
     else
-        # Interactive mode
         clear
         show_banner
-        
-        # Step 1: Get project directory
+
         write_step "Step 1: Project Location"
         local cwd
         local default_parent
@@ -953,128 +666,84 @@ EOF
         default_parent="$(dirname "$cwd")"
         default_name="$(basename "$cwd")"
         directory=$(read_directory_path "Parent directory for the project" "$default_parent")
-        
-        # Step 2: Get project name
+
         write_step "Step 2: Project Name"
         project_name=$(read_project_name "$default_name")
-        
-        # Check if project already exists
-        project_path="$directory/$project_name"
-        if [[ -d "$project_path" ]]; then
-            local current_dir
-            current_dir="$(pwd)"
-            if [[ "$project_path" == "$current_dir" ]]; then
-                write_warning "Project directory already exists; proceeding in-place: $project_path"
-            else
-                write_error "A folder named '$project_name' already exists at this location."
-                local overwrite
-                overwrite=$(read_user_input "Overwrite? (y/n)" "n")
-                if [[ "$overwrite" != "y" ]]; then
-                    echo ""
-                    echo -e "\033[33mAborted.\033[0m"
-                    exit 0
-                fi
-                rm -rf "$project_path"
-            fi
-        fi
-        
-        # Step 3: Select development environment(s)
+        PROJECT_NAME="$project_name"
+        PROJECT_NAME_SET=true
+        PROJECT_PATH="$directory"
+        PROJECT_PATH_SET=true
+
         write_step "Step 3: Select Development Environment(s)"
         local env_selection
         env_selection=$(select_dev_environment)
         read -ra DEV_ENVS <<< "$env_selection"
-        # Primary env: CURSOR if present, otherwise first
-        dev_env="${DEV_ENVS[0]}"
-        for _env in "${DEV_ENVS[@]}"; do
-            if [[ "$_env" == "CURSOR" ]]; then dev_env="CURSOR"; break; fi
-        done
+        ensure_valid_envs
 
-        # Step 4: Select methodology
-        write_step "Step 4: Select Methodology"
-        methodology=$(select_methodology "$dev_env")
-        
-        # Show summary and confirm
-        if ! show_summary "$project_path" "$project_name" "$methodology" "${DEV_ENVS[@]}"; then
-            echo ""
-            echo -e "\033[33mAborted.\033[0m"
+        project_path="$directory/$project_name"
+        if ! show_summary "$project_path" "$project_name" "${DEV_ENVS[@]}"; then
+            echo "" >&2
+            echo -e "\033[33mAborted.\033[0m" >&2
             exit 0
         fi
     fi
-    
-    # Create project
-    echo ""
-    write_step "Creating Project..."
-    
-    # Create project directory
+
+    prepare_target_directory "$project_path"
+
+    echo "" >&2
+    write_step "Creating Project"
+
     mkdir -p "$project_path"
     write_success "Created project directory"
-    
-    # Copy methodology template
-    copy_methodology_template "$methodology" "$project_path" "$dev_env"
-    prune_template_for_environment "$project_path" "$dev_env"
-    
-    # Rename placeholders
-    rename_project_placeholders "$project_path" "$project_name" "$dev_env"
 
-    # Initialize Memory Bank and Agent Reports
-    initialize_memory_bank "$project_path" "$methodology" "$dev_env"
-    initialize_agent_reports "$project_path" "$methodology" "$dev_env"
+    copy_base_template "$project_path"
+    replace_project_name_placeholders "$project_path" "$project_name"
 
-    # Install packs for each selected environment
-    for _env in "${DEV_ENVS[@]}"; do
-        if [[ "$_env" == "CURSOR" ]]; then
-            install_cursor_pack "local" "$project_path"
-            continue
-        fi
+    local env
+    for env in "${DEV_ENVS[@]}"; do
+        local install_mode="$PACK_INSTALL"
 
-        # Determine pack install mode
-        local pack_mode="$PACK_INSTALL"
-        if [[ "$NON_INTERACTIVE" != "true" && -z "$pack_mode" ]]; then
-            local install_prompt="Install $(env_to_label "$_env") pack? (local/global/skip)"
+        if [[ "$NON_INTERACTIVE" != "true" && -z "$install_mode" ]]; then
+            local prompt
+            prompt="Install $(env_to_label "$env") assets? (local/global/skip)"
             while true; do
-                local install_choice
-                install_choice=$(read_user_input "$install_prompt" "local")
-                case "$install_choice" in
+                local choice
+                choice=$(read_user_input "$prompt" "skip")
+                case "$choice" in
                     local|global|skip)
-                        pack_mode="$install_choice"
+                        install_mode="$choice"
                         break
                         ;;
                     *)
-                        write_error "Invalid choice. Enter local, global, or skip"
+                        write_error "Invalid choice. Enter local, global, or skip."
                         ;;
                 esac
             done
         fi
 
-        if [[ "$pack_mode" == "skip" ]]; then
+        if [[ "$install_mode" == "skip" ]]; then
             continue
         fi
 
-        case "$_env" in
-            OPENCODE) install_opencode_pack "$pack_mode" "$project_path" ;;
-            CODEX)    install_codex_skills "$pack_mode" "$project_path" ;;
-            CLAUDE)   install_claude_pack "$pack_mode" "$project_path" ;;
+        case "$env" in
+            OPENCODE) install_opencode_pack "$install_mode" "$project_path" ;;
+            CODEX) install_codex_pack "$install_mode" "$project_path" ;;
+            CLAUDE) install_claude_pack "$install_mode" "$project_path" ;;
+            CURSOR) install_cursor_pack "$install_mode" "$project_path" ;;
         esac
     done
-    
-    # Success message
-    echo ""
-    echo -e "\033[32m==================================================\033[0m"
-    echo -e "\033[32mProject created successfully!\033[0m"
-    echo -e "\033[32m==================================================\033[0m"
-    echo ""
-    echo "Location: $project_path"
-    echo ""
-    echo "Next steps:"
-    echo "  1. Open the project in your preferred environment"
-    echo -n "  2. Run "
-    echo -e "\033[33m/apm-start\033[0m and describe your project idea"
-    echo "  3. The System Architect will guide you through the setup"
-    echo ""
 
-    echo ""
-    echo -e "\033[36mHappy coding!\033[0m"
+    echo "" >&2
+    echo -e "\033[32m==================================================\033[0m" >&2
+    echo -e "\033[32mProject created successfully\033[0m" >&2
+    echo -e "\033[32m==================================================\033[0m" >&2
+    echo "" >&2
+    echo "Location: $project_path" >&2
+    echo "" >&2
+    echo "Next steps:" >&2
+    echo "  1. Open the project in your selected environment." >&2
+    echo "  2. Use the \`apm-start\` workflow skill to align on project vision and bootstrap the working flow." >&2
+    echo "  3. Continue with the relevant workflow skills for implementation, testing, and sync." >&2
 }
 
-# Run main
 main "$@"
