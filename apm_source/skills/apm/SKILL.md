@@ -11,7 +11,7 @@ Use it to determine:
 
 Work in a simple loop. First, understand what kind of task this is and load the relevant workflow skill. Then break the work into concrete todo items, do the work, and finish with a self-review before handoff.
 
-Task framing -> load workflow skill -> plan todo items -> execute or delegate -> self-review -> handoff
+Task framing -> load workflow skill -> plan todo items -> delegate or execute -> self-review -> handoff
 
 Keep the session focused. Use direct, known-path context when possible, and delegate broad repo exploration or web research when it would only add noise.
 

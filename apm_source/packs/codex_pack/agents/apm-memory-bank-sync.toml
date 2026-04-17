@@ -1,5 +1,5 @@
 name = "apm-memory-bank-sync"
-description = "Reconciles Memory Bank files with recent work to maintain project continuity across sessions."
+description = "Dedicated continuity role. Reconciles Memory Bank files with recent work, keeps task files aligned, and proposes architecture changes for explicit approval."
 model = "gpt-5.4-mini"
 model_reasoning_effort = "high"
 developer_instructions = """

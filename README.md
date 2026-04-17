@@ -116,8 +116,7 @@ PowerShell equivalents:
 - `apm_project/scripts/codex_install.ps1 -Local -Path <project>`
 
 Codex install adds:
-- Skills to `.codex/skills/`
-- Codex-only primary-session skills from `apm_source/packs/codex_pack/skills/`
+- Shared APM skills to `.codex/skills/`
 - Standalone subagent role configs to `.codex/agents/`
 - Global multi-agent settings in `.codex/config.toml`
 
