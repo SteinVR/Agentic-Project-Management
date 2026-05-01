@@ -9,16 +9,16 @@
 
 ## Project map
 - `memory_bank/` -- architecture source of truth, state, and task board.
-- `src/` -- implementation. `src/AGENTS.md` defines implementation code conventions for this tree.
+- `src/` -- implementation.
 - `tests/` -- tests.
-- `logs/` -- split into `logs/project/` for project logs and `logs/agents/` for agent-session logs.
+- `logs/` -- for project runtime logs
 
 ## Workflow
 - Core loop: investigate -> plan -> implement -> verify.
 - Use the own internal todo list proactively.
 
 ## Skills paradigm
-- Proactively load the relevant skill at the start of a task -- do not wait to be explicitly asked.
+- Proactively load the relevant skill at the start of a task.
 
 ## Glossary
 - **Workflow skill** -- a skill marked as `Workflow skill` in its `description`. It defines the execution flow for a class of work and tells the agent how to run that kind of task step by step. Use that description mark as the source of truth.
