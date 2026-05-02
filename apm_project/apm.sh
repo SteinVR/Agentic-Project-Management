@@ -211,40 +211,6 @@ read_project_name() {
     done
 }
 
-maybe_install_apm_alias() {
-    local alias_name="apm"
-    local target="$SCRIPT_DIR/apm.sh"
-    local existing
-    existing="$(command -v "$alias_name" 2>/dev/null || true)"
-    if [[ -n "$existing" ]]; then
-        write_warning "Command or alias '$alias_name' already exists; skipping alias install"
-        return 0
-    fi
-
-    local shell_name
-    local rc_file
-    shell_name="$(basename "${SHELL:-}")"
-    case "$shell_name" in
-        bash) rc_file="$HOME/.bashrc" ;;
-        zsh) rc_file="$HOME/.zshrc" ;;
-        *) rc_file="$HOME/.profile" ;;
-    esac
-
-    if [[ ! -f "$rc_file" ]]; then
-        touch "$rc_file" 2>/dev/null || return 0
-    fi
-
-    if grep -qE '^[[:space:]]*alias[[:space:]]+apm=' "$rc_file"; then
-        return 0
-    fi
-
-    {
-        echo ""
-        echo "alias apm=\"$target\""
-    } >> "$rc_file"
-    write_info "Installed shell alias 'apm' -> $target (restart your shell)"
-}
-
 normalize_env_token() {
     case "$1" in
         1|OPENCODE|opencode) echo "OPENCODE" ;;
@@ -579,7 +545,6 @@ ensure_valid_envs() {
 
 main() {
     parse_args "$@"
-    maybe_install_apm_alias
 
     if [[ "$SHOW_HELP" == "true" ]]; then
         cat <<'EOF'

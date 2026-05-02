@@ -26,11 +26,11 @@ These two layers are not independent. In APM, flow is also a mechanism for contr
 
 Ideology: configured SDD, only-essential Memory Bank, explicit flow control, and context engineering with an emphasis on determinism, layering, and token efficiency.
 
-Usage: run the TUI configurator (`apm.sh`) to generate a project, then drive work via environment-specific commands and skills. For automation or CI, use non-interactive flags.
+Usage: run the TUI configurator (`apm.sh`) to generate a project, then drive work through installed skills and agent roles. For automation or CI, use non-interactive flags.
 
 ---
 
-## 📦 What you get
+## 📦 What it provides
 
 - CLI configurator for new projects
 - Agent roles (worker, co-founder, reviewer, code-simplifier, memory-bank-sync, web-explorer)
@@ -44,7 +44,7 @@ Usage: run the TUI configurator (`apm.sh`) to generate a project, then drive wor
 
 - **Codex CLI** (global or per-project): skills + subagent roles installed into `.codex/`; APM blocks merged into `.codex/config.toml`; projects use `memory_bank/` and minimal structure.
 - **OpenCode CLI** (global or per-project): agents and shared skills installed into OpenCode; projects use `memory_bank/` and minimal structure.
-- **Claude Code** (global or per-project): subagent roles in `.claude/agents/`, skills in `.claude/skills/`, instructions in `CLAUDE.md`; projects use `memory_bank/` and minimal structure.
+- **Claude Code** (global or per-project): subagent roles in `.claude/agents/`, skills in `.claude/skills/`; projects use `memory_bank/` and minimal structure.
 
 ---
 
@@ -61,7 +61,7 @@ chmod +x ./apm_project/apm.sh
 ### 2) Non-interactive flags
 
 Shorthands are supported:
-- `--opencode` / `--codex` / `--cursor` / `--claude`
+- `--opencode` / `--codex` / `--claude`
 - `--local` / `--global` / `--none` (CLI pack install; default is `--none`)
 
 Defaults:
@@ -122,7 +122,25 @@ Codex install adds:
 
 ---
 
-## Alias suggestions
+## Claude Code install (global or local)
+
+**Global** (applies to all projects):
+```bash
+./apm_project/scripts/claude_install.sh --global
+```
+
+**Local** (project-only):
+```bash
+./apm_project/scripts/claude_install.sh --local /path/to/project
+```
+
+PowerShell equivalents:
+- `apm_project/scripts/claude_install.ps1 -Global`
+- `apm_project/scripts/claude_install.ps1 -Local -Path <project>`
+
+---
+
+## Optional shell alias
 
 ```bash
 # run configurator from anywhere
@@ -136,7 +154,9 @@ alias apm-cd='cd /path/to/Agentic-Project-Management'
 
 ## How it works
 
-Primary/main agents use the core skill `apm` as the session overlay: first resolve the implementation mode for non-trivial work, then choose the relevant workflow skill, decompose work into todo items, execute, and self-review before handoff. If key details are missing or the agent wants to expand scope beyond the direct request, it raises a question first.
+The core skill `apm` is the main-session context-engineering overlay. It gives the main agent the workflow instructions needed to route the task, choose the governing workflow skill, bind to SSOT files, plan work, delegate narrowly, and self-review before handoff.
+
+Keep this layer on the main agent. Subagents receive only the bounded role contract and task context they need; they should not inherit the full main-session workflow frame unless delegation explicitly passes a relevant piece of it.
 
 Workflow skills are the skills marked as `Workflow skill` in their descriptions. They define the execution flow for a class of work.
 
@@ -146,7 +166,7 @@ In practice, APM works by combining:
 - **Flow layer** -- workflow skills, decision gates, review loops, delegation flow.
 - **Context layer** -- `AGENTS.md`, nested `AGENTS.md`, Memory Bank, specs, SSOT files, and delegation pointers.
 
-1. **/apm-start** runs Vision Alignment, determines the project domain, initializes the dual-branch git layout, and selects the matching architecture template.
+1. **apm-start** runs Vision Alignment, determines the project domain, initializes the dual-branch git layout, and selects the matching architecture template.
 2. During initialization, APM bootstraps two independent branches:
    - `main` stays clean and free of APM working artifacts.
    - `dev` contains the full working layer (`AGENTS.md`, `memory_bank/`, `external/`, `docs/`, and similar assets) and becomes the default branch for development.
@@ -155,17 +175,17 @@ In practice, APM works by combining:
    - `apm-dev` for implementation, `apm-test` for testing, `apm-quality-gate` for independent verification.
    - `apm-eda`, `apm-deep-feature-engineering`, `apm-exp` for DS/ML workflows.
    - Domain-specific skills create their required directories on first use (e.g., `apm-eda` creates `eda/` and `data/`).
-   - **Co-Founder mode** provides a collaborative primary partner who co-owns project vision, architecture, and direction. Activate via Shift+Tab in OpenCode or `claude --agent apm-co-founder` in Claude Code.
-5. Memory Bank synchronization is explicit (`/apm-sync`) and delegated to the `apm-memory-bank-sync` subagent.
+   - **Co-Founder mode** provides a collaborative primary partner who co-owns project vision, architecture, and direction.
+5. Memory Bank synchronization is explicit (`apm-sync`) and delegated to the `apm-memory-bank-sync` subagent.
 6. Git isolation via `apm-git-taskflow` when parallel or isolated execution streams are needed. Task branches and worktrees are created from `dev`, not from `main`.
 
 ---
 
 ## Example flows
 
-**Product:** `/apm-start` -> `apm-dev` -> `apm-test` -> `apm-quality-gate` (optional) -> `/apm-sync`
+**Product:** `apm-start` -> `apm-dev` -> `apm-test` -> `apm-quality-gate` (optional) -> `apm-sync`
 
-**DS/ML:** `/apm-start` -> `apm-eda` -> `apm-deep-feature-engineering` -> `apm-exp` (baseline + experiments) -> `/apm-sync`
+**DS/ML:** `apm-start` -> `apm-eda` -> `apm-deep-feature-engineering` -> `apm-exp` (baseline + experiments) -> `apm-sync`
 
 **Mixed:** combine skills from both as needed within the same project.
 
@@ -215,7 +235,7 @@ Line budget:
 
 | Skill | Description |
 |-------|-------------|
-| `apm` | Core main-session operating frame: resolve task mode, bind to frozen task specs when they exist, ask before scope expansion, plan -> execute -> self-review |
+| `apm` | Main-session context-engineering overlay: load workflow instructions for the main agent, bind to SSOT files, route task flow, and isolate subagents from unnecessary context |
 | `apm-start` | Project kickoff: Vision Alignment + dual-branch git bootstrap + Memory Bank initialization |
 | `apm-dev` | Workflow skill for iterative development: plan, implement, verify, self-review |
 | `apm-exp` | Workflow skill for experiments (baselines, model variants, hypothesis-driven experiments) |
@@ -239,7 +259,7 @@ Line budget:
 | `apm-worker` | Universal execution unit: receives task, delivers results with self-review |
 | `apm-co-founder` | Primary project partner, equal strategic collaborator |
 | `apm-code-simplifier` | Behavior-preserving code simplification |
-| `apm-reviewer` | Independent verification gate with persistent memory |
+| `apm-reviewer` | Independent verification gate |
 | `apm-memory-bank-sync` | Memory Bank reconciliation specialist |
 | `apm-web-explorer` | Web research specialist |
 
@@ -252,14 +272,13 @@ Line budget:
 - OpenCode pack lives in `apm_source/packs/opencode_pack/`.
 - Codex pack source lives in `apm_source/packs/codex_pack/`.
 - Claude Code pack source lives in `apm_source/packs/claude_pack/`.
-- Legacy Cursor assets are stored in `apm_source/_legacy/`.
 - `external/` can hold incubating or third-party skill prototypes before they are promoted into APM's shared skill set.
 
 ---
 
 ## OpenCode CLI architecture
 
-- **Agents** = role profiles plus primary agent: Co-Founder (`apm-co-founder`) for strategic partnership. Switch via Shift+Tab.
+- **Agents** = role profiles for primary and delegated work.
 - **Skills** = modular knowledge chunks loaded on demand (dev, test, DS workflows, subagent delegation, git isolation, logs).
 - **Install targets**:
   - Global: `~/.config/opencode/{agents,skills}`
@@ -269,12 +288,9 @@ Line budget:
 
 ## Claude Code architecture
 
-- **Subagents** = specialist roles in `.claude/agents/` (Markdown + YAML frontmatter). Each subagent has explicit tool allowlists, permission modes, effort levels, and turn limits.
-- **Primary agents** = Co-Founder (`apm-co-founder`). Activated via `claude --agent apm-co-founder`.
+- **Subagents** = specialist roles in `.claude/agents/` (Markdown + YAML frontmatter).
 - **Skills** = shared `agentskills.io` skills in `.claude/skills/`.
-- **Instructions** = `CLAUDE.md` (equivalent of `AGENTS.md`). Supports subdirectory discovery, `@import` syntax, and `.claude/rules/` for path-scoped modular rules.
-- **Tool control** = per-subagent `tools` (allowlist) and `disallowedTools` (denylist).
-- **Persistent memory** = `memory: project` gives subagents cross-session learning (e.g., reviewer accumulates project patterns).
+- **Tool control** = role configs declare `tools` allowlists and, where needed, permissions, effort/model settings, and turn limits.
 - **Install targets**:
   - Global: `~/.claude/{agents,skills}`
   - Local: `.claude/{agents,skills}` inside a project
