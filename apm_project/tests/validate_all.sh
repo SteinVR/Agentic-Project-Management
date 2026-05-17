@@ -186,8 +186,22 @@ run_tty_case() {
     register_tmp_dir "$tmp_home"
 
     local cmd
-    cmd="cd '$REPO_ROOT' && HOME='$tmp_home' TERM=xterm bash '$APM_SCRIPT'"
-    printf "%b" "${tmp_parent}\ntty-opencode\n1\ny\nlocal\n" | script -q -c "$cmd" /dev/null >/dev/null
+    cmd="cd '$REPO_ROOT' && HOME='$tmp_home' TERM=xterm bash '$APM_SCRIPT' --local"
+    feed_tty_inputs() {
+        sleep 0.2
+        printf "%s\n" "$tmp_parent"
+        sleep 0.1
+        printf "tty-opencode\n"
+        sleep 0.1
+        printf "1\n"
+        sleep 0.1
+        printf "y\n"
+    }
+    if script -q -c "true" /dev/null >/dev/null 2>&1; then
+        feed_tty_inputs | script -q -c "$cmd" /dev/null >/dev/null
+    else
+        feed_tty_inputs | script -q /dev/null /bin/bash -c "$cmd" >/dev/null
+    fi
     assert_path_exists "$tmp_parent/tty-opencode/.opencode/agents/apm-worker.md" "TTY OpenCode worker"
     assert_path_exists "$tmp_parent/tty-opencode/memory_bank/ARCHITECTURE.md" "TTY memory_bank"
     log_pass "TTY interactive OpenCode local"
