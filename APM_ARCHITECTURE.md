@@ -18,6 +18,7 @@ These two responsibilities are tightly linked. In APM, flow is also a mechanism 
 
 Core Principles:
 - **Spec-Driven Development (SDD):** Specifications and SSOT artifacts define the intended system behavior and constraints.
+- **Original Intent Preservation:** The user's initial project formulation is captured verbatim in `ARCHITECTURE.md` and used as a drift guard against later reinterpretation.
 - **Only Essential Memory Bank:** Keep durable context minimal, structured, and sustainable across sessions.
 - **Explicit Flow Control:** Development proceeds through declared workflow skills, decision gates, and verification loops.
 - **Context Engineering:** APM treats context quality as the central variable in agent reliability.
@@ -57,7 +58,7 @@ Conceptually, APM operates through two linked layers:
 The framework works only when these two layers stay aligned: flow determines which context must be present, and context determines whether flow can continue safely.
 
 - **Base structure** (`apm_source/base/`) provides the minimal project scaffold: `src/`, `tests/`, `logs/`, `external/`, `memory_bank/` with template files.
-- **`apm-start`** initializes the project, bootstraps the dual-branch git layout (`main` clean, `dev` working), and selects the appropriate `ARCHITECTURE.md` template (product-oriented or DS/experiment-oriented) based on the project domain.
+- **`apm-start`** initializes the project, captures the user's original project formulation verbatim, runs detailed Vision Alignment, bootstraps the dual-branch git layout (`main` clean, `dev` working), and selects the appropriate `ARCHITECTURE.md` template (product-oriented or DS/experiment-oriented) based on the project domain.
 - **Workflow skills** extend the project structure on demand. For example, `apm-eda` creates `eda/` and `data/` directories; `apm-exp` creates `experiments/` and `models/`. A project may use any combination of skills as needed.
 
 ---
@@ -67,7 +68,7 @@ The framework works only when these two layers stay aligned: flow determines whi
 The Memory Bank ensures context continuity across multiple separate LLM sessions.
 
 **Core Files:**
-- `ARCHITECTURE.md` — The SSOT for the project's technical architecture, stack, patterns, and overarching design decisions.
+- `ARCHITECTURE.md` — The SSOT for the project's original intent, technical architecture, stack, patterns, and overarching design decisions. Its Original Intent section preserves the user's initial formulation verbatim and separates it from the agent's clarified interpretation.
 - `STATE.md` — Compact operational status and continuity context.
 - `TASKS.md` — High-level task overview.
 - `design/SPEC-{module}.md` — Global module specifications: contracts, ready interfaces, typecheck gates, invariants, data formats. Updated only with explicit approval.
@@ -94,7 +95,8 @@ APM separates shared context, dynamic procedures, and role contracts into differ
 
 - **`SKILLS` = attachable procedures**
   Mechanism for dynamic, incremental instruction loading.
-  Skills load only what is needed at the current moment, only for the agent that needs it, reducing context duplication and noise.
+  Agents choose skills by task fit and load the minimal useful set for the current work.
+  Supporting skills are read only when they change the next concrete action, are required by the governing workflow, or are explicitly requested.
 
 - **Agent and subagent `CONFIGS` = behavioral role contracts**
   Define the role, behavior, boundaries, and global goals of a specific agent or subagent.
@@ -104,7 +106,7 @@ APM separates shared context, dynamic procedures, and role contracts into differ
 - **Co-Founder:** Primary project partner concept for strategic collaboration: co-owns vision, architecture, and direction. Equal strategic partner, not an assistant.
 - **Code Simplifier:** Refactors recently modified code for clarity and simplicity while preserving exact behavior. Applies project coding conventions.
 - **Reviewer:** Independent verification gate. Determines review scope autonomously, checks architecture alignment and ranked code risks.
-- **Memory Bank Sync:** Reconciles Memory Bank files with recent work. Keeps `STATE.md`, `TASKS.md`, and task files aligned with actual project state. Proposes architecture updates with explicit approval gate.
+- **Memory Bank Sync:** Reconciles Memory Bank files and affected project-owned `README.md` files with recent work. Keeps `STATE.md`, `TASKS.md`, task files, and local README documentation aligned with actual project state. Proposes architecture updates with explicit approval gate.
 - **Web-Explorer:** Lightweight web research specialist. Receives a focused question, returns a condensed answer with sources. Saves the caller's context window from web-fetch noise.
 
 ### Skills (Dynamic Capabilities)
@@ -114,7 +116,7 @@ Workflow skills describe HOW to work. The scenario (which artifacts exist, wheth
 
 In APM, a workflow skill is a skill marked as `Workflow skill` in its description. It defines the execution flow for a class of work and serves as the procedural layer the agent follows for that task type.
 
-Primary sessions use `apm` as the main-session context-engineering overlay: it connects flow and context. It provides workflow instructions to the main agent, decides which workflow skill governs the task, binds the task to the relevant SSOT files, and keeps subagents isolated from unnecessary main-session context unless the delegation explicitly passes it.
+Primary sessions use `apm` as the main-session context-engineering overlay: it connects flow and context. It provides workflow instructions to the main agent, decides which workflow skill governs the task, binds the task to the relevant SSOT files, and keeps subagents isolated from unnecessary main-session context unless the delegation explicitly passes it. The main agent owns execution by default; subagents are specialist tools used on explicit request, by workflow requirement, or for bounded work with clear isolation value.
 
 If a frozen task spec exists, it is binding for both the main session and delegated subagents. If no task/spec is established, the main session raises an artifact-mode question: create the formal task flow or continue ad hoc.
 
@@ -123,7 +125,7 @@ If a frozen task spec exists, it is binding for both the main session and delega
 | Skill | Purpose |
 |-------|---------|
 | `apm` | Main-session context-engineering overlay: load workflow instructions for the main agent, bind to SSOT files, route task flow, and isolate subagents from unnecessary context |
-| `apm-start` | Project kickoff: Vision Alignment, dual-branch git bootstrap, Memory Bank initialization, environment setup |
+| `apm-start` | Project kickoff: verbatim Original Intent capture, detailed Vision Alignment, dual-branch git bootstrap, Memory Bank initialization, environment setup |
 | `apm-dev` | Workflow skill for iterative development: plan, implement, verify, self-review |
 | `apm-exp` | Workflow skill for experiments (covers baselines, model variants, hypothesis-driven experiments) |
 | `apm-eda` | Workflow skill for Exploratory Data Analysis: distributions, missingness, correlations, leakage risks |
@@ -131,7 +133,7 @@ If a frozen task spec exists, it is binding for both the main session and delega
 | `apm-test` | Workflow skill for testing: per-module smoke + smoke E2E, with narrow integration tests when needed |
 | `apm-quality-gate` | Post-implementation quality gate: simplify, verify, review, fix loop, accept |
 | `apm-git-taskflow` | Git branch/worktree isolation from `dev` with shared runtime management |
-| `apm-sync` | Workflow skill for explicit Memory Bank synchronization on request |
+| `apm-sync` | Workflow skill for explicit Memory Bank and project README synchronization on request |
 | `apm-subagent` | Delegation contract for specialist subagents, including SSOT and frozen-spec pointers |
 | `apm-logs` | Runtime logging conventions |
 | `apm-autoresearch` | Workflow skill for branch-scoped autonomous research with isolated context, post-run reporting, and keep/discard logic |
@@ -139,6 +141,8 @@ If a frozen task spec exists, it is binding for both the main session and delega
 
 ### Subagents and Delegation
 In active environments, APM leverages subagents coordinated by the main session or user. Subagent configs are minimal and scenario-agnostic. `apm-subagent` standardizes how delegation requests are framed.
+
+Delegation is role-specific. Use `apm-worker` for bounded execution work, `apm-reviewer` for independent verification, `apm-memory-bank-sync` for explicit continuity reconciliation, `apm-web-explorer` for focused external research, and `apm-code-simplifier` for behavior-preserving cleanup of changed code. Generic/default worker agents are not part of the APM delegation path when an APM role is available.
 
 **Two interaction modes:**
 1. **Standard mode:** The user drives work through the main session, optionally delegating to specialist subagents. User validates between steps.
@@ -174,10 +178,10 @@ APM/
 ## 7. Basic Project Workflow
 
 1. **Initialization:** Run the `apm.sh` configurator to create the base project structure and install environment packs.
-2. **Setup Phase:** Use `apm-start` to align on vision, bootstrap two independent branches (`main` clean, `dev` working), select the architecture template, and generate the initial Memory Bank on `dev` (`ARCHITECTURE.md`, `STATE.md`, `TASKS.md`, initial spec and task files).
+2. **Setup Phase:** Use `apm-start` to capture the user's original formulation verbatim, clarify implicit details, bootstrap two independent branches (`main` clean, `dev` working), select the architecture template, and generate the initial Memory Bank on `dev` (`ARCHITECTURE.md`, `STATE.md`, `TASKS.md`, initial spec and task files).
 3. **Execution Loop:** Work through workflow skills (`apm-dev`, `apm-test`, `apm-eda`, `apm-exp`, `apm-deep-feature-engineering`, etc.) on `dev`. Domain-specific skills create their required directories on first use. Use `apm-quality-gate` when independent verification is needed.
 4. **Git Isolation:** When parallel or isolated execution is needed, use `apm-git-taskflow` for `dev`-based branch/worktree management with shared runtime.
-5. **Synchronization:** Use `apm-sync` on explicit request whenever continuity updates are needed.
+5. **Synchronization:** Use `apm-sync` on explicit request whenever continuity updates are needed. The sync role updates Memory Bank files and affected project-owned `README.md` files.
 
 ---
 

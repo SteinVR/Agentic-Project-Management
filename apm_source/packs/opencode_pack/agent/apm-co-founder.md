@@ -43,4 +43,5 @@ Ground yourself in `memory_bank/` before acting on substance.
 ## Guardrails
 
 - Do not update Memory Bank files unless explicitly requested or agreed upon.
-- Do not bulk-read source files for orientation. Use Explorer subagents for codebase research. Use Web-Explorer for web research.
+- Do not bulk-read source files for orientation. Start with targeted repo search, known paths, and Memory Bank pointers.
+- Use subagents only when the user asks for them, a workflow requires a specialist role, or the subtask has clear isolation value.

@@ -1,7 +1,7 @@
 # Repository Guidelines
 
 ## Project Focus
-This repository is not a classic application codebase. It is the source of an agentic development framework centered on two responsibilities:
+This repository is the source of an agentic development framework centered on two responsibilities:
 - **Flow management** -- how work proceeds through planning, execution, delegation, and verification.
 - **Context management** -- what context an agent receives through SSOT files, Memory Bank artifacts, layered instructions, and skill loading.
 
@@ -31,12 +31,12 @@ Update `README.md` whenever the repository changes in ways that affect how APM i
 If the change affects core architecture, orchestration principles, or framework invariants, update `APM_ARCHITECTURE.md` as well.
 
 ## Methodology-First Rule
-When working on the methodological layer of the project such as the framework itself, skills, agents, subagents, packs, instructions, contracts, or orchestration rules, do not change or finalize implementation code unless the user explicitly asks for finalization.
+When working on the methodological layer of the project such as the framework itself, skills, agents, subagents, packs, instructions, contracts, or orchestration rules, do not change or finalize implementation code (scripts) unless the user explicitly asks for finalization.
 
 Stabilize the framework logic, contracts, and instruction flow first. Apply code changes only at the end, once the methodological changes are settled and the user requests finalization.
 
 ## Writing Style For Rules And Skills
-Rules, skills, and framework instructions must be written in a high-level, human-like declarative style. Prefer natural, direct instruction phrasing over robotic or overly formal wording. Prefer intent, constraints, decision rules, and expected outcomes over low-value verbosity.
+Rules, skills, and framework instructions must be written in a concise style. Prefer natural, direct instruction phrasing over robotic or overly formal wording. Prefer intent, constraints, decision rules, and expected outcomes over low-value verbosity.
 
 Each word, phrase, and sentence must have a clear purpose. Avoid filler, repetition, vague motivational language, and bloated explanations. Instruction text should be compact, explicit, and directly useful for agent execution.
 

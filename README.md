@@ -154,9 +154,9 @@ alias apm-cd='cd /path/to/Agentic-Project-Management'
 
 ## How it works
 
-The core skill `apm` is the main-session context-engineering overlay. It gives the main agent the workflow instructions needed to route the task, choose the governing workflow skill, bind to SSOT files, plan work, delegate narrowly, and self-review before handoff.
+The core skill `apm` is the main-session context-engineering overlay. It gives the main agent the workflow instructions needed to route the task, choose relevant workflow skills with minimal sufficient context, bind to SSOT files, plan work, use subagents only when justified, and self-review before handoff.
 
-Keep this layer on the main agent. Subagents receive only the bounded role contract and task context they need; they should not inherit the full main-session workflow frame unless delegation explicitly passes a relevant piece of it.
+Keep this layer on the main agent. The main agent owns execution by default. Subagents are available specialist tools, not the default execution model; use them when the user asks, a workflow requires them, or a bounded subtask has clear isolation value. Subagents receive only the role contract and task context they need.
 
 Workflow skills are the skills marked as `Workflow skill` in their descriptions. They define the execution flow for a class of work.
 
@@ -166,7 +166,7 @@ In practice, APM works by combining:
 - **Flow layer** -- workflow skills, decision gates, review loops, delegation flow.
 - **Context layer** -- `AGENTS.md`, nested `AGENTS.md`, Memory Bank, specs, SSOT files, and delegation pointers.
 
-1. **apm-start** runs Vision Alignment, determines the project domain, initializes the dual-branch git layout, and selects the matching architecture template.
+1. **apm-start** captures your original project formulation verbatim, runs detailed Vision Alignment to uncover implicit details, determines the project domain, initializes the dual-branch git layout, and selects the matching architecture template.
 2. During initialization, APM bootstraps two independent branches:
    - `main` stays clean and free of APM working artifacts.
    - `dev` contains the full working layer (`AGENTS.md`, `memory_bank/`, `external/`, `docs/`, and similar assets) and becomes the default branch for development.
@@ -176,7 +176,7 @@ In practice, APM works by combining:
    - `apm-eda`, `apm-deep-feature-engineering`, `apm-exp` for DS/ML workflows.
    - Domain-specific skills create their required directories on first use (e.g., `apm-eda` creates `eda/` and `data/`).
    - **Co-Founder mode** provides a collaborative primary partner who co-owns project vision, architecture, and direction.
-5. Memory Bank synchronization is explicit (`apm-sync`) and delegated to the `apm-memory-bank-sync` subagent.
+5. Continuity synchronization is explicit (`apm-sync`) and delegated to the `apm-memory-bank-sync` subagent, which keeps Memory Bank files and affected project-owned `README.md` files aligned with current project reality.
 6. Git isolation via `apm-git-taskflow` when parallel or isolated execution streams are needed. Task branches and worktrees are created from `dev`, not from `main`.
 
 ---
@@ -196,7 +196,7 @@ In practice, APM works by combining:
 - All environments: `memory_bank/`
 
 Core files:
-- `ARCHITECTURE.md`
+- `ARCHITECTURE.md` -- includes the Original Intent section with your verbatim initial formulation, plus the clarified architecture and decisions.
 - `STATE.md`
 - `TASKS.md`
 - `design/SPEC-{module}.md` -- global module specifications (contracts, ready interfaces, typecheck gates, invariants, data formats). Updated only with approval.
@@ -236,7 +236,7 @@ Line budget:
 | Skill | Description |
 |-------|-------------|
 | `apm` | Main-session context-engineering overlay: load workflow instructions for the main agent, bind to SSOT files, route task flow, and isolate subagents from unnecessary context |
-| `apm-start` | Project kickoff: Vision Alignment + dual-branch git bootstrap + Memory Bank initialization |
+| `apm-start` | Project kickoff: verbatim Original Intent capture + detailed Vision Alignment + dual-branch git bootstrap + Memory Bank initialization |
 | `apm-dev` | Workflow skill for iterative development: plan, implement, verify, self-review |
 | `apm-exp` | Workflow skill for experiments (baselines, model variants, hypothesis-driven experiments) |
 | `apm-eda` | Workflow skill for Exploratory Data Analysis |
@@ -244,7 +244,7 @@ Line budget:
 | `apm-test` | Workflow skill for testing: per-module smoke + smoke E2E, with narrow integration tests when needed |
 | `apm-quality-gate` | Post-implementation quality gate: simplify, verify, review, fix loop |
 | `apm-git-taskflow` | Git branch/worktree isolation from `dev` with shared runtime management |
-| `apm-sync` | Workflow skill for explicit Memory Bank synchronization |
+| `apm-sync` | Workflow skill for explicit Memory Bank and project README synchronization |
 | `apm-subagent` | Delegation contract for specialist subagents, including SSOT and frozen-spec pointers |
 | `apm-logs` | Runtime logging conventions |
 | `apm-autoresearch` | Workflow skill for branch-scoped autonomous research with mandatory post-run analysis, reporting, and selective sync-back |
@@ -260,7 +260,7 @@ Line budget:
 | `apm-co-founder` | Primary project partner, equal strategic collaborator |
 | `apm-code-simplifier` | Behavior-preserving code simplification |
 | `apm-reviewer` | Independent verification gate |
-| `apm-memory-bank-sync` | Memory Bank reconciliation specialist |
+| `apm-memory-bank-sync` | Continuity specialist for Memory Bank files and affected project-owned README files |
 | `apm-web-explorer` | Web research specialist |
 
 ---

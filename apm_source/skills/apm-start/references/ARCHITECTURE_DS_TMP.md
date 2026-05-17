@@ -1,5 +1,15 @@
 # Project Architecture: [Project Name]
 
+## 0. Original Intent
+
+> Purpose: preserve the user's initial project framing as the drift guard. This section stores the user's words, not an agent summary.
+
+```text
+[Paste the user's original formulation verbatim. Preserve wording, examples, constraints, and rough edges.]
+```
+
+---
+
 ## 1. Problem Statement & Success Criteria
 
 > Context: Define the problem clearly, what success looks like.
@@ -139,17 +149,6 @@ memory_bank/
 └── tasks/
     └── {TASK_ID}.md
 ```
-
-### Code Style
-
-- **Cell-like execution**: Use `# %% [Block Name]` separators in `main.py` and `main_exp.py` for block-by-block execution
-- **Typed functions**: All functions should have type hints
-- **Reusability**: Functions in `src/` should be reusable across experiments (DRY)
-- **Fail-fast**: Prefer minimal fallback logic; invalid runtime states should fail loudly
-- **Single-role files**: One file, one responsibility boundary
-- **File size**: Keep files ideally between 100 and 600 LOC. Allow 600-800 only to preserve a meaningful semantic boundary
-- **Docstrings**: Keep public docstrings concise
-- **Directory documentation**: `src/` and each subdirectory inside `src/` must contain a `README.md` with a script graph and flat script descriptions
 
 ### Naming Conventions
 

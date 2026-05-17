@@ -9,16 +9,18 @@ Use it to determine:
 - how the session should proceed;
 - which SSOT artifacts and workflow skills must govern the task.
 
-Work in a simple loop. First, understand what kind of task this is and load the relevant workflow skill. Then break the work into concrete todo items, do the work, and finish with a self-review before handoff.
+Work in a simple loop. First, understand what kind of task this is and load the relevant workflow skill with minimal sufficient context. Then break the work into concrete todo items, do the work, and finish with a self-review before handoff.
 
 Task framing -> load workflow skill -> plan todo items -> delegate or execute -> self-review -> handoff
-
-Keep the session focused. Use direct, known-path context when possible, and delegate broad repo exploration or web research when it would only add noise.
 
 ## Question conventions
 - If the request appears to be missing details, constraints, or decisions that can change the work, raise a question before proceeding. Do not silently fill critical gaps.
 - If you want to do more than the user directly asked, raise a question before expanding scope.
 - Do not treat obvious supporting actions required to complete the requested task as scope expansion.
+
+## Skill loading
+- Select skills by task fit, not topic adjacency. A skill is relevant when its description directly governs the current work or a workflow you have already chosen.
+- Do not read neighboring skills for general orientation. If the fit is uncertain, inspect descriptions first and load only the smallest set that can guide the task.
 
 ## Subagent paradigm
 - Decompose first. Delegate only bounded subtasks with clear ownership.
@@ -36,9 +38,8 @@ Keep the session focused. Use direct, known-path context when possible, and dele
 
 ## Context conventions
 - Read directly: `memory_bank/`, active specs, and files explicitly named in the task.
-- Delegate Explorer: file discovery, unfamiliar module orientation, dependency tracing, directory scanning, reading implementation code for orientation.
-- Delegate Web-Explorer: any external information.
-- Decision rule: known path, need content for current action -> read directly. Searching or orienting in codebase -> spawn Explorer. Need external/web information -> spawn Web-Explorer.
+- Use `apm-web-explorer` for focused external web research when current web information is required and delegating it will protect the main context window.
+- Decision rule: known path or repo-local question -> handle directly unless delegation is explicitly requested or clearly isolated. External research -> browse directly or delegate to `apm-web-explorer` only when the research scope is bounded.
 
 ## Glossary
 - **Quality Gate** -- post-implementation verification: simplify, review, contract compliance, fix, accept. Defined in skill `apm-quality-gate`.

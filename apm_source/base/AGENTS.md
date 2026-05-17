@@ -19,7 +19,8 @@
 
 ## Skills paradigm
 - Try to find the relevant skill at the start of a task by skills description.
-- Don't read or use a skill that doesn't exactly match the task.
+- Load skills with minimal sufficient context. A skill is relevant when its description directly governs the current task, a chosen workflow requires it, or the user explicitly requested it.
+- Do not read neighboring skills for general orientation. If the fit is uncertain, compare descriptions first and load only the smallest useful set.
 
 ## Glossary
 - **Workflow skill** -- a skill marked as `Workflow skill` in its `description`. It defines the execution flow for a class of work and tells the agent how to run that kind of task step by step. Use that description mark as the source of truth.

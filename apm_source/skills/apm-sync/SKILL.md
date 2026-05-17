@@ -1,9 +1,9 @@
 ---
 name: apm-sync
-description: "Workflow skill for Memory Bank synchronization: reconcile project memory with current state on explicit user request."
+description: "Workflow skill for continuity synchronization: reconcile Memory Bank and affected project-owned README files with current state on explicit user request."
 ---
 ## Skill Description
-Synchronization workflow for reconciling Memory Bank state with current project reality only when explicitly requested by the user.
+Synchronization workflow for reconciling Memory Bank state and affected project-owned README files with current project reality only when explicitly requested by the user.
 
 ## Workflow
 1. Confirm the user's synchronization request.

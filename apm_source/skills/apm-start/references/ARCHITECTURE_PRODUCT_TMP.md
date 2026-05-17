@@ -5,6 +5,16 @@
 
 ---
 
+## 0. Original Intent
+
+> Purpose: preserve the user's initial project framing as the drift guard. This section stores the user's words, not an agent summary.
+
+```text
+[Paste the user's original formulation verbatim. Preserve wording, examples, constraints, and rough edges.]
+```
+
+---
+
 ## 1. Project Idea & Philosophy
 
 > Context: Describe the core essence, need, and vision of the project. What problem does it solve? Why does it exist?
