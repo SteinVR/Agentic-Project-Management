@@ -79,7 +79,10 @@ if [[ ! -f "$IGNOREFILE" ]]; then
     exit 1
 fi
 
-mapfile -t IGNORES < <(sed '/^\s*$/d; /^\s*#/d' "$IGNOREFILE")
+IGNORES=()
+while IFS= read -r pattern || [[ -n "$pattern" ]]; do
+    IGNORES+=("$pattern")
+done < <(sed '/^[[:space:]]*$/d; /^[[:space:]]*#/d' "$IGNOREFILE")
 
 # .gitbranchignore itself is always branch-local
 IGNORES+=("$IGNOREFILE")
@@ -138,12 +141,16 @@ fi
 
 # ── Apply sync ────────────────────────────────────────────────────
 if [[ ${#SYNC_FILES[@]} -gt 0 ]]; then
-    printf '%s\n' "${SYNC_FILES[@]}" | xargs -d '\n' git checkout "$SOURCE" --
+    for file in "${SYNC_FILES[@]}"; do
+        git checkout "$SOURCE" -- "$file"
+    done
 fi
 
-for file in "${DELETE_FILES[@]}"; do
-    git rm --quiet "$file" 2>/dev/null || true
-done
+if [[ ${#DELETE_FILES[@]} -gt 0 ]]; then
+    for file in "${DELETE_FILES[@]}"; do
+        git rm --quiet "$file" 2>/dev/null || true
+    done
+fi
 
 echo ""
 echo "Changes staged. Review with:"
