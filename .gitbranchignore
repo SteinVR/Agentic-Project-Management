@@ -1,4 +1,6 @@
 .claude
+.codex
+apm_source/_legacy
 docs
 external
 AGENTS.md

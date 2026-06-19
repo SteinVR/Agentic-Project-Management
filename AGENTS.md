@@ -62,6 +62,13 @@ Key areas:
 - `apm_source/_legacy/`: frozen legacy assets, including deprecated `Cursor` payloads
 - `docs/`: supporting project documentation
 
+## Branch Sync
+- Use `./git-branch-sync.sh <source-branch> [--apply]` to sync tracked files from another branch into the current one.
+- Default mode is preview only; `--apply` stages real changes.
+- Ignore list comes from repo-root `.gitbranchignore`: one path per line, `#` comments and blank lines are ignored.
+- A bare path excludes both the item and its subtree; `.gitbranchignore` itself stays branch-local and never syncs.
+- Run it on a checked-out branch with a clean tracked tree.
+
 ## Important Scope Note
 Nested `AGENTS.md` files inside `apm_source/base/` and skill `references/` are framework assets shipped for generated workflows. They are not governing instructions for this repository itself unless you are explicitly editing those assets as deliverables.
 

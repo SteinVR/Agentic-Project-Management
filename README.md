@@ -219,6 +219,7 @@ Line budget:
 - One branch per stream from `dev`: `task/<identifier>`. One worktree per stream: `.apm/worktrees/<identifier>`.
 - Heavy untracked resources (runtime, data, models) are shared at repo level -- not copied per worktree.
 - New artifacts are produced locally in the worktree and migrated back to `dev` or shared repo-level storage after merge.
+- For selective branch-to-branch sync, use `./git-branch-sync.sh <source-branch> [--apply]`; it previews by default and skips paths from `.gitbranchignore`.
 
 ## Code Conventions
 
