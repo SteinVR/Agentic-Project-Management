@@ -1,25 +1,6 @@
 #!/usr/bin/env bash
 
-method="$1"
-
-if [[ -z "$method" ]]; then
-  echo "Usage: apm_init_structure.sh RAPID|DS"
-  exit 1
-fi
-
-case "${method^^}" in
-  RAPID)
-    dirs=("src" "tests" "logs" "memory_bank" "memory_bank/tasks")
-    ;;
-  DS)
-    dirs=("src" "experiments" "eda" "models" "logs" "memory_bank" "memory_bank/tasks" "data/raw" "data/processed" "data/external")
-    ;;
-  *)
-    echo "Unknown methodology: $method"
-    echo "Usage: apm_init_structure.sh RAPID|DS"
-    exit 1
-    ;;
-esac
+dirs=("src" "tests" "logs" "external" "memory_bank" "memory_bank/design" "memory_bank/specs" "memory_bank/tasks")
 
 for d in "${dirs[@]}"; do
   mkdir -p "$d"

@@ -1,5 +1,15 @@
 # Project Architecture: [Project Name]
 
+## 0. Original Intent
+
+> Purpose: preserve the user's initial project framing as the drift guard. This section stores the user's words, not an agent summary.
+
+```text
+[Paste the user's original formulation verbatim. Preserve wording, examples, constraints, and rough edges.]
+```
+
+---
+
 ## 1. Problem Statement & Success Criteria
 
 > Context: Define the problem clearly, what success looks like.
@@ -102,6 +112,7 @@
 
 ```
 src/                          # Reusable typed functions (DRY principle)
+├── README.md                 # Local script graph + script descriptions
 ├── __init__.py
 ├── data.py                   # Data loading, cleaning, transformations
 ├── features.py               # Feature engineering functions
@@ -134,17 +145,10 @@ experiments/                  # Isolated experiments
 memory_bank/
 ├── ARCHITECTURE.md
 ├── STATE.md
+├── TASKS.md
 └── tasks/
-    ├── TASKS.md
     └── {TASK_ID}.md
 ```
-
-### Code Style
-
-- **Cell-like execution**: Use `# %% [Block Name]` separators in `main.py` and `main_exp.py` for block-by-block execution
-- **Typed functions**: All functions should have type hints
-- **Reusability**: Functions in `src/` should be reusable across experiments (DRY)
-- **Docstrings**: All public functions must have docstrings
 
 ### Naming Conventions
 
@@ -155,5 +159,6 @@ memory_bank/
 
 ### Logging
 
-- Training logs in `logs/`, format `[YYYY-MM-DD HH:MM:SS] [LEVEL] - Message`
+- Training logs in `logs/`, preferably concise structured lines (`key=value`)
+- After smoke or full runs, inspect runtime logs and produced results -- not only metric outputs
 - Random seeds: Always set and document for reproducibility

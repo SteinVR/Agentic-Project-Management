@@ -1,12 +1,18 @@
 ---
 name: apm-eda
-description: "Exploratory Data Analysis: analyze distributions, missingness, correlations, and leakage risks. Produces reproducible artifacts and EDA reports under eda/ (high-level EDA-Report and deep EDA-Insights). Use when exploring a new dataset or validating data quality."
+description: "Workflow skill for Exploratory Data Analysis: analyze distributions, missingness, correlations, and leakage risks. Produces reproducible artifacts and EDA reports under eda/."
 ---
-## What I do
-- Provide a reproducible EDA workflow under `eda/`.
-- Produce two complementary reports:
-  - `EDA-Report.md`: high-level overview for quick decisions.
-  - `EDA-Insights.md`: exhaustive low-level quantitative analysis with explicit insights and guardrails.
+## Skill Description
+Reproducible EDA workflow that turns raw dataset exploration into decision-ready reporting and deep quantitative evidence.
+
+## Required reads (if you haven't read yet)
+- `memory_bank/ARCHITECTURE.md`
+- Dataset metadata and available data contracts
+
+## Directory initialization
+Before starting work, ensure the required directories exist. If missing, create them and place the corresponding `AGENTS.md` from this skill's `references/`:
+- `eda/` structure (see below) -- use `references/EDA_AGENTS.md`
+- `data/raw/`, `data/processed/`, `data/external/` -- use `references/DATA_AGENTS.md` (place as `data/AGENTS.md`)
 
 ## EDA structure
 ```
@@ -25,23 +31,21 @@ eda/
     EDA-Insights.md
 ```
 
-## Required reads (If you haven't read it yet))
-- `memory_bank/ARCHITECTURE.md`
-- `memory_bank/TASKS.md`
-- active `memory_bank/tasks/{TASK_ID}.md` (if present)
-- dataset metadata and available data contracts
-
-## EDA workflow
+## Workflow
 1. Build the high-level EDA profile (schema, quality, leakage risks, core distributions).
 2. Produce reproducible figures/tables in `eda/results/`.
 3. Write `eda/reports/EDA-Report.md` with a compact executive-level narrative.
-4. Generate low-level diagnostics in `eda/results/deep/`.
+4. Conduct detailed quantitative (low-level) diagnostics in `eda/results/deep/`.
 5. Write `eda/reports/EDA-Insights.md` as a detailed quantitative analysis:
    - target behavior and temporal structure,
    - feature-family diagnostics,
    - metric-aligned insights,
    - prioritized feature-engineering implications.
-6. Cross-check consistency between `EDA-Report.md` and `EDA-Insights.md` before finalizing.
+6. Self-review before finalizing:
+   - Cross-check consistency between `EDA-Report.md` and `EDA-Insights.md`.
+   - Verify every insight in `EDA-Insights.md` references a concrete artifact path.
+   - Verify no narrative claims lack quantitative evidence.
+   - Fix anything found. Report self-review outcome.
 
 ## Report contracts
 ### `EDA-Report.md` (high-level)
@@ -58,10 +62,6 @@ eda/
 ## Templates
 - Use `references/EDA_REPORT_TMP.md` for `EDA-Report.md`.
 - Use `references/EDA_INSIGHTS_TMP.md` for `EDA-Insights.md`.
-- When a prior deep report exists (for example `external/EDA-Insights.md`), keep its strongest analytical patterns and expand where useful.
-
-## Required updates
-- Log notable EDA runs and outputs per skill `apm-logs` when applicable.
 
 ## Guardrails
 - Do not run full model experiments in this stage.

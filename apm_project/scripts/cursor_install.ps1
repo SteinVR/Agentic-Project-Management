@@ -1,5 +1,5 @@
-# Install APM Cursor assets into ~/.cursor or a local .cursor directory.
-# Skills are installed globally by default to ~/.cursor/skills.
+# Install legacy APM Cursor assets into ~/.cursor or a local .cursor directory.
+# Shared skills are still installed from the current skills tree by default.
 
 param(
   [switch]$Local,
@@ -10,11 +10,11 @@ param(
 
 $ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 $RepoRoot = Resolve-Path (Join-Path $ScriptDir "../..")
-$PackDir = Join-Path $RepoRoot "apm_source/packs/cursor_pack"
+$PackDir = Join-Path $RepoRoot "apm_source/_legacy/cursor_pack"
 $SkillsDir = Join-Path $RepoRoot "apm_source/skills"
 
 if (-not (Test-Path $PackDir)) {
-  Write-Error "Cursor pack not found: $PackDir"
+  Write-Error "Legacy Cursor pack not found: $PackDir"
   exit 1
 }
 if (-not $SkipSkills -and -not (Test-Path $SkillsDir)) {
@@ -54,7 +54,7 @@ if (-not $SkipSkills) {
   Copy-Item -Recurse -Force (Join-Path $SkillsDir "*") $CursorSkillsDir
 }
 
-Write-Host "APM Cursor pack installed to $CursorDir"
+Write-Host "APM legacy Cursor pack installed to $CursorDir"
 if (-not $SkipSkills) {
   Write-Host "APM skills installed to $HOME/.cursor/skills"
 }

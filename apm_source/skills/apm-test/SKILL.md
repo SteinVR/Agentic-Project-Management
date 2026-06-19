@@ -1,48 +1,34 @@
 ---
 name: apm-test
-description: "Write and run tests (unit, integration, contract, e2e). Defines a layered test strategy for WAVE-based execution, coverage targets, and test reports. Use when adding tests, validating changes, or auditing test coverage."
+description: "Workflow skill for testing: prefer per-module smoke and smoke E2E verification, with narrow integration tests only when needed. Use when adding tests, validating changes, or auditing coverage."
 ---
-## What I do
-- Define a layered test strategy aligned with WAVE-based execution.
-- Guide creation of tests at the right layer for the current workflow phase.
-- Provide report templates for test outcomes.
+## Skill Description
+Testing workflow focused on realistic verification, with smoke testing as the primary mechanism for catching behavioral and integration regressions.
 
-## Test layers
+## Required reads (if you haven't read yet)
+- `memory_bank/ARCHITECTURE.md`
 
-| Layer | Scope | When written | Who | What it tests |
-|-------|-------|-------------|-----|---------------|
-| Unit | Single module/function | During implementation | Engineer/DS | Internal logic, isolated from external dependencies |
-| Contract | Interface compliance | During implementation | Engineer/DS | Signatures, types, data formats match SPEC contracts table |
-| Integration | Cross-module interactions | After wave merge | SDET | Real module boundaries, data flow between components |
-| Pipeline/E2E | Full system flow | After architecture stabilizes | SDET | End-to-end correctness on representative data |
+## Test priorities
 
-### Anti-redundancy principles
-- Unit tests mock at module boundaries — do not test other modules' behavior.
-- Contract tests are thin: signature and format checks only — not behavioral.
-- Integration tests verify seams between modules — do not repeat unit-level assertions.
-- Pipeline/E2E tests validate the overall flow — do not decompose into per-module checks.
+1. **Per-module smoke tests** (primary): exercise each meaningful module or pipeline stage through a realistic runtime path. Verify that it runs, produces expected output shapes/types, and fails loudly on bad states.
+2. **Smoke E2E tests** (primary): exercise the full or near-full system path with real or realistic data. Verify that the pipeline runs end-to-end and produces coherent results without silent corruption.
+3. **Integration tests** (allowed, narrow only): verify critical seams between modules when smoke coverage alone does not give enough signal. Keep them small and non-bloated.
 
-### Ownership of test updates
-- SPEC change → update contract tests.
-- Implementation change → update unit tests.
-- Wave integration issue discovered → add integration test.
-- Architecture change → review pipeline/E2E tests.
+Avoid test duplication across layers. Each test should verify something no other test covers.
 
-## Test workflow
-1. Read `memory_bank/ARCHITECTURE.md`, `memory_bank/TASKS.md`, and active `memory_bank/tasks/{TASK_ID}.md` (If you haven't read it yet).
-2. Identify acceptance criteria and edge cases.
-3. Determine which test layers apply to the current scope.
-4. Write tests in `tests/` (unit, contract, integration, e2e as applicable).
-5. Run tests and record results.
-6. Update task artifacts or generate a test report.
+## Workflow
+1. Identify what needs testing based on the current scope and changes.
+2. Choose the smallest useful test set (prefer per-module smoke + smoke E2E; add narrow integration tests only when needed).
+3. Write tests in `tests/`.
+4. Run tests and verify results.
+5. Inspect runtime logs and produced outputs after the run. Investigate anomalies, suspicious warnings, and incoherent results -- not only assertion failures.
+6. Self-review: confirm tests are deterministic, cover the intended scope, and do not duplicate existing coverage.
+7. Store test reports under `logs/project/reports/` if applicable.
 
-## Coverage & quality gates
-- Target >80% coverage where feasible.
-- Document brittle or high-risk areas.
-- Treat tests as specifications; change tests only if requirements change.
-
-## Reports
-- Use `references/TEST_REPORT_TMP.md` for test reports.
-- Use `references/E2E_REPORT_TMP.md` for end-to-end/system test reports.
-- Store reports under `logs/project/reports/`.
+## Conventions
+- Treat tests as specifications: change tests only when requirements change.
+- Tests should be deterministic and reproducible.
+- Keep test setup minimal -- complex fixtures are a code smell.
+- Prefer smoke evidence and runtime-log analysis over growing unit-test suites.
+- Keep integration tests narrow and non-bloated.
 - Follow skill `apm-logs` for logging test runs and failures when applicable.
