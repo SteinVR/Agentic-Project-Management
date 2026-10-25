@@ -1,299 +1,211 @@
-<div align="center">
-
 # Agentic Project Management
 
-**AI-driven development framework for Codex CLI, OpenCode CLI, and Claude Code**
+**A framework for agentic development across OpenCode, Codex, and Claude Code.**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![PowerShell](https://img.shields.io/badge/PowerShell-5.1+-blue.svg)](https://github.com/PowerShell/PowerShell)
-[![Bash](https://img.shields.io/badge/Bash-4.0+-green.svg)](https://www.gnu.org/software/bash/)
-[![Platform](https://img.shields.io/badge/Platform-Windows%20|%20Linux%20|%20macOS-lightgrey.svg)]()
 
-</div>
+APM connects two responsibilities:
 
----
+- **Flow management** — planning, execution, delegation, and verification.
+- **Context management** — shared instructions, skills, role contracts, and
+  durable project artifacts loaded at the right scope.
 
-## 📋 Review
+It provides a project scaffold, reusable workflows, environment-specific roles,
+and a Bash configurator with Bash/PowerShell pack installers. The host environment
+runs the agents and enforces permissions.
 
-APM is a configurable framework for agentic development across Codex CLI, OpenCode CLI, and Claude Code.
+**Current delivery status:** scaffold instruction filenames and Codex skill
+installation need finalization.
+Read the [compatibility review](docs/framework-status.md) before adopting the
+current generator output. The review separates confirmed behavior from pending
+changes and records the failing E2E checks.
 
-At its core, APM is a context-engineering system with an explicit development flow. The project is built around two linked responsibilities:
+For framework responsibilities and invariants, see
+[APM_ARCHITECTURE.md](APM_ARCHITECTURE.md). For development of APM itself, start
+with [AGENTS.md](AGENTS.md).
 
-- **Flow management** -- how work proceeds, in what order, and through which decision and verification gates.
-- **Context management** -- what context the agent receives, in what scope, and at what moment.
+## Quick start
 
-These two layers are not independent. In APM, flow is also a mechanism for controlling context: it determines which artifacts must exist, which SSOT files are binding, and what should be loaded before work continues.
+The commands below are the existing delivery entry points. They do not resolve
+the known compatibility gaps above.
 
-Ideology: configured SDD, only-essential Memory Bank, explicit flow control, and context engineering with an emphasis on determinism, layering, and token efficiency.
+Run the configurator on Linux/macOS or Windows via WSL/Git Bash:
 
-Usage: run the TUI configurator (`apm.sh`) to generate a project, then drive work through installed skills and agent roles. For automation or CI, use non-interactive flags.
-
----
-
-## 📦 What it provides
-
-- CLI configurator for new projects
-- Agent roles (worker, co-founder, reviewer, code-simplifier, memory-bank-sync, web-explorer)
-- Workflow skills loaded on demand for flow control
-- Memory Bank and SSOT artifacts for durable project context
-- Templates for specs, tasks, and reports
-
----
-
-## 🌐 Environments
-
-- **Codex CLI** (global or per-project): skills + subagent roles installed into `.codex/`; APM blocks merged into `.codex/config.toml`; projects use `memory_bank/` and minimal structure.
-- **OpenCode CLI** (global or per-project): agents and shared skills installed into OpenCode; projects use `memory_bank/` and minimal structure.
-- **Claude Code** (global or per-project): subagent roles in `.claude/agents/`, skills in `.claude/skills/`; projects use `memory_bank/` and minimal structure.
-
----
-
-## 🚀 Quick Start
-
-### 1) Run the configurator
-
-**Linux/macOS (and Windows via WSL/Git Bash):**
 ```bash
-chmod +x ./apm_project/apm.sh
-./apm_project/apm.sh
+bash ./apm_project/apm.sh
 ```
 
-### 2) Non-interactive flags
+For a non-interactive project with local OpenCode assets:
 
-Shorthands are supported:
-- `--opencode` / `--codex` / `--claude`
-- `--local` / `--global` / `--none` (CLI pack install; default is `--none`)
-
-Defaults:
-- `--project-path` defaults to the current directory
-- `--project-name` defaults to the current directory name
-
-Example:
 ```bash
-./apm_project/apm.sh --opencode --project-name "my-app" --project-path "/projects" \
-  --non-interactive
+bash ./apm_project/apm.sh --opencode --project-name "my-app" \
+  --project-path "/projects" --local --non-interactive
 ```
 
-In-place (inside an existing project directory):
+Inside an existing project directory:
+
 ```bash
-./apm_project/apm.sh --opencode --non-interactive
+bash /path/to/Agentic-Project-Management/apm_project/apm.sh \
+  --opencode --local --non-interactive
 ```
 
----
+Environment shorthands are `--opencode`, `--codex`, and `--claude`; several
+can be selected for one project. Installation scope is `--local`, `--global`,
+or `--none` (the default). In non-interactive mode, project path and name default
+to the current directory and its name. Legacy methodology flags do not select
+different templates; workflows extend the common scaffold.
 
-## OpenCode install (global or local)
+## Pack installation
 
-**Global** (applies to all projects):
-```bash
-./apm_project/scripts/opencode_install.sh --global
-```
+Install packs without regenerating a project:
 
-**Local** (project-only):
-```bash
-./apm_project/scripts/opencode_install.sh --local /path/to/project
-```
+| Environment | Global installation | Project-local installation |
+| --- | --- | --- |
+| OpenCode | `bash apm_project/scripts/opencode_install.sh --global` | `bash apm_project/scripts/opencode_install.sh --local /path/to/project` |
+| Codex | `bash apm_project/scripts/codex_install.sh --global` | `bash apm_project/scripts/codex_install.sh --local /path/to/project` |
+| Claude Code | `bash apm_project/scripts/claude_install.sh --global` | `bash apm_project/scripts/claude_install.sh --local /path/to/project` |
 
-PowerShell equivalents:
-- `apm_project/scripts/opencode_install.ps1 -Global`
-- `apm_project/scripts/opencode_install.ps1 -Local -Path <project>`
+PowerShell equivalents use the matching `*_install.ps1` script with `-Global`
+or `-Local -Path <project>`.
 
----
+Current installer destinations:
 
-## Codex install (global or local)
+| Environment | Skills | Roles |
+| --- | --- | --- |
+| OpenCode | `.opencode/skills/` or `~/.config/opencode/skills/` | `agents/` under the same config directory |
+| Codex | `.codex/skills/` or `~/.codex/skills/` — legacy destination, see review | `.codex/agents/` or `~/.codex/agents/` |
+| Claude Code | `.claude/skills/` or `~/.claude/skills/` | `agents/` under the same config directory |
 
-**Global** (applies to all projects):
-```bash
-./apm_project/scripts/codex_install.sh --global
-```
+Codex installation also merges APM settings into `config.toml` at the chosen
+scope. File installation and runtime discovery are separate: current Codex skill
+discovery uses `.agents/skills/`, and shared project-instruction loading in
+Claude Code depends on version and settings.
+[Compatibility details and official sources](docs/framework-status.md).
 
-**Local** (project-only):
-```bash
-./apm_project/scripts/codex_install.sh --local /path/to/project
-```
+Cursor remains a legacy compatibility target, with its payload under
+`apm_source/_legacy/cursor_pack/`. It does not drive new framework design.
 
-PowerShell equivalents:
-- `apm_project/scripts/codex_install.ps1 -Global`
-- `apm_project/scripts/codex_install.ps1 -Local -Path <project>`
-
-Codex install adds:
-- Shared APM skills to `.codex/skills/`
-- Standalone subagent role configs to `.codex/agents/`
-- Global multi-agent settings in `.codex/config.toml`
-
----
-
-## Claude Code install (global or local)
-
-**Global** (applies to all projects):
-```bash
-./apm_project/scripts/claude_install.sh --global
-```
-
-**Local** (project-only):
-```bash
-./apm_project/scripts/claude_install.sh --local /path/to/project
-```
-
-PowerShell equivalents:
-- `apm_project/scripts/claude_install.ps1 -Global`
-- `apm_project/scripts/claude_install.ps1 -Local -Path <project>`
-
----
-
-## Optional shell alias
+Optional shell aliases:
 
 ```bash
-# run configurator from anywhere
-alias apm='/path/to/Agentic-Project-Management/apm_project/apm.sh'
-
-# optional: quick cd into repo
+alias apm='bash /path/to/Agentic-Project-Management/apm_project/apm.sh'
 alias apm-cd='cd /path/to/Agentic-Project-Management'
 ```
 
----
-
 ## How it works
 
-The core skill `apm` is the main-session context-engineering overlay. It gives the main agent the workflow instructions needed to route the task, choose relevant workflow skills with minimal sufficient context, bind to SSOT files, plan work, use subagents only when justified, and self-review before handoff.
+The configurator copies a minimal scaffold and optionally installs packs.
+Project initialization then runs through `apm-start`: capture your original
+formulation verbatim, clarify the intended project, obtain confirmation, select
+the appropriate architecture template, and initialize the Memory Bank.
 
-Keep this layer on the main agent. The main agent owns execution by default. Subagents are available specialist tools, not the default execution model; use them when the user asks, a workflow requires them, or a bounded subtask has clear isolation value. Subagents receive only the role contract and task context they need.
+For a new generated repository, `apm-start` prescribes independent clean
+`main` and working `dev` histories. The configurator's copy step does not create
+them. Existing history is not reshaped without explicit approval. These are
+generated-project conventions, not instructions to rename this repository's
+branches.
 
-Workflow skills are the skills marked as `Workflow skill` in their descriptions. They define the execution flow for a class of work.
+Invoke `apm` explicitly when you want its main-session coordination layer.
+It selects relevant workflows, binds the task to its source-of-truth artifacts,
+plans the work, and finishes with self-review. It asks whether to create formal
+task artifacts or work ad hoc when no task/spec is established.
 
-If a frozen task spec exists for a task, it is binding for both the main agent and delegated subagents. If no frozen task spec exists, ad-hoc execution is allowed.
+Workflow selection follows skill descriptions. A skill carrying the literal
+`Workflow skill` mark in its description defines a workflow; supporting skills
+have their own invocation conditions. Domain workflows create directories such
+as `eda/`, `experiments/`, and `models/` when needed.
 
-In practice, APM works by combining:
-- **Flow layer** -- workflow skills, decision gates, review loops, delegation flow.
-- **Context layer** -- `AGENTS.md`, nested `AGENTS.md`, Memory Bank, specs, SSOT files, and delegation pointers.
+The main session performs work by default. Specialist delegation uses bounded
+tasks, relevant context pointers, and an expected result, subject to the host's
+delegation rules. If a frozen task spec exists, it binds both main and delegated
+execution.
 
-1. **apm-start** captures your original project formulation verbatim, runs detailed Vision Alignment to uncover implicit details, determines the project domain, initializes the dual-branch git layout, and selects the matching architecture template.
-2. During initialization, APM bootstraps two independent branches:
-   - `main` stays clean and free of APM working artifacts.
-   - `dev` contains the full working layer (`AGENTS.md`, `memory_bank/`, `external/`, `docs/`, and similar assets) and becomes the default branch for development.
-3. After your confirmation, APM creates the Memory Bank on `dev`: `ARCHITECTURE.md`, `STATE.md`, `TASKS.md`, `specs/`, and `tasks/`.
-4. You continue with workflow skills:
-   - `apm-dev` for implementation, `apm-test` for testing, `apm-quality-gate` for independent verification.
-   - `apm-eda`, `apm-deep-feature-engineering`, `apm-exp` for DS/ML workflows.
-   - Domain-specific skills create their required directories on first use (e.g., `apm-eda` creates `eda/` and `data/`).
-   - **Co-Founder mode** provides a collaborative primary partner who co-owns project vision, architecture, and direction.
-5. Continuity synchronization is explicit (`apm-sync`) and delegated to the `apm-memory-bank-sync` subagent, which keeps Memory Bank files and affected project-owned `README.md` files aligned with current project reality.
-6. Git isolation via `apm-git-taskflow` when parallel or isolated execution streams are needed. Task branches and worktrees are created from `dev`, not from `main`.
+Self-review is part of execution. `apm-quality-gate` adds independent
+simplification and review only when explicitly requested. `apm-sync` updates
+continuity and affected project-owned READMEs on explicit request; its
+architecture changes require approval.
 
----
+Example flows (invoke optional steps when needed):
 
-## Example flows
+- Product: `apm-start` → `apm-dev` → `apm-test` → optional `apm-quality-gate` → requested `apm-sync`.
+- DS/ML: `apm-start` → `apm-eda` → `apm-deep-feature-engineering` → `apm-exp` → requested `apm-sync`.
+- Mixed projects combine the relevant skills within the same scaffold.
 
-**Product:** `apm-start` -> `apm-dev` -> `apm-test` -> `apm-quality-gate` (optional) -> `apm-sync`
+## Project context and artifacts
 
-**DS/ML:** `apm-start` -> `apm-eda` -> `apm-deep-feature-engineering` -> `apm-exp` (baseline + experiments) -> `apm-sync`
+Generated projects use `memory_bank/`:
 
-**Mixed:** combine skills from both as needed within the same project.
+- `ARCHITECTURE.md` preserves Original Intent and approved architecture.
+- `STATE.md` holds operational continuity; `TASKS.md` holds the high-level board.
+  Keep each under 120 lines.
+- `design/SPEC-{module}.md` defines module contracts; changes require approval.
+- `specs/SPEC_{id}.md` is a frozen task spec, read-only during execution.
+- `tasks/{id}.md` is the working journal and outcome.
 
----
+Root and nested `AGENTS.md` provide shared context and local rules; skills provide
+procedures; role configs define specialist behavior. Detailed generated-project
+code conventions belong in the `src/` instruction layer rather than being
+repeated in every skill. The source instruction templates currently use the
+literal filename `AGENTS-*.md`; producing active `AGENTS.md` output is a pending
+delivery fix.
 
-## Memory Bank
+Runtime logs belong in `logs/runtime/`; generated test, review, and model reports
+belong in `logs/project/reports/`.
 
-- All environments: `memory_bank/`
-
-Core files:
-- `ARCHITECTURE.md` -- includes the Original Intent section with your verbatim initial formulation, plus the clarified architecture and decisions.
-- `STATE.md`
-- `TASKS.md`
-- `design/SPEC-{module}.md` -- global module specifications (contracts, ready interfaces, typecheck gates, invariants, data formats). Updated only with approval.
-- `specs/SPEC_{id}.md` -- frozen task specification (goal, pipeline, contracts, ready interfaces, typecheck automation, DoD). Read-only during execution.
-- `tasks/{id}.md` -- working journal (notes, review findings, outcome).
-
-Line budget:
-- Keep `STATE.md` and `TASKS.md` under 120 lines (compress when exceeded).
-
-## Logs
-
-- `logs/runtime/` stores runtime, training, evaluation, metrics, and error logs.
-- `logs/project/reports/` stores generated reports such as test, review, and model reports.
-
-## Git Isolation
-
-- Managed via `apm-git-taskflow` when isolated execution streams are needed.
-- Repository bootstrap creates two independent branches: clean `main` and working `dev`.
-- Day-to-day implementation happens on `dev`.
-- One branch per stream from `dev`: `task/<identifier>`. One worktree per stream: `.apm/worktrees/<identifier>`.
-- Heavy untracked resources (runtime, data, models) are shared at repo level -- not copied per worktree.
-- New artifacts are produced locally in the worktree and migrated back to `dev` or shared repo-level storage after merge.
-- For selective branch-to-branch sync, use `./git-branch-sync.sh <source-branch> [--apply]`; it previews by default and skips paths from `.gitbranchignore`.
-
-## Code Conventions
-
-- Prefer runtime fail-fast over layered fallback logic.
-- Keep files single-role and ideally within 100-600 LOC; allow 600-800 only when preserving a clear semantic boundary.
-- Use smoke-first testing: per-module smoke and smoke E2E are primary; keep integration tests narrow.
-- Inspect runtime logs and produced results after test runs.
-- Keep concise docstrings and a `README.md` in `src/` and every `src/` subdirectory with a local script graph and script descriptions.
-- In generated projects, these implementation conventions live in `src/AGENTS.md`.
-
----
+For isolated execution streams, `apm-git-taskflow` manages `dev`-based task
+branches and worktrees with shared heavy resources. `apm-autoresearch` provides
+an isolated research stream with keep/discard decisions and selective promotion.
+The separate root `git-branch-sync.sh` helper synchronizes selected tracked files
+between branches; see [Git workflow notes](docs/git-workflow.md).
 
 ## Skills
 
-| Skill | Description |
-|-------|-------------|
-| `apm` | Main-session context-engineering overlay: load workflow instructions for the main agent, bind to SSOT files, route task flow, and isolate subagents from unnecessary context |
-| `apm-start` | Project kickoff: verbatim Original Intent capture + detailed Vision Alignment + dual-branch git bootstrap + Memory Bank initialization |
-| `apm-dev` | Workflow skill for iterative development: plan, implement, verify, self-review |
-| `apm-exp` | Workflow skill for experiments (baselines, model variants, hypothesis-driven experiments) |
-| `apm-eda` | Workflow skill for Exploratory Data Analysis |
-| `apm-deep-feature-engineering` | Workflow skill for post-EDA feature engineering analysis |
-| `apm-test` | Workflow skill for testing: per-module smoke + smoke E2E, with narrow integration tests when needed |
-| `apm-quality-gate` | Post-implementation quality gate: simplify, verify, review, fix loop |
-| `apm-git-taskflow` | Git branch/worktree isolation from `dev` with shared runtime management |
-| `apm-sync` | Workflow skill for explicit Memory Bank and project README synchronization |
-| `apm-subagent` | Delegation contract for specialist subagents, including SSOT and frozen-spec pointers |
+| Skill | Purpose |
+| --- | --- |
+| `apm` | Explicit main-session coordination: task framing, context binding, workflow selection, self-review |
+| `apm-start` | Project kickoff, Original Intent, clarification, Git bootstrap, Memory Bank initialization |
+| `apm-dev` | Workflow skill for iterative development and verification |
+| `apm-test` | Workflow skill for module smoke and smoke E2E checks, with narrow integration tests when needed |
+| `apm-eda` | Workflow skill for exploratory data analysis and leakage checks |
+| `apm-deep-feature-engineering` | Workflow skill for ranked, testable feature candidates after EDA |
+| `apm-exp` | Workflow skill for baselines and hypothesis-driven ML/DS experiments |
+| `apm-quality-gate` | Explicitly requested simplification, verification, independent review, and fix loop |
+| `apm-git-taskflow` | Task branch/worktree isolation and shared runtime management |
+| `apm-sync` | Workflow skill for requested Memory Bank and project README reconciliation |
+| `apm-subagent` | Specialist delegation contract with relevant SSOT and frozen-spec pointers |
 | `apm-logs` | Runtime logging conventions |
-| `apm-autoresearch` | Workflow skill for branch-scoped autonomous research with mandatory post-run analysis, reporting, and selective sync-back |
-| `apm-compression-mode` | Communication compression skill for explicitly requested terse replies without loss of technical meaning |
+| `apm-autoresearch` | Workflow skill for isolated autonomous research with reporting and selective promotion |
+| `apm-compression-mode` | Explicitly requested terse communication without loss of technical meaning |
 
----
+Sources live in [apm_source/skills/](apm_source/skills/). Skill descriptions and
+their instructions determine invocation conditions.
 
 ## Agent roles
 
-| Role | Description |
-|------|-------------|
-| `apm-worker` | Universal execution unit: receives task, delivers results with self-review |
-| `apm-co-founder` | Primary project partner, equal strategic collaborator |
-| `apm-code-simplifier` | Behavior-preserving code simplification |
-| `apm-reviewer` | Independent verification gate |
-| `apm-memory-bank-sync` | Continuity specialist for Memory Bank files and affected project-owned README files |
-| `apm-web-explorer` | Web research specialist |
+| Role | Responsibility |
+| --- | --- |
+| `apm-worker` | Bounded execution and self-review |
+| `apm-code-simplifier` | Behavior-preserving cleanup |
+| `apm-reviewer` | Independent verification |
+| `apm-memory-bank-sync` | Memory Bank and affected project README continuity |
+| `apm-web-explorer` | Focused external research with sources |
+| `apm-co-founder` | Primary partner for project vision, architecture, and direction |
 
----
+The five specialist roles are present in all three active packs.
+`apm-co-founder` is provided by OpenCode and Claude Code; the Codex pack has no
+co-founder role file. Role settings and runtime capabilities vary by environment.
 
-## Notes
+## Framework sources and validation
 
-- Base project template lives in `apm_source/base/`.
-- Shared skills live in `apm_source/skills/`.
-- OpenCode pack lives in `apm_source/packs/opencode_pack/`.
-- Codex pack source lives in `apm_source/packs/codex_pack/`.
-- Claude Code pack source lives in `apm_source/packs/claude_pack/`.
-- `external/` can hold incubating or third-party skill prototypes before they are promoted into APM's shared skill set.
+- [apm_source/](apm_source/) contains the scaffold, shared skills, and packs.
+- [apm_project/](apm_project/) contains the configurator, installers, and checks.
+- [docs/](docs/) contains supporting references; older environment research is
+  labeled as historical.
+- `external/` holds third-party skill sources; `my-notes/` holds design notes
+  and proposals rather than active framework contracts.
 
----
-
-## OpenCode CLI architecture
-
-- **Agents** = role profiles for primary and delegated work.
-- **Skills** = modular knowledge chunks loaded on demand (dev, test, DS workflows, subagent delegation, git isolation, logs).
-- **Install targets**:
-  - Global: `~/.config/opencode/{agents,skills}`
-  - Local: `.opencode/{agents,skills}` inside a project
-
----
-
-## Claude Code architecture
-
-- **Subagents** = specialist roles in `.claude/agents/` (Markdown + YAML frontmatter).
-- **Skills** = shared `agentskills.io` skills in `.claude/skills/`.
-- **Tool control** = role configs declare `tools` allowlists and, where needed, permissions, effort/model settings, and turn limits.
-- **Install targets**:
-  - Global: `~/.claude/{agents,skills}`
-  - Local: `.claude/{agents,skills}` inside a project
-
----
+Run `bash apm_project/tests/e2e_tests.sh` for delivery E2E checks.
+`bash apm_project/tests/validate_all.sh` adds syntax, interactive, and installer
+matrix checks. These do not prove live host/model compatibility.
+See the [review](docs/framework-status.md#verification-evidence) for the current
+baseline and unverified paths.

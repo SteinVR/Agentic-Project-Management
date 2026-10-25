@@ -1,5 +1,10 @@
 # Claude Code: Environment Documentation for APM
 
+> Historical integration snapshot. Claims below about unavailable `AGENTS.md`
+> support and other runtime behavior describe an earlier state. For current
+> loading conditions and official sources, read the
+> [2026-10-25 compatibility review](framework-status.md#environment-boundaries-and-role-availability).
+
 ## 1. Overview
 
 Claude Code is Anthropic's CLI-based agentic coding tool. It operates in the terminal as an interactive REPL or in headless mode (`-p` flag) for automation and CI/CD. Claude Code uses its own instruction format (`CLAUDE.md`) instead of the cross-tool `AGENTS.md` standard, has a rich subagent system, skills following the `agentskills.io` spec, and an experimental Agent Teams feature for multi-session coordination.

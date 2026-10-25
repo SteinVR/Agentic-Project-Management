@@ -1,6 +1,38 @@
 # Git Workflow Notes
 
-## Merging Codex-CLI into main (squash)
+## Selective branch synchronization
+
+Use the root [git-branch-sync.sh](../git-branch-sync.sh) helper when tracked files
+need to be copied from another branch without transferring branch-local context.
+Run from the repository root on a checked-out target branch with a clean tracked
+tree.
+
+```bash
+./git-branch-sync.sh <source-branch>          # preview
+./git-branch-sync.sh <source-branch> --apply  # apply and stage
+```
+
+The repository-root `.gitbranchignore` is the exclusion contract:
+
+- One path per line; blank lines and `#` comments are ignored.
+- A bare path excludes the item and its subtree, for example `docs` excludes
+  both `docs` and `docs/**`.
+- `.gitbranchignore` itself is always branch-local and never synchronized.
+
+The helper synchronizes tracked file contents and stages real changes only with
+`--apply`; it does not merge branch history. Inspect the preview and staged diff
+as part of the requested synchronization.
+
+For new generated projects, `apm-start` prescribes clean `main` and working `dev`
+histories. This convention does not rename branches in the APM framework
+repository. Check the actual source and target branch names before using the
+helper.
+
+## Historical: merging Codex-CLI into main (squash)
+
+The material below records an earlier branch layout and publication process. It
+is retained as history, not the current synchronization procedure. The named
+branches and file exclusions must not be assumed to describe the current checkout.
 
 ### Что нужно знать
 

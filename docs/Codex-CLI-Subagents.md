@@ -1,5 +1,9 @@
 # Codex CLI Subagents
 
+> Historical research snapshot. Version-sensitive claims below are not the
+> current APM compatibility contract. For the 2026-10-25 review and current
+> official sources, read [framework-status.md](framework-status.md#codex-delivery).
+
 ## Executive Summary
 
 Codex multi-agent “subagents” are an **experimental** capability in the Codex CLI that lets a primary Codex thread **spawn multiple specialized agent threads in parallel**, coordinate them, and then **return a consolidated result**. This is primarily aimed at **fan-out/fan-in workflows** such as repository exploration, multi-aspect PR review, or parallel subtask execution.
@@ -501,4 +505,4 @@ Practical mitigations (bounded to what’s documented and observable):
 
 #### Inconsistent flags across docs
 
-One example: the CLI reference documents `codex login --with-api-key` (stdin), while some older snippets show alternative flag spellings. For automation and reliability, prefer the **CLI reference** as the “source of truth” for supported flags. 
+One example: the CLI reference documents `codex login --with-api-key` (stdin), while some older snippets show alternative flag spellings. For automation and reliability, prefer the **CLI reference** as the “source of truth” for supported flags.

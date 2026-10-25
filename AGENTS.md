@@ -1,76 +1,50 @@
-# Repository Guidelines
+# Agentic Project Management
 
-## Project Focus
-This repository is the source of an agentic development framework centered on two responsibilities:
-- **Flow management** -- how work proceeds through planning, execution, delegation, and verification.
-- **Context management** -- what context an agent receives through SSOT files, Memory Bank artifacts, layered instructions, and skill loading.
+APM is a framework for agentic development. It connects flow management
+(planning, execution, delegation, verification) with context management
+(shared instructions, skills, role configs, and durable project artifacts).
+This repository contains the framework sources and delivery tools.
 
-APM exists to make agent work reliable by controlling both flow and context together.
+At the start of a new chat, read [README.md](README.md) for usage and
+[APM_ARCHITECTURE.md](APM_ARCHITECTURE.md) for component boundaries and contracts.
+Align with both before structural or methodological changes.
 
-## Mandatory Context Review
-At the start of every new chat, first review:
-- `README.md`
-- `APM_ARCHITECTURE.md`
+## Project map
 
-These two files define the current project context, structure, terminology, and intended behavior. 
-Do not make structural or methodological changes before aligning with them.
+```text
+APM/
+├── README.md              — usage, installation, skill and role catalog
+├── APM_ARCHITECTURE.md    — framework architecture and invariants
+├── apm_source/            — project templates, shared skills, environment packs
+├── apm_project/           — configurator, installers, validation
+├── docs/                  — supporting documentation and compatibility review
+├── external/              — third-party reference material and skill sources
+├── my-notes/              — design notes and proposals
+├── git-branch-sync.sh     — selective tracked-file synchronization
+└── .gitbranchignore       — branch-local exclusions for synchronization
+```
 
-## Terminology
-Use terms consistently:
-- **Environment**: `Cursor (legacy)`, `OpenCode`, `Codex`, `Claude Code`
+- Framework assets: [apm_source/AGENTS.md](apm_source/AGENTS.md) explains source ownership and template scope.
+- Delivery and validation: [apm_project/AGENTS.md](apm_project/AGENTS.md) maps the entry points and checks.
+- Supporting material: [docs/AGENTS.md](docs/AGENTS.md) distinguishes current guidance from historical environment notes and routes branch-sync work.
 
-Environments are delivery targets. Workflow is controlled through explicitly invoked skills, not rigid methodology boundaries.
+## Shared contracts
 
-## Documentation Sync Rules
-Update `README.md` whenever the repository changes in ways that affect how APM is used or understood, especially:
-- structural repository changes
-- skill changes
-- new agent roles
-- environment-specific behavior changes
-
-If the change affects core architecture, orchestration principles, or framework invariants, update `APM_ARCHITECTURE.md` as well.
-
-## Methodology-First Rule
-When working on the methodological layer of the project such as the framework itself, skills, agents, subagents, packs, instructions, contracts, or orchestration rules, do not change or finalize implementation code (scripts) unless the user explicitly asks for finalization.
-
-Stabilize the framework logic, contracts, and instruction flow first. Apply code changes only at the end, once the methodological changes are settled and the user requests finalization.
-
-## Writing Style For Rules And Skills
-Rules, skills, and framework instructions must be written in a concise style. Prefer natural, direct instruction phrasing over robotic or overly formal wording. Prefer intent, constraints, decision rules, and expected outcomes over low-value verbosity.
-
-Each word, phrase, and sentence must have a clear purpose. Avoid filler, repetition, vague motivational language, and bloated explanations. Instruction text should be compact, explicit, and directly useful for agent execution.
-
-## Context Layering Reminder
-- `AGENTS.md` = common context and rules for all (primary/main session agents and subagents)
-- `SKILLS` = attachable procedures (incremental context)
-- Agent and subagent `CONFIGS` = behavioral role contracts (only for them)
-
-Use them by responsibility:
-- Root `AGENTS.md`: project-wide contracts and rules
-- Nested `AGENTS.md`: local contracts and rules for a specific area, subtree, or artifact type
-- `SKILLS`: dynamic, incremental instructions for a specific task or process
-- `CONFIGS`: role behavior, boundaries, and global goals for a specific agent or subagent
-
-**Context isolation principle:** `AGENTS.md` is read by ALL agents (primary and subagents alike). Do not place role-scoped instructions there (e.g., "orchestrators do X, subagents do Y"). If an instruction applies only to a specific role, it belongs in that role's config. If a rule already exists in one layer, do not duplicate it in another.
-
-## Repository Layout
-Key areas:
-- `apm_project/`: configurator, installers, validation scripts
-- `apm_source/base/`: unified project template (directory structure, Memory Bank templates, project-level AGENTS.md)
-- `apm_source/skills/`: shared APM skills
-- `apm_source/packs/`: environment-specific payloads for `OpenCode`, `Codex`, and `Claude Code`
-- `apm_source/_legacy/`: frozen legacy assets, including deprecated `Cursor` payloads
-- `docs/`: supporting project documentation
-
-## Branch Sync
-- Use `./git-branch-sync.sh <source-branch> [--apply]` to sync tracked files from another branch into the current one.
-- Default mode is preview only; `--apply` stages real changes.
-- Ignore list comes from repo-root `.gitbranchignore`: one path per line, `#` comments and blank lines are ignored.
-- A bare path excludes both the item and its subtree; `.gitbranchignore` itself stays branch-local and never syncs.
-- Run it on a checked-out branch with a clean tracked tree.
-
-## Important Scope Note
-Nested `AGENTS.md` files inside `apm_source/base/` and skill `references/` are framework assets shipped for generated workflows. They are not governing instructions for this repository itself unless you are explicitly editing those assets as deliverables.
-
-## Glossary
-- **Workflow skill** -- a skill marked as `Workflow skill` in its `description`. It defines the execution flow for a class of work and tells the agent how to run that kind of task step by step. Use that description mark as the source of truth.
+- Use environment names `OpenCode`, `Codex`, `Claude Code`, and `Cursor (legacy)`.
+  Environments are delivery targets; skills define workflows.
+- Keep `AGENTS.md` to shared context, navigation, and rules applicable to every
+  role in its scope. Put procedures in skills and role-specific behavior in
+  agent configs. Keep each rule in its owning layer.
+- Use progressive disclosure: describe the current level, link to local
+  context, and load details for the task. Do not reproduce child-area contents
+  in the root or create instruction files mechanically in every directory.
+- Framework templates and reference instructions are deliverables, not
+  governing instructions for work on this repository. Design notes and vendored
+  material do not establish current framework contracts.
+- When changing framework methodology, skills, roles, packs, or contracts,
+  settle the logic and instruction flow first. Change implementation scripts
+  only after the user explicitly requests finalization.
+- Keep rules and skills concise: state intent, constraints, decisions, and
+  expected outcomes without repetition or filler.
+- Update `README.md` when usage, structure, skills, roles, or environment behavior
+  changes. Update `APM_ARCHITECTURE.md` when core boundaries or invariants change.
